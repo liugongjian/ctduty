@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="11px" viewBox="0 0 13 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>资源需求</title>
+    <desc>Created with Sketch.</desc>
+    <g id="商机管理修改" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页" transform="translate(-21.000000, -255.000000)">
+            <g id="资源需求" transform="translate(20.000000, 254.000000)">
+                <g id="编组-5">
+                    <rect id="矩形" fill="#FFFFFF" fill-rule="nonzero" opacity="0" x="0" y="0" width="14" height="14"></rect>
+                    <g id="编组-4" transform="translate(2.000000, 2.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8">
+                        <path d="M3.03848188,4.66681641 C4.52261274,3.74803385 5.4356173,2.19242839 5.77749555,0 L10.8590385,3.09899902 C9.26260297,6.45707194 7.34687218,8.58113607 5.11184614,9.47119141 C5.11184614,9.47119141 1.80996626,8.20227051 0.0477592244,5.55578613 C0.0477592244,5.55578613 -0.293549369,4.32287598 0.848662545,3.7109375 C0.848662545,3.7109375 2.37561478,4.64798991 5.42951926,6.52209473 C3.90662064,7.11055501 3.67174197,8.02335612 4.72488325,9.26049805" id="路径-2"></path>
+                        <line x1="6.44541547" y1="2.76000977" x2="8.65554731" y2="4.23710938" id="路径-3"></line>
+                        <line x1="5.42951926" y1="4.23710938" x2="7.72817915" y2="5.76818848" id="路径-4"></line>
+                        <path d="M10.3903801,7.97174072 C10.2312215,8.93233236 9.72203087,9.43214925 8.86280805,9.47119141" id="路径-5"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

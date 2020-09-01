@@ -1,0 +1,226 @@
+ //覆盖一些element-ui样式
+
+ .el-breadcrumb__inner, .el-breadcrumb__inner a{
+  font-weight: 400!important;
+}
+
+ .el-upload {
+   input[type="file"] {
+     display: none !important;
+   }
+ }
+
+ .el-upload__input {
+   display: none;
+ }
+
+ .cell {
+   .el-tag {
+     margin-right: 0px;
+   }
+ }
+
+ .small-padding {
+   .cell {
+     padding-left: 5px;
+     padding-right: 5px;
+   }
+ }
+
+ .fixed-width{
+  .el-button--mini{
+    padding: 7px 10px;
+    width: 60px;
+  }
+ }
+
+ .status-col {
+   .cell {
+     padding: 0 10px;
+     text-align: center;
+     .el-tag {
+       margin-right: 0px;
+     }
+   }
+ }
+
+ //暂时性解决dialog 问题 https://github.com/ElemeFE/element/issues/2461
+ .el-dialog {
+   transform: none;
+   left: 0;
+   position: relative;
+   margin: 0 auto;
+ }
+
+ //文章页textarea修改样式
+ .article-textarea {
+   textarea {
+     padding-right: 40px;
+     resize: none;
+     border: none;
+     border-radius: 0px;
+     border-bottom: 1px solid #bfcbd9;
+   }
+ }
+
+ //element ui upload
+ .upload-container {
+   .el-upload {
+     width: 100%;
+     .el-upload-dragger {
+       width: 100%;
+       height: 200px;
+     }
+   }
+ }
+
+//dropdown
+ .el-dropdown-menu{
+  a{
+    display: block
+  }
+}
+//form
+.el-form-item__label{
+  color: #333;
+}
+//button-default修改默认样式
+.el-button--default{color: #333;border-radius: 2px;}
+.el-button--default:active{
+  color: $cyblue;
+  border-color: $cyblue;
+  outline: 0;
+}
+.el-button--default:focus, .el-button--default:hover{
+  color: #333;
+  border-color: $cyblue;
+  background-color: #fff;
+}
+//button type=warning色值修改
+.el-button--warning{
+  border-radius: 2px;
+  color: #fff;
+  background-color: $orange;
+  border-color: $orange;
+}
+//el-button warning默认样式修改
+.el-button--warning:focus, .el-button--warning:hover{
+  background: #FFAD5B;
+  border-color: #FFAD5B;
+  color: #fff;
+}
+.el-button--warning.is-active, .el-button--warning:active{
+  background: #F18317;
+  border-color: #F18317;
+  color: #fff;
+}
+//el-button text
+.el-button--text:active{
+  color: $cyblue;
+}
+// 表格公共样式
+.el-table .tableRowClassHeader {
+  font-weight: 400;
+  color: #666;
+  background: #ECEDEE;
+}
+.el-table--enable-row-hover .el-table__body tr:hover>td{
+  background-color:#EEF5FC;
+}
+//分页样式
+.el-pagination.is-background .el-pager li{
+  margin: 0;
+  background-color: #fff;
+  color: #333;
+  font-weight: 400;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background-color:$cyblue;
+  &:hover{
+    color: #fff;
+  }
+}
+.el-pagination.is-background .el-pager li:not(.disabled):hover{
+  color: $cyblue;
+}
+//弹框样式
+.el-dialog__header{
+  padding: 40px 40px 0px;
+}
+.el-dialog{
+  display: flex;
+  flex-direction: column;
+  margin:0 !important;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  max-height:calc(100% - 30px);
+  max-width:calc(100% - 30px);
+  .el-dialog__body{
+    flex:1;
+    overflow: auto;
+    padding: 25px 40px;
+    .el-form-item{
+      margin-bottom: 19px;
+    }
+  }
+}
+.el-dialog__footer{
+  padding: 18px 0px;
+  text-align: center;
+  background: #f5f5f5;
+}
+//input
+.el-input__inner{
+  border: 1px solid #D8D8D8;
+  border-radius: 5px;
+  &:hover{
+    border-color: #999;
+  }
+  &:focus{
+    border-color: $cyblue;
+  }
+}
+.el-input.is-disabled .el-input__inner{
+  background-color: #F0F0F0;
+  border-color: #d8d8d8;
+  color: #999;
+}
+//input错误提示信息
+.el-form-item.is-error .el-input__inner, .el-form-item.is-error .el-input__inner:focus, .el-form-item.is-error .el-textarea__inner, .el-form-item.is-error .el-textarea__inner:focus, .el-message-box__input input.invalid, .el-message-box__input input.invalid:focus{
+  border-color: #FF8833;
+}
+.el-form-item__error{
+  color: #FF8833;
+}
+//input正确提示边框
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus{
+  border-color: #4EC46F;
+}
+//select下拉框
+.el-select-dropdown__item,.el-input__inner{color: #333;}
+.el-select:hover .el-input__inner{
+  border-color: #999;
+}
+.el-select .el-input.is-focus .el-input__inner{
+  border-color: $cyblue;
+}
+.el-select-dropdown__item.hover, .el-select-dropdown__item:hover{
+  background: #EEF5FC;
+  color: $cyblue;
+}
+.el-select-dropdown__item.selected{
+  background-color: $cyblue;
+  color: #fff;
+  font-weight: 400;
+}
+.el-popper[x-placement^=bottom] .popper__arrow{display: none;}
+.el-select-dropdown{
+  border-color: $cyblue;
+  max-width: 204px;
+}
+.el-popper[x-placement^=bottom]{margin-top: 2px;}
+.el-select-dropdown__list{
+  padding: 0px;
+}

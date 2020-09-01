@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ningxia-video-admin
+  labels:
+    app: ningxia-video-admin
+spec:
+  ports:
+  - name: http
+    port: 9597
+    targetPort: 9597
+    nodePort: 30620
+  selector:
+    app: ningxia-video-admin
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ningxia-video-admin
+  labels:
+    app: ningxia-video-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ningxia-video-admin
+  template:
+    metadata:
+      labels:
+        app: ningxia-video-admin
+    spec: 
+      containers:
+      - image: {imagename}
+        imagePullPolicy: IfNotPresent
+        name: ningxia-video-admin
+        ports:
+        - containerPort: 9597
+
+
