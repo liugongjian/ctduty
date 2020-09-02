@@ -41,7 +41,11 @@
         <el-col :span="16" style="padding-left:0;">
           <div id="classify">
             <div class="dash-title">各类告警占比</div>
-            4
+            <div class="pie">
+              <div id="man" class="canFu"></div>
+              <div id="car" class="canFu"></div>
+              <div id="bicycle" class="canFu"></div>
+            </div>
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
@@ -75,7 +79,7 @@ import {
   fetchUser, fetchCommunity, alarmStatus
 } from '@/api/user'
 function registerMap() {
-  echarts.registerMap('宁夏', ningxia)
+  echarts.registerMap('渭南', ningxia)
 }
 export default {
   name: 'Dashboard',
@@ -94,13 +98,13 @@ export default {
         devicePublicIp: '',
         devicePublicPort: '',
         id: '4028855e740f8e0501740f8e0fcc0000',
-        installAddress: '中卫市沙坡头区何滩村',
+        installAddress: '渭南',
         isOnline: 1,
         isSupportPtz: 1,
-        latitude: '35.315863',
+        latitude: '34.50',
         loginName: '',
         loginPassword: '',
-        longitude: '106.178887',
+        longitude: '109.50',
         parentNvrNum: '',
         playbackProtocol: 0,
         updateStateTimeString: '2020-08-21 13:46:28'
@@ -108,7 +112,9 @@ export default {
       alarmTime: '888',
       processed: '666',
       offCamera: '5000',
-      total: '10000'
+      total: '10000',
+      datay: [10, 11, 12],
+      pieData: [{ value: 10, name: '嘻嘻' }]
     }
   },
   computed: {},
@@ -118,6 +124,9 @@ export default {
     const that = this
     registerMap()
     that.mapFn(that.mapData)
+    that.drawPie('man', '人员')
+    that.drawPie('car', '机动车')
+    that.drawPie('bicycle', '非机动车')
   },
   methods: {
     mapFn(data) {
@@ -155,7 +164,7 @@ export default {
           extraCssText: 'height:50px; white-space:pre-wrap;'
         },
         geo: {
-          map: '宁夏',
+          map: '渭南',
           roam: true,
           aspectScale: 1,
           scaleLimit: { // 所属组件的z分层，z值小的图形会被z值大的图形覆盖
@@ -169,6 +178,7 @@ export default {
             }
           },
           itemStyle: {
+            borderColor: '#000',
             normal: {
               borderColor: '#ff5722',
               show: false
@@ -177,27 +187,39 @@ export default {
               areaColor: '#5B8FF9',
               show: true
             }
-          }
+          },
+          regions: [{
+            name: '华阴市',
+            itemStyle: {
+              areaColor: '#ccc',
+              color: '#ccc',
+              borderColor: '#ccc'
+            }
+          }]
         },
         legend: {
           orient: 'horizontal',
           left: '0%',
           bottom: '0%', // 图例距离左的距离
-          icon: 'roundRect',
-          data: this.datax,
+          icon: 'rect',
           width: '100%',
           textStyle: {
             fontSize: 8
+          },
+          itemWidth: 200,
+          tooltip: {
+            show: true
           }
         },
         series: [
           {
             name: 'pm2.5',
-            type: 'effectScatter',
+            type: 'scatter',
             coordinateSystem: 'geo',
             data: convertData(geoCoordMap, locValue).slice(0, 4),
-            symbolSize: 12,
+            symbolSize: 24,
             label: {
+              opacity: 0.5,
               normal: {
                 show: false
               },
@@ -206,6 +228,8 @@ export default {
               }
             },
             itemStyle: {
+              color: '#266ABE',
+              opacity: 0.8,
               emphasis: {
                 borderColor: '#fff',
                 borderWidth: 1
@@ -215,6 +239,118 @@ export default {
         ]
       }
       chart.setOption(option)
+    },
+    drawPie(id, name) {
+      var placeHolderStyle = {
+        normal: {
+          label: {
+            show: false
+          },
+          labelLine: {
+            show: false
+          },
+          color: 'rgba(0,0,0,0)',
+          borderWidth: 0
+        },
+        emphasis: {
+          color: 'rgba(0,0,0,0)',
+          borderWidth: 0
+        }
+      }
+
+      var dataStyle = {
+        normal: {
+          formatter: '{c}%',
+          position: 'center',
+          show: true,
+          textStyle: {
+            fontSize: '20',
+            fontWeight: 'normal',
+            color: '#34374E'
+          }
+        }
+      }
+
+      this.charts = echarts.init(document.getElementById(id))
+      this.charts.setOption({
+        backgroundColor: '#fff',
+        title: [{
+          text: name,
+          left: '50%',
+          top: '60%',
+          textAlign: 'center',
+          textStyle: {
+            fontWeight: 'normal',
+            fontSize: '16',
+            color: '#AAAFC8',
+            textAlign: 'center'
+          }
+        }],
+        // 第一个图表
+        series: [{
+          type: 'pie',
+          hoverAnimation: false, // 鼠标经过的特效
+          radius: ['60%', '72%'],
+          // center: ['30%', '50%'],
+          startAngle: 225,
+          labelLine: {
+            normal: {
+              show: false
+            }
+          },
+          label: {
+            normal: {
+              position: 'center'
+            }
+          },
+          data: [{
+            value: 100,
+            itemStyle: {
+              normal: {
+                color: '#E1E8EE'
+              }
+            }
+          }, {
+            value: 35,
+            itemStyle: placeHolderStyle
+          }
+
+          ]
+        },
+        // 上层环形配置
+        {
+          type: 'pie',
+          hoverAnimation: false, // 鼠标经过的特效
+          radius: ['60%', '72%'],
+          // center: ['30%', '50%'],
+          startAngle: 225,
+          labelLine: {
+            normal: {
+              show: false
+            }
+          },
+          label: {
+            normal: {
+              position: 'center'
+            }
+          },
+          data: [{
+            value: 75,
+            itemStyle: {
+              normal: {
+                color: '#6F78CC'
+              }
+            },
+            label: dataStyle
+          }, {
+            value: 35,
+            itemStyle: placeHolderStyle
+          }
+
+          ]
+        }
+        ]
+      })
     }
   }
 }
@@ -317,7 +453,7 @@ export default {
       .overmsg {
         -webkit-margin-before: 0;
         -webkit-margin-after: 0;
-        font-size: 26px;
+        font-size: 20px;
         flex-wrap: 700;
         color: #000;
         margin-top: 10px;
@@ -329,5 +465,12 @@ export default {
     opacity: 0;
   }
 }
-
+.pie {
+  height: 170px;
+  display: flex;
+}
+.canFu {
+    height: 100%;
+    flex: 1;
+  }
 </style>
