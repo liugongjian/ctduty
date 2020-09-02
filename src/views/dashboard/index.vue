@@ -54,7 +54,7 @@
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
         <div id="net">
           <div class="dash-title">摄像头在线率</div>
-          6
+          <div id="camerarate"></div>
         </div>
       </el-col>
     </el-row>
@@ -63,6 +63,8 @@
 
 <script>
 import echarts from 'echarts'
+// 引入水波球
+import 'echarts-liquidfill'
 import ningxia from '@/json/weinan.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
@@ -118,6 +120,7 @@ export default {
     const that = this
     registerMap()
     that.mapFn(that.mapData)
+    that.camerarate()
   },
   methods: {
     mapFn(data) {
@@ -215,6 +218,85 @@ export default {
         ]
       }
       chart.setOption(option)
+    },
+    camerarate() {
+      console.log('jjjj')
+      var myChart = echarts.init(document.getElementById('camerarate'))
+      // 指定图表的配置项和数据
+      var option = {
+        title: {
+            text: '在线率 \n 20%',
+            textStyle: {
+                fontSize: 20,
+                fontFamily: 'Microsoft Yahei',
+                fontWeight: 'normal',
+                color: '#ccc',
+                rich: {
+                    a: {
+                        fontSize: 28,
+                    }
+                }
+            },
+            x: 'center',
+            y: '40%'
+        },
+
+        series: [{
+          type: 'liquidFill',
+          radius: '80%',
+          center: ['50%', '50%'],
+          //  shape: 'roundRect',
+          phase: 0,
+          direction: 'right',
+          data:  [0.5, 0.5, 0.5],
+          backgroundStyle: {
+            borderColor: 'rgba(0,150,255,0.4)', //背景内边框
+            color:'rgba(0,150,255,0.4)', //背景颜色 
+          },
+          outline: {
+            borderDistance: 0,
+            itemStyle: {
+              borderWidth: 1,
+              borderColor: '#1890FF',
+            }  
+          },
+            // 图形样式
+          itemStyle: {
+            color: '#1890FF', // 水球显示的背景颜色
+            opacity: 0.5, // 波浪的透明度
+            shadowBlur: 10 // 波浪的阴影范围
+          },
+          backgroundStyle: {
+            color: '#fff', // 水球未到的背景颜色
+            opacity: 0.5
+          },
+            color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                    offset: 1,
+                    color: '#0CB8EA'
+                }, {
+                    offset: 0.5,
+                    color: '#0CB8EA'
+                }, {
+                    offset: 0,
+                    color: '#0CB8EA'
+                }],
+                globalCoord: false
+            },
+            label: {
+                normal: {
+                    formatter: '',
+                }
+            }
+        }, ]
+      };
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
     }
   }
 }
@@ -248,6 +330,9 @@ export default {
   #net {
     height: 210px;
     background-color: #fff;
+    #camerarate {
+      height: 170px;
+    }
   }
   .status {
     margin-top: 20px;
