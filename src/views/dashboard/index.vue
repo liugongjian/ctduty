@@ -34,7 +34,9 @@
         </div>
         <div id="dispose">
           <div class="dash-title">告警处理率</div>
-          3
+          <div class="disbox">
+            <div id="panel"></div>
+          </div>
         </div>
       </el-col>
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
@@ -52,7 +54,7 @@
           <div id="hotarea">
             <div class="dash-title">热门告警位置</div>
             <div class="tagbox">
-              <tag-cloud :data="hotTag" radius="70" @clickTag="clickTagItem"></tag-cloud>
+              <tag-cloud :data="hotTag" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
             </div>
           </div>
         </el-col>
@@ -144,10 +146,223 @@ export default {
     that.drawPie('man', '人员')
     that.drawPie('car', '机动车')
     that.drawPie('bicycle', '非机动车')
+    that.getPanel()
   },
   methods: {
     clickTagItem(tag) {
       // TODO
+    },
+    getPanel() {
+      var datas = {
+        value: 3,
+        title: '完成进度',
+        type: 1,
+        radiusType: 1
+      }
+      var fontColor = '#1e87f0'
+      const noramlSize = 12
+      const state = ''
+      const center = ['50%', '70%']
+      const nqradius = '100%'
+      const kdradius = '100%'
+      const wqColor = 'rgba(80, 152, 237,0.9)'
+      const nqColor = [
+        [datas.value / 5, '#1e87f0'],
+        [1, '#e6e6e6']
+      ]
+      this.charts = echarts.init(document.getElementById('panel'))
+      this.charts.setOption({
+        title: {
+          show: true,
+          x: 'center',
+          bottom: '2%',
+          text: datas.title,
+          textStyle: {
+            fontWeight: '700',
+            fontSize: 12,
+            color: fontColor
+          }
+        },
+        tooltip: {
+          show: false
+        },
+        series: [{
+          name: '刻度文字',
+          type: 'gauge',
+          radius: kdradius,
+          center: center,
+          startAngle: 180,
+          endAngle: 0,
+          z: 7,
+          splitNumber: 5,
+          min: 0,
+          max: 5,
+          axisTick: {
+            show: true,
+            lineStyle: {
+              color: '#ffffff',
+              width: 1
+            },
+            length: 0,
+            splitNumber: 4
+          },
+          splitLine: {
+            show: false,
+            length: 10
+          },
+          axisLine: {
+            lineStyle: {
+              width: 5,
+              opacity: 0
+            }
+          },
+          axisLabel: {
+            fontSize: noramlSize,
+            color: fontColor,
+            lineStyle: {
+              width: 2
+            },
+            formatter: function(v) {
+              var str = ''
+              switch (v) {
+                case 1:
+                  str = '差'
+                  break
+
+                case 2:
+                  str = '中'
+                  break
+
+                case 3:
+                  str = '良'
+                  break
+
+                case 4:
+                  str = '优'
+                  break
+              }
+              return str
+            }
+          },
+          pointer: {
+            show: false
+          },
+          detail: {
+            show: false
+          }
+        },
+        {
+          name: '指针',
+          type: 'gauge',
+          z: 9,
+          radius: '60%',
+          startAngle: 180,
+          endAngle: 0,
+          center: center,
+          axisLine: {
+            lineStyle: {
+              width: 0
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false,
+            length: 0
+          },
+          axisLabel: {
+            show: false
+          },
+          min: 0,
+          max: 5,
+          pointer: {
+            show: true,
+            width: 5,
+            length: '80%'
+          },
+          itemStyle: {
+            normal: {
+              color: wqColor
+            }
+          },
+          detail: {
+            show: true,
+            offsetCenter: [0, '40%'],
+            formatter: function(v) {
+              var str = ''
+              switch (v) {
+                case 1:
+                  str = '差'
+                  break
+                case 2:
+                  str = '中'
+                  break
+
+                case 3:
+                  str = '良'
+                  break
+
+                case 4:
+                  str = '优'
+                  break
+              }
+              return [
+                '{value|' + (str) + '} ',
+                '{company|' + state + '}'
+              ].join('\n')
+            },
+            rich: {
+              value: {
+                fontSize: 25,
+                lineHeight: 10,
+                color: '#1e87f0',
+                fontWeight: '700'
+              },
+              company: {
+                fontSize: 16,
+                lineHeight: 20,
+                color: '#1e87f0'
+              }
+            }
+          },
+          data: [datas.value]
+        },
+        {
+          name: '内层盘',
+          type: 'gauge',
+          z: 6,
+          radius: nqradius,
+          startAngle: 180,
+          endAngle: 0,
+          center: center,
+          axisLine: {
+            lineStyle: {
+              color: nqColor,
+              width: 10,
+              opacity: 0.9
+            }
+          },
+          splitNumber: 4,
+          min: 0,
+          max: 5,
+          axisTick: {
+            show: false
+          },
+
+          axisLabel: {
+            show: false
+          },
+          pointer: {
+            show: false
+          },
+
+          detail: {
+            show: 0
+          }
+        }
+        ]
+      })
     },
     mapFn(data) {
       var geoCoordMap = { // 这里放你打点的坐标信息，虚拟信息
@@ -266,20 +481,20 @@ export default {
       // 指定图表的配置项和数据
       var option = {
         title: {
-            text: '在线率 \n 20%',
-            textStyle: {
-                fontSize: 20,
-                fontFamily: 'Microsoft Yahei',
-                fontWeight: 'normal',
-                color: '#ccc',
-                rich: {
-                    a: {
-                        fontSize: 28,
-                    }
-                }
-            },
-            x: 'center',
-            y: '40%'
+          text: '在线率 \n 20%',
+          textStyle: {
+            fontSize: 20,
+            fontFamily: 'Microsoft Yahei',
+            fontWeight: 'normal',
+            color: '#ccc',
+            rich: {
+              a: {
+                fontSize: 28
+              }
+            }
+          },
+          x: 'center',
+          y: '40%'
         },
 
         series: [{
@@ -289,19 +504,19 @@ export default {
           //  shape: 'roundRect',
           phase: 0,
           direction: 'right',
-          data:  [0.5, 0.5, 0.5],
+          data: [0.5, 0.5, 0.5],
           backgroundStyle: {
-            borderColor: 'rgba(0,150,255,0.4)', //背景内边框
-            color:'rgba(0,150,255,0.4)', //背景颜色 
+            borderColor: 'rgba(0,150,255,0.4)', // 背景内边框
+            color: 'rgba(0,150,255,0.4)' // 背景颜色
           },
           outline: {
             borderDistance: 0,
             itemStyle: {
               borderWidth: 1,
-              borderColor: '#1890FF',
-            }  
+              borderColor: '#1890FF'
+            }
           },
-            // 图形样式
+          // 图形样式
           itemStyle: {
             color: '#1890FF', // 水球显示的背景颜色
             opacity: 0.5, // 波浪的透明度
@@ -311,33 +526,33 @@ export default {
             color: '#fff', // 水球未到的背景颜色
             opacity: 0.5
           },
-            color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [{
-                    offset: 1,
-                    color: '#0CB8EA'
-                }, {
-                    offset: 0.5,
-                    color: '#0CB8EA'
-                }, {
-                    offset: 0,
-                    color: '#0CB8EA'
-                }],
-                globalCoord: false
-            },
-            label: {
-                normal: {
-                    formatter: '',
-                }
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [{
+              offset: 1,
+              color: '#0CB8EA'
+            }, {
+              offset: 0.5,
+              color: '#0CB8EA'
+            }, {
+              offset: 0,
+              color: '#0CB8EA'
+            }],
+            globalCoord: false
+          },
+          label: {
+            normal: {
+              formatter: ''
             }
-        }, ]
-      };
+          }
+        }]
+      }
       // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      myChart.setOption(option)
     },
     drawPie(id, name) {
       var placeHolderStyle = {
@@ -581,5 +796,15 @@ export default {
     .tag-cloud {
     height: 100%;
   }
+  }
+  .disbox {
+    width: 100%;
+    height: 170px;
+    #panel {
+      height: 100%;
+    }
+    #panel>div {
+      height: 100%;
+    }
   }
 </style>
