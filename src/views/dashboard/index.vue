@@ -30,7 +30,9 @@
       <el-col :span="6" style="{width: '50%'; height: '532px'; margin-top: 20px;}">
         <div id="trend">
           <div class="dash-title">告警趋势预测</div>
-          2
+          <p class="trendTitle">目标评估</p>
+          <p class="trenddes">治安状况保持稳定</p>
+          <div id="alarmLine" :style="{width: '100%', height: '120px'}" class="lineEcharts"></div>
         </div>
         <div id="dispose">
           <div class="dash-title">告警处理率</div>
@@ -130,6 +132,7 @@ export default {
     that.drawPie('man', '人员')
     that.drawPie('car', '机动车')
     that.drawPie('bicycle', '非机动车')
+    this.drawZhu('alarmLine')
   },
   methods: {
     mapFn(data) {
@@ -433,9 +436,128 @@ export default {
         }
         ]
       })
-    }
-  }
+    },
+    drawZhu(id) {
+      var charts = echarts.init(document.getElementById('alarmLine'))
+      var data = [{name:'7月',testRate:0.56,score:0.80,state:'薄弱'},{name:'8月',testRate:1.56,score:1.81,state:'薄弱'},{name:'9月',testRate:0.56,score:0.80,state:'薄弱'}]
+      var option = {
+        backgroundColor: '#fff',
+        color: ["#1890FF", "RGB(45,188,255)"],
+        title: {
+            top: 18,
+            left: 'center',
+            textStyle: {
+                color: '#333',
+                fontSize: 16,
+                fontFamily: "MicrosoftYaHei-Bold"
+            },
+        },
+        legend: {
+            show: false
+        },
+        grid: {
+            top: "35%", //距上边距
+            left: "10%", //距离左边距
+            right: "10%", //距离右边距
+            bottom: "10%", //距离下边距
+        },
+        xAxis: {
+          show: true,
+          name: '',
+          data: ["7月", "8月", "9月"],
+          axisTick: {
+            show: true,
+            alignWithLabel: true,
+            length: 0,
+          },
+          nameTextStyle: {
+              color: "#999",
+          },
+          axisLabel:{
+              show:false
+          },
+          boundaryGap: false,
+          //轴线样式 
+          axisLine: {
+            lineStyle: {
+              color: "#e0e7ff",
+            },
+          },
+        },
+        yAxis: {
+          name: "",
+          max: 10,
+          min: 0,
+          nameTextStyle: {
+            color: "#999",
+          },
+          axisLabel:{
+            color:'#999'
+          },
+          //网格样式
+          splitLine: {
+            show: false,
+            lineStyle: {
+              color: "RGBA(128,151,177,0.76)",
+              width: 1,
+              type: "dashed",
+            },
+          },
+          //轴线样式
+          axisLine: {
+            lineStyle: {
+              color: "#e0e7ff",
+            },
+        },
+          axisTick: {
+            show: false, //不显示刻度
+            alignWithLabel: true, //刻度与标签对齐
+            interval: 1,
+          },
+        },
+        tooltip: {
+          confine: true,
+          trigger: "axis", //axis为整个系列（a1有效），item为各个部分（a1无效）
+          // position: 'bottom', //trigger: 'item'有效
+          formatter: function(a){
+            console.log(a[0].dataIndex);
+            var i = a[0].dataIndex;
+            var text = a[0].name+"<br>测试概率&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data[i].testRate+"<br>中高考分值&nbsp;&nbsp;&nbsp;&nbsp;"+data[i].score+"<br>掌握程度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+data[i].state;
+            return text;
+          },
+        },
+        series: [{
+          name: "优秀学生",
+          type: "line",
+          symbol: "none",
+          smooth: true,
+          areaStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                  offset: 0,
+                  color: "#ffffff",
+                },
+                {
+                  offset: 1,
+                  color: "#1890FF",
+                },
+              ]),
+              },
+            },
+            data: [1, 6, 8],
+          }
+        ],
+        grid: {
+          top:'10%',//距上边距
+          bottom: "10%", //距离下边距
+        },
+        }
+        
+      charts.setOption(option)
+    },
+  }    
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -449,6 +571,19 @@ export default {
   #trend{
     height: 210px;
     background-color: #fff;
+    .trendTitle {
+      padding: 0;
+      font-size: 12px;
+      color: #ccc;
+      margin-left: 10px;
+      margin-top: 10px;
+    }
+    .trenddes {
+      margin: 0;
+      padding: 0;
+      font-size: 12px;
+      margin-left: 10px;
+    }
   }
   #dispose {
     height: 210px;
