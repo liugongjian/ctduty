@@ -2,30 +2,30 @@
   <div class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
-        <div class="map">1</div>
+        <div id="map">1</div>
       </el-col>
       <el-col :span="6" style="{width: '50%'; height: '532px'; margin-top: 20px;}">
-        <div class="trend">
+        <div id="trend">
           2
         </div>
-        <div class="dispose">
+        <div id="dispose">
           3
         </div>
       </el-col>
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
-          <div class="classify">
+          <div id="classify">
             4
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
-          <div class="hotarea">
+          <div id="hotarea">
             5
           </div>
         </el-col>
       </el-col>
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
-        <div class="net">
+        <div id="net">
           6
         </div>
       </el-col>
@@ -70,28 +70,28 @@ export default {
 .dashboard-container {
   padding: 0px 20px;
   background: #F0F2F5;
-  .map {
+  #map {
     height: 450px;
     background-color: #fff;
   }
-  .trend{
+  #trend{
     height: 215px;
     background-color: #fff;
   }
-  .dispose {
+  #dispose {
     height: 215px;
     background-color: #fff;
     margin-top:20px;
   }
-  .classify {
+  #classify {
     height: 200px;
     background-color: #fff;
   }
-  .hotarea {
+  #hotarea {
     height: 200px;
     background-color: #fff;
   }
-  .net {
+  #net {
     height: 200px;
     background-color: #fff;
   }
