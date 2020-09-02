@@ -2,30 +2,38 @@
   <div class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
-        <div id="map">1</div>
+        <div id="map">
+          <div class="dash-title">监控实时情况</div>
+          1
+        </div>
       </el-col>
       <el-col :span="6" style="{width: '50%'; height: '532px'; margin-top: 20px;}">
         <div id="trend">
+          <div class="dash-title">告警趋势预测</div>
           2
         </div>
         <div id="dispose">
+          <div class="dash-title">告警处理率</div>
           3
         </div>
       </el-col>
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
           <div id="classify">
+            <div class="dash-title">各类告警占比</div>
             4
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
           <div id="hotarea">
+            <div class="dash-title">热门告警位置</div>
             5
           </div>
         </el-col>
       </el-col>
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
         <div id="net">
+          <div class="dash-title">摄像头在线率</div>
           6
         </div>
       </el-col>
