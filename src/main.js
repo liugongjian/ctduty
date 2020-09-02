@@ -27,7 +27,8 @@ import importDirective from '@/directive'
 import * as filters from './filters' // global filters
 // 引入高德地图
 import VueAMap from 'vue-amap'
-
+import tagCloud from 'v-tag-cloud'
+Vue.use(tagCloud)
 Vue.config.productionTip = false
 Vue.use(VueAMap)
 

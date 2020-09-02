@@ -51,7 +51,9 @@
         <el-col :span="8" style="padding-right:0;">
           <div id="hotarea">
             <div class="dash-title">热门告警位置</div>
-            5
+            <div class="tagbox">
+              <tag-cloud :data="hotTag" radius="70" @clickTag="clickTagItem"></tag-cloud>
+            </div>
           </div>
         </el-col>
       </el-col>
@@ -114,7 +116,19 @@ export default {
       offCamera: '5000',
       total: '10000',
       datay: [10, 11, 12],
-      pieData: [{ value: 10, name: '嘻嘻' }]
+      pieData: [{ value: 10, name: '嘻嘻' }],
+      hotTag: [
+        { 'id': '05023f8da31c4b4187cc6899e2a3aec2', 'name': '镇远县' },
+        { 'id': '0ef028e5278f4f5ca31f99f1bd22b1cc', 'name': '剑河县' },
+        { 'id': '1a32ef04d3c548eaa6777abb46da32f2', 'name': '台江县' },
+        { 'id': '2c26488325bd493687d16315fe0e5fdd', 'name': '岑巩县' },
+        { 'id': '3a786111828a4b9f89ae9da25753eedd', 'name': '黎平' },
+        { 'id': '4ed593eed91b4244969995237f5c96c5', 'name': '丹寨县' },
+        { 'id': '615d2c178f1a47cb8d473823e74f5386', 'name': '凯里市' },
+        { 'id': '76f652df03db43349272a9aff492b065', 'name': '榕江县' },
+        { 'id': '8ff29d0d35e548feb945063b34ed9c9b', 'name': '黄平县' },
+        { 'id': 'a8ac2170008746fdadc05ea461bc5e37', 'name': '雷山县' }
+      ]
     }
   },
   computed: {},
@@ -129,6 +143,9 @@ export default {
     that.drawPie('bicycle', '非机动车')
   },
   methods: {
+    clickTagItem(tag) {
+      // TODO
+    },
     mapFn(data) {
       var geoCoordMap = { // 这里放你打点的坐标信息，虚拟信息
       }
@@ -286,7 +303,6 @@ export default {
             textAlign: 'center'
           }
         }],
-        // 第一个图表
         series: [{
           type: 'pie',
           hoverAnimation: false, // 鼠标经过的特效
@@ -472,5 +488,13 @@ export default {
 .canFu {
     height: 100%;
     flex: 1;
+  }
+  .tagbox {
+    width: 100%;
+    height: 170px;
+    overflow: hidden;
+    .tag-cloud {
+    height: 100%;
+  }
   }
 </style>
