@@ -4,7 +4,27 @@
       <el-col :span="18" class="status">
         <div id="map">
           <div class="dash-title">监控实时情况</div>
-          1
+          <div class="mapbox">
+            <div class="overv">
+              <div class="overvBox">
+                <span class="overbgc">总摄像头</span>
+                <p class="overmsg">{{ total }}个</p>
+              </div>
+              <div class="overvBox">
+                <span class="overbgc">离线摄像头</span>
+                <p class="overmsg">{{ offCamera }}个</p>
+              </div>
+              <div class="overvBox">
+                <span class="overbgc">告警次数</span>
+                <p class="overmsg">{{ alarmTime }}次</p>
+              </div>
+              <div class="overvBox">
+                <span class="overbgc">已处理</span>
+                <p class="overmsg">{{ processed }}次</p>
+              </div>
+            </div>
+            <div id="mapChart" ref="mapChart" ></div>
+          </div>
         </div>
       </el-col>
       <el-col :span="6" style="{width: '50%'; height: '532px'; margin-top: 20px;}">
@@ -43,6 +63,7 @@
 
 <script>
 import echarts from 'echarts'
+import ningxia from '@/json/weinan.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -53,7 +74,9 @@ require('echarts/lib/component/title')
 import {
   fetchUser, fetchCommunity, alarmStatus
 } from '@/api/user'
-
+function registerMap() {
+  echarts.registerMap('宁夏', ningxia)
+}
 export default {
   name: 'Dashboard',
   // mixins: [PreCheck],
@@ -62,14 +85,137 @@ export default {
   },
   data() {
     return {
+      mapData: [{
+        cloudStorageType: 1,
+        deviceId: 46600,
+        deviceName: '何滩村三队（低端）',
+        deviceNum: '64050200001327272790',
+        devicePassword: 'zwdx@2020',
+        devicePublicIp: '',
+        devicePublicPort: '',
+        id: '4028855e740f8e0501740f8e0fcc0000',
+        installAddress: '中卫市沙坡头区何滩村',
+        isOnline: 1,
+        isSupportPtz: 1,
+        latitude: '35.315863',
+        loginName: '',
+        loginPassword: '',
+        longitude: '106.178887',
+        parentNvrNum: '',
+        playbackProtocol: 0,
+        updateStateTimeString: '2020-08-21 13:46:28'
+      }],
+      alarmTime: '888',
+      processed: '666',
+      offCamera: '5000',
+      total: '10000'
     }
   },
   computed: {},
   created() {
   },
-  async mounted() {
+  mounted() {
+    const that = this
+    registerMap()
+    that.mapFn(that.mapData)
   },
   methods: {
+    mapFn(data) {
+      var geoCoordMap = { // 这里放你打点的坐标信息，虚拟信息
+      }
+      var locValue = [
+      ]
+      data.forEach(item => {
+        geoCoordMap[item.installAddress] = [item.longitude, item.latitude]
+        locValue.push({ name: item.installAddress, value: item.deviceNum, createTime: item.updateStateTimeString, deviceName: item.deviceName, installAddress: item.installAddress })
+      })
+      var convertData = function(geoCoordMap, data) {
+        var res = []
+        for (var i = 0; i < data.length; i++) {
+          var geoCoord = geoCoordMap[data[i].name]
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              value: geoCoord.concat(data[i].value),
+              createTime: geoCoord.concat(data[i].createTime),
+              deviceName: geoCoord.concat(data[i].deviceName),
+              installAddress: geoCoord.concat(data[i].installAddress)
+            })
+          }
+        }
+        return res
+      }
+      var chart = echarts.init(document.getElementById('mapChart'))
+      var option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: function(params) {
+            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
+          },
+          extraCssText: 'height:50px; white-space:pre-wrap;'
+        },
+        geo: {
+          map: '宁夏',
+          roam: true,
+          aspectScale: 1,
+          scaleLimit: { // 所属组件的z分层，z值小的图形会被z值大的图形覆盖
+            min: 1, // 最小的缩放值
+            max: 1 // 最大的缩放值
+          },
+          label: {
+            emphasis: {
+              show: true,
+              color: '#fff'
+            }
+          },
+          itemStyle: {
+            normal: {
+              borderColor: '#ff5722',
+              show: false
+            },
+            emphasis: {
+              areaColor: '#5B8FF9',
+              show: true
+            }
+          }
+        },
+        legend: {
+          orient: 'horizontal',
+          left: '0%',
+          bottom: '0%', // 图例距离左的距离
+          icon: 'roundRect',
+          data: this.datax,
+          width: '100%',
+          textStyle: {
+            fontSize: 8
+          }
+        },
+        series: [
+          {
+            name: 'pm2.5',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: convertData(geoCoordMap, locValue).slice(0, 4),
+            symbolSize: 12,
+            label: {
+              normal: {
+                show: false
+              },
+              emphasis: {
+                show: false
+              }
+            },
+            itemStyle: {
+              emphasis: {
+                borderColor: '#fff',
+                borderWidth: 1
+              }
+            }
+          }
+        ]
+      }
+      chart.setOption(option)
+    }
   }
 }
 </script>
@@ -149,4 +295,39 @@ export default {
     }
   }
 }
+.mapbox {
+  height: 350px;
+  #mapChart {
+    width: 100%;
+    height: 100%;
+  }
+  .overv {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    .overvBox {
+      margin-left: 16px;
+      margin-right: 50px;
+      padding-top: 10px;
+      .overbgc {
+            font-size: 12px;
+            color: #939393;
+          }
+      .overmsg {
+        -webkit-margin-before: 0;
+        -webkit-margin-after: 0;
+        font-size: 26px;
+        flex-wrap: 700;
+        color: #000;
+        margin-top: 10px;
+      }
+    }
+
+  }
+  .amap-logo {
+    opacity: 0;
+  }
+}
+
 </style>
