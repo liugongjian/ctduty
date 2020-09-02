@@ -79,28 +79,28 @@ export default {
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 450px;
+    height: 440px;
     background-color: #fff;
   }
   #trend{
-    height: 215px;
+    height: 210px;
     background-color: #fff;
   }
   #dispose {
-    height: 215px;
+    height: 210px;
     background-color: #fff;
     margin-top:20px;
   }
   #classify {
-    height: 200px;
+    height: 210px;
     background-color: #fff;
   }
   #hotarea {
-    height: 200px;
+    height: 210px;
     background-color: #fff;
   }
   #net {
-    height: 200px;
+    height: 210px;
     background-color: #fff;
   }
   .status {
