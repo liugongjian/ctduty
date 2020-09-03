@@ -40,7 +40,48 @@ export const constantRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/sysmanage',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysmanage',
+      icon: 'dashboard',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'userManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'cameraManage',
+        component: () => import('@/views/sysmanage/cameraManage/index'),
+        name: 'sysCameraManage',
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'areaManage',
+        component: () => import('@/views/sysmanage/areaManage/index'),
+        name: 'sysAreaManage',
+        meta: {
+          title: 'areaManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }
+    ]
+  },
   {
     path: '',
     name: 'defaultIndex',

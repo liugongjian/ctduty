@@ -40,7 +40,11 @@ export default {
     school: '学校子系统',
     factory: '工厂子系统',
     vehicle: '车辆子系统',
-    face: '人脸子系统'
+    face: '人脸子系统',
+    sysmanage: '系统管理',
+    userManage: '用户管理',
+    cameraManage: '摄像头管理',
+    areaManage: '区域管理'
   },
   activeList: {
     name: '名称',
