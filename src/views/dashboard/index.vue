@@ -75,7 +75,7 @@
 import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
-import ningxia from '@/json/weinan.json'
+import huayin from '@/json/huayin.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -87,7 +87,7 @@ import {
   fetchUser, fetchCommunity, alarmStatus
 } from '@/api/user'
 function registerMap() {
-  echarts.registerMap('渭南', ningxia)
+  echarts.registerMap('渭南', huayin)
 }
 export default {
   name: 'Dashboard',
@@ -401,6 +401,7 @@ export default {
       }
       var chart = echarts.init(document.getElementById('mapChart'))
       var option = {
+        backgroundColor: 'transparent',
         visualMap: {
           min: 0,
           max: 1000,
@@ -445,31 +446,9 @@ export default {
               show: false
             },
             emphasis: {
-              areaColor: '#5B8FF9',
+              areaColor: 'transparent',
               show: true
             }
-          },
-          regions: [{
-            name: '华阴市',
-            itemStyle: {
-              areaColor: '#ccc',
-              color: '#ccc',
-              borderColor: '#ccc'
-            }
-          }]
-        },
-        legend: {
-          orient: 'horizontal',
-          left: '0%',
-          bottom: '0%', // 图例距离左的距离
-          icon: 'rect',
-          width: '100%',
-          textStyle: {
-            fontSize: 8
-          },
-          itemWidth: 200,
-          tooltip: {
-            show: true
           }
         },
         series: [
@@ -910,6 +889,9 @@ export default {
   #mapChart {
     width: 100%;
     height: 100%;
+    canvas {
+      background-color: transparent;
+    }
   }
   .overv {
     width: 100%;
