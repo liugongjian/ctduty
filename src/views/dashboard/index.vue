@@ -44,7 +44,10 @@
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
           <div id="classify">
-            <div class="dash-title">各类告警占比</div>
+            <div class="dash-title">
+              各类告警占比
+              <span>更多 ></span>
+            </div>
             <div class="pie">
               <div id="man" class="canFu"></div>
               <div id="car" class="canFu"></div>
@@ -875,6 +878,17 @@ export default {
     height: 40px;
     line-height: 40px;
     color: #333;
+    position: relative;
+    span {
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #1890FF;
+      line-height: 22px;
+      position: absolute;
+      top: 50%;
+      right: 3%;
+      transform: translateY(-50%);
+    }
     .close {
       position: absolute;
       top: 20px;
