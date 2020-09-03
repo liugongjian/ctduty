@@ -4,6 +4,15 @@
       <div class="leftTop">
         <img src="./images/leftTop.png" alt="">
       </div>
+      <div class="rightTop">
+        <img src="./images/rightTop.png" alt="">
+      </div>
+      <div class="leftBottom">
+        <img src="./images/leftBottom.png" alt="">
+      </div>
+      <div class="rightBottom">
+        <img src="./images/rightBottom.png" alt="">
+      </div>
       <div class="logo">
         <img src="./images/logo.png" alt="">
       </div>
@@ -180,10 +189,43 @@ body {
     position: relative;
     .leftTop {
       position: absolute;
-      top: -100px;
+      top: -200px;
       left: -30px;
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightTop {
+      position: fixed;
+      top: -124px;
+      right: -160px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .leftBottom {
+      position: fixed;
+      bottom: -260px;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightBottom {
+      position: fixed;
+      bottom: -200px;
+      right: -180px;
+      width: 400px;
+      height: 400px;
       img {
         width: 100%;
         height: 100%;

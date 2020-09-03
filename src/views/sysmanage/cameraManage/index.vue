@@ -45,7 +45,7 @@
         <div class="map">
           <el-col :span="24" class="status">
             <el-col :span="19" style="height:100%;">
-              <div class="mapcontainer" style="height:100%;">
+              <div class="mapcontainer">
                 <el-amap
                   :amap-manager="amapManager"
                   :center="center"

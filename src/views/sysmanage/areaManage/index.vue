@@ -1,5 +1,16 @@
 <template>
-  <div class="area">
+  <div class="area" style="height: 100%">
+    <div class="map" style="width: 100%; height:100%;">
+      <el-amap
+        :amap-manager="amapManager"
+        :center="center"
+        :events="events"
+        :zoom="zoom"
+        class="amap-demo"
+        vid="amapDemo"
+        style="height: 100%"
+      ></el-amap>
+    </div>
     <div class="floatmsg">
       <div class="floatword">
         <input type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
@@ -21,8 +32,8 @@
             </span>       
           </span>
         </el-tree>
+        <div class="border"></div>
       </div>
-      <div class="border"></div>
       <div class="address">
         <div class="leftborder"></div>
         <div class="addressmsg">
@@ -41,6 +52,8 @@
 </template>
 
 <script>
+import VueAMap from 'vue-amap'
+const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'areaManage',
   data() {
@@ -79,8 +92,7 @@ export default {
               icon: 'el-icon-house',
               label: '彭家村'
             }]
-          }]
-        }, {
+          },{
           id: 8,
           icon: 'el-icon-remove-outline',
           label: '华山镇',
@@ -89,11 +101,31 @@ export default {
             icon: 'el-icon-house',
             label: '高家村'
           }]
+        }]
         }
       ],
       defaultProps: {
         children: 'children',
         label: 'label'
+      },
+      // 地图数据
+      zoom: 12,
+      center: [110.09, 34.58],
+      dialogVisable: false,
+      amapManager,
+      events: {
+        init(o) {
+          const marker = new AMap.Marker({
+            position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            offset: new AMap.Pixel(-10, -10),
+            title: '上海摩环文化有限公司',
+            // icon: icon,
+            // animation: 'AMAP_ANIMATION_BOUNCE',
+            zoom: 13,
+            color: 'red'
+          })
+          marker.setMap(o)
+        }
       }
     }
   },
@@ -120,11 +152,21 @@ export default {
 </script>
 
 <style  lang="scss">
+  .main-container {
+    height: 100%;
+  }
+  .app-main {
+    height: 100%;
+  }
   .area {
     .floatmsg {
+      position: fixed;
+      top: 50px;
+      left: 240px;
       margin-left: 20px;
       .floatword {
         margin-top: 20px;
+        background-color: #fff;
         .inputmsg {
           width: 300px;
           height: 40px;
@@ -145,10 +187,12 @@ export default {
       }
       .floatsearch {
         width: 368px;
-        height: 320px;
-        // background-color: red;
+        height: 360px;
+        padding: 20px 20px;
+        background-color: #fff;
         margin-top: 20px;
         position: relative;
+        border-radius: 4px 4px 0px 0px;
         .el-tree-node__expand-icon {
           display: none;
         }
@@ -157,22 +201,22 @@ export default {
         }
         .huapolice {
           position: absolute;
-          top: -8px;
-          right: 10px;
+          top: 10px;
+          right: 30px;
           color: #606266;
           font-size: 14px;
         }
         .mengpolice {
           position: absolute;
-          top: 22px;
-          right: 10px;
+          top: 42px;
+          right: 30px;
           color: #606266;
           font-size: 14px;
         }
         .mountainpolice {
           position: absolute;
-          top: 246px;
-          right: 10px;
+          top: 268px;
+          right: 30px;
           color: #606266;
           font-size: 14px;
         }
@@ -180,16 +224,17 @@ export default {
       .border {
         width: 320px;
         height: 1px;
-        margin-left: 20px;
-        margin-top: 20px;
+        position: absolute;
+        bottom: 0;
         background-color: #E9E9E9;
       }
       .address {
         width: 368px;
         height: 100px;
-        // background-color: red;
+        background-color: #fff;
         display: flex;
         padding: 20px 20px;
+        border-radius: 0px 0px 4px 4px;
         .leftborder {
           width: 2px;
           height: 60px;
