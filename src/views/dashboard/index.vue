@@ -112,10 +112,10 @@ export default {
         installAddress: '渭南',
         isOnline: 1,
         isSupportPtz: 1,
-        latitude: '34.50',
+        latitude: '34.56608',
         loginName: '',
         loginPassword: '',
-        longitude: '109.50',
+        longitude: '110.08752',
         parentNvrNum: '',
         playbackProtocol: 0,
         updateStateTimeString: '2020-08-21 13:46:28'
@@ -148,9 +148,9 @@ export default {
     registerMap()
     that.mapFn(that.mapData)
     that.camerarate()
-    that.drawPie('man', '人员', '#1890FF')
-    that.drawPie('car', '机动车', '#5DDECF')
-    that.drawPie('bicycle', '非机动车', '#2FC25B')
+    that.drawPie('man', '人员', '#1890FF', 40)
+    that.drawPie('car', '机动车', '#5DDECF', 35)
+    that.drawPie('bicycle', '非机动车', '#2FC25B', 25)
     that.getPanel()
     this.drawZhu('alarmLine')
   },
@@ -177,19 +177,18 @@ export default {
           type: 'gauge',
           detail: { // 仪表盘详情，用于显示数据
             formatter: '{value}%',
-            color: '#ff8989',
+            color: '#333333',
             fontSize: 16,
             fontWeight: 'bolder'
           },
-
           data: [{
-            value: 50,
+            value: 60,
             name: ''
           }],
           axisLine: { // 表盘样式
             show: true,
             lineStyle: {
-              width: 15, // 表盘粗细
+              width: 6, // 表盘粗细
               color: [
                 [1, '#2d82ff']
               ],
@@ -197,26 +196,24 @@ export default {
               shadowColor: 'rgba(0, 103, 255, 0.2)',
               shadowOffsetX: 0,
               shadowOffsetY: 8
-
             }
           },
 
           axisTick: {
             show: false, // 是否显示坐标轴小标记，这里不显示
-            length: 15, // 属性length控制线长
+            length: 8, // 属性length控制线长
             lineStyle: { // 属性lineStyle控制线条样式
               color: '#fff'
             }
           },
           splitLine: { // 分隔线
-            length: 15, // 属性length控制线长
+            length: 8, // 属性length控制线长
             lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
               color: 'rgba(255, 255, 255, 0.2)'
             }
           },
           pointer: { // 指针样式
-            width: 5
-
+            width: 3
           },
           itemStyle: { // 指针阴影
             shadowBlur: 10,
@@ -279,10 +276,10 @@ export default {
           // 平均分层
           splitNumber: 5,
           inRange: {
-            color: ['#fff', '#b8ddf0', '#e0bdb8', '#e16f56', '#EB190A']
+            color: ['#000', '#b8ddf0', '#e0bdb8', '#e16f56', '#EB190A']
           },
           outOfRange: {
-            color: ['#fff']
+            color: ['#f40']
           }
         },
         tooltip: {
@@ -307,7 +304,7 @@ export default {
             }
           },
           itemStyle: {
-            borderColor: '#000',
+            borderColor: '#f40',
             normal: {
               borderColor: '#ff5722',
               show: false
@@ -335,7 +332,7 @@ export default {
               }
             },
             itemStyle: {
-              color: '#266ABE',
+              color: '#f40',
               opacity: 0.8,
               emphasis: {
                 borderColor: '#fff',
@@ -425,7 +422,7 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option)
     },
-    drawPie(id, name, color) {
+    drawPie(id, name, color, percent) {
       var placeHolderStyle = {
         normal: {
           label: {
@@ -519,7 +516,7 @@ export default {
             }
           },
           data: [{
-            value: 75,
+            value: percent,
             itemStyle: {
               normal: {
                 color: color
