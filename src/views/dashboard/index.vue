@@ -158,7 +158,6 @@ export default {
     getPanel() {
       var datas = {
         value: 3,
-        title: '完成进度',
         type: 1,
         radiusType: 1
       }
@@ -175,10 +174,11 @@ export default {
       ]
       this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
+
         title: {
           show: true,
           x: 'center',
-          bottom: '2%',
+          bottom: '0%',
           text: datas.title,
           textStyle: {
             fontWeight: '700',
@@ -296,18 +296,18 @@ export default {
               var str = ''
               switch (v) {
                 case 1:
-                  str = '差'
+                  str = '25%'
                   break
                 case 2:
-                  str = '中'
+                  str = '50%'
                   break
 
                 case 3:
-                  str = '良'
+                  str = '75%'
                   break
 
                 case 4:
-                  str = '优'
+                  str = '100%'
                   break
               }
               return [
@@ -335,6 +335,7 @@ export default {
           name: '内层盘',
           type: 'gauge',
           z: 6,
+          top: '20%',
           radius: nqradius,
           startAngle: 180,
           endAngle: 0,
@@ -364,7 +365,13 @@ export default {
             show: 0
           }
         }
-        ]
+        ],
+        grid: {
+          x: 25,
+          y: 45,
+          x2: 5,
+          y2: 20
+        }
       })
     },
     mapFn(data) {
@@ -394,6 +401,22 @@ export default {
       }
       var chart = echarts.init(document.getElementById('mapChart'))
       var option = {
+        visualMap: {
+          min: 0,
+          max: 1000,
+          left: 80,
+          bottom: 50,
+          // 上下拖动
+          realtime: false,
+          // 平均分层
+          splitNumber: 5,
+          inRange: {
+            color: ['#fff', '#b8ddf0', '#e0bdb8', '#e16f56', '#EB190A']
+          },
+          outOfRange: {
+            color: ['#fff']
+          }
+        },
         tooltip: {
           trigger: 'item',
           formatter: function(params) {
