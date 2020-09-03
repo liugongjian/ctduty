@@ -44,7 +44,10 @@
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
           <div id="classify">
-            <div class="dash-title">各类告警占比</div>
+            <div class="dash-title">
+              各类告警占比
+              <span>更多 ></span>
+            </div>
             <div class="pie">
               <div id="man" class="canFu"></div>
               <div id="car" class="canFu"></div>
@@ -75,7 +78,7 @@
 import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
-import ningxia from '@/json/weinan.json'
+import huayin from '@/json/huayin.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -87,7 +90,7 @@ import {
   fetchUser, fetchCommunity, alarmStatus
 } from '@/api/user'
 function registerMap() {
-  echarts.registerMap('渭南', ningxia)
+  echarts.registerMap('渭南', huayin)
 }
 export default {
   name: 'Dashboard',
@@ -145,9 +148,9 @@ export default {
     registerMap()
     that.mapFn(that.mapData)
     that.camerarate()
-    that.drawPie('man', '人员')
-    that.drawPie('car', '机动车')
-    that.drawPie('bicycle', '非机动车')
+    that.drawPie('man', '人员', '#1890FF')
+    that.drawPie('car', '机动车', '#5DDECF')
+    that.drawPie('bicycle', '非机动车', '#2FC25B')
     that.getPanel()
     this.drawZhu('alarmLine')
   },
@@ -156,222 +159,86 @@ export default {
       // TODO
     },
     getPanel() {
-      var datas = {
-        value: 3,
-        type: 1,
-        radiusType: 1
-      }
-      var fontColor = '#1e87f0'
-      const noramlSize = 12
-      const state = ''
-      const center = ['50%', '70%']
-      const nqradius = '100%'
-      const kdradius = '100%'
-      const wqColor = 'rgba(80, 152, 237,0.9)'
-      const nqColor = [
-        [datas.value / 5, '#1e87f0'],
-        [1, '#e6e6e6']
-      ]
       this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
-
-        title: {
-          show: true,
-          x: 'center',
-          bottom: '0%',
-          text: datas.title,
-          textStyle: {
-            fontWeight: '700',
-            fontSize: 12,
-            color: fontColor
-          }
-        },
+        backgroundColor: '#fff',
         tooltip: {
-          show: false
+          formatter: '{a} <br/>{b} : {c}%'
+        },
+        toolbox: { // 工具栏小图标
+          show: false,
+          feature: {
+            restore: {},
+            saveAsImage: {}
+          }
         },
         series: [{
-          name: '刻度文字',
+          name: '业务指标',
           type: 'gauge',
-          radius: kdradius,
-          center: center,
-          startAngle: 180,
-          endAngle: 0,
-          z: 7,
-          splitNumber: 5,
-          min: 0,
-          max: 5,
-          axisTick: {
+          detail: { // 仪表盘详情，用于显示数据
+            formatter: '{value}%',
+            color: '#ff8989',
+            fontSize: 16,
+            fontWeight: 'bolder'
+          },
+
+          data: [{
+            value: 50,
+            name: ''
+          }],
+          axisLine: { // 表盘样式
             show: true,
             lineStyle: {
-              color: '#ffffff',
-              width: 1
-            },
-            length: 0,
-            splitNumber: 4
-          },
-          splitLine: {
-            show: false,
-            length: 10
-          },
-          axisLine: {
-            lineStyle: {
-              width: 5,
-              opacity: 0
+              width: 15, // 表盘粗细
+              color: [
+                [1, '#2d82ff']
+              ],
+              shadowBlur: 10,
+              shadowColor: 'rgba(0, 103, 255, 0.2)',
+              shadowOffsetX: 0,
+              shadowOffsetY: 8
+
             }
           },
-          axisLabel: {
-            fontSize: noramlSize,
-            color: fontColor,
-            lineStyle: {
-              width: 2
-            },
-            formatter: function(v) {
-              var str = ''
-              switch (v) {
-                case 1:
-                  str = '差'
-                  break
 
-                case 2:
-                  str = '中'
-                  break
+          axisTick: {
+            show: false, // 是否显示坐标轴小标记，这里不显示
+            length: 15, // 属性length控制线长
+            lineStyle: { // 属性lineStyle控制线条样式
+              color: '#fff'
+            }
+          },
+          splitLine: { // 分隔线
+            length: 15, // 属性length控制线长
+            lineStyle: { // 属性lineStyle（详见lineStyle）控制线条样式
+              color: 'rgba(255, 255, 255, 0.2)'
+            }
+          },
+          pointer: { // 指针样式
+            width: 5
 
-                case 3:
-                  str = '良'
-                  break
-
-                case 4:
-                  str = '优'
-                  break
+          },
+          itemStyle: { // 指针阴影
+            shadowBlur: 10,
+            shadowColor: 'rgba(0, 103, 255, 0.2)',
+            shadowOffsetX: 0,
+            shadowOffsetY: 8
+          },
+          markPoint: { // 指针中心加一个小白点
+            symbol: 'circle',
+            symbolSize: 5,
+            data: [
+              // 跟你的仪表盘的中心位置对应上，颜色可以和画板底色一样
+              {
+                x: 'center',
+                y: 'center',
+                itemStyle: {
+                  color: '#FFF'
+                }
               }
-              return str
-            }
-          },
-          pointer: {
-            show: false
-          },
-          detail: {
-            show: false
+            ]
           }
-        },
-        {
-          name: '指针',
-          type: 'gauge',
-          z: 9,
-          radius: '60%',
-          startAngle: 180,
-          endAngle: 0,
-          center: center,
-          axisLine: {
-            lineStyle: {
-              width: 0
-            }
-          },
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            show: false,
-            length: 0
-          },
-          axisLabel: {
-            show: false
-          },
-          min: 0,
-          max: 5,
-          pointer: {
-            show: true,
-            width: 5,
-            length: '80%'
-          },
-          itemStyle: {
-            normal: {
-              color: wqColor
-            }
-          },
-          detail: {
-            show: true,
-            offsetCenter: [0, '40%'],
-            formatter: function(v) {
-              var str = ''
-              switch (v) {
-                case 1:
-                  str = '25%'
-                  break
-                case 2:
-                  str = '50%'
-                  break
-
-                case 3:
-                  str = '75%'
-                  break
-
-                case 4:
-                  str = '100%'
-                  break
-              }
-              return [
-                '{value|' + (str) + '} ',
-                '{company|' + state + '}'
-              ].join('\n')
-            },
-            rich: {
-              value: {
-                fontSize: 25,
-                lineHeight: 10,
-                color: '#1e87f0',
-                fontWeight: '700'
-              },
-              company: {
-                fontSize: 16,
-                lineHeight: 20,
-                color: '#1e87f0'
-              }
-            }
-          },
-          data: [datas.value]
-        },
-        {
-          name: '内层盘',
-          type: 'gauge',
-          z: 6,
-          top: '20%',
-          radius: nqradius,
-          startAngle: 180,
-          endAngle: 0,
-          center: center,
-          axisLine: {
-            lineStyle: {
-              color: nqColor,
-              width: 10,
-              opacity: 0.9
-            }
-          },
-          splitNumber: 4,
-          min: 0,
-          max: 5,
-          axisTick: {
-            show: false
-          },
-
-          axisLabel: {
-            show: false
-          },
-          pointer: {
-            show: false
-          },
-
-          detail: {
-            show: 0
-          }
-        }
-        ],
-        grid: {
-          x: 25,
-          y: 45,
-          x2: 5,
-          y2: 20
-        }
+        }]
       })
     },
     mapFn(data) {
@@ -401,6 +268,7 @@ export default {
       }
       var chart = echarts.init(document.getElementById('mapChart'))
       var option = {
+        backgroundColor: 'transparent',
         visualMap: {
           min: 0,
           max: 1000,
@@ -445,31 +313,9 @@ export default {
               show: false
             },
             emphasis: {
-              areaColor: '#5B8FF9',
+              areaColor: 'transparent',
               show: true
             }
-          },
-          regions: [{
-            name: '华阴市',
-            itemStyle: {
-              areaColor: '#ccc',
-              color: '#ccc',
-              borderColor: '#ccc'
-            }
-          }]
-        },
-        legend: {
-          orient: 'horizontal',
-          left: '0%',
-          bottom: '0%', // 图例距离左的距离
-          icon: 'rect',
-          width: '100%',
-          textStyle: {
-            fontSize: 8
-          },
-          itemWidth: 200,
-          tooltip: {
-            show: true
           }
         },
         series: [
@@ -502,7 +348,6 @@ export default {
       chart.setOption(option)
     },
     camerarate() {
-      console.log('jjjj')
       var myChart = echarts.init(document.getElementById('camerarate'))
       // 指定图表的配置项和数据
       var option = {
@@ -580,7 +425,7 @@ export default {
       // 使用刚指定的配置项和数据显示图表。
       myChart.setOption(option)
     },
-    drawPie(id, name) {
+    drawPie(id, name, color) {
       var placeHolderStyle = {
         normal: {
           label: {
@@ -677,7 +522,7 @@ export default {
             value: 75,
             itemStyle: {
               normal: {
-                color: '#6F78CC'
+                color: color
               }
             },
             label: dataStyle
@@ -775,7 +620,6 @@ export default {
           trigger: 'axis', // axis为整个系列（a1有效），item为各个部分（a1无效）
           // position: 'bottom', //trigger: 'item'有效
           formatter: function(a) {
-            console.log(a[0].dataIndex)
             var i = a[0].dataIndex
             var text = a[0].name + '<br>测试概率&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].testRate + '<br>中高考分值&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].score + '<br>掌握程度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].state
             return text
@@ -897,6 +741,17 @@ export default {
     height: 40px;
     line-height: 40px;
     color: #333;
+    position: relative;
+    span {
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #1890FF;
+      line-height: 22px;
+      position: absolute;
+      top: 50%;
+      right: 3%;
+      transform: translateY(-50%);
+    }
     .close {
       position: absolute;
       top: 20px;
@@ -911,6 +766,9 @@ export default {
   #mapChart {
     width: 100%;
     height: 100%;
+    canvas {
+      background-color: transparent;
+    }
   }
   .overv {
     width: 100%;
