@@ -44,7 +44,13 @@ export default {
     sysmanage: '系统管理',
     userManage: '用户管理',
     cameraManage: '摄像头管理',
-    areaManage: '区域管理'
+    areaManage: '区域管理',
+    eCloudWatch: '天翼值更',
+    alarmMessage: '告警信息',
+    sysMonitor: '系统监控',
+    notice: '通知公告',
+    onlineUser: '在线用户',
+    pushSet: '推送设置'
   },
   activeList: {
     name: '名称',

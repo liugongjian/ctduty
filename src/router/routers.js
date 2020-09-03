@@ -41,6 +41,46 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/ecloudwatch',
+    component: Layout,
+    redirect: '/ecloudwatch',
+    hidden: false,
+    children: [
+      {
+        path: '/ecloudwatch',
+        component: () => import('@/views/eCloudWatch/index'),
+        name: 'eCloudWatch',
+        meta: {
+          title: 'eCloudWatch',
+          icon: 'vsearch',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    redirect: '/alarmMessage',
+    hidden: false,
+    children: [
+      {
+        path: '/alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'vsearch',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
     path: '/sysmanage',
     component: Layout,
     alwaysShow: true, // will always show the root menu
@@ -76,6 +116,48 @@ export const constantRouterMap = [
         name: 'sysAreaManage',
         meta: {
           title: 'areaManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'dashboard',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
           icon: 'dashboard',
           noCache: false
         }
