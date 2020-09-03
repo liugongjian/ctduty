@@ -208,6 +208,7 @@ export default {
      }
      .mapcontainer {
        height: 100%;
+       padding-bottom: 20px;
      }
      .camerainfo {
        height: 100%;
@@ -215,7 +216,6 @@ export default {
        border-radius: 5px;
        border-radius: 5px;
        margin-left:20px;
-       margin-bottom:20px;
        .infotitle {
          height: 30px;
          background-color: #D8D8D8;
