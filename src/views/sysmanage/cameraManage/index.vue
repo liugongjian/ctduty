@@ -15,6 +15,27 @@
             </div>
             <div class="pull-right">
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+              <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
+                <el-form :model="viewXq" label-position="right" label-width="100px">
+                  <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="负责人："><el-input placeholder="请输入负责人" class="filter-item" style="width: 350px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="摄像头经度："><el-input placeholder="请输入摄像头经度" class="filter-item" style="width: 350px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="摄像头纬度："><el-input placeholder="请输入摄像头纬度" class="filter-item" style="width: 350px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="地址："><el-input :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 350px;"></el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button
+                    type="primary"
+                    @click="dialogConfirm"
+                  >确 定</el-button>
+                  <el-button @click="dialogQuxiao">取 消</el-button>
+                </div>
+              </el-dialog>
               <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
                 <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
               </el-select>
@@ -96,10 +117,12 @@ export default {
         searchkey: '',
         typeValue: 'map'
       },
+      form: {},
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       zoom: 12,
       center: [110.09, 34.58],
+      dialogVisable: false,
       amapManager,
       events: {
         init(o) {
@@ -119,7 +142,7 @@ export default {
   },
   methods: {
     create() {
-      console.log('创建')
+      this.dialogVisable = true
     },
     onSearch() {
       console.log('搜索')
@@ -127,8 +150,17 @@ export default {
     checkModel() {
       this.$emit('getdata', this.formInline.typeValue)
     },
+    closeDialog() {
+      this.dialogVisable = false
+    },
     getdata(v) {
       this.formInline.typeValue = v
+    },
+    dialogQuxiao() {
+      this.dialogVisable = false
+    },
+    dialogConfirm() {
+      this.dialogVisable = false
     }
   }
 }
