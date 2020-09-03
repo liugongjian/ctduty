@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container" style="display: flex; height: 100%;">
+  <div class="loginContainer" style="display: flex; height: 100%;">
     <div class="leftLogo">
       <div class="leftTop">
         <img src="./images/leftTop.png" alt="">
@@ -174,7 +174,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 body {
   .leftLogo {
     position: relative;
@@ -201,7 +201,7 @@ body {
       }
     }
   }
-  .login-container {
+  .loginContainer {
     width: 100%;
     height: 100%;
     background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
@@ -276,7 +276,7 @@ body {
       width: 10.4px;
       height: 14px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/account.png) no-repeat center;
+      background: url(./images/account.png) no-repeat center;
       position: absolute;
       top: 10px;
       left: 10px;
@@ -286,7 +286,7 @@ body {
       width: 10.4px;
       height: 14px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/password.png) no-repeat center;
+      background: url(./images/password.png) no-repeat center;
       position: absolute;
       top: 12px;
       left: 10px;
@@ -296,7 +296,7 @@ body {
       width: 12px;
       height: 15px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/yzm.png) no-repeat center;
+      background: url(./images/yzm.png) no-repeat center;
       position: absolute;
       top: 12px;
       left: 10px;

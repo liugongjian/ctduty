@@ -523,7 +523,7 @@ export default {
           itemStyle: {
             color: '#1890FF', // 水球显示的背景颜色
             opacity: 0.5, // 波浪的透明度
-            shadowBlur: 10 // 波浪的阴影范围
+            shadowBlur: 2 // 波浪的阴影范围
           },
           backgroundStyle: {
             color: '#fff', // 水球未到的背景颜色
@@ -736,6 +736,7 @@ export default {
           },
           // 轴线样式
           axisLine: {
+            show: false,
             lineStyle: {
               color: '#e0e7ff'
             }
