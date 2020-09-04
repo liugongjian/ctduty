@@ -53,8 +53,8 @@ export default {
   data() {
     return {
       form: {
-        date1: '',
-        date2: '',
+        date1: '02:00',
+        date2: '05:00',
         deliveryPush: false,
         deliveryMessage: false
       }
@@ -73,7 +73,6 @@ export default {
       }
       this.$refs[form].validate((valid) => {
         if (valid) {
-          console.log(param, '----')
           pushSet(param).then(res => {
             this.$message({
               message: '提交成功！',
