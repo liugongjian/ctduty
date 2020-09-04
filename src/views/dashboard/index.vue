@@ -23,7 +23,8 @@
                 <p class="overmsg">{{ processed }}次</p>
               </div>
             </div>
-            <div id="mapChart" ref="mapChart" ></div>
+            <div id="mapChart" ref="mapChart" >
+            </div>
           </div>
         </div>
       </el-col>
@@ -175,7 +176,7 @@ export default {
         series: [{
           name: '业务指标',
           type: 'gauge',
-          splitNumber: 3,
+          splitNumber: 5,
           detail: { // 仪表盘详情，用于显示数据
             formatter: '{value}%',
             color: '#333333',
@@ -229,13 +230,17 @@ export default {
             fontSize: 12, // 文字的字体大小,默认 5。
             formatter: function(value) {
               if (parseInt(value) === 0) {
+                return ''
+              } else if (parseInt(value) === 20) {
                 return '差'
-              } else if (parseInt(value) === 33) {
+              } else if (parseInt(value) === 40) {
                 return '中'
-              } else if (parseInt(value) === 66) {
+              } else if (parseInt(value) === 60) {
                 return '良'
-              } else if (parseInt(value) === 100) {
+              } else if (parseInt(value) === 80) {
                 return '优'
+              } else if (parseInt(value) === 100) {
+                return ''
               }
             } // 刻度标签的内容格式器，支持字符串模板和回调函数两种形式。 示例:// 使用字符串模板，模板变量为刻度默认标签 {value},如:formatter: '{value} kg'; // 使用函数模板，函数参数分别为刻度数值,如formatter: function (value) {return value + 'km/h';}
           },
@@ -799,6 +804,7 @@ export default {
     height: 50px;
     display: flex;
     justify-content: flex-start;
+    margin-bottom: 20px;
     .overvBox {
       margin-left: 16px;
       margin-right: 50px;

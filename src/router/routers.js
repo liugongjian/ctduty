@@ -41,6 +41,14 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: 'addnewnotice',
+    component: () => import('@/views/notice/addNewNotice'),
+    meta: {
+      title: 'eCloudWatch',
+      icon: 'vsearch'
+    }
+  },
+  {
     path: '/ecloudwatch',
     component: Layout,
     redirect: '/ecloudwatch',

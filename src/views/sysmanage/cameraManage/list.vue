@@ -7,17 +7,18 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+          <el-button type="text" size="small" @click="detail()">{{ '批量删除' }}</el-button>
           <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form :model="viewXq" label-position="right" label-width="100px">
-              <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
+            <el-form :model="dialogForm" label-position="right" label-width="100px">
+              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="负责人："><el-input placeholder="请输入负责人" class="filter-item" style="width: 350px;"></el-input>
+              <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头经度："><el-input placeholder="请输入摄像头经度" class="filter-item" style="width: 350px;"></el-input>
+              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input placeholder="请输入摄像头纬度" class="filter-item" style="width: 350px;"></el-input>
+              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="地址："><el-input :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 350px;"></el-input>
+              <el-form-item label="地址："><el-input v-model="dialogForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -49,8 +50,36 @@
         <el-table-column :show-overflow-tooltip="true" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="url"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'" prop="consumeTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="detail(scope.row)">{{ '删除' }}</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
+        <el-form :model="editForm" label-position="right" label-width="100px">
+          <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="负责人："><el-input v-model="editForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="editDialogConfirm"
+          >确 定</el-button>
+          <el-button @click="editDialogQuxiao">取 消</el-button>
+        </div>
+      </el-dialog>
       <pagination
         v-show="total>0"
         :total="total"
@@ -68,12 +97,19 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
-  fetchAllCameraList
+  fetchAllCameraList, editCamera
 } from '@/api/camera'
 export default {
   components: { Pagination },
   data() {
     return {
+      dialogForm: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: ''
+      },
       formInline: {
         searchkey: '',
         typeValue: 'list'
@@ -89,7 +125,16 @@ export default {
       limit: 20,
       userId: Cookies.get('userId'),
       originCode: '',
-      oldSize: 20
+      oldSize: 20,
+      editVisable: false,
+      editForm: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: ''
+      }
     }
   },
   watch: {
@@ -103,6 +148,34 @@ export default {
     this.getList(this.$route.query._id)
   },
   methods: {
+    editDialog(v) {
+      this.editForm.id = v.id
+      this.editForm.inCharge = v.inCharge
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.url = v.url
+      this.editVisable = true
+    },
+    editCloseDialog() {
+      this.editVisable = false
+    },
+    editDialogConfirm() {
+      const params = [{
+        id: this.editForm.id,
+        inChargeId: this.editForm.inCharge,
+        latitude: this.editForm.latitude,
+        longitude: this.editForm.longitude,
+        url: this.editForm.url
+      }]
+      editCamera(params).then(response => {
+        console.log(response)
+      })
+      this.editVisable = false
+    },
+    editDialogQuxiao() {
+      this.editVisable = false
+    },
     create() {
       this.dialogVisable = true
     },
@@ -139,44 +212,6 @@ export default {
         return
       }
       this.getExportList()
-    },
-    // 再次请求应用列表的数据 不分页
-    getExportList() {
-      const params = {
-        isPaging: 0,
-        limit: 999999,
-        originCode: this.originCode
-      }
-      fetchAllCameraList(params, this.$route.query._id).then(response => {
-        if (response.data.result.length === 0) {
-          this.$message({
-            message: '无数据',
-            type: 'warning'
-          })
-          return
-        }
-        this.exportData = response.data.result
-        import('@/vendor/Export2Excel').then(excel => {
-          const filterVal = ['createTime', 'custName', 'appName', 'apiName', 'originCode', 'consumeTime']
-          const data = this.formatJson(filterVal, this.exportData)
-          excel.export_json_to_excel({
-            header: ['调用时间', '客户名称', '应用名称', '接口名称', '状态码', '耗时'], // 表头 必填,
-            data, // 具体数据 必填
-            filename: '调用量详情列表', // 非必填
-            autoWidth: true, // 非必填
-            bookType: 'xlsx' // 非必填
-          })
-        })
-      })
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'consumeTime') {
-          return v[j] + 'ms'
-        } else {
-          return v[j]
-        }
-      }))
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {

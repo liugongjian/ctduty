@@ -13,3 +13,12 @@ export function fetchAllCameraList(query) {
     data: query
   })
 }
+
+// 编辑摄像头信息
+export function editCamera(query) {
+  return request({
+    url: 'http://192.168.30.26:10000/Camera/Update',
+    method: 'post',
+    data: query
+  })
+}

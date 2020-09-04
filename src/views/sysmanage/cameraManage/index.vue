@@ -90,10 +90,33 @@
                   <el-form-item label="告警信息：">
                     <div style=" word-wrap: break-word">{{ '1/123' }}</div>
                   </el-form-item>
-                  <el-button style="margin-left: 60px;" @click="submitForm('ruleForm')">编辑</el-button>
+                  <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
                   <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
                 </el-form>
               </div>
+              <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
+                <el-form :model="editForm" label-position="right" label-width="100px">
+                  <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="负责人："><el-input v-model="editForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button
+                    type="primary"
+                    @click="editDialogConfirm"
+                  >确 定</el-button>
+                  <el-button @click="editDialogQuxiao">取 消</el-button>
+                </div>
+              </el-dialog>
             </el-col>
           </el-col>
         </div>
@@ -111,6 +134,9 @@ import VueAMap from 'vue-amap'
 import CameraList from './list.vue'
 import { Alert } from 'element-ui'
 import addSvg from '../../../icons/svg/address.svg'
+import {
+  fetchAllCameraList, editCamera
+} from '@/api/camera'
 const amapManager = new VueAMap.AMapManager()
 export default {
   components: { CameraList },
@@ -162,6 +188,15 @@ export default {
         longitude: '',
         latitude: '',
         address: ''
+      },
+      editVisable: false,
+      editForm: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: ''
       },
       rules: {
         id: [
@@ -216,6 +251,34 @@ export default {
     }
   },
   methods: {
+    editDialog(v) {
+      this.editForm.id = v.id
+      this.editForm.inCharge = v.inCharge
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.url = v.url
+      this.editVisable = true
+    },
+    editCloseDialog() {
+      this.editVisable = false
+    },
+    editDialogConfirm() {
+      const params = [{
+        id: this.editForm.id,
+        inChargeId: this.editForm.inCharge,
+        latitude: this.editForm.latitude,
+        longitude: this.editForm.longitude,
+        url: this.editForm.url
+      }]
+      editCamera(params).then(response => {
+        console.log(response)
+      })
+      this.editVisable = false
+    },
+    editDialogQuxiao() {
+      this.editVisable = false
+    },
     create() {
       this.dialogVisable = true
     },
