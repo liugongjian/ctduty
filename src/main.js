@@ -25,6 +25,18 @@ import installPlugin from '@/plugin'
 import importDirective from '@/directive'
 
 import * as filters from './filters' // global filters
+// 引入高德地图
+import VueAMap from 'vue-amap'
+import tagCloud from 'v-tag-cloud'
+Vue.use(tagCloud)
+Vue.config.productionTip = false
+Vue.use(VueAMap)
+
+VueAMap.initAMapApiLoader({
+  key: '000cee9e7ed83849c5cee8fdec93478c',
+  plugin: ['AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType'],
+  v: '1.4.4'
+})
 // 引入 ECharts 主模块
 const echarts = require('echarts/lib/echarts')
 // 引入折线图/柱状图等组件

@@ -40,7 +40,17 @@ export default {
     school: '学校子系统',
     factory: '工厂子系统',
     vehicle: '车辆子系统',
-    face: '人脸子系统'
+    face: '人脸子系统',
+    sysmanage: '系统管理',
+    userManage: '用户管理',
+    cameraManage: '摄像头管理',
+    areaManage: '区域管理',
+    eCloudWatch: '天翼值更',
+    alarmMessage: '告警信息',
+    sysMonitor: '系统监控',
+    notice: '通知公告',
+    onlineUser: '在线用户',
+    pushSet: '推送设置'
   },
   activeList: {
     name: '名称',
@@ -76,7 +86,8 @@ export default {
     size: '布局大小',
     binding: '绑定钉钉',
     personal: '个人中心',
-    security: '安全设置'
+    security: '安全设置',
+    search: '搜索'
   },
   login: {
     title: '系统登录',

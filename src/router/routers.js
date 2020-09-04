@@ -53,6 +53,162 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/ecloudwatch',
+    component: Layout,
+    redirect: '/ecloudwatch',
+    hidden: false,
+    children: [
+      {
+        path: '/ecloudwatch',
+        component: () => import('@/views/eCloudWatch/index'),
+        name: 'eCloudWatch',
+        meta: {
+          title: 'eCloudWatch',
+          icon: 'vsearch',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    redirect: '/alarmMessage',
+    hidden: false,
+    children: [
+      {
+        path: '/alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'vsearch',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/sysmanage',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysmanage',
+      icon: 'dashboard',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'userManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'cameraManage',
+        component: () => import('@/views/sysmanage/cameraManage/index'),
+        name: 'sysCameraManage',
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      /*  { path: 'cameraManage/map',
+        component: () => import('@/views/sysmanage/cameraManage/map'),
+        name: 'sysCameraManageMap',
+        hidden: true,
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      { path: 'cameraManage/list',
+        component: () => import('@/views/sysmanage/cameraManage/list'),
+        name: 'sysCameraManageList',
+        hidden: true,
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }, */
+      {
+        path: 'areaManage',
+        component: () => import('@/views/sysmanage/areaManage/index'),
+        name: 'sysAreaManage',
+        meta: {
+          title: 'areaManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'dashboard',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
+    path: '',
+    name: 'defaultIndex',
+    redirect: '/login',
+    hidden: true
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: () => import('@/views/errorPage/404'),
     hidden: false

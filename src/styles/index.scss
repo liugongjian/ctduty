@@ -144,7 +144,10 @@ code {
 .text-center {
   text-align: center
 }
-
+.navbar {
+  // border-bottom: 1px solid #ccc !important;
+  box-shadow: 0 1px 4px 0 rgba(0,21,41,0.12) !important;
+}
 .sub-navbar {
   height: 50px;
   line-height: 50px;
@@ -240,4 +243,38 @@ code {
 .video-js {
   width: 100%;
   height: 100%;
+}
+.amap-logo {
+ visibility: hidden;
+}
+.amap-copyright {
+ display: none;
+ opacity: 0;
+}
+.router-link-active {
+  li {
+    span {
+      color: #FF9832;
+      font-weight: 700;
+    }
+    .svg-icon {
+      fill: #FF9832;
+    }
+  }
+}
+.router-link-active:hover {
+  li {
+    span {
+      color: #FFF;
+    }
+    .svg-icon {
+      fill: #FFF;
+    }
+  }
+}
+.main-container {
+  height: 100% !important;
+}
+.app-main {
+  height: 100% !important;
 }
