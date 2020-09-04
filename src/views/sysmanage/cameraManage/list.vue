@@ -40,13 +40,14 @@
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="custName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'经纬度信息'" prop="appName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="apiName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="originCode"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creator"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'添加时间'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="consumeTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="url"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'" prop="consumeTime"></el-table-column>
       </el-table>
@@ -146,7 +147,7 @@ export default {
         limit: 999999,
         originCode: this.originCode
       }
-      fetchAmountDetailList(params, this.$route.query._id).then(response => {
+      fetchAllCameraList(params, this.$route.query._id).then(response => {
         if (response.data.result.length === 0) {
           this.$message({
             message: '无数据',
@@ -197,11 +198,18 @@ export default {
     // 获取列表数据
     getList(id) {
       const params = {
-
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
       }
       fetchAllCameraList(params).then(response => {
-        this.tableData = response.data.result
-        this.total = response.data.pageInfo.totalItems
+        console.log(response)
+        this.tableData = response.body.data
+        this.total = response.body.page.total
         this.listLoading = false
       })
     },
