@@ -3,7 +3,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" @click="create">{{ '强退' }}</el-button>
+          <el-button class="filter-item" type="warning" @click="forcedExit">{{ '强退' }}</el-button>
           <!-- <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form :model="viewXq" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
@@ -27,22 +27,55 @@
           </el-dialog> -->
         </div>
       </div>
+
       <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" prop="code"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'登录名称'" prop="username"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" prop="name"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'主机'" prop="ip"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'浏览器'" prop="browser"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作系统'" prop="system"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'登录时间'" prop="firstLoginTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'最近访问时间'" prop="lastAccessTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'会话编号'" prop="code">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="logout(scope.row)">{{ $t('login.logout') }}</el-button>
+            <span>{{ scope.row.code }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录名称'" prop="username">
+          <template slot-scope="scope">
+            <span>{{ scope.row.username }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'部门名称'" prop="name">
+          <template slot-scope="scope">
+            <span>{{ scope.row.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'主机'" prop="ip">
+          <template slot-scope="scope">
+            <span>{{ scope.row.ip }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'浏览器'" prop="browser">
+          <template slot-scope="scope">
+            <span>{{ scope.row.browser }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作系统'" prop="system">
+          <template slot-scope="scope">
+            <span>{{ scope.row.system }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录时间'" prop="firstLoginTime">
+          <template slot-scope="scope">
+            <span>{{ scope.row.firstLoginTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'最近访问时间'" prop="lastAccessTime">
+          <template slot-scope="scope">
+            <span>{{ scope.row.lastAccessTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作'">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -51,8 +84,8 @@
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
-        @pagination="pageChange()"
       />
+        <!-- @pagination="pageChange()" -->
     </div>
   </div>
 </template>
@@ -63,7 +96,7 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
-  fetchOnlineList
+  fetchOnlineList, fetchOnlineLogout
 } from '@/api/applications'
 export default {
   components: { Pagination },
@@ -72,6 +105,7 @@ export default {
       listLoading: false,
       filteredValue: [],
       tableData: [],
+      code: '',
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -81,15 +115,15 @@ export default {
       oldSize: 20
     }
   },
-  watch: {
-    limit() {
-      this.page = 1
-      this.pageChange()
-    }
-  },
+  // watch: {
+  //   limit() {
+  //     this.page = 1
+  //     this.pageChange()
+  //   }
+  // },
   created() {
     Message.closeAll()
-    this.getList(this.$route.query._id)
+    this.getList()
   },
   methods: {
     create() {
@@ -98,6 +132,28 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
+    // 强退
+    forcedExit(code) {
+      const getToken = function(TokenKey) {
+        return Cookies.get(TokenKey) || ''
+      }
+      const params = {
+        code: this.code,
+        token: this.getToken()
+      }
+      fetchOnlineLogout(params, this.code).then(response => {
+        console.log('强退成功')
+        // this.tableData = []
+        // console.log('response',response)
+        // console.log('this tabledata', this.tableData)
+        // for (let i = 0; i < response.body.data.length; i++) {
+        //   this.tableData.push(Object.assign(response.body.data[i]))
+        // }
+        // this.tableData = response.data.result
+        // this.total = response.data.pageInfo.totalItems
+        // this.listLoading = false
+      })
+    },
     onSearch() {
       console.log('搜索')
     },
@@ -105,13 +161,13 @@ export default {
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
     },
-    pageChange() {
-      if (this.oldSize !== this.limit) {
-        this.page = 1
-      }
-      this.oldSize = this.limit
-      this.getList(this.$route.query._id)
-    },
+    // pageChange() {
+    //   if (this.oldSize !== this.limit) {
+    //     this.page = 1
+    //   }
+    //   this.oldSize = this.limit
+    //   this.getList(this.$route.query._id)
+    // },
     goBack() {
       this.$router.go(-1)
     },
@@ -142,11 +198,15 @@ export default {
       }
     },
     // 获取列表数据
-    getList(id) {
+    getList() {
       fetchOnlineList().then(response => {
-        this.tableData = response.body.data
+        this.tableData = []
         console.log('response',response)
         console.log('this tabledata', this.tableData)
+        for (let i = 0; i < response.body.data.length; i++) {
+          this.code = response.body.data.code
+          this.tableData.push(Object.assign(response.body.data[i]))
+        }
         // this.tableData = response.data.result
         // this.total = response.data.pageInfo.totalItems
         // this.listLoading = false
