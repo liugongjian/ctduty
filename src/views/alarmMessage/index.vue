@@ -6,67 +6,79 @@
       <div class="app-container" style="padding: 20px">
         <div class="filter-container clearfix">
           <div class="pull-right">
-            <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
-              <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
-            </el-select>
+              <el-button class="filter-item" style="font-size:12px" size="mini" icon="el-icon-refresh" @click="onClear">重置</el-button>
           </div>
-          <div class="block filter-item">
-            <div style="margin-right: 10px">
-              选择日期:
-            </div>
-          </div>
-          <div class="block filter-item">
-              <el-date-picker
-                v-model="value1"
-                :clearable="false"
-                :style="{width:320 + 'px'}"
-                type="daterange"
-                range-separator="to"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-
-                format="yyyy-MM-dd"
-                size="small"
-                @change="timeChange"
-              >
-              </el-date-picker>
-          </div>
-          <div class="block filter-item">
-              <div style="margin-right: 10px">
-                开始时间:
-              </div>
-          </div>
-          <div class="block filter-item">
-          <el-time-picker
-            :style="{width:100 + 'px'}"
-            v-model="startTime"
-            :picker-options="{
-              selectableRange:'00:00:00 -23:59:00'
-            }"
-            format="HH:mm"
-            value-format="HH:mm"
-            placeholder="选择时间">
-          </el-time-picker>
-        </div>
-
-
+         <div class="pull-left">
+            
             <div class="block filter-item">
-                <div style="margin-right: 10px">
-                  结束时间:
+                <div style="margin-right: 10px;font-size: 12px">
+                  选择日期:
                 </div>
-            </div>
-            <div class="block filter-item">
-                <el-time-picker
-                 :style="{width:100 + 'px'}"
-                  v-model="endTime"
-                  :picker-options="{
-                    selectableRange:startTime+ ':00' + '- 23:59:00'
-                  }"
-                  format="HH:mm"
-                  value-format="HH:mm"
-                  placeholder="选择时间">
-                </el-time-picker>
               </div>
+              <div class="block filter-item">
+                  <el-date-picker
+                    v-model="value1"
+                    :clearable="false"
+                    :style="{width:250 + 'px'}"
+                    type="daterange"
+                    range-separator="to"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+    
+                    format="yyyy-MM-dd"
+                    size="mini"
+                    @change="timeChange"
+                  >
+                  </el-date-picker>
+              </div>
+              <div class="block filter-item">
+                  <div style="margin-right: 10px;font-size: 12px">
+                    开始时间:
+                  </div>
+              </div>
+              <div class="block filter-item">
+              <el-time-picker
+              size="mini"
+                :style="{width:100 + 'px',height:'10px'}"
+                v-model="startTime"
+                :picker-options="{
+                  selectableRange:'00:00:00 -23:59:00'
+                }"
+                format="HH:mm"
+                value-format="HH:mm"
+                placeholder="选择时间">
+              </el-time-picker>
+
+            </div>
+    
+    
+                <div class="block filter-item">
+                    <div style="margin-right: 10px;font-size: 12px">
+                      结束时间:
+                    </div>
+                </div>
+                <div class="block filter-item">
+                    <el-time-picker
+                    size="mini"
+                     :style="{width:100 + 'px'}"
+                      v-model="endTime"
+                      :picker-options="{
+                        selectableRange:startTime+ ':00' + '- 23:59:00'
+                      }"
+                      format="HH:mm"
+                      value-format="HH:mm"
+                      placeholder="选择时间">
+                    </el-time-picker>
+                  </div>
+                 
+                  <el-select v-model="formInline.typeValue" style="width:100px;" size="mini"   class="filter-item" @change="checkModel">
+                      <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+                    </el-select>
+                    <el-button v-waves :style="{width:buttonWidth + 'px',padding:`10px ${buttonPadding}px`,marginLeft: '10px'}" class="filter-item" size="mini" type="warning" @click="onSearch">
+                        {{ '搜索' }}
+                    </el-button>
+                 
+         </div>
         </div>
         
 
@@ -100,6 +112,7 @@
   import Cookies from 'js-cookie'
   import Pagination from '@/components/Pagination'
   import 'element-ui/lib/theme-chalk/index.css'
+  import moment from 'moment'
   import {
     fetchAllCameraList, editCamera
   } from '@/api/camera'
@@ -107,7 +120,7 @@
     components: { Pagination },
     data() {
       return {
-        value1:'new Date().getTime() - 3600 * 1000 * 24 * 7',
+        value1: [new Date(new Date().setDate(new Date().getDate() - 7)), new Date(new Date().setDate(new Date().getDate() - 1))],
         startTime:'02:00',
         endTime:'05:00',
 
@@ -158,6 +171,8 @@
       this.getList(this.$route.query._id)
     },
     methods: {
+      onClear(){},
+      onSearch(){},
       editDialog(v) {
         this.editForm.id = v.id
         this.editForm.inCharge = v.inCharge
@@ -285,7 +300,11 @@
    padding: 0 20px;
  }
  .el-date-editor{
-   height: 36px !important;
+   height: 28px !important;
+ }
+ .el-range-separator{
+  
+   width: 30px !important;
  }
   </style>
   
