@@ -188,7 +188,7 @@ export default {
    font-size: 22px;
    color: #333333;
    font-weight: 500;
-   border-bottom: 1px solid #ccc;
+   border-bottom: 1px solid #D8D8D8;
  }
  .mapbox {
    padding: 20px;

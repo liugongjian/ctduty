@@ -144,7 +144,10 @@ code {
 .text-center {
   text-align: center
 }
-
+.navbar {
+  // border-bottom: 1px solid #ccc !important;
+  box-shadow: 0 1px 4px 0 rgba(0,21,41,0.12) !important;
+}
 .sub-navbar {
   height: 50px;
   line-height: 50px;
@@ -268,4 +271,10 @@ code {
       fill: #FFF;
     }
   }
+}
+.main-container {
+  height: 100% !important;
+}
+.app-main {
+  height: 100% !important;
 }
