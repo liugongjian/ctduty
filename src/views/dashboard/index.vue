@@ -23,7 +23,8 @@
                 <p class="overmsg">{{ processed }}次</p>
               </div>
             </div>
-            <div id="mapChart" ref="mapChart" ></div>
+            <div id="mapChart" ref="mapChart" >
+            </div>
           </div>
         </div>
       </el-col>
@@ -803,6 +804,7 @@ export default {
     height: 50px;
     display: flex;
     justify-content: flex-start;
+    margin-bottom: 20px;
     .overvBox {
       margin-left: 16px;
       margin-right: 50px;
