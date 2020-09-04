@@ -197,10 +197,9 @@ export default {
     // 获取列表数据
     getList(id) {
       const params = {
-        page: this.page,
-        limit: this.limit
+
       }
-      fetchAllCameraList(params, id).then(response => {
+      fetchAllCameraList(params).then(response => {
         this.tableData = response.data.result
         this.total = response.data.pageInfo.totalItems
         this.listLoading = false

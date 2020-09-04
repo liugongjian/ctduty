@@ -9,6 +9,7 @@ const {
 export function fetchAllCameraList(query) {
   return request({
     url: '/nvsapi/Camera/QueryActive',
+    method: 'post',
     params: query
   })
 }
