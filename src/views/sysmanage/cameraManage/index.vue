@@ -54,9 +54,7 @@
                   class="amap-demo"
                   vid="amapDemo"
                 >
-                  <div @click="()=>{positionClick(index)}">
-                    <el-amap-marker v-for="(marker, index) in markers" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
-                  </div>
+                  <el-amap-marker v-for="(marker, index) in markers" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" @click="()=>{positionClick(index)}"></el-amap-marker>
                 </el-amap>
               </div>
             </el-col>
@@ -316,6 +314,19 @@ export default {
 </script>
 
 <style lang='scss'>
+ .filter-item  {
+   input {
+    font-size: 12px !important;
+   }
+  /*  .el-input {
+   font-size: 12px !important;
+
+   }
+ .el-input__inner {
+   font-size: 12px !important;
+ } */
+
+ }
 .main-container {
   height: 100%;
 }
@@ -339,6 +350,7 @@ export default {
    font-weight: 500;
    border-bottom: 1px solid #D8D8D8;
  }
+
  .mapbox {
    padding: 20px;
    padding-bottom: 20px !important;

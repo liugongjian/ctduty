@@ -199,7 +199,6 @@ export default {
         params: {}
       }
       fetchUserList(query).then(response => {
-        console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
         this.totalnum = response.body.total

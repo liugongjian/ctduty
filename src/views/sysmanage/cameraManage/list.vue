@@ -146,6 +146,10 @@ export default {
   created() {
     Message.closeAll()
     this.getList(this.$route.query._id)
+    AMap.event.addListener(marker, 'click', function(e) {
+      thit.cur = JSON.parse(JSON.stringify(e.target.getExtData()))
+    // 得到的数据
+    })
   },
   methods: {
     editDialog(v) {
