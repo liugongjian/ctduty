@@ -11,7 +11,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/nvsapi': {
-        target: 'http://host27.880508.xyz:8666',
+        target: 'http://192.168.30.26:10000/',
         changeOrigin: true,
         pathRewrite: {
           '^/nvsapi': ''
