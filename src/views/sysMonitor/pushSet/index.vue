@@ -56,7 +56,7 @@ export default {
         date1: '02:00',
         date2: '05:00',
         deliveryPush: false,
-        deliveryMessage: false
+        deliveryMessage: true
       }
     }
   },
