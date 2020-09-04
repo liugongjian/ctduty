@@ -8,8 +8,8 @@ const {
 // 所有告警信息
 export function fetchAllCameraList(query) {
   return request({
-    url: '/nvsapi/Camera/QueryActive',
+    url: 'http://192.168.30.26:10000/Camera/QueryActive',
     method: 'post',
-    params: query
+    data: query
   })
 }

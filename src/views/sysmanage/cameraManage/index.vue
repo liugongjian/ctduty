@@ -17,13 +17,13 @@
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form :model="viewXq" label-position="right" label-width="100px">
-                  <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
+                  <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人："><el-input placeholder="请输入负责人" class="filter-item" style="width: 350px;"></el-input>
+                  <el-form-item label="负责人："><el-input placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头经度："><el-input placeholder="请输入摄像头经度" class="filter-item" style="width: 350px;"></el-input>
+                  <el-form-item label="摄像头经度："><el-input placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度："><el-input placeholder="请输入摄像头纬度" class="filter-item" style="width: 350px;"></el-input>
+                  <el-form-item label="摄像头纬度："><el-input placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="地址："><el-input :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 350px;"></el-input>
                   </el-form-item>
@@ -53,7 +53,11 @@
                   :zoom="zoom"
                   class="amap-demo"
                   vid="amapDemo"
-                ></el-amap>
+                >
+                  <div @click="()=>{positionClick(index)}">
+                    <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
+                  </div>
+                </el-amap>
               </div>
             </el-col>
             <el-col :span="5">
@@ -105,6 +109,8 @@
 <script>
 import VueAMap from 'vue-amap'
 import CameraList from './list.vue'
+import { Alert } from 'element-ui'
+
 const amapManager = new VueAMap.AMapManager()
 export default {
   components: { CameraList },
@@ -123,22 +129,37 @@ export default {
       zoom: 12,
       center: [110.09, 34.58],
       dialogVisable: false,
-      amapManager,
-      events: {
-        init(o) {
-          const marker = new AMap.Marker({
-            position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-            offset: new AMap.Pixel(-10, -10),
-            title: '上海摩环文化有限公司',
-            // icon: icon,
-            // animation: 'AMAP_ANIMATION_BOUNCE',
-            zoom: 13,
-            color: 'red'
-          })
-          marker.setMap(o)
-        }
-      }
+      markers: [
+        { position: [110.09, 34.58],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
+        },
+        { position: [110.088, 34.56],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.086, 34.54],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.074, 34.42],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.064, 34.53],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.034, 34.56],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.006, 32.58],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.079, 34.59],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+        { position: [110.066, 34.53],
+          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }
+      ],
+      amapManager
     }
+  },
+  mounted() {
+    const points = document.getElementsByClassName('amap-marker')
+    points.forEach(marker => {
+      marker.on('click', function(e) {
+        console.log('哈哈')
+      })
+    })
   },
   methods: {
     create() {
@@ -161,6 +182,9 @@ export default {
     },
     dialogConfirm() {
       this.dialogVisable = false
+    },
+    positionClick(i) {
+      console.log(i)
     }
   }
 }
