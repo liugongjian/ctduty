@@ -110,6 +110,26 @@ export const constantRouterMap = [
           noCache: false
         }
       },
+      /*  { path: 'cameraManage/map',
+        component: () => import('@/views/sysmanage/cameraManage/map'),
+        name: 'sysCameraManageMap',
+        hidden: true,
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      },
+      { path: 'cameraManage/list',
+        component: () => import('@/views/sysmanage/cameraManage/list'),
+        name: 'sysCameraManageList',
+        hidden: true,
+        meta: {
+          title: 'cameraManage',
+          icon: 'dashboard',
+          noCache: false
+        }
+      }, */
       {
         path: 'areaManage',
         component: () => import('@/views/sysmanage/areaManage/index'),

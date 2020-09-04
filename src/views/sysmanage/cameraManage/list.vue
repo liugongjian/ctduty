@@ -67,8 +67,8 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
-  fetchAmountDetailList
-} from '@/api/applications'
+  fetchAllCameraList
+} from '@/api/camera'
 export default {
   components: { Pagination },
   data() {
@@ -198,10 +198,9 @@ export default {
     getList(id) {
       const params = {
         page: this.page,
-        limit: this.limit,
-        originCode: this.originCode
+        limit: this.limit
       }
-      fetchAmountDetailList(params, id).then(response => {
+      fetchAllCameraList(params, id).then(response => {
         this.tableData = response.data.result
         this.total = response.data.pageInfo.totalItems
         this.listLoading = false

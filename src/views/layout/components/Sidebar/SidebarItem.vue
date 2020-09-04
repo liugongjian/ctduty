@@ -15,15 +15,7 @@
       </template>
 
       <template v-for="child in item.children" v-if="!child.hidden">
-        <sidebar-item
-          v-if="child.children&&child.children.length>0"
-          :is-nest="true"
-          :item="child"
-          :key="child.path"
-          :base-path="resolvePath(child.path)"
-          class="nest-menu" />
-
-        <app-link v-else :to="resolvePath(child.path)" :key="child.name">
+        <app-link :to="resolvePath(child.path)" :key="child.name">
           <el-menu-item :index="resolvePath(child.path)">
             <item v-if="child.meta" :icon="child.meta.icon" :title="generateTitle(child.meta.title)" />
           </el-menu-item>
