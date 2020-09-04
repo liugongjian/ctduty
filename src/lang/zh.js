@@ -86,7 +86,8 @@ export default {
     size: '布局大小',
     binding: '绑定钉钉',
     personal: '个人中心',
-    security: '安全设置'
+    security: '安全设置',
+    search: '搜索'
   },
   login: {
     title: '系统登录',

@@ -1,8 +1,17 @@
 <template>
-  <div class="login-container" style="display: flex; height: 100%;">
+  <div class="loginContainer" style="display: flex; height: 100%;">
     <div class="leftLogo">
       <div class="leftTop">
         <img src="./images/leftTop.png" alt="">
+      </div>
+      <div class="rightTop">
+        <img src="./images/rightTop.png" alt="">
+      </div>
+      <div class="leftBottom">
+        <img src="./images/leftBottom.png" alt="">
+      </div>
+      <div class="rightBottom">
+        <img src="./images/rightBottom.png" alt="">
       </div>
       <div class="logo">
         <img src="./images/logo.png" alt="">
@@ -174,16 +183,49 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 body {
   .leftLogo {
     position: relative;
     .leftTop {
       position: absolute;
-      top: -100px;
+      top: -200px;
       left: -30px;
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightTop {
+      position: fixed;
+      top: -124px;
+      right: -160px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .leftBottom {
+      position: fixed;
+      bottom: -260px;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightBottom {
+      position: fixed;
+      bottom: -200px;
+      right: -180px;
+      width: 400px;
+      height: 400px;
       img {
         width: 100%;
         height: 100%;
@@ -201,7 +243,7 @@ body {
       }
     }
   }
-  .login-container {
+  .loginContainer {
     width: 100%;
     height: 100%;
     background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
@@ -276,7 +318,7 @@ body {
       width: 10.4px;
       height: 14px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/account.png) no-repeat center;
+      background: url(./images/account.png) no-repeat center;
       position: absolute;
       top: 10px;
       left: 10px;
@@ -286,7 +328,7 @@ body {
       width: 10.4px;
       height: 14px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/password.png) no-repeat center;
+      background: url(./images/password.png) no-repeat center;
       position: absolute;
       top: 12px;
       left: 10px;
@@ -296,7 +338,7 @@ body {
       width: 12px;
       height: 15px;
       background-color: rgba(0,0,0,0.25);
-      // background: url(./images/yzm.png) no-repeat center;
+      background: url(./images/yzm.png) no-repeat center;
       position: absolute;
       top: 12px;
       left: 10px;
