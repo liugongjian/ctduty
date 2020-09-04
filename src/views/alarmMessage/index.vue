@@ -6,90 +6,103 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right">
-          <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
+          <el-button class="filter-item" style="font-size:12px" size="mini" icon="el-icon-refresh" @click="onClear">重置</el-button>
+        </div>
+        <div class="pull-left">
+
+          <div class="block filter-item">
+            <div style="margin-right: 10px;font-size: 12px">
+              选择日期:
+            </div>
+          </div>
+          <div class="block filter-item">
+            <el-date-picker
+              v-model="value1"
+              :clearable="false"
+              :style="{width:250 + 'px'}"
+              type="daterange"
+              range-separator="to"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+
+              format="yyyy-MM-dd"
+              size="mini"
+              @change="timeChange"
+            >
+            </el-date-picker>
+          </div>
+          <div class="block filter-item">
+            <div style="margin-right: 10px;font-size: 12px">
+              开始时间:
+            </div>
+          </div>
+          <div class="block filter-item">
+            <el-time-picker
+              :style="{width:100 + 'px',height:'10px'}"
+              v-model="startTime"
+              :picker-options="{
+                selectableRange:'00:00:00 -23:59:00'
+              }"
+              size="mini"
+              format="HH:mm"
+              value-format="HH:mm"
+              placeholder="选择时间">
+            </el-time-picker>
+
+          </div>
+
+          <div class="block filter-item">
+            <div style="margin-right: 10px;font-size: 12px">
+              结束时间:
+            </div>
+          </div>
+          <div class="block filter-item">
+            <el-time-picker
+              :style="{width:100 + 'px'}"
+              v-model="endTime"
+              :picker-options="{
+                selectableRange:startTime+ ':00' + '- 23:59:00'
+              }"
+              size="mini"
+              format="HH:mm"
+              value-format="HH:mm"
+              placeholder="选择时间">
+            </el-time-picker>
+          </div>
+
+          <el-select v-model="formInline.typeValue" style="width:100px;" size="mini" class="filter-item" @change="checkModel">
             <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
           </el-select>
-        </div>
-        <div class="block filter-item">
-          <div style="margin-right: 10px">
-            选择日期:
-          </div>
-        </div>
-        <div class="block filter-item">
-          <el-date-picker
-            v-model="value1"
-            :clearable="false"
-            :style="{width:320 + 'px'}"
-            type="daterange"
-            range-separator="to"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          <el-button v-waves :style="{width:buttonWidth + 'px',padding:`10px ${buttonPadding}px`,marginLeft: '10px'}" class="filter-item" size="mini" type="warning" @click="onSearch">
+            {{ '搜索' }}
+          </el-button>
 
-            format="yyyy-MM-dd"
-            size="small"
-            @change="timeChange"
-          >
-          </el-date-picker>
-        </div>
-        <div class="block filter-item">
-          <div style="margin-right: 10px">
-            开始时间:
-          </div>
-        </div>
-        <div class="block filter-item">
-          <el-time-picker
-            :style="{width:100 + 'px'}"
-            v-model="startTime"
-            :picker-options="{
-              selectableRange:'00:00:00 -23:59:00'
-            }"
-            format="HH:mm"
-            value-format="HH:mm"
-            placeholder="选择时间">
-          </el-time-picker>
-        </div>
-
-        <div class="block filter-item">
-          <div style="margin-right: 10px">
-            结束时间:
-          </div>
-        </div>
-        <div class="block filter-item">
-          <el-time-picker
-            :style="{width:100 + 'px'}"
-            v-model="endTime"
-            :picker-options="{
-              selectableRange:startTime+ ':00' + '- 23:59:00'
-            }"
-            format="HH:mm"
-            value-format="HH:mm"
-            placeholder="选择时间">
-          </el-time-picker>
         </div>
       </div>
-
-      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-        <el-table-column
-          width="55">
-        </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
-          </el-table-column>
-      </el-table>
-
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="page"
-        :limit.sync="limit"
-        @pagination="pageChange()"
-      />
     </div>
+
+    <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
+      <el-table-column
+        width="55">
+      </el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
+          </el-table-column>
+    </el-table>
+
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="page"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
+  </div>
   </div>
 </template>
 
@@ -282,7 +295,11 @@ export default {
    padding: 0 20px;
  }
  .el-date-editor{
-   height: 36px !important;
+   height: 28px !important;
+ }
+ .el-range-separator{
+
+   width: 30px !important;
  }
   </style>
 
