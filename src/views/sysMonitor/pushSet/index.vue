@@ -1,7 +1,8 @@
 <template>
   <div class="push">
-    推送设置
-
+    <div class="title">
+      天翼值更系统推送服务设置
+    </div>
     <el-form ref="form" :model="form" label-width="80px">
 
       <el-form-item label="开始时间">
@@ -59,7 +60,27 @@ export default {
 </script>
 
 <style lang="scss">
+  .push{
+    padding: 20px;
+    background: #F0F2F5;
+    width: 100%;
+    height: 100%;
+  }
+  .title {
+   width: 100%;
+   height: 50px;
+   line-height: 50px;
+   padding:  20px;
+   font-family: MicrosoftYaHei;
+   font-size: 22px;
+   color: #333333;
+   font-weight: 500;
+   border-bottom: 1px solid #ccc;
+   background: #FFF;
+ }
 .el-form {
   width: 100%;
+  padding: 20px;
+  background: #FFF;
 }
 </style>
