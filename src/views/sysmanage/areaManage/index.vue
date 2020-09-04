@@ -160,12 +160,11 @@ export default {
   }
   .area {
     .floatmsg {
-      position: fixed;
-      top: 50px;
-      left: 240px;
-      margin-left: 20px;
+      position: absolute;
+      left: 20px;
+      top: 70px;
+      overflow: hidden;
       .floatword {
-        margin-top: 20px;
         background-color: #fff;
         .inputmsg {
           width: 300px;

@@ -30,13 +30,13 @@
             <div class="passwordIcon"></div>
             <el-input v-model="loginForm.password" type="password" placeholder="密码" class="passWord" ></el-input>
           </el-form-item>
-          <el-form-item :error="errorcodeMsg" class="yzm" prop="yzm">
+          <!-- <el-form-item :error="errorcodeMsg" class="yzm" prop="yzm">
             <div class="yzmIcon"></div>
             <el-input v-model="loginForm.yzm" type="text" placeholder="请输入验证码" @keyup.enter.native="login"></el-input>
-            <!-- <div class="yzmImg" style="margin-left: 12px;height:40px;position:absolute;right:0;top:0;width:102px" @click="refreshImg">
+            <div class="yzmImg" style="margin-left: 12px;height:40px;position:absolute;right:0;top:0;width:102px" @click="refreshImg">
               <img :src = "verifyImgUrl" height="40" width="102">
-            </div> -->
-          </el-form-item>
+            </div>
+          </el-form-item> -->
         </el-form>
         <div>
           <el-button class="btn" type="warning" @click="login">登录</el-button>
@@ -78,7 +78,8 @@ export default {
       },
       // errorMsg: '',
       erroruserMsg: '',
-      errorcodeMsg: ''
+      errorcodeMsg: '',
+      token: ''
     }
   },
   created() {
@@ -124,20 +125,20 @@ export default {
           // const passWord = Base64.encode(this.loginForm.password.trim())
           // const result = testPassword(this.loginForm.password.trim())
           // if(result === 0){
-          const passWord = encryptAes(this.loginForm.password.trim())
+          const passWord = this.loginForm.password.trim()
           const params = {
             username: this.loginForm.username.trim(),
-            password: passWord,
-            // verifyCode: this.loginForm.yzm,
-            // from: this.$route.query.from || 'zen'
-            // from: 'zen'
+            password: passWord
           }
           this.erroruserMsg = ''
           this.errorcodeMsg = ''
           loginByUsername(params).then((resp) => {
-            if (resp.code === 200) {
-              // 把密码存在cookie中 当切仅当记住密码点了记住密码
-              // this.setCooker(this.loginForm.username, this.loginForm.password)
+            if (resp.code === 0) {
+              console.log('跳转首页')
+              // 把token存在cookie中
+              this.token = resp.body.data
+              Cookies.set('token', this.token)
+              this.$router.push('/dashboard')
 
               if (redirect_url_front) {
                 let redirect_url

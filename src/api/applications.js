@@ -29,9 +29,9 @@ export function fetchdeviceList(query) {
   })
 }
 
-export function fetchVsearchList(query) {
+export function fetchOnlineList(query) {
   return request({
-    url: '/nvsapi/device/fileQuery',
+    url: '/nvsapi/Login/online',
     params: query
   })
 }
