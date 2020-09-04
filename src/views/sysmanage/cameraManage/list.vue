@@ -7,6 +7,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+          <el-button type="text" size="small" @click="detail()">{{ '批量删除' }}</el-button>
           <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form :model="dialogForm" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
@@ -160,13 +161,13 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
-      const params = {
+      const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inCharge,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url
-      }
+      }]
       editCamera(params).then(response => {
         console.log(response)
       })

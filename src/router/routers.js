@@ -37,20 +37,16 @@ export const constantRouterMap = [
           affix: true,
           roles: []
         }
-      },
-      {
-        path: 'users',
-        component: () => import('@/views/users/index'),
-      },
-      {
-        path: 'notice',
-        component: () => import('@/views/notice/index'),
-      },
-      {
-        path: 'addnewnotice',
-        component: () => import('@/views/notice/addNewNotice'),
       }
     ]
+  },
+  {
+    path: 'addnewnotice',
+    component: () => import('@/views/notice/addNewNotice'),
+    meta: {
+      title: 'eCloudWatch',
+      icon: 'vsearch'
+    }
   },
   {
     path: '/ecloudwatch',
