@@ -264,13 +264,13 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
-      const params = {
+      const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inCharge,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url
-      }
+      }]
       editCamera(params).then(response => {
         console.log(response)
       })
