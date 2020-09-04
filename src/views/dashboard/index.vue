@@ -266,7 +266,7 @@ export default {
       var chart = echarts.init(document.getElementById('mapChart'))
       var option = {
         backgroundColor: 'transparent',
-        visualMap: {
+        /*   visualMap: {
           min: 0,
           max: 1000,
           left: 80,
@@ -281,13 +281,22 @@ export default {
           outOfRange: {
             color: ['#f40']
           }
-        },
+        }, */
         tooltip: {
           trigger: 'item',
           formatter: function(params) {
             return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
           },
           extraCssText: 'height:50px; white-space:pre-wrap;'
+        },
+        legend: {
+          orient: 'vertical',
+          y: 'bottom',
+          x: 'right',
+          data: ['pm2.5', '嘻嘻嘻', '哈哈哈'],
+          textStyle: {
+            color: '#fff'
+          }
         },
         geo: {
           map: '渭南',
