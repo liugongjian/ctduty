@@ -60,6 +60,12 @@ export default {
 </script>
 
 <style lang="scss">
+  .main-container {
+  height: 100% ;
+}
+.app-main {
+  height: 100% ;
+}
   .push{
     padding: 20px;
     background: #F0F2F5;
@@ -83,4 +89,5 @@ export default {
   padding: 20px;
   background: #FFF;
 }
+
 </style>
