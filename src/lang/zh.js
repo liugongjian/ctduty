@@ -102,7 +102,8 @@ export default {
     googleAuths: '两步验证・谷歌身份验证器',
     ldap: 'LDAP',
     standard: '常规登录',
-    smsSend: '获取验证码'
+    smsSend: '获取验证码',
+    logout: '强退'
   },
   documentation: {
     documentation: '文档',

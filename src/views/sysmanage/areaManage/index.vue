@@ -24,7 +24,9 @@
           :data="data"
           :indent='40'
           node-key="id"
+          accordion
           default-expand-all
+          @node-click="handleNodeClick"
         >
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>
@@ -133,6 +135,12 @@ export default {
 
   },
   methods: {
+    //节点点击事件
+    handleNodeClick(res1,res2,res3) {
+      console.log(res1);
+      console.log(res2);
+      console.log(res3);
+    },
     // 模糊搜索事件 请求接口
     onSearch() {
       this.page = 1
@@ -160,12 +168,11 @@ export default {
   }
   .area {
     .floatmsg {
-      position: fixed;
-      top: 50px;
-      left: 240px;
-      margin-left: 20px;
+      position: absolute;
+      left: 20px;
+      top: 70px;
+      overflow: hidden;
       .floatword {
-        margin-top: 20px;
         background-color: #fff;
         .inputmsg {
           width: 300px;

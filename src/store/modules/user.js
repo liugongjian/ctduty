@@ -4,7 +4,7 @@ import {
   // logout,
   getUserPrem
 } from '@/api/login'
-import { fetchUser } from '@/api/user';
+import { fetchUser,  fetchUserOnline } from '@/api/user';
 import {
   getToken,
   setToken,
@@ -114,6 +114,11 @@ const user = {
 
     // 获取用户信息
     GetUserInfo({ commit, state }) {
+      fetchUserOnline().then(res => {
+        console.log(res)
+      }).catch(error => {
+        console.log(error)
+      })
       return new Promise((resolve, reject) => {
         fetchUser()
           .then(response => {
