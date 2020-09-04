@@ -60,6 +60,12 @@ export default {
 </script>
 
 <style lang="scss">
+.main-container {
+  height: 100% !important;
+}
+.app-main {
+  height: 100% !important;
+}
   .push{
     padding: 20px;
     background: #F0F2F5;
@@ -70,17 +76,19 @@ export default {
    width: 100%;
    height: 50px;
    line-height: 50px;
-   padding:  20px;
    font-family: MicrosoftYaHei;
    font-size: 22px;
    color: #333333;
    font-weight: 500;
    border-bottom: 1px solid #ccc;
    background: #FFF;
+   padding: 0 20px;
  }
 .el-form {
   width: 100%;
+  height: 92%;
   padding: 20px;
   background: #FFF;
+  margin-bottom: 20px;
 }
 </style>
