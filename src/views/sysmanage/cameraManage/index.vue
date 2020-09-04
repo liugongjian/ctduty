@@ -16,16 +16,16 @@
             <div class="pull-right">
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-                <el-form :model="viewXq" label-position="right" label-width="100px">
-                  <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                <el-form :model="dialogForm" label-position="right" label-width="100px">
+                  <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人："><el-input placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头经度："><el-input placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度："><el-input placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址："><el-input :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 350px;"></el-input>
+                  <el-form-item label="地址："><el-input v-model="dialogForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -55,7 +55,7 @@
                   vid="amapDemo"
                 >
                   <div @click="()=>{positionClick(index)}">
-                    <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
+                    <el-amap-marker v-for="(marker, index) in markers" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
                   </div>
                 </el-amap>
               </div>
@@ -65,7 +65,7 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <el-form :model="viewXq" label-position="right" label-width="100px">
+                <el-form :model="form" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID：">
                     <div style=" word-wrap: break-word">{{ '1234567890' }}</div>
                   </el-form-item>
@@ -110,14 +110,76 @@
 import VueAMap from 'vue-amap'
 import CameraList from './list.vue'
 import { Alert } from 'element-ui'
-
+import addSvg from '../../../icons/svg/address.svg'
 const amapManager = new VueAMap.AMapManager()
 export default {
   components: { CameraList },
   data() {
+    const validatePercent = (rule, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请输入获奖概率'))
+      } else if (+value < 0) {
+        callback(new Error('获奖概率不能为负数'))
+      } else if (+value > 100) {
+        callback(new Error('获奖概率不能大于100'))
+      } else {
+        callback()
+      }
+    }
+    const validateSort = (rule, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请输入排序优先级'))
+      } else if (+value < 0) {
+        callback(new Error('排序优先级不能为负数'))
+      } else if (+value > 100) {
+        callback(new Error('排序优先级不能大于100'))
+      } else {
+        callback()
+      }
+    }
+    const validateImg = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择图片'))
+      } else {
+        callback()
+      }
+    }
+    const validateAmount = (rule, value, callback) => {
+      if (value.length === 0) {
+        callback(new Error('请输入奖品数量'))
+      } else if (+value < 0) {
+        callback(new Error('奖品数量不能为负数'))
+      } else if (+value > 1000000) {
+        callback(new Error('奖品数量不能大于一百万'))
+      } else {
+        callback()
+      }
+    }
     return {
-      viewXq: {
-
+      dialogForm: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: ''
+      },
+      rules: {
+        id: [
+          { required: true, trigger: 'change', message: '请输入奖品名称' },
+          { max: 32, message: '名称不得超过32个字符' }
+        ],
+        inCharge: [
+          { required: true, trigger: 'trigger', validator: validatePercent }
+        ],
+        longitude: [
+          { required: true, trigger: 'trigger', validator: validateAmount }
+        ],
+        latitude: [
+          { required: true, trigger: 'trigger', validator: validateSort }
+        ],
+        address: [
+          { required: true, trigger: 'trigger', validator: validateImg }
+        ]
       },
       formInline: {
         searchkey: '',
@@ -153,14 +215,6 @@ export default {
       amapManager
     }
   },
-  mounted() {
-    const points = document.getElementsByClassName('amap-marker')
-    points.forEach(marker => {
-      marker.on('click', function(e) {
-        console.log('哈哈')
-      })
-    })
-  },
   methods: {
     create() {
       this.dialogVisable = true
@@ -172,6 +226,13 @@ export default {
       this.$emit('getdata', this.formInline.typeValue)
     },
     closeDialog() {
+      this.dialogForm = {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: ''
+      }
       this.dialogVisable = false
     },
     getdata(v) {
@@ -181,6 +242,7 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
+      this.markers.push({ position: [this.dialogForm.longitude, this.dialogForm.latitude], content: `<svg class="icon" style="width: 2em; height: 2em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3378"><path d="M808.96 317.44c0-164.00384-132.95104-296.96-296.96-296.96S215.04 153.43616 215.04 317.44c0 82.92352 34.02752 157.8752 88.83712 211.74784 93.696 140.06272 159.59552 300.29312 189.66528 472.86784 6.11328 0.80896 12.26752 1.2288 18.45248 1.2288a140.4416 140.4416 0 0 0 18.45248-1.2288c30.06976-172.56448 95.96928-332.79488 189.6704-472.8576C774.93248 475.32544 808.96 400.36864 808.96 317.44zM268.8 317.44c0-134.31296 108.88192-243.2 243.2-243.2s243.2 108.88704 243.2 243.2-108.88192 243.2-243.2 243.2S268.8 451.75296 268.8 317.44z" fill="#2458BE" p-id="3379"></path></svg>` })
       this.dialogVisable = false
     },
     positionClick(i) {
