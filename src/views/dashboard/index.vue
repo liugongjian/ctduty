@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container">
+  <div id="dashID" class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
         <div id="map">
@@ -80,6 +80,7 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 import huayin from '@/json/huayin.json'
+import elementResizeDetectorMaker from 'element-resize-detector'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -101,6 +102,7 @@ export default {
   },
   data() {
     return {
+      screenWidth: '',
       mapData: [{
         cloudStorageType: 1,
         deviceId: 46600,
@@ -141,11 +143,30 @@ export default {
       ]
     }
   },
-  computed: {},
-  created() {
+  watch: {
+    screenWidth(v) {
+      const canvas = document.getElementsByTagName('canvas');
+      // Array.prototype.forEach.call
+      [].forEach.call(canvas, function(item) {
+        // do whatever
+        console.log(item.parentNode.parentNode.clientWidth)
+        console.log(item.style)
+        item.style.width = '100%'
+        item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+      })
+    }
   },
   mounted() {
     const that = this
+    that.screenWidth = document.getElementById('dashID').clientWidth
+    const erd = elementResizeDetectorMaker()
+    erd.listenTo(document.getElementById('dashID'), element => {
+      that.$nextTick(() => {
+        // 监听到事件后执行的业务逻辑
+        that.screenWidth = element.clientWidth
+      })
+    })
+
     registerMap()
     // that.mapFn(that.mapData)
     that.getMap()
@@ -679,7 +700,6 @@ export default {
           bottom: '10%' // 距离下边距
         }
       }
-
       charts.setOption(option)
     }
   }
@@ -688,6 +708,80 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#panel {
+  overflow: hidden;
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#alarmLine {
+  overflow: hidden;
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#man {
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#car {
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#bicycle {
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#alarmLine {
+  overflow: hidden;
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#camerarate {
+  overflow: hidden;
+  position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
 .dashboard-container {
   padding: 0px 20px;
   background: #F0F2F5;
@@ -730,6 +824,7 @@ export default {
     background-color: #fff;
     #camerarate {
       height: 170px;
+      display: flex;
     }
   }
   .status {
@@ -759,6 +854,7 @@ export default {
   .box-line {
     margin-top: 20px;
   }
+
   .dash-title {
     position: relative;
     margin: 0;
@@ -797,6 +893,7 @@ export default {
     width: 100%;
     height: 330px;
     margin-top:20px;
+    display: flex;
     canvas {
       width: 100%;
       background-color: transparent;
@@ -833,6 +930,7 @@ export default {
 .pie {
   height: 170px;
   display: flex;
+  overflow: hidden;
 }
 .canFu {
     height: 100%;
