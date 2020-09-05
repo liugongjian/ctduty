@@ -147,7 +147,8 @@ export default {
   mounted() {
     const that = this
     registerMap()
-    that.mapFn(that.mapData)
+    // that.mapFn(that.mapData)
+    that.getMap()
     that.camerarate()
     that.drawPie('man', '人员', '#1890FF', 40)
     that.drawPie('car', '机动车', '#5DDECF', 35)
@@ -158,6 +159,119 @@ export default {
   methods: {
     clickTagItem(tag) {
       // TODO
+    },
+    getMap() {
+      this.charts = echarts.init(document.getElementById('mapChart'))
+      var data = [
+        { name: '华阴', value: 400 }
+      ]
+      var geoCoordMap = {
+        '华阴': [110.08752, 34.56608]
+      }
+      var convertData = function(data) {
+        var res = []
+        for (var i = 0; i < data.length; i++) {
+          var geoCoord = geoCoordMap[data[i].name]
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              value: geoCoord.concat(data[i].value)
+            })
+          }
+        }
+        return res
+      }
+      var option = {
+
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          orient: 'vertical',
+          y: 'bottom',
+          x: 'left',
+          data: ['告警数'],
+          textStyle: {
+            color: '#000'
+          }
+        },
+        geo: {
+          map: '渭南',
+          label: {
+            emphasis: {
+              show: false
+            }
+          },
+          roam: true,
+          itemStyle: {
+            normal: {
+              areaColor: '#81ecec',
+              borderColor: '#111'
+            },
+            emphasis: {
+              areaColor: '#81ecec'
+            }
+          }
+        },
+        series: [
+          {
+            name: '告警数',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData(data),
+            symbolSize: function(val) {
+              return val[2] / 10
+            },
+            label: {
+              normal: {
+                formatter: '{b}',
+                position: 'right',
+                show: false
+              },
+              emphasis: {
+                show: true
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: '#ddb926'
+              }
+            }
+          },
+          {
+            name: 'Top 5',
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            data: convertData(data.sort(function(a, b) {
+              return b.value - a.value
+            }).slice(0, 6)),
+            symbolSize: function(val) {
+              return val[2] / 10
+            },
+            showEffectOn: 'render',
+            rippleEffect: {
+              brushType: 'stroke'
+            },
+            hoverAnimation: true,
+            label: {
+              normal: {
+                formatter: '{b}',
+                position: 'right',
+                show: true
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: '#f4e925',
+                shadowBlur: 10,
+                shadowColor: '#333'
+              }
+            },
+            zlevel: 1
+          }
+        ]
+      }
+      this.charts.setOption(option)
     },
     getPanel() {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -260,121 +374,6 @@ export default {
           }
         }]
       })
-    },
-    mapFn(data) {
-      var geoCoordMap = { // 这里放你打点的坐标信息，虚拟信息
-      }
-      var locValue = [
-      ]
-      data.forEach(item => {
-        geoCoordMap[item.installAddress] = [item.longitude, item.latitude]
-        locValue.push({ name: item.installAddress, value: item.deviceNum, createTime: item.updateStateTimeString, deviceName: item.deviceName, installAddress: item.installAddress })
-      })
-      var convertData = function(geoCoordMap, data) {
-        var res = []
-        for (var i = 0; i < data.length; i++) {
-          var geoCoord = geoCoordMap[data[i].name]
-          if (geoCoord) {
-            res.push({
-              name: data[i].name,
-              value: geoCoord.concat(data[i].value),
-              createTime: geoCoord.concat(data[i].createTime),
-              deviceName: geoCoord.concat(data[i].deviceName),
-              installAddress: geoCoord.concat(data[i].installAddress)
-            })
-          }
-        }
-        return res
-      }
-      var chart = echarts.init(document.getElementById('mapChart'))
-      var option = {
-        backgroundColor: 'transparent',
-        /*   visualMap: {
-          min: 0,
-          max: 1000,
-          left: 80,
-          bottom: 50,
-          // 上下拖动
-          realtime: false,
-          // 平均分层
-          splitNumber: 5,
-          inRange: {
-            color: ['#000', '#b8ddf0', '#e0bdb8', '#e16f56', '#EB190A']
-          },
-          outOfRange: {
-            color: ['#f40']
-          }
-        }, */
-        tooltip: {
-          trigger: 'item',
-          formatter: function(params) {
-            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
-          },
-          extraCssText: 'height:50px; white-space:pre-wrap;'
-        },
-        legend: {
-          orient: 'vertical',
-          y: 'bottom',
-          x: 'right',
-          data: ['pm2.5', '嘻嘻嘻', '哈哈哈'],
-          textStyle: {
-            color: '#fff'
-          }
-        },
-        geo: {
-          map: '渭南',
-          roam: true,
-          aspectScale: 1,
-          scaleLimit: { // 所属组件的z分层，z值小的图形会被z值大的图形覆盖
-            min: 1, // 最小的缩放值
-            max: 1 // 最大的缩放值
-          },
-          label: {
-            emphasis: {
-              show: true,
-              color: '#fff'
-            }
-          },
-          itemStyle: {
-            borderColor: '#f40',
-            normal: {
-              borderColor: '#ff5722',
-              show: false
-            },
-            emphasis: {
-              areaColor: 'transparent',
-              show: true
-            }
-          }
-        },
-        series: [
-          {
-            name: 'pm2.5',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: convertData(geoCoordMap, locValue).slice(0, 4),
-            symbolSize: 24,
-            label: {
-              opacity: 0.5,
-              normal: {
-                show: false
-              },
-              emphasis: {
-                show: false
-              }
-            },
-            itemStyle: {
-              color: '#f40',
-              opacity: 0.8,
-              emphasis: {
-                borderColor: '#fff',
-                borderWidth: 1
-              }
-            }
-          }
-        ]
-      }
-      chart.setOption(option)
     },
     camerarate() {
       var myChart = echarts.init(document.getElementById('camerarate'))
@@ -791,11 +790,15 @@ export default {
   }
 }
 .mapbox {
-  height: 350px;
+  height: 400px;
+  padding: 0;
+  overflow: hidden;
   #mapChart {
     width: 100%;
-    height: 100%;
+    height: 330px;
+    margin-top:20px;
     canvas {
+      width: 100%;
       background-color: transparent;
     }
   }
@@ -804,7 +807,6 @@ export default {
     height: 50px;
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 20px;
     .overvBox {
       margin-left: 16px;
       margin-right: 50px;
