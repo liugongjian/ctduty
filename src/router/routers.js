@@ -40,15 +40,15 @@ export const constantRouterMap = [
       },
       {
         path: 'users',
-        component: () => import('@/views/users/index'),
+        component: () => import('@/views/users/index')
       },
       {
         path: 'notice',
-        component: () => import('@/views/notice/index'),
+        component: () => import('@/views/notice/index')
       },
       {
         path: 'addnewnotice',
-        component: () => import('@/views/notice/addNewNotice'),
+        component: () => import('@/views/notice/addNewNotice')
       }
     ]
   },

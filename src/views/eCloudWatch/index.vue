@@ -34,7 +34,7 @@
                           <img
                             src="../../../src/assets/icon/未处理.png"
                             style="height:25x;width:25px;"
-                          />
+                          >
                         </template>
                         <template slot="description"></template>
                       </el-step>
@@ -60,31 +60,31 @@
 </template>
 
 <script>
-import echarts from "echarts";
+import echarts from 'echarts'
 // 引入水波球
-import "echarts-liquidfill";
+import 'echarts-liquidfill'
 // 引入基本模板
 // 引入柱状图组件
-require("echarts/lib/chart/bar");
+require('echarts/lib/chart/bar')
 // 引入提示框和title组件
-require("echarts/lib/component/tooltip");
-require("echarts/lib/component/title");
-import { fetchUser, fetchCommunity, alarmStatus } from "@/api/user";
-import VueAMap from "vue-amap";
-const amapManager = new VueAMap.AMapManager();
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/title')
+import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
+import VueAMap from 'vue-amap'
+const amapManager = new VueAMap.AMapManager()
 export default {
-  name: "eCloudWatch",
+  name: 'ECloudWatch',
   components: {},
-  props: ["data", "defaultActive"],
+  props: ['data', 'defaultActive'],
   data() {
     return {
-      activeName: "first",
+      activeName: 'first',
       active: 0,
       approvalProcessProject: [
-        { id: "0", label: "陕西省渭南市威清路双王路" },
-        { id: "1", label: "陕西省渭南市威清路双王路" },
-        { id: "2", label: "陕西省渭南市威清路双王路" },
-        { id: "3", label: "陕西省渭南市威清路双王路" }
+        { id: '0', label: '陕西省渭南市威清路双王路' },
+        { id: '1', label: '陕西省渭南市威清路双王路' },
+        { id: '2', label: '陕西省渭南市威清路双王路' },
+        { id: '3', label: '陕西省渭南市威清路双王路' }
       ],
       zoom: 12,
       center: [110.09, 34.58],
@@ -95,28 +95,28 @@ export default {
           const marker = new AMap.Marker({
             position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             offset: new AMap.Pixel(-10, -10),
-            title: "上海摩环文化有限公司",
+            title: '上海摩环文化有限公司',
             // icon: icon,
             // animation: 'AMAP_ANIMATION_BOUNCE',
             zoom: 13,
-            color: "red"
-          });
-          marker.setMap(o);
+            color: 'red'
+          })
+          marker.setMap(o)
         }
       }
-    };
+    }
   },
   mounted() {
-    const that = this;
-    that.getPanel();
+    const that = this
+    that.getPanel()
   },
   methods: {
     getPanel() {
-      this.charts = echarts.init(document.getElementById("panel"));
+      this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
         tooltip: {
-          formatter: "{a} <br/>{b} : {c}%"
+          formatter: '{a} <br/>{b} : {c}%'
         },
         toolbox: {
           // 工具栏小图标
@@ -128,20 +128,20 @@ export default {
         },
         series: [
           {
-            name: "业务指标",
-            type: "gauge",
+            name: '业务指标',
+            type: 'gauge',
             splitNumber: 3,
             detail: {
               // 仪表盘详情，用于显示数据
-              formatter: "{value}%",
-              color: "#333333",
+              formatter: '{value}%',
+              color: '#333333',
               fontSize: 16,
-              fontWeight: "bolder"
+              fontWeight: 'bolder'
             },
             data: [
               {
                 value: 60,
-                name: ""
+                name: ''
               }
             ],
             axisLine: {
@@ -149,9 +149,9 @@ export default {
               show: true,
               lineStyle: {
                 width: 6, // 表盘粗细
-                color: [[1, "#2d82ff"]],
+                color: [[1, '#2d82ff']],
                 shadowBlur: 10,
-                shadowColor: "rgba(0, 103, 255, 0.2)",
+                shadowColor: 'rgba(0, 103, 255, 0.2)',
                 shadowOffsetX: 0,
                 shadowOffsetY: 8
               }
@@ -162,7 +162,7 @@ export default {
               length: 8, // 属性length控制线长
               lineStyle: {
                 // 属性lineStyle控制线条样式
-                color: "#fff"
+                color: '#fff'
               }
             },
             splitLine: {
@@ -170,7 +170,7 @@ export default {
               length: 8, // 属性length控制线长
               lineStyle: {
                 // 属性lineStyle（详见lineStyle）控制线条样式
-                color: "rgba(255, 255, 255, 0.2)"
+                color: 'rgba(255, 255, 255, 0.2)'
               }
             },
             pointer: {
@@ -180,7 +180,7 @@ export default {
             itemStyle: {
               // 指针阴影
               shadowBlur: 10,
-              shadowColor: "rgba(0, 103, 255, 0.2)",
+              shadowColor: 'rgba(0, 103, 255, 0.2)',
               shadowOffsetX: 0,
               shadowOffsetY: 8
             },
@@ -188,45 +188,45 @@ export default {
               // 刻度标签。
               show: true, // 是否显示标签,默认 true。
               distance: 5, // 标签与刻度线的距离,默认 5。
-              color: "#000", // 文字的颜色,默认 #fff。
+              color: '#000', // 文字的颜色,默认 #fff。
               fontSize: 12, // 文字的字体大小,默认 5。
               formatter: function(value) {
                 if (parseInt(value) === 0) {
-                  return "差";
+                  return '差'
                 } else if (parseInt(value) === 33) {
-                  return "中";
+                  return '中'
                 } else if (parseInt(value) === 66) {
-                  return "良";
+                  return '良'
                 } else if (parseInt(value) === 100) {
-                  return "优";
+                  return '优'
                 }
               } // 刻度标签的内容格式器，支持字符串模板和回调函数两种形式。 示例:// 使用字符串模板，模板变量为刻度默认标签 {value},如:formatter: '{value} kg'; // 使用函数模板，函数参数分别为刻度数值,如formatter: function (value) {return value + 'km/h';}
             },
             markPoint: {
               // 指针中心加一个小白点
-              symbol: "circle",
+              symbol: 'circle',
               symbolSize: 5,
               data: [
                 // 跟你的仪表盘的中心位置对应上，颜色可以和画板底色一样
                 {
-                  x: "center",
-                  y: "center",
+                  x: 'center',
+                  y: 'center',
                   itemStyle: {
-                    color: "#FFF"
+                    color: '#FFF'
                   }
                 }
               ]
             }
           }
         ]
-      });
+      })
     },
     handleClick(tab, event) {},
     next() {
-      if (this.active++ > 2) this.active = 0;
+      if (this.active++ > 2) this.active = 0
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

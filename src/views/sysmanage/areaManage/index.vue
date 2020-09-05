@@ -22,14 +22,14 @@
         <p class="mountainpolice">华山镇派出所</p>
         <el-tree
           :data="data"
-          :indent='40'
+          :indent="40"
           node-key="id"
           default-expand-all
         >
-          <span class="custom-tree-node" slot-scope="{ node, data }">
+          <span slot-scope="{ node, data }" class="custom-tree-node">
             <span>
               <i :class="[data.icon]"></i>{{ node.label }}
-            </span>       
+            </span>
           </span>
         </el-tree>
         <div class="border"></div>
@@ -55,53 +55,53 @@
 import VueAMap from 'vue-amap'
 const amapManager = new VueAMap.AMapManager()
 export default {
-  name: 'areaManage',
+  name: 'AreaManage',
   data() {
     return {
       data: [
         {
           id: 1,
-          icon:'el-icon-remove-outline',
+          icon: 'el-icon-remove-outline',
           label: '华阴市',
           children: [{
             id: 2,
-            icon:'el-icon-remove-outline',
+            icon: 'el-icon-remove-outline',
             label: '孟塬镇',
             children: [{
-              id:3,
+              id: 3,
               icon: 'el-icon-house',
-              label: '小寨村' 
-            },{
-              id:4,
+              label: '小寨村'
+            }, {
+              id: 4,
               icon: 'el-icon-house',
               label: '宋峪村'
-            },{
-              id:5,
+            }, {
+              id: 5,
               icon: 'el-icon-house',
               label: '晓棚村'
-            },{
-              id:6,
+            }, {
+              id: 6,
               icon: 'el-icon-house',
               label: '三义村'
-            },{
-              id:7,
+            }, {
+              id: 7,
               icon: 'el-icon-house',
               label: '大寨北城'
-            },{
-              id:8,
+            }, {
+              id: 8,
               icon: 'el-icon-house',
               label: '彭家村'
             }]
-          },{
-          id: 8,
-          icon: 'el-icon-remove-outline',
-          label: '华山镇',
-          children: [{
-            id: 9,
-            icon: 'el-icon-house',
-            label: '高家村'
+          }, {
+            id: 8,
+            icon: 'el-icon-remove-outline',
+            label: '华山镇',
+            children: [{
+              id: 9,
+              icon: 'el-icon-house',
+              label: '高家村'
+            }]
           }]
-        }]
         }
       ],
       defaultProps: {
@@ -147,7 +147,7 @@ export default {
         this.getList()
       }
     }
-  },
+  }
 }
 </script>
 
@@ -270,5 +270,5 @@ export default {
   .custom-tree-node {
     font-size: 14px;
   }
-  
+
 </style>
