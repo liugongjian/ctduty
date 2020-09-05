@@ -143,9 +143,10 @@ export default {
       this.pageChange()
     }
   },
-  created() {
-    Message.closeAll()
-    this.getList()
+  async created() {
+    await Message.closeAll()
+    await this.getList()
+    console.log(this.tableData, 'xxh')
   },
   methods: {
     editDialog(v) {
@@ -231,7 +232,7 @@ export default {
       }
     },
     // 获取列表数据
-    getList(id) {
+    getList() {
       const params = {
         cascade: true,
         page: {
