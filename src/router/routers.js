@@ -60,7 +60,7 @@ export const constantRouterMap = [
         name: 'eCloudWatch',
         meta: {
           title: 'eCloudWatch',
-          icon: 'vsearch',
+          icon: 'ecloudwatch',
           noCache: true,
           affix: true,
           roles: []
@@ -80,7 +80,7 @@ export const constantRouterMap = [
         name: 'alarmMessageIndex',
         meta: {
           title: 'alarmMessage',
-          icon: 'vsearch',
+          icon: 'alarmMessage',
           noCache: true,
           affix: true,
           roles: []
@@ -94,7 +94,7 @@ export const constantRouterMap = [
     alwaysShow: true, // will always show the root menu
     meta: {
       title: 'sysmanage',
-      icon: 'dashboard',
+      icon: 'sysmanage',
       noCache: true
     },
     children: [
@@ -104,7 +104,7 @@ export const constantRouterMap = [
         name: 'sysUser',
         meta: {
           title: 'userManage',
-          icon: 'dashboard',
+          icon: 'userManage',
           noCache: false
         }
       },
@@ -114,7 +114,7 @@ export const constantRouterMap = [
         name: 'sysCameraManage',
         meta: {
           title: 'cameraManage',
-          icon: 'dashboard',
+          icon: 'camera',
           noCache: false
         }
       },
@@ -144,7 +144,7 @@ export const constantRouterMap = [
         name: 'sysAreaManage',
         meta: {
           title: 'areaManage',
-          icon: 'dashboard',
+          icon: 'area',
           noCache: false
         }
       }
@@ -156,7 +156,7 @@ export const constantRouterMap = [
     alwaysShow: true, // will always show the root menu
     meta: {
       title: 'sysMonitor',
-      icon: 'dashboard',
+      icon: 'sysMonitor',
       noCache: true
     },
     children: [
@@ -166,7 +166,7 @@ export const constantRouterMap = [
         name: 'noticeIndex',
         meta: {
           title: 'notice',
-          icon: 'dashboard',
+          icon: 'notice',
           noCache: false
         }
       },
@@ -176,7 +176,7 @@ export const constantRouterMap = [
         name: 'onlineUserIndex',
         meta: {
           title: 'onlineUser',
-          icon: 'dashboard',
+          icon: 'onlineUser',
           noCache: false
         }
       },
@@ -186,7 +186,7 @@ export const constantRouterMap = [
         name: 'pushSetIndex',
         meta: {
           title: 'pushSet',
-          icon: 'dashboard',
+          icon: 'pushSet',
           noCache: false
         }
       }

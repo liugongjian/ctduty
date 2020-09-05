@@ -114,11 +114,6 @@ const user = {
 
     // 获取用户信息
     GetUserInfo({ commit, state }) {
-      fetchUserOnline().then(res => {
-        console.log(res)
-      }).catch(error => {
-        console.log(error)
-      })
       return new Promise((resolve, reject) => {
         fetchUser()
           .then(response => {

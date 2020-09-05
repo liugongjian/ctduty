@@ -129,8 +129,8 @@ NProgress.configure({
 //   })
 // })
 
-/* router.afterEach((to, from) => {
-  NProgress.done() // finish progress bar
-}) */
+// router.afterEach((to, from) => {
+//   NProgress.done() // finish progress bar
+// })
 
 export default router
