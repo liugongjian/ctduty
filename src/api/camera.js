@@ -8,7 +8,7 @@ const {
 // 所有告警信息
 export function fetchAllCameraList(query) {
   return request({
-    url: 'http://192.168.30.26:10000/Camera/QueryActive',
+    url: 'http://host31.880508.xyz:10000/Camera/QueryActive',
     method: 'post',
     data: query
   })
@@ -17,7 +17,7 @@ export function fetchAllCameraList(query) {
 // 编辑摄像头信息
 export function editCamera(query) {
   return request({
-    url: 'http://192.168.30.26:10000/Camera/Update',
+    url: 'http://host31.880508.xyz:10000/Camera/Update',
     method: 'post',
     data: query
   })

@@ -63,8 +63,10 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:50px;font-size:14px;color:#999;">
-                  <i class="el-message__icon el-icon-warning"></i>
+                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
+                  <div style="padding-bottom:10px;">
+                    <svg t="1599289905127" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1303" width="40" height="40"><path d="M24.380952 512c0 269.336381 218.282667 487.619048 487.619048 487.619048s487.619048-218.282667 487.619048-487.619048S781.336381 24.380952 512 24.380952 24.380952 242.663619 24.380952 512z m518.095238 274.285714c0 16.847238-13.628952 30.47619-30.47619 30.476191s-30.47619-13.628952-30.47619-30.476191S495.152762 755.809524 512 755.809524s30.47619 13.628952 30.47619 30.47619z m0-144.774095c0 16.018286-13.628952 28.964571-30.47619 28.964571s-30.47619-12.921905-30.47619-28.964571V236.202667c0-15.993905 13.628952-28.94019 30.47619-28.940191s30.47619 12.921905 30.47619 28.964572v405.308952z" fill="#999" p-id="1304"/></svg>
+                  </div>
                   暂无摄像头信息！
                   <br>
                   请选择您想查看的摄像头。
@@ -95,7 +97,7 @@
                     <div style=" word-wrap: break-word">{{ form.url }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ form.cl }}</div>
+                    <div style=" word-wrap: break-word">{{ form.cl ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
                   <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
@@ -228,7 +230,7 @@ export default {
         typeValue: 'map'
       },
       form: {
-        /* id: '',
+        id: '',
         inCharge: '',
         longitude: '',
         latitude: '',
@@ -236,7 +238,7 @@ export default {
         url: '',
         cl: '',
         name: '',
-        createTime: '' */
+        createTime: ''
       },
       formInfo: [],
       showZwMes: true,
@@ -334,12 +336,6 @@ export default {
     },
     editDialog(v) {
       this.editForm = this.form
-      /* this.editForm.id = v.id
-      this.editForm.inCharge = v.inCharge
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.url = v.url */
       this.editVisable = true
     },
     editCloseDialog() {
@@ -477,6 +473,11 @@ export default {
        }
        .el-icon-warning {
          color: #E6A23C;
+       }
+       .el-icon-warning:before {
+         display: block;
+         width: 50px;
+         height: 50px;
        }
        .el-form {
          padding: 20px;

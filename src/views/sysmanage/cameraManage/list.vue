@@ -143,13 +143,10 @@ export default {
       this.pageChange()
     }
   },
-  created() {
-    Message.closeAll()
-    this.getList(this.$route.query._id)
-    AMap.event.addListener(marker, 'click', function(e) {
-      thit.cur = JSON.parse(JSON.stringify(e.target.getExtData()))
-    // 得到的数据
-    })
+  async created() {
+    await Message.closeAll()
+    await this.getList()
+    console.log(this.tableData, 'xxh')
   },
   methods: {
     editDialog(v) {
@@ -201,7 +198,7 @@ export default {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getList(this.$route.query._id)
+      this.getList()
     },
     goBack() {
       this.$router.go(-1)
@@ -228,14 +225,14 @@ export default {
       }
       if (columnObj[columnObjKey].length === 0) {
         this.filteredValue = []
-        this.getList(this.$route.query._id)
+        this.getList()
       } else {
         this.filteredValue = columnObj[columnObjKey]
-        this.getList(this.$route.query._id)
+        this.getList()
       }
     },
     // 获取列表数据
-    getList(id) {
+    getList() {
       const params = {
         cascade: true,
         page: {
@@ -245,10 +242,10 @@ export default {
         params: {
         }
       }
-      fetchAllCameraList(params).then(response => {
-        console.log(response)
-        this.tableData = response.body.data
-        this.total = response.body.page.total
+      fetchAllCameraList(params).then(res => {
+        console.log(res)
+        this.tableData = res.body.data
+        this.total = res.body.page.total
         this.listLoading = false
       })
     },
