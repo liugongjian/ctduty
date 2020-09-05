@@ -1,5 +1,5 @@
 <template>
-  <div class="cemeraIndex">
+  <div id="cameraI" class="cameraIndex" @click="watchClick">
     <div v-if="formInline.typeValue === 'map'" class="camera">
       <div class="title">
         摄像头管理
@@ -54,9 +54,7 @@
                   class="amap-demo"
                   vid="amapDemo"
                 >
-                  <div @click="()=>{positionClick(index)}">
-                    <el-amap-marker v-for="(marker, index) in markers" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
-                  </div>
+                  <el-amap-marker v-for="(marker, index) in markers" :events="events" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" @click="markerClick"></el-amap-marker>
                 </el-amap>
               </div>
             </el-col>
@@ -67,28 +65,28 @@
                 </div>
                 <el-form :model="form" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID：">
-                    <div style=" word-wrap: break-word">{{ '1234567890' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.id }}</div>
                   </el-form-item>
                   <el-form-item label="负责人：">
-                    <div style=" word-wrap: break-word">{{ '李四四' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.inCharge }}</div>
                   </el-form-item>
                   <el-form-item label="经纬度信息：">
-                    <div style=" word-wrap: break-word">{{ '110.13、34.6' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.longitude+ ' 、' + form.latitude }}</div>
                   </el-form-item>
                   <el-form-item label="地址：">
-                    <div style=" word-wrap: break-word">{{ '我是地址我是地址我是地址,我的文字多可回行' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.address }}</div>
                   </el-form-item>
                   <el-form-item label="添加人：">
-                    <div style=" word-wrap: break-word">{{ '李三三' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.name }}</div>
                   </el-form-item>
                   <el-form-item label="添加时间：">
-                    <div style=" word-wrap: break-word">{{ '2020年9月3日' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.createTime }}</div>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
-                    <div style=" word-wrap: break-word">{{ '已处理' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.url }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ '1/123' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.cl }}</div>
                   </el-form-item>
                   <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
                   <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
@@ -220,37 +218,114 @@ export default {
         searchkey: '',
         typeValue: 'map'
       },
-      form: {},
+      form: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: '',
+        cl: ''
+      },
+      formInfo: [],
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       zoom: 12,
       center: [110.09, 34.58],
       dialogVisable: false,
-      markers: [
+      markersDom: null,
+      markers: [],
+      /*  markers: [
         { position: [110.09, 34.58],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
         },
         { position: [110.088, 34.56],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.086, 34.54],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.074, 34.42],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.064, 34.53],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.034, 34.56],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.006, 32.58],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.079, 34.59],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
         { position: [110.066, 34.53],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }
-      ],
-      amapManager
+          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }
+      ], */
+      amapManager,
+      events: {
+        click: a => {
+          this.$message({
+            message: '哈哈哈',
+            type: 'warning'
+          })
+          console.log(a)
+        }
+      }
     }
   },
+  mounted() {
+    document.getElementById('cameraI').onclick = function() {
+      this.watchClick()
+    }
+    setTimeout(() => {
+      this.formInfo = [
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.09,
+          latitude: 34.58,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.088,
+          latitude: 34.56,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.093,
+          latitude: 34.66,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.074,
+          latitude: 34.42,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.034,
+          latitude: 34.56,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.09,
+          latitude: 34.58,
+          address: '嘻嘻',
+          url: '哈哈',
+          cl: 0 }
+      ]
+      this.formInfo.forEach(item => {
+        this.markers.push({ position: [item.longitude, item.latitude], content: `<img data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` })
+      })
+    }, 2000)
+  },
   methods: {
+    watchClick(e) {
+      console.log(e)
+    },
     editDialog(v) {
       this.editForm.id = v.id
       this.editForm.inCharge = v.inCharge
@@ -310,19 +385,35 @@ export default {
     },
     positionClick(i) {
       console.log(i)
+    },
+    markerClick() {
+      console.log('哈哈哈')
     }
   }
 }
 </script>
 
 <style lang='scss'>
+ .filter-item  {
+   input {
+    font-size: 12px !important;
+   }
+  /*  .el-input {
+   font-size: 12px !important;
+
+   }
+ .el-input__inner {
+   font-size: 12px !important;
+ } */
+
+ }
 .main-container {
   height: 100%;
 }
 .app-main {
   height: 100%;
 }
-.cemeraIndex {
+.cameraIndex {
   height: 100%;
 }
 .camera {
@@ -339,6 +430,7 @@ export default {
    font-weight: 500;
    border-bottom: 1px solid #D8D8D8;
  }
+
  .mapbox {
    padding: 20px;
    padding-bottom: 20px !important;
