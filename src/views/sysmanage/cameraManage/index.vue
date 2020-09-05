@@ -63,15 +63,24 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <el-form :model="form" label-position="right" label-width="100px">
+                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:50px;font-size:14px;color:#999;">
+                  <i class="el-message__icon el-icon-warning"></i>
+                  暂无摄像头信息！
+                  <br>
+                  请选择您想查看的摄像头。
+                </div>
+                <el-form v-else :model="form" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID：">
                     <div style=" word-wrap: break-word">{{ form.id }}</div>
                   </el-form-item>
                   <el-form-item label="负责人：">
                     <div style=" word-wrap: break-word">{{ form.inCharge }}</div>
                   </el-form-item>
-                  <el-form-item label="经纬度信息：">
-                    <div style=" word-wrap: break-word">{{ form.longitude+ ' 、' + form.latitude }}</div>
+                  <el-form-item label="经度信息：">
+                    <div style=" word-wrap: break-word">{{ form.longitude }}</div>
+                  </el-form-item>
+                  <el-form-item label="纬度信息：">
+                    <div style=" word-wrap: break-word">{{ form.latitude }}</div>
                   </el-form-item>
                   <el-form-item label="地址：">
                     <div style=" word-wrap: break-word">{{ form.address }}</div>
@@ -219,15 +228,18 @@ export default {
         typeValue: 'map'
       },
       form: {
-        id: '',
+        /* id: '',
         inCharge: '',
         longitude: '',
         latitude: '',
         address: '',
         url: '',
-        cl: ''
+        cl: '',
+        name: '',
+        createTime: '' */
       },
       formInfo: [],
+      showZwMes: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       zoom: 12,
@@ -235,34 +247,14 @@ export default {
       dialogVisable: false,
       markersDom: null,
       markers: [],
-      /*  markers: [
-        { position: [110.09, 34.58],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
-        },
-        { position: [110.088, 34.56],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.086, 34.54],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.074, 34.42],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.064, 34.53],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.034, 34.56],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.006, 32.58],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.079, 34.59],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.066, 34.53],
-          content: `<img data=${'哈哈哈'} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }
-      ], */
       amapManager,
       events: {
         click: a => {
-          this.$message({
-            message: '哈哈哈',
-            type: 'warning'
-          })
+          /* this.$message({
+            type: 'warning',
+            message: '哈哈',
+            duration: 0
+          }) */
           console.log(a)
         }
       }
@@ -280,12 +272,16 @@ export default {
           latitude: 34.58,
           address: '嘻嘻',
           url: '哈哈',
+          name: '张三',
+          createTime: '2020-09-10',
           cl: 0 },
         { id: '567',
           inCharge: 'safsafjk',
           longitude: 110.088,
           latitude: 34.56,
-          address: '嘻嘻',
+          address: '李四门口',
+          name: '李四',
+          createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 },
         { id: '567',
@@ -293,6 +289,8 @@ export default {
           longitude: 110.093,
           latitude: 34.66,
           address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 },
         { id: '567',
@@ -300,6 +298,8 @@ export default {
           longitude: 110.074,
           latitude: 34.42,
           address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 },
         { id: '567',
@@ -307,6 +307,8 @@ export default {
           longitude: 110.034,
           latitude: 34.56,
           address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 },
         { id: '567',
@@ -314,25 +316,33 @@ export default {
           longitude: 110.09,
           latitude: 34.58,
           address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 }
       ]
       this.formInfo.forEach(item => {
-        this.markers.push({ position: [item.longitude, item.latitude], content: `<img data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` })
+        this.markers.push({ position: [item.longitude, item.latitude], content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` })
       })
     }, 2000)
   },
   methods: {
     watchClick(e) {
-      console.log(e)
+      e.path.forEach(item => {
+        if (item.className === 'markerImg') {
+          this.form = JSON.parse(item.attributes[1].nodeValue)
+          this.showZwMes = false
+        }
+      })
     },
     editDialog(v) {
-      this.editForm.id = v.id
+      this.editForm = this.form
+      /* this.editForm.id = v.id
       this.editForm.inCharge = v.inCharge
       this.editForm.longitude = v.longitude
       this.editForm.latitude = v.latitude
       this.editForm.address = v.address
-      this.editForm.url = v.url
+      this.editForm.url = v.url */
       this.editVisable = true
     },
     editCloseDialog() {
@@ -467,6 +477,9 @@ export default {
          font-size: 16px;
          color: rgba(0,0,0,0.85);
          letter-spacing: -0.2px;
+       }
+       .el-icon-warning {
+         color: #E6A23C;
        }
        .el-form {
          padding: 20px;
