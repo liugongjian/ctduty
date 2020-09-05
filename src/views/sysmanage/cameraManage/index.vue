@@ -261,9 +261,6 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('cameraI').onclick = function() {
-      this.watchClick()
-    }
     setTimeout(() => {
       this.formInfo = [
         { id: '567',

@@ -51,11 +51,11 @@ import Cookies from 'js-cookie'
 import { encryptAes } from './js/AES'
 const Base64 = require('js-base64').Base64
 import config from '@/config'
-import { loginByUsername } from '../../api/login'
+import { loginGetToken } from '../../api/login'
 const {
   prefix: { userPrefix }
 } = config
-const yzmImg = userPrefix + '/v1/verify'
+// const yzmImg = userPrefix + '/v1/verify'
 export default {
   data() {
     return {
@@ -64,7 +64,7 @@ export default {
         password: '',
         // yzm: ''  // 验证码
       },
-      verifyImgUrl: yzmImg + '?' + new Date().getTime(),
+      // verifyImgUrl: yzmImg + '?' + new Date().getTime(),
       loginRules: {
         username: [
           { required: true, trigger: 'blur', message: '请输入用户名' }
@@ -132,7 +132,9 @@ export default {
           }
           this.erroruserMsg = ''
           this.errorcodeMsg = ''
-          loginByUsername(params).then((resp) => {
+          loginGetToken(params).then((resp) => {
+            console.log('kkkk')
+            console.log(resp)
             if (resp.code === 0) {
               console.log('跳转首页')
               // 把token存在cookie中

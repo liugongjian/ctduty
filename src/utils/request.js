@@ -9,8 +9,8 @@ import Cookies from 'js-cookie'
 // } from '@/utils/auth'
 
 // huanglulu
-const getToken = function(TokenKey) {
-  return Cookies.get(TokenKey) || ''
+const getToken = function(token) {
+  return Cookies.get(token) || ''
 }
 // create an axios instance
 const service = axios.create({
@@ -47,7 +47,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    if (res.code !== 200) {
+    if (res.code !== 0) {
       Message({
         message: res.msg,
         type: 'error',
