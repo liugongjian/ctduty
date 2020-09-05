@@ -102,7 +102,7 @@ export function alarmStatus() {
 export function pushSet(form) {
   console.log(JSON.stringify(form), 'form')
   return request({
-    url: 'http://192.168.30.26:10000/Setting/Update',
+    url: 'http://host31.880508.xyz:10000/Setting/Update',
     method: 'post',
     data: [{
       id: 3275166382090240,
@@ -112,8 +112,9 @@ export function pushSet(form) {
 }
 export function getPushSet() {
   return request({
-    url: 'http://192.168.30.26:10000/Setting/Get/3275166382090240',
+    url: 'http://host31.880508.xyz:10000/Setting/Get/3275166382090240',
     method: 'get'
   })
 }
+
 

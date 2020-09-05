@@ -11,7 +11,7 @@
          <div class="pull-left">
             
             <div class="block filter-item">
-                <div style="margin-right: 10px;font-size: 12px">
+                <div style="margin-right: 8px;font-size: 12px">
                   选择日期:
                 </div>
               </div>
@@ -24,7 +24,6 @@
                     range-separator="to"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-    
                     format="yyyy-MM-dd"
                     size="mini"
                     @change="timeChange"
@@ -32,7 +31,7 @@
                   </el-date-picker>
               </div>
               <div class="block filter-item">
-                  <div style="margin-right: 10px;font-size: 12px">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">
                     开始时间:
                   </div>
               </div>
@@ -46,14 +45,14 @@
                 }"
                 format="HH:mm"
                 value-format="HH:mm"
-                placeholder="选择时间">
+                >
               </el-time-picker>
 
             </div>
     
     
                 <div class="block filter-item">
-                    <div style="margin-right: 10px;font-size: 12px">
+                    <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">
                       结束时间:
                     </div>
                 </div>
@@ -67,43 +66,54 @@
                       }"
                       format="HH:mm"
                       value-format="HH:mm"
-                      placeholder="选择时间">
+                     >
                     </el-time-picker>
                   </div>
                  
-                  <el-select v-model="formInline.typeValue" style="width:100px;" size="mini"   class="filter-item" @change="checkModel">
+                  <el-select v-model="formInline.typeValue" style="width:100px; margin-left:10px; margin-right: 10px" size="mini"   class="filter-item" @change="checkModel">
                       <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
                     </el-select>
-                    <el-button v-waves :style="{width:buttonWidth + 'px',padding:`10px ${buttonPadding}px`,marginLeft: '10px'}" class="filter-item" size="mini" type="warning" @click="onSearch">
+                    <el-button v-waves  class="filter-item" size="mini" type="warning" @click="onSearch">
                         {{ '搜索' }}
                     </el-button>
                  
          </div>
         </div>
-        
+        <div>
+            <el-tabs type="border-card"  v-model="defaultTab">
+                <el-tab-pane  v-for="(item, index) in tabsArr"
+                :key="item"
+                :label="item"
+                :name="item">
+                  <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
+                      <el-table-column
+                        width="55">
+                      </el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
+                      <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
+                      </el-table-column>
+                    </el-table>
+                    <pagination
+                    v-show="total>0"
+                    :total="total"
+                    :page.sync="page"
+                    :limit.sync="limit"
+                    @pagination="pageChange()"
+                  />
+                </el-tab-pane>
+              </el-tabs>
+        </div>
 
-        <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-          <el-table-column
-            width="55">
-          </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
-          <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
-          </el-table-column>
-        </el-table>
         
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="page"
-          :limit.sync="limit"
-          @pagination="pageChange()"
-        />
+        
+       
       </div>
+     
     </div>
   </template>
   
@@ -118,20 +128,18 @@
   } from '@/api/camera'
   export default {
     components: { Pagination },
+
+    
+    
     data() {
       return {
-        value1: [new Date(new Date().setDate(new Date().getDate() - 7)), new Date(new Date().setDate(new Date().getDate() - 1))],
+        defaultTab:'',
+        value1: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
         startTime:'02:00',
         endTime:'05:00',
-
-
-        dialogForm: {
-          id: '',
-          inCharge: '',
-          longitude: '',
-          latitude: '',
-          address: ''
-        },
+        startDate:'',
+        endDate:'',
+        tabsArr:[],
         formInline: {
           searchkey: '',
           typeValue: 'all'
@@ -169,9 +177,42 @@
     created() {
       Message.closeAll()
       this.getList(this.$route.query._id)
+      this.timeChange()
+      
     },
     methods: {
-      onClear(){},
+      timeChange(){
+        this.startDate=moment(this.value1[0]).format('YYYY-MM-DD')
+        this.endDate =moment(this.value1[1]).format('YYYY-MM-DD')
+        this.tabsArr=this.getDayAll(this.startDate,this.endDate);
+        this.defaultTab=this.tabsArr[0]
+      },
+       getDayAll(begin,end){
+        var dateAllArr = new Array();
+        var ab = begin.split("-");
+        var ae = end.split("-");
+        var db = new Date();
+        db.setUTCFullYear(ab[0], ab[1]-1, ab[2]);
+        var de = new Date();
+        de.setUTCFullYear(ae[0], ae[1]-1, ae[2]);
+        var unixDb=db.getTime();
+        var unixDe=de.getTime();
+        for(var k=unixDb;k<=unixDe;){
+            dateAllArr.push(moment(new Date(parseInt(k))).format('YYYY-MM-DD').toString());
+            k=k+24*60*60*1000;
+        }
+        return dateAllArr;
+    },
+      onClear(){
+        this.value1= [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
+        this.startTime='02:00',
+        this.endTime='05:00',
+        this.startDate=moment(this.value1[0]).format('YYYY-MM-DD'),
+        this.endDate =moment(this.value1[1]).format('YYYY-MM-DD'),
+        this.tabsArr=this.getDayAll(this.startDate,this.endDate),
+        this.defaultTab=this.tabsArr[0],
+        this.formInline.typeValue='all'
+      },
       onSearch(){},
       editDialog(v) {
         this.editForm.id = v.id
@@ -305,6 +346,10 @@
  .el-range-separator{
   
    width: 30px !important;
+ }
+ .el-select-dropdown__item { 
+     font-size: 12px !important;
+   
  }
   </style>
   
