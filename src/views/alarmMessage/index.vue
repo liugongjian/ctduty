@@ -9,7 +9,6 @@
           <el-button class="filter-item" style="font-size:12px" size="mini" icon="el-icon-refresh" @click="onClear">重置</el-button>
         </div>
         <div class="pull-left">
-
           <div class="block filter-item">
             <div style="margin-right: 10px;font-size: 12px">
               选择日期:
@@ -70,7 +69,7 @@
             </el-time-picker>
           </div>
 
-          <el-select v-model="formInline.typeValue" style="width:100px;" size="mini" class="filter-item" @change="checkModel">
+          <el-select v-model="formInline.typeValue" style="width:100px; margin-left:10px" size="mini" class="filter-item" @change="checkModel">
             <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
           </el-select>
           <el-button v-waves :style="{width:buttonWidth + 'px',padding:`10px ${buttonPadding}px`,marginLeft: '10px'}" class="filter-item" size="mini" type="warning" @click="onSearch">
@@ -79,30 +78,29 @@
 
         </div>
       </div>
-    </div>
 
-    <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-      <el-table-column
-        width="55">
-      </el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
+      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
+        <el-table-column
+          width="55">
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
           </el-table-column>
-    </el-table>
+      </el-table>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="page"
-      :limit.sync="limit"
-      @pagination="pageChange()"
-    />
-  </div>
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="page"
+        :limit.sync="limit"
+        @pagination="pageChange()"
+      />
+    </div>
   </div>
 </template>
 
@@ -111,6 +109,7 @@ import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchAllCameraList, editCamera
 } from '@/api/camera'
@@ -133,7 +132,7 @@ export default {
         searchkey: '',
         typeValue: 'all'
       },
-      typeOptions: [{ name: '所有警告', _id: 'all' },
+      typeOptions: [{ name: '所有', _id: 'all' },
         { name: '已处理', _id: 'settled' }, { name: '未处理', _id: 'unsettled' }
       ],
       listLoading: false,
@@ -167,7 +166,10 @@ export default {
     Message.closeAll()
     this.getList(this.$route.query._id)
   },
+
   methods: {
+    onClear() {},
+    onSearch() {},
     editDialog(v) {
       this.editForm.id = v.id
       this.editForm.inCharge = v.inCharge
@@ -262,7 +264,6 @@ export default {
         }
       }
       fetchAllCameraList(params).then(response => {
-        console.log(response)
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
@@ -300,6 +301,11 @@ export default {
  .el-range-separator{
 
    width: 30px !important;
+ }
+ .el-select-dropdown__item {
+   span {
+     font-size: 12px !important;
+   }
  }
   </style>
 
