@@ -1,7 +1,6 @@
 
 <template>
-  <div>
-    <span style="font-family: MicrosoftYaHei;font-size: 22px;color: #333333;margin-left:20px;inline-height:20px">通知公告</span>
+  <div class="notice">
     <el-divider></el-divider>
     <el-row>
       <el-input v-model="input2" class="searchinput" placeholder="公告标题"></el-input>
@@ -91,6 +90,9 @@ export default {
 </script>
 
 <style scoped>
+.notice {
+  padding: 0px 20px;
+}
 .title{
     width:150px;height:100px;
     border:1px solid #000;

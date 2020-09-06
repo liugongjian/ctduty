@@ -1,9 +1,6 @@
 <template>
   <div id="cameraI" class="cameraIndex" @click="watchClick">
     <div v-if="formInline.typeValue === 'map'" class="camera">
-      <div class="title">
-        摄像头管理
-      </div>
       <div class="mapbox">
         <div class="serachbox">
           <div class="filter-container clearfix">
