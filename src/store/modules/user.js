@@ -117,10 +117,10 @@ const user = {
       return new Promise((resolve, reject) => {
         fetchUser()
           .then(response => {
-            if (response.data) {
-              commit('SET_NAME', response.data.name)
-              commit('SET_ROLE', response.data.role)
-              commit('SET_USERID', response.data.id)
+            if (response.body) {
+              commit('SET_NAME', response.body.data.username)
+              // commit('SET_ROLE', response.body.data.role)
+              commit('SET_USERID', response.body.data.id)
             }
             resolve(response)
           })

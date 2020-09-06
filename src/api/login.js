@@ -4,9 +4,9 @@ import config from '@/config'
 const {
   baseUrl: { pro }
 } = config
-export function loginByUsername(data) {
+export function loginGetToken(data) {
   return request({
-    url: '/nvsapi/Login',
+    url: 'http://host31.880508.xyz:10000/Login',
     method: 'post',
     data: data,
     // headers: { 'contentType' : 'application/json' }

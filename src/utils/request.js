@@ -8,6 +8,10 @@ import Cookies from 'js-cookie'
 //   getPrefix
 // } from '@/utils/auth'
 
+// huanglulu
+const getToken = function(token) {
+  return Cookies.get(token) || ''
+}
 let messageInstance = null
 const rewriteMessage = options => {
   if (messageInstance) {

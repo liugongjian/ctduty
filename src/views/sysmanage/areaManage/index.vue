@@ -1,5 +1,5 @@
 <template>
-  <div class="area" style="height: 100%">
+  <div class="area" style="height: 100%" @click="watchClick">
     <div class="floatmsg">
       <div class="floatword">
         <input type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
@@ -70,7 +70,9 @@
         class="amap-demo"
         vid="amapDemo"
         style="height: 100%"
-      ></el-amap>
+      >
+        <el-amap-marker v-for="(marker, index) in markers" :events="events" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" @click="markerClick"></el-amap-marker>
+      </el-amap>
     </div>
   </div>
 </template>
@@ -143,28 +145,24 @@ export default {
       dialogVisable: false,
       amapManager,
       events: {
-        init(o) {
-          const marker = new AMap.Marker({
-            position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-            offset: new AMap.Pixel(-10, -10),
-            title: '上海摩环文化有限公司',
-            // icon: icon,
-            // animation: 'AMAP_ANIMATION_BOUNCE',
-            zoom: 13,
-            color: 'red'
-          })
-          marker.setMap(o)
+        click: a => {
+          console.log(a)
         }
       },
       addressdata: {
         huapolice: true,
         mengpolice: false,
         mountainpolice: false
-      }
+      },
+      markers: [],
+      formInfo: [],
+
     }
   },
   mounted() {
-
+    this.markers = [
+      { position: [110.112562, 34.572169], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="华阴市公安支队">` }
+    ]
   },
   methods: {
     // 节点点击事件
@@ -176,12 +174,14 @@ export default {
         this.addressdata.mengpolice = true
         this.addressdata.mountainpolice = false
         this.addressdata.huapolice = false
+        this.markers = [{position: [110.147774, 34.558654], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="孟塬镇派出所">` }]
       } else if (node.level === 2 && data.label === '华山镇') {
         this.local = []
         this.local.push('华山镇派出所')
         this.addressdata.mountainpolice = true
         this.addressdata.huapolice = false
         this.addressdata.mengpolice = false
+        this.markers = [{position: [110.0877, 34.534504], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="华山镇派出所">` }]
       } else if (node.level === 1 && !node.expanded) {
         this.openOrNot = false
         this.local = []
@@ -189,6 +189,7 @@ export default {
         this.addressdata.huapolice = true
         this.addressdata.mengpolice = false
         this.addressdata.mountainpolice = false
+        this.markers = [{ position: [110.112562, 34.572169], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }]
         setTimeout(() => {
           this.openOrNot = true
         })
@@ -208,6 +209,17 @@ export default {
         this.formInline.searchkey = this.formInline.searchkey.trim()
         this.getList()
       }
+    },
+    watchClick(e) {
+      e.path.forEach(item => {
+        if (item.className === 'markerImg') {
+          this.form = JSON.parse(item.attributes[1].nodeValue)
+          this.showZwMes = false
+        }
+      })
+    },
+    markerClick() {
+      console.log('哈哈哈')
     }
   }
 
