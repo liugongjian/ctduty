@@ -106,7 +106,7 @@ export default {
     },
     // huanglulu
     businessLogout() {
-      window.location.href = `${process.env.LOGOUT_URL}`;
+      window.location.href = `${process.env.LOGOUT_URL}`
       Cookies.remove('token')
       Cookies.remove('userId')
     },

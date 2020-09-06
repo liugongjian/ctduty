@@ -12,20 +12,20 @@ export function fetchUserList(query) {
 export function fetchUser() {
   return request({
     url: '/nvsapi/Login/info',
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function fetchCommunity() {
   return request({
     url: '/nvsapi/alarm/stat/all',
-    method: 'get',
+    method: 'get'
   })
 }
 
 export function alarmStatus() {
   return request({
     url: '/nvsapi/device/stat',
-    method: 'get',
+    method: 'get'
   })
 }
