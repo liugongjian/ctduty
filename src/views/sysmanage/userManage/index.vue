@@ -259,6 +259,7 @@ export default {
     },
     addAUser() {
       this.$refs.addFormRef.validate(valid=>{
+        if(!valid) return;
         const query = [{
           departmentId: 0,
           postId: 0,

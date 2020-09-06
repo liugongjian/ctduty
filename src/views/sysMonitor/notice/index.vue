@@ -248,13 +248,17 @@ export default {
     },
 
     postAddANotice() {
-      const query = [{ ...this.addNoticeForm }]
-      postAddNotices(query).then(response => {
-        if (response.code !== 0) return this.$message.error('添加失败，请联系系统管理员')
-        this.$message.success('添加成功')
-        this.addNoticeDialogVisible = false
-        this.getNoticeList()
+      this.$refs.addFormRef.validate(valid=>{
+        if(!valid) return;
+        const query = [{ ...this.addNoticeForm }]
+        postAddNotices(query).then(response => {
+          if (response.code !== 0) return this.$message.error('添加失败，请联系系统管理员')
+          this.$message.success('添加成功')
+          this.addNoticeDialogVisible = false
+          this.getNoticeList()
+        })
       })
+
     },
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
