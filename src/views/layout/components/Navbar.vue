@@ -31,7 +31,7 @@
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ name }}</span>
+          <span class="user-name">{{ username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -85,7 +85,8 @@ export default {
         re_password: '',
         new_password: ''
       },
-      isFullscreen: false
+      isFullscreen: false,
+      username: ''
     }
   },
   computed: {
@@ -110,6 +111,8 @@ export default {
     }
   },
   mounted() {
+    this.username = localStorage.getItem('username')
+    console.log('username', this.username)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {

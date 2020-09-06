@@ -57,17 +57,17 @@
       title="新增通知"
       width="50%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="addNoticeForm">
-        <el-form-item label="标题">
-          <el-input v-model="addNoticeForm.title" class="input_title"></el-input>
+      <el-form ref="addFormRef" :rules="addFormRules" :model="addNoticeForm">
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="addNoticeForm.title" class="input_title" ></el-input>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="类型" prop="type">
           <el-radio-group v-model="addNoticeForm.type">
             <el-radio :label="0">通知</el-radio>
             <el-radio :label="1">公告</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="紧急程度">
+        <el-form-item label="紧急程度" prop="state">
           <el-radio-group v-model="addNoticeForm.state">
             <el-radio :label="0">普通</el-radio>
             <el-radio :label="1">紧急</el-radio>
@@ -101,17 +101,17 @@
       title="修改通知"
       width="50%"
       @close="editDialogClosed">
-      <el-form ref="editFormRef" :model="editNoticeForm" :disabled="modifiable==='false'">
-        <el-form-item label="标题">
+      <el-form ref="editFormRef" :rules="addFormRules" :model="editNoticeForm" :disabled="modifiable==='false'">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="editNoticeForm.title" class="input_title"></el-input>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="类型" prop="type">
           <el-radio-group v-model="editNoticeForm.type">
             <el-radio :label="0">通知</el-radio>
             <el-radio :label="1">公告</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="紧急程度">
+        <el-form-item label="紧急程度" prop="state">
           <el-radio-group v-model="editNoticeForm.state">
             <el-radio :label="0">普通</el-radio>
             <el-radio :label="1">紧急</el-radio>
@@ -164,6 +164,12 @@ import { fetchNoticeList, postAddNotices, getNoticeInfo, updateANotice, deleteNo
 export default {
   data() {
     return {
+
+      addFormRules:{
+        title:[{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        type:[{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        state:[{required: true, message: '紧急成都不能为空', trigger: 'blur' }]
+      },
 
       editor_content: '',
       editorOption: {

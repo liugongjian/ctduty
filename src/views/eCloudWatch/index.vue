@@ -1,5 +1,5 @@
 <template>
-  <div class="alarmInfo" id="alarmInfo">
+  <div id="alarmInfo" class="alarmInfo">
     <div class="map">
       <el-amap
         :amap-manager="amapManager"
@@ -23,35 +23,23 @@
       <div class="warn">
         <div class="dispose">
           <div class="dash-title">告警处理率</div>
-          <div class="disbox">
-            <div id="panel"></div>
+          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
+            <div id="panel" style="height: 100%; width:100%"></div>
           </div>
         </div>
-        <div class="bottom">
+        <div class="bottom" style="margin-top: 13px">
           <div class="todyW">今日告警</div>
           <div class="bottom-left">
-            <el-tabs v-model="activeName" type="border-card" @click="handleClick">
+            <!-- <el-tabs v-model="activeName" type="border-card" @click="handleClick">
               <el-tab-pane label="全部" name="first">
                 <div style="height: 100%;">
-                  <!-- <el-steps :active="active" finish-status="success" direction="vertical">
-                      <el-step
-                        v-for="item in approvalProcessProject"
-                        :title="item.label"
-                        :key="item.id"
-                      >
-                        <template slot="icon">
-                          <img src="../../../src/assets/icon/已处理@1x.png" style="height:25x;width:25px;"/>
-                        </template>
-                        <template slot="description"></template>
-                      </el-step>
-                  </el-steps>-->
                   <template>
                     <div @click="showDialog">
                       <el-steps :active="values" space="50px" align-center direction="vertical">
                         <el-step
+                          v-for="(item,index) in stepsData"
                           :title="item.title"
                           :description="item.date"
-                          v-for="(item,index) in stepsData"
                           :key="index"
                         ></el-step>
                       </el-steps>
@@ -65,9 +53,9 @@
                     <div @click="showDialog">
                       <el-steps :active="values" space="50px" align-center direction="vertical">
                         <el-step
+                          v-for="(item,index) in stepsData"
                           :title="item.title"
                           :description="item.date"
-                          v-for="(item,index) in stepsData"
                           :key="index"
                         ></el-step>
                       </el-steps>
@@ -81,9 +69,9 @@
                     <div @click="showDialog">
                       <el-steps :active="values" space="50px" align-center direction="vertical">
                         <el-step
+                          v-for="(item,index) in stepsData"
                           :title="item.title"
                           :description="item.date"
-                          v-for="(item,index) in stepsData"
                           :key="index"
                         ></el-step>
                       </el-steps>
@@ -91,7 +79,26 @@
                   </template>
                 </div>
               </el-tab-pane>
-            </el-tabs>
+            </el-tabs>-->
+            <div style="width:100%; height:35px">
+              <div class="zuo" style="line-height: 32px" @click="allTab">
+                <p>全部</p>
+              </div>
+              <div class="zhong" style="line-height: 32px" @click="yTab">
+                <p>已处理</p>
+              </div>
+              <div class="you" style="line-height: 32px" @click="wTab">
+                <p>未处理</p>
+              </div>
+            </div>
+            <div class="zuoContent" style="width:100%; height:58px">
+              <div v-if="showTabValue === 'all'">哈哈哈</div>
+              <div v-if="showTabValue === 'y'">嘻嘻嘻</div>
+              <div v-if="showTabValue === 'w'">喝喝喝</div>
+            </div>
+            <!-- <div v-if="TabLan === 'all'"></div>
+              <div v-if="TabLan === 'hand'"></div>
+            <div v-if="TabLan === 'weiChu'"></div>-->
           </div>
           <div class="bottom-right">
             <ul>
@@ -102,22 +109,22 @@
           </div>
           <el-dialog :visible="dialogVisable" title="报警显示" width="520px" @close="closeDialog">
             <el-form :model="alarmForm" label-position="right" label-width="100px">
-              <el-form-item label="流量状态:" v-model="alarmForm.address">
-                <span style="width: 300px;">{{"陕西省渭南市威清路双王路路口"}}</span>
+              <el-form-item v-model="alarmForm.address" label="流量状态:">
+                <span style="width: 300px;">{{ "陕西省渭南市威清路双王路路口" }}</span>
               </el-form-item>
-              <el-form-item label="监控时间:" v-model="alarmForm.time">
-                <span style="width: 300px;">{{"陕西省渭南市威清路双王路路口"}}</span>
+              <el-form-item v-model="alarmForm.time" label="监控时间:">
+                <span style="width: 300px;">{{ "陕西省渭南市威清路双王路路口" }}</span>
               </el-form-item>
               <el-form-item label="原始照片:">
-                <img src alt />
+                <img src alt >
               </el-form-item>
               <el-form-item label="结构化照片:">
-                <img src alt style="width: 300px; height: 300px" />
+                <img src alt style="width: 300px; height: 300px" >
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="normal" round>正 常</el-button>
-              <el-button @click="unnormal" type="warning" round>异 常</el-button>
+              <el-button round @click="normal">正 常</el-button>
+              <el-button type="warning" round @click="unnormal">异 常</el-button>
             </div>
           </el-dialog>
         </div>
@@ -131,14 +138,14 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 // 引入基本模板
-require("echarts/lib/chart/bar");
+require('echarts/lib/chart/bar')
 // 引入提示框和title组件
-require("echarts/lib/component/tooltip");
-require("echarts/lib/component/title");
-import { fetchUser, fetchCommunity, alarmStatus } from "@/api/user";
-import { fetchalarmList } from "@/api/alarm";
-import VueAMap from "vue-amap";
-const amapManager = new VueAMap.AMapManager();
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/title')
+import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
+import { fetchalarmList } from '@/api/alarm'
+import VueAMap from 'vue-amap'
+const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
   components: {},
@@ -146,30 +153,32 @@ export default {
   data() {
     return {
       alarmForm: {
-        address: "",
-        time: ""
+        address: '',
+        time: ''
       },
+      // TabLan: all,
       dialogVisable: false,
-      activeName: "first",
+      activeName: 'first',
       active: 0,
       stepsData: [
         {
-          title: "陕西省渭南市威清路",
-          date: "2020-08-31  23: 00 : 00"
+          title: '陕西省渭南市威清路',
+          date: '2020-08-31  23: 00 : 00'
         },
         {
-          title: "陕西省渭南市威清路",
-          date: "2020-08-31  23: 00 : 00"
+          title: '陕西省渭南市威清路',
+          date: '2020-08-31  23: 00 : 00'
         },
         {
-          title: "陕西省渭南市威清路",
-          date: "2020-08-31  23: 00 : 00"
+          title: '陕西省渭南市威清路',
+          date: '2020-08-31  23: 00 : 00'
         }
       ],
       values: 3,
       zoom: 12,
       center: [110.09, 34.58],
       markersDom: null,
+      showTabValue: '',
       markers: [],
       amapManager,
       events: {
@@ -177,7 +186,7 @@ export default {
           const marker = new AMap.Marker({
             position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             offset: new AMap.Pixel(-10, -10),
-            title: "上海摩环文化有限公司",
+            title: '上海摩环文化有限公司',
             zoom: 13,
             color: 'red'
           })
@@ -187,38 +196,56 @@ export default {
     }
   },
   created() {
-    this.getalarmList();
+    this.getalarmList()
   },
   mounted() {
-    const that = this;
-    that.getPanel();
-    document.getElementById("alarmInfo").onclick = function() {
-      this.watchClick();
-    };
+    const that = this
+    that.getPanel()
+    document.getElementById('alarmInfo').onclick = function() {
+      this.watchClick()
+    }
     setTimeout(() => {
       this.formInfo = [
         {
-          id: "567",
-          inCharge: "safsafjk",
+          id: '567',
+          inCharge: 'safsafjk',
           longitude: 110.034,
           latitude: 34.56,
-          address: "嘻嘻",
-          name: "李四",
-          createTime: "2020-09-10",
-          url: "哈哈",
+          address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
           cl: 0
         }
-      ];
+      ]
       this.formInfo.forEach(item => {
         this.markers.push({
           position: [item.longitude, item.latitude],
           content: `<img class='markerImg' data=${JSON.stringify(item)}
           src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
-        });
-      });
-    }, 2000);
+        })
+      })
+    }, 2000)
   },
   methods: {
+    allTab() {
+      this.showTabValue = 'all'
+    },
+    yTab() {
+      this.showTabValue = 'y'
+    },
+    wTab() {
+      this.showTabValue = 'w'
+    },
+    // all() {
+    //   this.TabLan = "all";
+    // },
+    // hand() {
+    //   this.TabLan = "hand";
+    // },
+    // weiChu() {
+    //   this.TabLan = "weiChu";
+    // },
     getalarmList() {
       const params = {
         cascade: true,
@@ -229,46 +256,44 @@ export default {
         },
         params: [
           {
-            field: "createTime",
-            operator: "BETWEEN",
-            value: { start: "2020-09-05 00:00:00", end: "2020-09-05 23:59:59" }
+            field: 'createTime',
+            operator: 'BETWEEN',
+            value: { start: '2020-09-05 00:00:00', end: '2020-09-05 23:59:59' }
           },
           {
-            field: "handlerId",
-            operator: "NULL",
-            value: "null"
+            field: 'handlerId',
+            operator: 'NULL',
+            value: 'null'
           }
         ]
-      };
+      }
       fetchalarmList(params).then(response => {
-        console.log(response.body.data);
-        const { data } = response.body;
-        this.alarmForm.address = data.camera.address;
-      });
+        console.log(response.body.data)
+        const { data } = response.body
+        // this.alarmForm.address = data.camera.address;
+      })
     },
     watchClick(e) {
       e.path.forEach(item => {
-        if (item.className === "markerImg") {
-          this.form = JSON.parse(item.attributes[1].nodeValue);
+        if (item.className === 'markerImg') {
+          this.form = JSON.parse(item.attributes[1].nodeValue)
           // this.showZwMes = false;
         }
-      });
+      })
     },
-    markerClick() {
-      console.log("11111");
-    },
+    markerClick() {},
     closeDialog() {
       this.dialogForm = {
-        id: "",
-        inCharge: "",
-        longitude: "",
-        latitude: ""
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: ''
         // address: ""
-      };
-      this.dialogVisable = false;
+      }
+      this.dialogVisable = false
     },
     showDialog() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     getPanel() {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -382,13 +407,13 @@ export default {
     },
     handleClick(tab, event) {},
     next() {
-      if (this.active++ > 2) this.active = 0;
+      if (this.active++ > 2) this.active = 0
     },
     normal() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     unnormal() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     }
   }
 }
@@ -450,50 +475,89 @@ export default {
           height: 100%;
           float: left;
           padding-top: 8px;
-        }
-        .bottom-right {
-          width: 25%;
-          height: 100%;
-          float: right;
-          // background-color: green;
-          padding-top: 10px;
-          a {
-            color: #1890ff;
-            font-size: 12px;
-            text-align: center;
+
+          .zuo {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+            .zuoContent {
+              background-color: pink;
+            }
           }
+          .zuo:hover {
+            border: #1890ff;
+          }
+          .zhong {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+            border: #1890ff;
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+          }
+          .you {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+            border: #1890ff;
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+          }
+        }
+      }
+      .bottom-right {
+        width: 25%;
+        height: 100%;
+        float: right;
+        padding-top: 10px;
+        a {
+          color: #1890ff;
+          font-size: 12px;
+          text-align: center;
         }
       }
     }
   }
+}
 
-  .dispose {
-    height: 210px;
-    width: 100%;
-    background-color: #fff;
-    margin-top: 10px;
-  }
-  .dash-title {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    padding-left: 20px;
-    font-size: 14px;
+.dispose {
+  height: 210px;
+  width: 100%;
+  background-color: #fff;
+  margin-top: 10px;
+}
+.dash-title {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  padding-left: 20px;
+  font-size: 14px;
 
-    height: 40px;
-    line-height: 40px;
-    color: #333;
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 10px;
-      font-size: 16px;
-      transform: translate(-50%, -50%);
-    }
+  height: 40px;
+  line-height: 40px;
+  color: #333;
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    font-size: 16px;
+    transform: translate(-50%, -50%);
   }
-  .status {
-    margin-top: 20px;
-  }
+}
+.status {
+  margin-top: 20px;
 }
 
 // #app .el-tabs__item {
@@ -504,5 +568,4 @@ export default {
 //   background-color: #fff;
 // }
 </style>
-
 
