@@ -12,7 +12,7 @@ export function fetchUserList(query) {
 export function fetchUser() {
   return request({
     url: 'http://host31.880508.xyz:10000/Login/info',
-    method: 'get',
+    method: 'get'
   })
 }
 
