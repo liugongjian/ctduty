@@ -91,9 +91,36 @@
               </div>
             </div>
             <div class="zuoContent" style="width:100%; height:58px">
-              <div v-if="showTabValue === 'all'">哈哈哈</div>
-              <div v-if="showTabValue === 'y'">嘻嘻嘻</div>
-              <div v-if="showTabValue === 'w'">喝喝喝</div>
+              <div v-if="showTabValue === 'all'">
+                <el-steps :active="values" space="50px" align-center direction="vertical">
+                  <el-step
+                    v-for="(item,index) in stepsData"
+                    :title="item.title"
+                    :description="item.date"
+                    :key="index"
+                  ></el-step>
+                </el-steps>
+              </div>
+              <div v-if="showTabValue === 'y'">
+                <el-steps :active="values" space="50px" align-center direction="vertical">
+                  <el-step
+                    v-for="(item,index) in stepsData"
+                    :title="item.title"
+                    :description="item.date"
+                    :key="index"
+                  ></el-step>
+                </el-steps>
+              </div>
+              <div v-if="showTabValue === 'w'">
+                <el-steps :active="values" space="50px" align-center direction="vertical">
+                  <el-step
+                    v-for="(item,index) in stepsData"
+                    :title="item.title"
+                    :description="item.date"
+                    :key="index"
+                  ></el-step>
+                </el-steps>
+              </div>
             </div>
             <!-- <div v-if="TabLan === 'all'"></div>
               <div v-if="TabLan === 'hand'"></div>
