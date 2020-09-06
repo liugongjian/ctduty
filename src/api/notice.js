@@ -8,34 +8,33 @@ export function fetchNoticeList(query) {
     data: query
   })
 }
+export function postAddNotices(query) {
+    return request({
+      url: '/nvsapi/Notice/Add',
+      method: 'post',
+      data: query
+    })
+  }
 
-// export function postAddUser(query) {
-//     return request({
-//       url: '/nvsapi/User/Add',
-//       method: 'post',
-//       data: query
-//     })
-// }
+  export function getNoticeInfo(id) {
+    return request({
+      url: `/nvsapi/Notice/Get/${id}`,
+      method: 'get'
+    })
+}
 
-// export function getUserInfo(id) {
-//     return request({
-//       url: `/nvsapi/User/Get/${id}`,
-//       method: 'get'
-//     })
-// }
+export function updateANotice(query) {
+    return request({
+      url: '/nvsapi/Notice/Update',
+      method: 'post',
+      data: query
+    })
+}
 
-// export function updateUser(query) {
-//     return request({
-//       url: '/nvsapi/User/Update',
-//       method: 'post',
-//       data: query
-//     })
-// }
-
-// export function deleteUser(ids) {
-//     return request({
-//       url: '/nvsapi/User/Delete',
-//       method: 'post',
-//       data: ids
-//     })
-// }
+export function deleteNotices(ids) {
+    return request({
+      url: '/nvsapi/Notice/Delete',
+      method: 'post',
+      data: ids
+    })
+}
