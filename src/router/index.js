@@ -100,34 +100,47 @@ NProgress.configure({
 //   }
 // })
 
-// router.beforeEach((to, from, next) => {
-//   let timeout = null
-//   // 判断当前用户是否已拉取完user_info信息
-//   store.dispatch('GetUserInfo').then((res) => {
-//     if (res.code < 0) {
-//       Message.error('您还没有登录')
-//       clearTimeout(timeout)
-//       // timeout = setTimeout(() => {
-//       //   window.location.href = process.env.LOGIN_URL
-//       // }, 3000)
-//       return
-//     } else {
-//       // addOprecord({
-//       //   "userId": res.data.id,
-//       //   "userName": res.data.name,
-//       //   "record": `访问${to.name || to.path}`
-//       // });
-//       next()
-//       return
-//     }
-//   }).catch(error => {
-//     Message.error(error.message)
-//     // clearTimeout(timeout)
-//     // timeout = setTimeout(() => {
-//     //   window.location.href = process.env.LOGIN_URL
-//     // }, 1000)
-//   })
-// })
+router.beforeEach((to, from, next) => {
+  let timeout = null
+  // 判断当前用户是否已拉取完user_info信息
+  // store.dispatch('GetUserInfo').then((res) => {
+  //   if (res.code < 0) {
+  //     Message.error('您还没有登录')
+  //     clearTimeout(timeout)
+  //     // timeout = setTimeout(() => {
+  //     //   window.location.href = process.env.LOGIN_URL
+  //     // }, 3000)
+  //     return
+  //   } else {
+  //     // addOprecord({
+  //     //   "userId": res.data.id,
+  //     //   "userName": res.data.name,
+  //     //   "record": `访问${to.name || to.path}`
+  //     // });
+  //     return
+  //   }
+
+  const token = localStorage.getItem('token')
+  console.log('token', token)
+  if (to.path === '/dashboard') {
+    if (token) {
+      next()
+    } else {
+      next('/login')
+      // window.location.href = process.env.LOGIN_URL
+    }
+  } else {
+    next()
+  }
+})
+  // }).catch(error => {
+  //   Message.error(error.message)
+  //   // clearTimeout(timeout)
+  //   // timeout = setTimeout(() => {
+  //   //   window.location.href = process.env.LOGIN_URL
+  //   // }, 1000)
+  // })
+
 
 // router.afterEach((to, from) => {
 //   NProgress.done() // finish progress bar

@@ -153,9 +153,9 @@ export default {
     },
     // huanglulu
     businessLogout() {
-      window.location.href = `${process.env.LOGOUT_URL}`
-      Cookies.remove('token')
-      Cookies.remove('userId')
+      // window.location.href = `${process.env.LOGOUT_URL}`;
+      this.$router.push('/login')
+      localStorage.removeItem('token')
     },
     toUpWord() {
       if (this.form.re_password === '') {

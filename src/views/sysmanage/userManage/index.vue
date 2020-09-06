@@ -1,7 +1,6 @@
 
 <template>
   <div>
-    <span style="font-family: MicrosoftYaHei;font-size: 22px;color: #333333;margin-left:20px;inline-height:20px">用户管理</span>
     <el-divider></el-divider>
     <el-row>
       <el-button type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
