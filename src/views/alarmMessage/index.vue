@@ -87,7 +87,6 @@
         <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
-          </el-table-column>
       </el-table>
 
       <pagination

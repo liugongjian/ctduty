@@ -22,3 +22,12 @@ export function editCamera(query) {
     data: query
   })
 }
+
+// 新增摄像头信息
+export function addCamera(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Camera/Add',
+    method: 'post',
+    data: query
+  })
+}

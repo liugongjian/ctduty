@@ -16,7 +16,7 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
       </template> -->
-      <div class="fullscreen">
+      <div class="fullscreen" @click="screenfull">
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
       </div>
@@ -55,6 +55,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import screenfull from 'screenfull'
 import Cookies from 'js-cookie'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -83,7 +84,8 @@ export default {
       form: {
         re_password: '',
         new_password: ''
-      }
+      },
+      isFullscreen: false
     }
   },
   computed: {
@@ -95,7 +97,52 @@ export default {
     ])
 
   },
+  watch: {
+    isFullscreen(v) {
+      console.log(v)
+      if (v) {
+        document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
+        document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.add('texthighlight')
+      } else {
+        document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.remove('highlight')
+        document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
+      }
+    }
+  },
+  mounted() {
+    window.onresize = () => {
+      // 全屏下监控是否按键了ESC
+      if (!document.webkitIsFullScreen) {
+        this.isFullscreen = false
+      }
+      if (!this.checkFull()) {
+        // 全屏下按键esc后要执行的动作
+        this.isFullscreen = false
+      }
+    }
+  },
   methods: {
+    screenfull(e) {
+      e.path.forEach(item => {
+        if (item.className === 'fullscreen') {
+          item.childNodes[0].classList.toggle('highlight')
+          // item.childNodes[1].classList.toggle('texthighlight')
+        }
+      })
+      screenfull.toggle()
+      this.isFullscreen = !this.isFullscreen
+    },
+    /**
+   * 是否全屏并按键ESC键的方法
+   */
+    checkFull() {
+      var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+      // to fix : false || undefined == undefined
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
+    },
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
@@ -231,11 +278,23 @@ export default {
         margin-right: 30px;
         margin-top: 1px;
         font-size: 14px;
-
+        cursor: pointer;
       }
       .notice {
         margin-right: 100px;
         font-size: 14px;
+        cursor: pointer;
+      }
+      .full {
+        cursor: pointer;
+      }
+      .highlight {
+        fill: #E6A23C;
+
+      }
+      .texthighlight {
+        color: #E6A23C;
+        font-weight: 700;
       }
     }
   }
