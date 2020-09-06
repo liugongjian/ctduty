@@ -166,7 +166,8 @@ export default {
         that.screenWidth = element.clientWidth
       })
     })
-
+    that.getList()
+    that.getNowList()
     registerMap()
     // that.mapFn(that.mapData)
     that.getMap()
@@ -178,6 +179,40 @@ export default {
     this.drawZhu('alarmLine')
   },
   methods: {
+    getList() {
+      // fetchAllData
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchAllData(params).then(res => {
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
+    },
+    getNowList() {
+      // fetchAllData
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchNowInfo(params).then(res => {
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
+    },
     clickTagItem(tag) {
       // TODO
     },
@@ -416,7 +451,6 @@ export default {
           x: 'center',
           y: '40%'
         },
-
         series: [{
           type: 'liquidFill',
           radius: '80%',
