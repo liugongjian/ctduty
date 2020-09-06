@@ -1,13 +1,10 @@
 <template>
   <div class="list">
-    <div class="title">
-      摄像头管理
-    </div>
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
-          <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
+          <el-button class="filter-item" type="warning" @click="forcedExit">{{ '强退' }}</el-button>
+          <!-- <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form :model="viewXq" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
               </el-form-item>
@@ -27,36 +24,68 @@
               >确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
-          </el-dialog>
-        </div>
-        <div class="pull-right">
-          <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
-            <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
-          </el-select>
+          </el-dialog> -->
         </div>
       </div>
+
       <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="custName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'经纬度信息'" prop="appName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="apiName"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="originCode"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加时间'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="consumeTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'" prop="consumeTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'会话编号'" prop="code">
+          <template slot-scope="scope">
+            <span>{{ scope.row.code }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录名称'" prop="username">
+          <template slot-scope="scope">
+            <span>{{ scope.row.username }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'部门名称'" prop="name">
+          <template slot-scope="scope">
+            <span>{{ scope.row.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'主机'" prop="ip">
+          <template slot-scope="scope">
+            <span>{{ scope.row.ip }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'浏览器'" prop="browser">
+          <template slot-scope="scope">
+            <span>{{ scope.row.browser }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作系统'" prop="system">
+          <template slot-scope="scope">
+            <span>{{ scope.row.system }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录时间'" prop="firstLoginTime">
+          <template slot-scope="scope">
+            <span>{{ scope.row.firstLoginTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'最近访问时间'" prop="lastAccessTime">
+          <template slot-scope="scope">
+            <span>{{ scope.row.lastAccessTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作'">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <pagination
         v-show="total>0"
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
-        @pagination="pageChange()"
       />
+        <!-- @pagination="pageChange()" -->
     </div>
   </div>
 </template>
@@ -67,21 +96,16 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
-  fetchAmountDetailList
+  fetchOnlineList, fetchOnlineLogout
 } from '@/api/applications'
 export default {
   components: { Pagination },
   data() {
     return {
-      formInline: {
-        searchkey: '',
-        typeValue: 'list'
-      },
-      typeOptions: [{ name: '地图模式', _id: 'map' },
-        { name: '列表模式', _id: 'list' }],
       listLoading: false,
       filteredValue: [],
       tableData: [],
+      code: '',
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -91,15 +115,15 @@ export default {
       oldSize: 20
     }
   },
-  watch: {
-    limit() {
-      this.page = 1
-      this.pageChange()
-    }
-  },
+  // watch: {
+  //   limit() {
+  //     this.page = 1
+  //     this.pageChange()
+  //   }
+  // },
   created() {
     Message.closeAll()
-    this.getList(this.$route.query._id)
+    this.getList()
   },
   methods: {
     create() {
@@ -108,65 +132,44 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
+    // 强退
+    forcedExit(code) {
+      const getToken = function(TokenKey) {
+        return Cookies.get(TokenKey) || ''
+      }
+      const params = {
+        code: this.code,
+        token: this.getToken()
+      }
+      fetchOnlineLogout(params, this.code).then(response => {
+        console.log('强退成功')
+        // this.tableData = []
+        // console.log('response',response)
+        // console.log('this tabledata', this.tableData)
+        // for (let i = 0; i < response.body.data.length; i++) {
+        //   this.tableData.push(Object.assign(response.body.data[i]))
+        // }
+        // this.tableData = response.data.result
+        // this.total = response.data.pageInfo.totalItems
+        // this.listLoading = false
+      })
+    },
     onSearch() {
       console.log('搜索')
-    },
-    checkModel() {
-      this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
     },
-    pageChange() {
-      if (this.oldSize !== this.limit) {
-        this.page = 1
-      }
-      this.oldSize = this.limit
-      this.getList(this.$route.query._id)
-    },
+    // pageChange() {
+    //   if (this.oldSize !== this.limit) {
+    //     this.page = 1
+    //   }
+    //   this.oldSize = this.limit
+    //   this.getList(this.$route.query._id)
+    // },
     goBack() {
       this.$router.go(-1)
-    },
-    // 导出列表为excel
-    onExport() {
-      if (!this.tableData.length) {
-        this.$message({
-          message: '无数据',
-          type: 'warning'
-        })
-        return
-      }
-      this.getExportList()
-    },
-    // 再次请求应用列表的数据 不分页
-    getExportList() {
-      const params = {
-        isPaging: 0,
-        limit: 999999,
-        originCode: this.originCode
-      }
-      fetchAmountDetailList(params, this.$route.query._id).then(response => {
-        if (response.data.result.length === 0) {
-          this.$message({
-            message: '无数据',
-            type: 'warning'
-          })
-          return
-        }
-        this.exportData = response.data.result
-        import('@/vendor/Export2Excel').then(excel => {
-          const filterVal = ['createTime', 'custName', 'appName', 'apiName', 'originCode', 'consumeTime']
-          const data = this.formatJson(filterVal, this.exportData)
-          excel.export_json_to_excel({
-            header: ['调用时间', '客户名称', '应用名称', '接口名称', '状态码', '耗时'], // 表头 必填,
-            data, // 具体数据 必填
-            filename: '调用量详情列表', // 非必填
-            autoWidth: true, // 非必填
-            bookType: 'xlsx' // 非必填
-          })
-        })
-      })
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
@@ -195,16 +198,18 @@ export default {
       }
     },
     // 获取列表数据
-    getList(id) {
-      const params = {
-        page: this.page,
-        limit: this.limit,
-        originCode: this.originCode
-      }
-      fetchAmountDetailList(params, id).then(response => {
-        this.tableData = response.data.result
-        this.total = response.data.pageInfo.totalItems
-        this.listLoading = false
+    getList() {
+      fetchOnlineList().then(response => {
+        this.tableData = []
+        console.log('response',response)
+        console.log('this tabledata', this.tableData)
+        for (let i = 0; i < response.body.data.length; i++) {
+          this.code = response.body.data.code
+          this.tableData.push(Object.assign(response.body.data[i]))
+        }
+        // this.tableData = response.data.result
+        // this.total = response.data.pageInfo.totalItems
+        // this.listLoading = false
       })
     },
     handleSelectionChange(val) {

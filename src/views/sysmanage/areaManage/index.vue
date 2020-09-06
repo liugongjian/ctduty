@@ -1,5 +1,66 @@
 <template>
   <div class="area" style="height: 100%">
+    <div class="floatmsg">
+      <div class="floatword">
+        <input type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
+        <button class="btnmsg" @click="onSearch">{{ $t('navbar.search') }}</button>
+      </div>
+      <div class="floatsearch">
+        <div class="floatsearch-tree">
+          <el-tree
+            v-if="openOrNot"
+            :data="data"
+            :indent="indent"
+            node-key="id"
+            accordion
+            @node-click="handleNodeClick"
+          >
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span>
+                <i :class="[data.icon]"></i>{{ node.label }}
+              </span>
+            </span>
+          </el-tree>
+        </div>
+        <div class="local">
+          <div v-for="(item, index) in local" :key="index" class="huapolice" >{{ item }}</div>
+        </div>
+        <div class="border"></div>
+      </div>
+      <div class="address">
+        <div class="leftborder"></div>
+        <div class="addressmsg" :model="addressdata" v-if="addressdata.mengpolice">
+          <p class="msg msg1">
+            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
+            孟塬镇派出所
+          </p>
+          <p class="msg msg2">
+            陕西省渭南市华阴市孟塬镇孟塬大酒店西南150米
+          </p>
+        </div>
+        <div class="addressmsg" :model="addressdata" v-else-if="addressdata.huapolice">
+          <p class="msg msg1">
+            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
+            华阴市公安支队
+          </p>
+          <p class="msg msg2">
+            陕西省渭南市华阴市华岳东路岳庙中学向东300米左右
+          </p>
+        </div>
+        <div class="addressmsg" :model="addressdata" v-else-if="addressdata.mountainpolice">
+          <p class="msg msg1">
+            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
+            华山镇派出所
+          </p>
+          <p class="msg msg2">
+            玉泉路与金勃路交叉口西北150米
+          </p>
+        </div>
+        <div class="addressimg">
+          <img src="../../../assets/images/police.jpg" alt="">
+        </div>
+      </div>
+    </div>
     <div class="map" style="width: 100%; height:100%;">
       <el-amap
         :amap-manager="amapManager"
@@ -10,43 +71,6 @@
         vid="amapDemo"
         style="height: 100%"
       ></el-amap>
-    </div>
-    <div class="floatmsg">
-      <div class="floatword">
-        <input type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
-        <button class="btnmsg" @click="onSearch">{{ $t('navbar.search') }}</button>
-      </div>
-      <div class="floatsearch">
-        <p class="huapolice">华阴公安支队</p>
-        <p class="mengpolice">孟塬镇派出所</p>
-        <p class="mountainpolice">华山镇派出所</p>
-        <el-tree
-          :data="data"
-          :indent="40"
-          node-key="id"
-          default-expand-all
-        >
-          <span slot-scope="{ node, data }" class="custom-tree-node">
-            <span>
-              <i :class="[data.icon]"></i>{{ node.label }}
-            </span>
-          </span>
-        </el-tree>
-        <div class="border"></div>
-      </div>
-      <div class="address">
-        <div class="leftborder"></div>
-        <div class="addressmsg">
-          <p class="msg msg1">
-            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            孟源派出所公安局
-          </p>
-          <p class="msg msg2">
-            陕西省渭南市华阴市孟塬镇孟塬大酒店西南150米
-          </p>
-        </div>
-        <div class="addressimg"></div>
-      </div>
     </div>
   </div>
 </template>
@@ -104,10 +128,15 @@ export default {
           }]
         }
       ],
+      local: [
+        '华阴公安支队'
+      ],
       defaultProps: {
         children: 'children',
         label: 'label'
       },
+      openOrNot: true,
+      indent: 40,
       // 地图数据
       zoom: 12,
       center: [110.09, 34.58],
@@ -126,6 +155,11 @@ export default {
           })
           marker.setMap(o)
         }
+      },
+      addressdata: {
+        huapolice: true,
+        mengpolice: false,
+        mountainpolice: false
       }
     }
   },
@@ -133,6 +167,34 @@ export default {
 
   },
   methods: {
+    // 节点点击事件
+    handleNodeClick(data, node, obj) {
+      console.log(node)
+      if (node.level === 2 && data.label === '孟塬镇') {
+        this.local = []
+        this.local.push('孟塬镇派出所')
+        this.addressdata.mengpolice = true
+        this.addressdata.mountainpolice = false
+        this.addressdata.huapolice = false
+      } else if (node.level === 2 && data.label === '华山镇') {
+        this.local = []
+        this.local.push('华山镇派出所')
+        this.addressdata.mountainpolice = true
+        this.addressdata.huapolice = false
+        this.addressdata.mengpolice = false
+      } else if (node.level === 1 && !node.expanded) {
+        this.openOrNot = false
+        this.local = []
+        this.local.push('华阴公安支队')
+        this.addressdata.huapolice = true
+        this.addressdata.mengpolice = false
+        this.addressdata.mountainpolice = false
+        setTimeout(() => {
+          this.openOrNot = true
+        })
+        clearTimeout()
+      }
+    },
     // 模糊搜索事件 请求接口
     onSearch() {
       this.page = 1
@@ -160,12 +222,12 @@ export default {
   }
   .area {
     .floatmsg {
-      position: fixed;
-      top: 50px;
-      left: 240px;
-      margin-left: 20px;
+      position: absolute;
+      left: 20px;
+      top: 70px;
+      overflow: hidden;
+      z-index: 9999;
       .floatword {
-        margin-top: 20px;
         background-color: #fff;
         .inputmsg {
           width: 300px;
@@ -174,6 +236,7 @@ export default {
           background: #FFFFFF;
           border: 1px solid #D9D9D9;
           border-radius: 4px 0px 0px 4px;
+          outline-color: #D9D9D9;
         }
         .btnmsg {
           width: 70px;
@@ -183,28 +246,30 @@ export default {
           color: #FFF;
           background: #FF9832;
           border-radius: 0 4px 4px 0;
+          outline:none;
         }
       }
       .floatsearch {
         width: 368px;
-        height: 360px;
+        height: 100%;
         padding: 20px 20px;
         background-color: #fff;
         margin-top: 20px;
         position: relative;
+        display: flex;
         border-radius: 4px 4px 0px 0px;
+        .floatsearch-tree {
+          flex: 2;
+        }
         .el-tree-node__expand-icon {
           display: none;
         }
-        .el-tree {
-          position: absolute;
-        }
         .huapolice {
-          position: absolute;
-          top: 10px;
-          right: 30px;
-          color: #606266;
+          width: 100%;
+          line-height: 32px;
+          text-align: center;
           font-size: 14px;
+          padding-left: 5px;
         }
         .mengpolice {
           position: absolute;
@@ -257,6 +322,14 @@ export default {
             color: rgba(0,0,0,0.45);
             line-height: 22px;
           }
+        }
+      }
+      .addressimg {
+        width: 100px;
+        height: 60px;
+        img {
+          width: 100%;
+          height: 100%;
         }
       }
     }

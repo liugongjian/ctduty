@@ -4,7 +4,7 @@ import {
   // logout,
   getUserPrem
 } from '@/api/login'
-import { fetchUser } from '@/api/user';
+import { fetchUser,  fetchUserOnline } from '@/api/user';
 import {
   getToken,
   setToken,

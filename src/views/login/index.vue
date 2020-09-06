@@ -30,13 +30,13 @@
             <div class="passwordIcon"></div>
             <el-input v-model="loginForm.password" type="password" placeholder="密码" class="passWord" ></el-input>
           </el-form-item>
-          <el-form-item :error="errorcodeMsg" class="yzm" prop="yzm">
+          <!-- <el-form-item :error="errorcodeMsg" class="yzm" prop="yzm">
             <div class="yzmIcon"></div>
             <el-input v-model="loginForm.yzm" type="text" placeholder="请输入验证码" @keyup.enter.native="login"></el-input>
             <div class="yzmImg" style="margin-left: 12px;height:40px;position:absolute;right:0;top:0;width:102px" @click="refreshImg">
               <img :src = "verifyImgUrl" height="40" width="102">
             </div>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div>
           <el-button class="btn" type="warning" @click="login">登录</el-button>
@@ -62,7 +62,7 @@ export default {
       loginForm: {
         username: '',
         password: '',
-        yzm: ''
+        // yzm: ''  // 验证码
       },
       verifyImgUrl: yzmImg + '?' + new Date().getTime(),
       loginRules: {
@@ -72,13 +72,14 @@ export default {
         password: [
           { required: true, trigger: 'blur', message: '请输入密码' }
         ],
-        yzm: [
-          { required: true, trigger: 'blur', message: '请输入验证码' }
-        ]
+        // yzm: [
+        //   { required: true, trigger: 'blur', message: '请输入验证码' }
+        // ]
       },
       // errorMsg: '',
       erroruserMsg: '',
-      errorcodeMsg: ''
+      errorcodeMsg: '',
+      token: ''
     }
   },
   created() {
@@ -86,15 +87,15 @@ export default {
   },
   methods: {
     // 刷新验证码
-    refreshImg() {
-      this.verifyImgUrl = yzmImg + '?' + new Date().getTime()
-    },
+    // refreshImg() {
+    //   this.verifyImgUrl = yzmImg + '?' + new Date().getTime()
+    // },
     // 自动填充
     setCookerTian() {
       this.loginForm = {
         username: '',
         password: '',
-        yzm: ''
+        // yzm: ''
       }
       // 在页面加载时从cookie获取登录信息
       const username = Cookies.get('username')
@@ -109,34 +110,36 @@ export default {
       }
     },
     // 记住密码 则将用户名和密码保存在cookie中
-    setCooker(username, password) {
-      if (this.loginForm.type) {
-        Cookies.set('username', username)
-        Cookies.set('password', Base64.encode(password))
-      }
-    },
+    // setCooker(username, password) {
+    //   if (this.loginForm.type) {
+    //     Cookies.set('username', username)
+    //     Cookies.set('password', Base64.encode(password))
+    //   }
+    // },
     login() {
       this.$refs.loginForm.validate(valid => {
+        console.log(valid, 'valid')
         if (valid) {
           const redirect_url_front = this.$route.query.redirect_url
           const redirect = this.$route.query.redirect
           // const passWord = Base64.encode(this.loginForm.password.trim())
           // const result = testPassword(this.loginForm.password.trim())
           // if(result === 0){
-          const passWord = encryptAes(this.loginForm.password.trim())
+          const passWord = this.loginForm.password.trim()
           const params = {
             username: this.loginForm.username.trim(),
-            password: passWord,
-            verifyCode: this.loginForm.yzm,
-            // from: this.$route.query.from || 'zen'
-            from: 'zen'
+            password: passWord
           }
           this.erroruserMsg = ''
           this.errorcodeMsg = ''
           loginByUsername(params).then((resp) => {
-            if (resp.code === 200) {
-              // 把密码存在cookie中 当切仅当记住密码点了记住密码
-              this.setCooker(this.loginForm.username, this.loginForm.password)
+            if (resp.code === 0) {
+              console.log('跳转首页')
+              // 把token存在cookie中
+              this.token = resp.body.data
+              Cookies.set('token', this.token)
+              this.$router.push('/dashboard')
+
               if (redirect_url_front) {
                 let redirect_url
                 if (redirect_url_front.indexOf('?') > -1 && redirect_url_front.indexOf('@') > -1) {
@@ -156,10 +159,10 @@ export default {
                 }
               } else {
                 Cookies.set('_id', Base64.encode(resp.data.user._id))
-                this.$router.push({ path: redirect || '/admin/dashboard' })
+                this.$router.push({ path: redirect || '/dashboard' })
               }
             } else {
-              this.refreshImg()
+              // this.refreshImg()
               if (resp.code === 'USER_WRONG') {
                 this.erroruserMsg = resp.msg
               } else if (resp.code === 'CODE_EXPIRES') {
@@ -172,7 +175,8 @@ export default {
             }
             // eslint-disable-next-line handle-callback-err
           }).catch(error => {
-            this.refreshImg()
+            console.log(error)
+            // this.refreshImg()
           })
         } else {
           return false

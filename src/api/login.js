@@ -6,9 +6,10 @@ const {
 } = config
 export function loginByUsername(data) {
   return request({
-    url: '/api-proxy/authentication',
+    url: '/nvsapi/Login',
     method: 'post',
-    data: qs.stringify(data)
+    data: data,
+    // headers: { 'contentType' : 'application/json' }
   })
 }
 
