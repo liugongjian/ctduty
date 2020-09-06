@@ -34,47 +34,47 @@
           type="selection"
           width="55">
         </el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'会话编号'" prop="code">
+        <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" style="text-align: center" prop="code">
           <template slot-scope="scope">
             <span>{{ scope.row.code }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录名称'" prop="username">
+        <el-table-column :show-overflow-tooltip="true" :label="'登录名称'" style="text-align: center" prop="username">
           <template slot-scope="scope">
             <span>{{ scope.row.username }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'部门名称'" prop="name">
+        <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
           <template slot-scope="scope">
             <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'主机'" prop="ip">
+        <el-table-column :show-overflow-tooltip="true" :label="'主机'" style="text-align: center" prop="ip">
           <template slot-scope="scope">
             <span>{{ scope.row.ip }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'浏览器'" prop="browser">
+        <el-table-column :show-overflow-tooltip="true" :label="'浏览器'" style="text-align: center" prop="browser">
           <template slot-scope="scope">
             <span>{{ scope.row.browser }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作系统'" prop="system">
+        <el-table-column :show-overflow-tooltip="true" :label="'操作系统'" style="text-align: center" prop="system">
           <template slot-scope="scope">
             <span>{{ scope.row.system }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录时间'" prop="firstLoginTime">
+        <el-table-column :show-overflow-tooltip="true" :label="'登录时间'" style="text-align: center" prop="firstLoginTime">
           <template slot-scope="scope">
             <span>{{ renderTime(scope.row.firstLoginTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'最近访问时间'" prop="lastAccessTime">
+        <el-table-column :show-overflow-tooltip="true" :label="'最近访问时间'" style="text-align: center" prop="lastAccessTime">
           <template slot-scope="scope">
             <span>{{ renderTime(scope.row.lastAccessTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作'">
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'" style="text-align: center">
           <template slot-scope="scope">
             <el-button class="forced" type="warning" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
           </template>
@@ -86,7 +86,7 @@
         :page.sync="page"
         :limit.sync="limit"
       />
-        <!-- @pagination="pageChange()" -->
+      <!-- @pagination="pageChange()" -->
     </div>
   </div>
 </template>
@@ -97,7 +97,7 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import { renderTime } from '@/utils'
-import {fetchOnlineList, fetchOnlineLogout} from '@/api/user'
+import { fetchOnlineList, fetchOnlineLogout } from '@/api/user'
 export default {
   components: { Pagination },
   data() {
@@ -136,7 +136,7 @@ export default {
     // 强退
     forcedExit(code) {
       const token = localStorage.getItem('token')
-      fetchOnlineLogout( this.code).then(response => {
+      fetchOnlineLogout(this.code).then(response => {
         console.log('强退成功')
         if (response.code === 0) {
           this.getList()
@@ -192,7 +192,7 @@ export default {
     getList() {
       fetchOnlineList().then(response => {
         this.tableData = []
-        console.log('response',response)
+        console.log('response', response)
         console.log('this tabledata', this.tableData)
         for (let i = 0; i < response.body.data.length; i++) {
           this.code = response.body.data[i].code

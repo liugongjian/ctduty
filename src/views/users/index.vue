@@ -39,7 +39,7 @@
       title="新增用户"
       width="50%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="addUserForm" label-width="100px">
+      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
         <el-form-item label="用户名" prop="user_name">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
