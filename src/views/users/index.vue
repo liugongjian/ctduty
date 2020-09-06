@@ -193,16 +193,16 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.pagenum,
-          size: this.pagesize
+          index: this.queryInfo.pagenum,
+          size: this.queryInfo.pagesize
         },
         params: {}
       }
       fetchUserList(query).then(response => {
-        console.log(response)
+        // console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
-        this.totalnum = response.body.total
+        this.totalnum = response.body.page.total
       })
     },
 
@@ -235,7 +235,7 @@ export default {
       this.$refs.addFormRef.resetFields()
     },
     showEditDialog(id) {
-      const { data: res } = getUserInfo(id).then(response => {
+      getUserInfo(id).then(response => {
         // console.log(response)
         if (response.code !== 0) return this.$message.error('获取用户信息失败')
         this.editUserForm = response.body.data
@@ -272,7 +272,7 @@ export default {
         this.deleteUserId = 0
         this.deleteUserName = ''
         this.getUserList()
-        this.$message.success('删除用户信息')
+        this.$message.success('删除用户信息成功')
       })
     }
 
