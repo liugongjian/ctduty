@@ -3,7 +3,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" @click="forcedExit">{{ '强退' }}</el-button>
+          <!-- <el-button class="filter-item" type="warning" @click="forcedExit">{{ '强退' }}</el-button> -->
           <!-- <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form :model="viewXq" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input placeholder="请输入摄像头ID" class="filter-item" style="width: 350px;"></el-input>
@@ -28,11 +28,12 @@
         </div>
       </div>
 
-      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-        <el-table-column
+      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" >
+        <!--批量操作事件 @selection-change="handleSelectionChange" -->
+        <!-- <el-table-column
           type="selection"
           width="55">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'会话编号'" prop="code">
           <template slot-scope="scope">
             <span>{{ scope.row.code }}</span>
@@ -70,7 +71,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'最近访问时间'" prop="lastAccessTime">
           <template slot-scope="scope">
-            <span>{{ scope.row.lastAccessTime }}</span>
+            <span>{{ renderTime(scope.row.lastAccessTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作'">
@@ -137,7 +138,10 @@ export default {
       const token = localStorage.getItem('token')
       fetchOnlineLogout( this.code).then(response => {
         console.log('强退成功')
-        
+        if (response.code === 0) {
+
+          this.getList()
+        }
       })
     },
     onSearch() {
@@ -190,7 +194,7 @@ export default {
         console.log('response',response)
         console.log('this tabledata', this.tableData)
         for (let i = 0; i < response.body.data.length; i++) {
-          this.code = response.body.data.code
+          this.code = response.body.data[i].code
           this.tableData.push(Object.assign(response.body.data[i]))
         }
         // this.tableData = response.data.result
@@ -198,9 +202,11 @@ export default {
         // this.listLoading = false
       })
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
+
+    // 批量操作
+    // handleSelectionChange(val) {
+    //   this.multipleSelection = val
+    // },
     dialogQuxiao() {
       this.dialogVisable = false
     },

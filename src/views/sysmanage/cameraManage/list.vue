@@ -47,7 +47,7 @@
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="name"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加时间'" prop="createTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="url"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
@@ -96,6 +96,7 @@ import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchAllCameraList, editCamera, addCamera
 } from '@/api/camera'
@@ -149,6 +150,9 @@ export default {
     console.log(this.tableData, 'xxh')
   },
   methods: {
+    formatTime: function(row, column, cellValue) {
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+    },
     editDialog(v) {
       this.editForm.id = v.id
       this.editForm.inCharge = v.inCharge

@@ -61,7 +61,7 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: '',
+        password: ''
         // yzm: ''  // 验证码
       },
       // verifyImgUrl: yzmImg + '?' + new Date().getTime(),
@@ -71,7 +71,7 @@ export default {
         ],
         password: [
           { required: true, trigger: 'blur', message: '请输入密码' }
-        ],
+        ]
         // yzm: [
         //   { required: true, trigger: 'blur', message: '请输入验证码' }
         // ]
@@ -94,7 +94,7 @@ export default {
     setCookerTian() {
       this.loginForm = {
         username: '',
-        password: '',
+        password: ''
         // yzm: ''
       }
       // 在页面加载时从cookie获取登录信息
