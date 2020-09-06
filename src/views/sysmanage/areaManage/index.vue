@@ -29,7 +29,7 @@
       </div>
       <div class="address">
         <div class="leftborder"></div>
-        <div class="addressmsg" :model="addressdata" v-if="addressdata.mengpolice">
+        <div v-if="addressdata.mengpolice" :model="addressdata" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
             孟塬镇派出所
@@ -38,7 +38,7 @@
             陕西省渭南市华阴市孟塬镇孟塬大酒店西南150米
           </p>
         </div>
-        <div class="addressmsg" :model="addressdata" v-else-if="addressdata.huapolice">
+        <div v-else-if="addressdata.huapolice" :model="addressdata" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
             华阴市公安支队
@@ -47,7 +47,7 @@
             陕西省渭南市华阴市华岳东路岳庙中学向东300米左右
           </p>
         </div>
-        <div class="addressmsg" :model="addressdata" v-else-if="addressdata.mountainpolice">
+        <div v-else-if="addressdata.mountainpolice" :model="addressdata" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
             华山镇派出所
@@ -155,7 +155,7 @@ export default {
         mountainpolice: false
       },
       markers: [],
-      formInfo: [],
+      formInfo: []
 
     }
   },
@@ -174,14 +174,14 @@ export default {
         this.addressdata.mengpolice = true
         this.addressdata.mountainpolice = false
         this.addressdata.huapolice = false
-        this.markers = [{position: [110.147774, 34.558654], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="孟塬镇派出所">` }]
+        this.markers = [{ position: [110.147774, 34.558654], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="孟塬镇派出所">` }]
       } else if (node.level === 2 && data.label === '华山镇') {
         this.local = []
         this.local.push('华山镇派出所')
         this.addressdata.mountainpolice = true
         this.addressdata.huapolice = false
         this.addressdata.mengpolice = false
-        this.markers = [{position: [110.0877, 34.534504], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="华山镇派出所">` }]
+        this.markers = [{ position: [110.0877, 34.534504], content: `<img class='markerImg' src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;" title="华山镇派出所">` }]
       } else if (node.level === 1 && !node.expanded) {
         this.openOrNot = false
         this.local = []

@@ -1,5 +1,5 @@
 <template>
-  <div class="alarmInfo">
+  <div class="alarmInfo" id="alarmInfo">
     <div class="map">
       <el-amap
         :amap-manager="amapManager"
@@ -9,6 +9,16 @@
         class="amap-demo"
         vid="amapDemo"
       ></el-amap>
+      <el-amap-marker
+        v-for="(marker, index) in markers"
+        :events="events"
+        :id="'point'+index"
+        :key="index"
+        :position="marker.position"
+        :vid="index"
+        :content="marker.content"
+        @click="markerClick"
+      ></el-amap-marker>
 
       <div class="warn">
         <div class="dispose">
@@ -20,31 +30,68 @@
         <div class="bottom">
           <div class="todyW">今日告警</div>
           <div class="bottom-left">
-            <template>
-              <el-tabs v-model="activeName" type="card" @click="handleClick">
-                <el-tab-pane label="全部" name="first">
-                  <div style="height: 100%;">
-                    <el-steps :active="active" finish-status="success" direction="vertical">
+            <el-tabs v-model="activeName" type="border-card" @click="handleClick">
+              <el-tab-pane label="全部" name="first">
+                <div style="height: 100%;">
+                  <!-- <el-steps :active="active" finish-status="success" direction="vertical">
                       <el-step
                         v-for="item in approvalProcessProject"
                         :title="item.label"
                         :key="item.id"
                       >
                         <template slot="icon">
-                          <img
-                            src="../../../src/assets/icon/未处理.png"
-                            style="height:25x;width:25px;"
-                          />
+                          <img src="../../../src/assets/icon/已处理@1x.png" style="height:25x;width:25px;"/>
                         </template>
                         <template slot="description"></template>
                       </el-step>
-                    </el-steps>
-                  </div>
-                </el-tab-pane>
-                <el-tab-pane label="未处理" name="second">未处理</el-tab-pane>
-                <el-tab-pane label="已处理" name="third">已处理</el-tab-pane>
-              </el-tabs>
-            </template>
+                  </el-steps>-->
+                  <template>
+                    <div @click="showDialog">
+                      <el-steps :active="values" space="50px" align-center direction="vertical">
+                        <el-step
+                          :title="item.title"
+                          :description="item.date"
+                          v-for="(item,index) in stepsData"
+                          :key="index"
+                        ></el-step>
+                      </el-steps>
+                    </div>
+                  </template>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="未处理" name="second">
+                <div style="height: 100%;">
+                  <template>
+                    <div @click="showDialog">
+                      <el-steps :active="values" space="50px" align-center direction="vertical">
+                        <el-step
+                          :title="item.title"
+                          :description="item.date"
+                          v-for="(item,index) in stepsData"
+                          :key="index"
+                        ></el-step>
+                      </el-steps>
+                    </div>
+                  </template>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane label="已处理" name="third">
+                <div style="height: 100%;">
+                  <template>
+                    <div @click="showDialog">
+                      <el-steps :active="values" space="50px" align-center direction="vertical">
+                        <el-step
+                          :title="item.title"
+                          :description="item.date"
+                          v-for="(item,index) in stepsData"
+                          :key="index"
+                        ></el-step>
+                      </el-steps>
+                    </div>
+                  </template>
+                </div>
+              </el-tab-pane>
+            </el-tabs>
           </div>
           <div class="bottom-right">
             <ul>
@@ -53,6 +100,26 @@
               </li>
             </ul>
           </div>
+          <el-dialog :visible="dialogVisable" title="报警显示" width="520px" @close="closeDialog">
+            <el-form :model="alarmForm" label-position="right" label-width="100px">
+              <el-form-item label="流量状态:" v-model="alarmForm.address">
+                <span style="width: 300px;">{{"陕西省渭南市威清路双王路路口"}}</span>
+              </el-form-item>
+              <el-form-item label="监控时间:" v-model="alarmForm.time">
+                <span style="width: 300px;">{{"陕西省渭南市威清路双王路路口"}}</span>
+              </el-form-item>
+              <el-form-item label="原始照片:">
+                <img src alt />
+              </el-form-item>
+              <el-form-item label="结构化照片:">
+                <img src alt style="width: 300px; height: 300px" />
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="normal" round>正 常</el-button>
+              <el-button @click="unnormal" type="warning" round>异 常</el-button>
+            </div>
+          </el-dialog>
         </div>
       </div>
     </div>
@@ -64,12 +131,12 @@ import echarts from "echarts";
 // 引入水波球
 import "echarts-liquidfill";
 // 引入基本模板
-// 引入柱状图组件
 require("echarts/lib/chart/bar");
 // 引入提示框和title组件
 require("echarts/lib/component/tooltip");
 require("echarts/lib/component/title");
 import { fetchUser, fetchCommunity, alarmStatus } from "@/api/user";
+import { fetchalarmList } from "@/api/alarm";
 import VueAMap from "vue-amap";
 const amapManager = new VueAMap.AMapManager();
 export default {
@@ -78,17 +145,32 @@ export default {
   props: ["data", "defaultActive"],
   data() {
     return {
+      alarmForm: {
+        address: "",
+        time: ""
+      },
+      dialogVisable: false,
       activeName: "first",
       active: 0,
-      approvalProcessProject: [
-        { id: "0", label: "陕西省渭南市威清路双王路" },
-        { id: "1", label: "陕西省渭南市威清路双王路" },
-        { id: "2", label: "陕西省渭南市威清路双王路" },
-        { id: "3", label: "陕西省渭南市威清路双王路" }
+      stepsData: [
+        {
+          title: "陕西省渭南市威清路",
+          date: "2020-08-31  23: 00 : 00"
+        },
+        {
+          title: "陕西省渭南市威清路",
+          date: "2020-08-31  23: 00 : 00"
+        },
+        {
+          title: "陕西省渭南市威清路",
+          date: "2020-08-31  23: 00 : 00"
+        }
       ],
+      values: 3,
       zoom: 12,
       center: [110.09, 34.58],
-      dialogVisable: false,
+      markersDom: null,
+      markers: [],
       amapManager,
       events: {
         init(o) {
@@ -96,8 +178,6 @@ export default {
             position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             offset: new AMap.Pixel(-10, -10),
             title: "上海摩环文化有限公司",
-            // icon: icon,
-            // animation: 'AMAP_ANIMATION_BOUNCE',
             zoom: 13,
             color: "red"
           });
@@ -106,11 +186,90 @@ export default {
       }
     };
   },
+  created() {
+    this.getalarmList();
+  },
   mounted() {
     const that = this;
     that.getPanel();
+    document.getElementById("alarmInfo").onclick = function() {
+      this.watchClick();
+    };
+    setTimeout(() => {
+      this.formInfo = [
+        {
+          id: "567",
+          inCharge: "safsafjk",
+          longitude: 110.034,
+          latitude: 34.56,
+          address: "嘻嘻",
+          name: "李四",
+          createTime: "2020-09-10",
+          url: "哈哈",
+          cl: 0
+        }
+      ];
+      this.formInfo.forEach(item => {
+        this.markers.push({
+          position: [item.longitude, item.latitude],
+          content: `<img class='markerImg' data=${JSON.stringify(item)}
+          src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
+        });
+      });
+    }, 2000);
   },
   methods: {
+    getalarmList() {
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 10,
+          total: 0
+        },
+        params: [
+          {
+            field: "createTime",
+            operator: "BETWEEN",
+            value: { start: "2020-09-05 00:00:00", end: "2020-09-05 23:59:59" }
+          },
+          {
+            field: "handlerId",
+            operator: "NULL",
+            value: "null"
+          }
+        ]
+      };
+      fetchalarmList(params).then(response => {
+        console.log(response.body.data);
+        const { data } = response.body;
+        this.alarmForm.address = data.camera.address;
+      });
+    },
+    watchClick(e) {
+      e.path.forEach(item => {
+        if (item.className === "markerImg") {
+          this.form = JSON.parse(item.attributes[1].nodeValue);
+          // this.showZwMes = false;
+        }
+      });
+    },
+    markerClick() {
+      console.log("11111");
+    },
+    closeDialog() {
+      this.dialogForm = {
+        id: "",
+        inCharge: "",
+        longitude: "",
+        latitude: ""
+        // address: ""
+      };
+      this.dialogVisable = false;
+    },
+    showDialog() {
+      this.dialogVisable = true;
+    },
     getPanel() {
       this.charts = echarts.init(document.getElementById("panel"));
       this.charts.setOption({
@@ -224,6 +383,12 @@ export default {
     handleClick(tab, event) {},
     next() {
       if (this.active++ > 2) this.active = 0;
+    },
+    normal() {
+      this.dialogVisable = false;
+    },
+    unnormal() {
+      this.dialogVisable = false;
     }
   }
 };
@@ -285,33 +450,6 @@ export default {
           height: 100%;
           float: left;
           padding-top: 8px;
-          // .zuo {
-          //   height: 30px;
-          //   width: 33.3%;
-          //   border: 1px solid #d9d9d9;
-          //   float: left;
-          //   a {
-          //     text-align: center;
-          //   }
-          // }
-          // .zhong {
-          //   height: 30px;
-          //   width: 33.3%;
-          //   border: 1px solid #d9d9d9;
-          //   float: left;
-          //   a {
-          //     text-align: center;
-          //   }
-          // }
-          // .you {
-          //   height: 30px;
-          //   width: 33.3%;
-          //   border: 1px solid #d9d9d9;
-          //   float: right;
-          //   a {
-          //     text-align: center;
-          //   }
-          // }
         }
         .bottom-right {
           width: 25%;
@@ -357,11 +495,14 @@ export default {
     margin-top: 20px;
   }
 }
-div.el-tabs__nav.is-top {
-  box-shadow: none;
-  width: 64px;
-  height: 30px;
-  line-height: 30px;
-}
+
+// #app .el-tabs__item {
+//   box-shadow: none;
+//   width: 64px;
+//   height: 30px;
+//   line-height: 30px;
+//   background-color: #fff;
+// }
 </style>
+
 
