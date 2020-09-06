@@ -89,8 +89,8 @@ require('echarts/lib/chart/bar')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import {
-  fetchUser, fetchCommunity, alarmStatus
-} from '@/api/user'
+  fetchAllData, fetchNowInfo
+} from '@/api/dashboard'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
