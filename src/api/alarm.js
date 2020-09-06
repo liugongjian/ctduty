@@ -117,3 +117,11 @@ export function getPushSet() {
   })
 }
 
+export function getAlertInfos(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
+

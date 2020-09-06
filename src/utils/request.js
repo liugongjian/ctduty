@@ -9,29 +9,36 @@ import Cookies from 'js-cookie'
 // } from '@/utils/auth'
 
 // huanglulu
-const getToken = function(TokenKey) {
-  return Cookies.get(TokenKey) || ''
+const getToken = function(token) {
+  return Cookies.get(token) || ''
+}
+let messageInstance = null
+const rewriteMessage = options => {
+  if (messageInstance) {
+    messageInstance.close()
+  }
+  messageInstance = Message(options)
 }
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env['ZEUS_ADMIN_URL'],
-  timeout: 60000 // request timeout
+  timeout: 15000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     // Do something before request is sent
-    // const token = store.getters.token
-    const token = getToken('token')
-    if (token) {
-      // 让每个请求携带token 把头部的'Bearer '去掉
-      config.headers['Authorization'] = token
-    }
+    // const token = getToken('token')
+    // if (token) {
+    //   // 让每个请求携带token 把头部的'Bearer '去掉
+    //   config.headers['Authorization'] = token
+    // }
     return config
   },
   error => {
     // Do something with request error
+    console.log(error) // for debug
     Promise.reject(error)
   }
 )
@@ -47,8 +54,13 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    if (res.code !== 200) {
-      Message({
+    if (res.code !== 0) {
+      // Message({
+      //   message: res.msg,
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
+      rewriteMessage({
         message: res.msg,
         type: 'error',
         duration: 5 * 1000
@@ -80,19 +92,22 @@ service.interceptors.response.use(
   error => {
     let timeout = null
     const msg = error.response.data.msg || error.message
-    Message({
+    // Message({
+    //   message: msg,
+    //   type: 'error',
+    //   duration: 5 * 1000
+    // })
+    rewriteMessage({
       message: msg,
       type: 'error',
       duration: 5 * 1000
     })
     const { status } = error.response
     if (status === 401) {
-      // removeToken()
-      Cookies.remove('token')
-      Cookies.remove('userId')
+      Cookies.remove('saas_token_id', { domain: '.ctyun.cn' })
       clearTimeout(timeout)
       timeout = setTimeout(() => {
-        window.location.href = process.env.LOGIN_URL
+        window.location.href = process.env.SAAS_URL + `?from=zen&redirect_url=${process.env.OPENAPI_URL}`
       }, 3000)
     }
     return Promise.reject(error)

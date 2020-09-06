@@ -79,24 +79,29 @@
         </div>
       </div>
       <div>
-        <el-tabs v-model="defaultTab" type="border-card">
+        <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane
             v-for="(item, index) in tabsArr"
             :key="item"
             :label="item"
             :name="item">
-            <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
+            <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit  @selection-change="handleSelectionChange">
               <el-table-column
                 width="55">
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'时间'" prop="inCharge"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'事件'" prop="longitude"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="latitude"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="address"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="creator"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="createTime"></el-table-column>
-                      </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="camera.id"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
+              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" ></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="camera.url"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handlerId"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId"><template slot-scope="scope">
+                <svg-icon v-if='scope.row.handlerId' class="deal" icon-class="deal" />
+                <svg-icon v-else class="untreated" icon-class="untreated" />
+                <span>{{scope.row.handlerId ? "已处理":"未处理"}}</span>
+            </template></el-table-column>
+                     
             </el-table>
             <pagination
               v-show="total>0"
@@ -120,9 +125,7 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import {
-  fetchAllCameraList, editCamera
-} from '@/api/camera'
+import { getAlertInfos } from '@/api/alarm'
 export default {
   components: { Pagination },
 
@@ -135,6 +138,8 @@ export default {
       startDate: '',
       endDate: '',
       tabsArr: [],
+      tabsDateArr: [],
+      currentTab: '',
       formInline: {
         searchkey: '',
         typeValue: 'all'
@@ -142,16 +147,18 @@ export default {
       typeOptions: [{ name: '所有警告', _id: 'all' },
         { name: '已处理', _id: 'settled' }, { name: '未处理', _id: 'unsettled' }
       ],
+
+
       listLoading: false,
       filteredValue: [],
       tableData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
-      limit: 20,
+      limit: 2,
       userId: Cookies.get('userId'),
       originCode: '',
-      oldSize: 20,
+      oldSize: 2,
       editVisable: false,
       editForm: {
         id: '',
@@ -171,15 +178,26 @@ export default {
   },
   created() {
     Message.closeAll()
-    this.getList(this.$route.query._id)
     this.timeChange()
+    this.tabsArr = this.getDayAll(this.startDate, this.endDate)
+    this.defaultTab=this.tabsArr[0]
+    const s=this.tabsArr[0]+" "+this.startTime+":00" 
+    const e=this.tabsArr[0]+" "+this.endTime+":00"
+    const h=this.formInline.typeValue
+    this.getList(s,e,h)
   },
   methods: {
+    formatTime: function(row, column, cellValue) {
+      return   moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+    },
+    formatType(row, column, cellValue){
+     
+      return cellValue===1?'人员':cellValue===2?'机动车':'非机动车'
+    },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
       this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
-      this.tabsArr = this.getDayAll(this.startDate, this.endDate)
-      this.defaultTab = this.tabsArr[0]
+      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate)
     },
     getDayAll(begin, end) {
       var dateAllArr = new Array()
@@ -207,7 +225,10 @@ export default {
       this.defaultTab = this.tabsArr[0],
       this.formInline.typeValue = 'all'
     },
-    onSearch() {},
+    onSearch() {
+      this.tabsArr =  this.tabsDateArr;
+      this.defaultTab = this.tabsArr[0]
+    },
     editDialog(v) {
       this.editForm.id = v.id
       this.editForm.inCharge = v.inCharge
@@ -242,67 +263,73 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
-    onSearch() {
-      console.log('搜索')
-    },
     checkModel() {
+      console.log(this.formInline.typeValue)
       this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
     },
-    pageChange() {
-      if (this.oldSize !== this.limit) {
-        this.page = 1
-      }
+    pageChange(e) {
+      console.log('hhhh');
+      const s=this.currentTab+" "+this.startTime+":00" 
+      const end=this.currentTab+" "+this.endTime+":00"
+      const h = this.formInline.typeValue;
+      // if (this.oldSize !== this.limit) {
+      //   this.page = 1
+      // }
       this.oldSize = this.limit
-      this.getList(this.$route.query._id)
+      this.getList(s,end,h)
+    },
+    tabChangeQuery(e){
+    console.log(e, '---')
+    this.currentTab = e.label
+      const s=e.label+" "+this.startTime+":00" 
+      const end=e.label+" "+this.endTime+":00"
+      const h = this.formInline.typeValue;
+      console.log(h);
+      this.getList(s,end,h)
     },
     goBack() {
       this.$router.go(-1)
     },
-    // 导出列表为excel
-    onExport() {
-      if (!this.tableData.length) {
-        this.$message({
-          message: '无数据',
-          type: 'warning'
-        })
-        return
-      }
-      this.getExportList()
-    },
-    filerStatus(columnObj) {
-      for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
-      }
-      this.page = 1
-      let columnObjKey = ''
-      for (var i in columnObj) {
-        columnObjKey = i
-      }
-      if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getList(this.$route.query._id)
-      } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getList(this.$route.query._id)
-      }
-    },
+    
     // 获取列表数据
-    getList(id) {
+    getList(s,e,h) {
+      let oper;
+      if(h === 'settled') {
+        oper = "NOT_NULL"
+      } else if(h === "unsettled") {
+        oper = "NULL"
+      }
+      const ss = {
+        field: "handlerId",
+        operator: oper,
+        value: "null"
+      }
+      const param = h == 'all' ? [{    
+            field: "createTime",
+            operator: "BETWEEN",
+            value: {"start": s?s:"", "end": e?e:""}
+          }
+        ] : [{    
+            field: "createTime",
+            operator: "BETWEEN",
+            value: {"start": s?s:"", "end": e?e:""}
+          },
+          ss
+        ];
       const params = {
         cascade: true,
         page: {
-          index: 1,
-          size: 20
+          index: this.page,
+          size: this.limit
         },
-        params: {
-        }
+        params: param
       }
-      fetchAllCameraList(params).then(response => {
-        console.log(response)
+      getAlertInfos(params).then(response => {
+        
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
@@ -345,5 +372,11 @@ export default {
      font-size: 12px !important;
 
  }
+.deal {
+  fill: #44bd32 !important;
+}
+.untreated{
+  fill: #E6A23C !important;
+}
   </style>
 

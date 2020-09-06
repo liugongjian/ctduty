@@ -8,10 +8,10 @@ export function fetchUserList(query) {
     params: query
   })
 }
-
+// 获取用户信息
 export function fetchUser() {
   return request({
-    url: '/nvsapi/user/info',
+    url: '/nvsapi/Login/info',
     method: 'get',
   })
 }

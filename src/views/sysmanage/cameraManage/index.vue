@@ -1,5 +1,5 @@
 <template>
-  <div class="cemeraIndex">
+  <div id="cameraI" class="cameraIndex" @click="watchClick">
     <div v-if="formInline.typeValue === 'map'" class="camera">
       <div class="title">
         摄像头管理
@@ -54,9 +54,7 @@
                   class="amap-demo"
                   vid="amapDemo"
                 >
-                  <div @click="()=>{positionClick(index)}">
-                    <el-amap-marker v-for="(marker, index) in markers" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content"></el-amap-marker>
-                  </div>
+                  <el-amap-marker v-for="(marker, index) in markers" :events="events" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" @click="markerClick"></el-amap-marker>
                 </el-amap>
               </div>
             </el-col>
@@ -65,30 +63,41 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <el-form :model="form" label-position="right" label-width="100px">
+                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
+                  <div style="padding-bottom:10px;">
+                    <svg t="1599289905127" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1303" width="40" height="40"><path d="M24.380952 512c0 269.336381 218.282667 487.619048 487.619048 487.619048s487.619048-218.282667 487.619048-487.619048S781.336381 24.380952 512 24.380952 24.380952 242.663619 24.380952 512z m518.095238 274.285714c0 16.847238-13.628952 30.47619-30.47619 30.476191s-30.47619-13.628952-30.47619-30.476191S495.152762 755.809524 512 755.809524s30.47619 13.628952 30.47619 30.47619z m0-144.774095c0 16.018286-13.628952 28.964571-30.47619 28.964571s-30.47619-12.921905-30.47619-28.964571V236.202667c0-15.993905 13.628952-28.94019 30.47619-28.940191s30.47619 12.921905 30.47619 28.964572v405.308952z" fill="#999" p-id="1304"/></svg>
+                  </div>
+                  暂无摄像头信息！
+                  <br>
+                  请选择您想查看的摄像头。
+                </div>
+                <el-form v-else :model="form" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID：">
-                    <div style=" word-wrap: break-word">{{ '1234567890' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.id }}</div>
                   </el-form-item>
                   <el-form-item label="负责人：">
-                    <div style=" word-wrap: break-word">{{ '李四四' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.inCharge }}</div>
                   </el-form-item>
-                  <el-form-item label="经纬度信息：">
-                    <div style=" word-wrap: break-word">{{ '110.13、34.6' }}</div>
+                  <el-form-item label="经度信息：">
+                    <div style=" word-wrap: break-word">{{ form.longitude }}</div>
+                  </el-form-item>
+                  <el-form-item label="纬度信息：">
+                    <div style=" word-wrap: break-word">{{ form.latitude }}</div>
                   </el-form-item>
                   <el-form-item label="地址：">
-                    <div style=" word-wrap: break-word">{{ '我是地址我是地址我是地址,我的文字多可回行' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.address }}</div>
                   </el-form-item>
                   <el-form-item label="添加人：">
-                    <div style=" word-wrap: break-word">{{ '李三三' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.name }}</div>
                   </el-form-item>
                   <el-form-item label="添加时间：">
-                    <div style=" word-wrap: break-word">{{ '2020年9月3日' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.createTime }}</div>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
-                    <div style=" word-wrap: break-word">{{ '已处理' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.url }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ '1/123' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.cl ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
                   <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
@@ -220,44 +229,113 @@ export default {
         searchkey: '',
         typeValue: 'map'
       },
-      form: {},
+      form: {
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: '',
+        cl: '',
+        name: '',
+        createTime: ''
+      },
+      formInfo: [],
+      showZwMes: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       zoom: 12,
       center: [110.09, 34.58],
       dialogVisable: false,
-      markers: [
-        { position: [110.09, 34.58],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
-        },
-        { position: [110.088, 34.56],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.086, 34.54],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.074, 34.42],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.064, 34.53],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.034, 34.56],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.006, 32.58],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.079, 34.59],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` },
-        { position: [110.066, 34.53],
-          content: `<img src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` }
-      ],
-      amapManager
+      markersDom: null,
+      markers: [],
+      amapManager,
+      events: {
+        click: a => {
+          /* this.$message({
+            type: 'warning',
+            message: '哈哈',
+            duration: 0
+          }) */
+          console.log(a)
+        }
+      }
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.formInfo = [
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.09,
+          latitude: 34.58,
+          address: '嘻嘻',
+          url: '哈哈',
+          name: '张三',
+          createTime: '2020-09-10',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.088,
+          latitude: 34.56,
+          address: '李四门口',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.093,
+          latitude: 34.66,
+          address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.074,
+          latitude: 34.42,
+          address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.034,
+          latitude: 34.56,
+          address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
+          cl: 0 },
+        { id: '567',
+          inCharge: 'safsafjk',
+          longitude: 110.09,
+          latitude: 34.58,
+          address: '嘻嘻',
+          name: '李四',
+          createTime: '2020-09-10',
+          url: '哈哈',
+          cl: 0 }
+      ]
+      this.formInfo.forEach(item => {
+        this.markers.push({ position: [item.longitude, item.latitude], content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` })
+      })
+    }, 2000)
+  },
   methods: {
+    watchClick(e) {
+      e.path.forEach(item => {
+        if (item.className === 'markerImg') {
+          this.form = JSON.parse(item.attributes[1].nodeValue)
+          this.showZwMes = false
+        }
+      })
+    },
     editDialog(v) {
-      this.editForm.id = v.id
-      this.editForm.inCharge = v.inCharge
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.url = v.url
+      this.editForm = this.form
       this.editVisable = true
     },
     editCloseDialog() {
@@ -310,19 +388,35 @@ export default {
     },
     positionClick(i) {
       console.log(i)
+    },
+    markerClick() {
+      console.log('哈哈哈')
     }
   }
 }
 </script>
 
 <style lang='scss'>
+ .filter-item  {
+   input {
+    font-size: 12px !important;
+   }
+  /*  .el-input {
+   font-size: 12px !important;
+
+   }
+ .el-input__inner {
+   font-size: 12px !important;
+ } */
+
+ }
 .main-container {
   height: 100%;
 }
 .app-main {
   height: 100%;
 }
-.cemeraIndex {
+.cameraIndex {
   height: 100%;
 }
 .camera {
@@ -339,6 +433,7 @@ export default {
    font-weight: 500;
    border-bottom: 1px solid #D8D8D8;
  }
+
  .mapbox {
    padding: 20px;
    padding-bottom: 20px !important;
@@ -375,6 +470,14 @@ export default {
          font-size: 16px;
          color: rgba(0,0,0,0.85);
          letter-spacing: -0.2px;
+       }
+       .el-icon-warning {
+         color: #E6A23C;
+       }
+       .el-icon-warning:before {
+         display: block;
+         width: 50px;
+         height: 50px;
        }
        .el-form {
          padding: 20px;
