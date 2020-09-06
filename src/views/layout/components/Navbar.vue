@@ -192,16 +192,15 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-    .navToggle {
-      padding-left: 70px !important;
-      transition: all .18s linear;
-    }
+  .navToggle {
+    padding-left: 70px !important;
+    transition: all .18s linear;
+  }
   .navbar {
     height: 50px !important;
     line-height: 50px;
     border-radius: 0px !important;
     border-bottom: 1px solid #eee;
-
     .hamburger-container {
       line-height: 58px;
       height: 50px !important;
@@ -236,9 +235,9 @@ export default {
         vertical-align: 15px;
       }
       .avatar-container {
-        position: absolute;
-        right: 0px;
-        top: 12px;
+        // position: absolute;
+        // right: 0px;
+        margin-top: 12px;
         .avatar-wrapper {
           margin-right: 20px;
           display: flex;
@@ -284,7 +283,7 @@ export default {
         cursor: pointer;
       }
       .notice {
-        margin-right: 100px;
+        margin-right: 24px;
         font-size: 14px;
         cursor: pointer;
       }
@@ -293,7 +292,6 @@ export default {
       }
       .highlight {
         fill: #E6A23C;
-
       }
       .texthighlight {
         color: #E6A23C;
