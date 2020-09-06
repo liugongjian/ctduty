@@ -41,7 +41,7 @@
         </div>
         <div class="map">
           <el-col :span="24" class="status">
-            <el-col :span="19" style="height:100%;">
+            <el-col :span="19">
               <div class="mapcontainer">
                 <el-amap
                   :amap-manager="amapManager"
@@ -91,7 +91,7 @@
                     <div style=" word-wrap: break-word">{{ form.createTime }}</div>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
-                    <div style=" word-wrap: break-word">{{ form.url }}</div>
+                    <div style=" word-wrap: break-word">{{ 'form.url' }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
                     <div style=" word-wrap: break-word">{{ form.cl ? '已处理':'未处理' }}</div>
@@ -140,7 +140,6 @@ import VueAMap from 'vue-amap'
 import CameraList from './list.vue'
 import moment from 'moment'
 import { Alert } from 'element-ui'
-import addSvg from '../../../icons/svg/address.svg'
 import {
   fetchAllCameraList, editCamera, addCamera
 } from '@/api/camera'
@@ -279,7 +278,6 @@ export default {
           item.childNodes[1].classList.add('markerClickImg')
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
-          // item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
           this.showZwMes = false
         }
       })
@@ -311,7 +309,7 @@ export default {
       this.dialogVisable = true
     },
     onSearch() {
-      console.log('搜索')
+      this.getList()
     },
     checkModel() {
       this.$emit('getdata', this.formInline.typeValue)
@@ -350,6 +348,7 @@ export default {
           size: 20
         },
         params: {
+          address: this.formInline.searchkey ? this.formInline.searchkey : null
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -411,12 +410,10 @@ export default {
      margin-bottom: 20px;
      padding-bottom: 20px;
      .el-col {
-       height: 97%;
-       padding-bottom:20px;
+       height: 98%;
      }
      .mapcontainer {
        height: 100%;
-       padding-bottom: 20px;
      }
      .camerainfo {
        height: 100%;
