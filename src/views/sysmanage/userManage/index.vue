@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div class="userManage">
     <el-divider></el-divider>
     <el-row>
       <el-button type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
@@ -280,11 +280,17 @@ export default {
 </script>
 
 <style scoped>
+.userManage {
+  padding: 0px 20px;
+}
 .title{
     width:150px;height:100px;
     border:1px solid #000;
     display:-moz-inline-box; /* css注释：for ff2 */
     display:inline-block;
+}
+.el-divider--horizontal {
+  margin-top: 0px;
 }
 .el-pagination{
     float: right;
