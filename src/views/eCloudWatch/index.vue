@@ -131,16 +131,6 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 // 引入基本模板
-<<<<<<< HEAD
-// 引入柱状图组件
-require('echarts/lib/chart/bar')
-// 引入提示框和title组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
-import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
-import VueAMap from 'vue-amap'
-const amapManager = new VueAMap.AMapManager()
-=======
 require("echarts/lib/chart/bar");
 // 引入提示框和title组件
 require("echarts/lib/component/tooltip");
@@ -149,22 +139,12 @@ import { fetchUser, fetchCommunity, alarmStatus } from "@/api/user";
 import { fetchalarmList } from "@/api/alarm";
 import VueAMap from "vue-amap";
 const amapManager = new VueAMap.AMapManager();
->>>>>>> 7670c513cd6405e3599913c286e7593fc0e5467d
 export default {
   name: 'ECloudWatch',
   components: {},
   props: ['data', 'defaultActive'],
   data() {
     return {
-<<<<<<< HEAD
-      activeName: 'first',
-      active: 0,
-      approvalProcessProject: [
-        { id: '0', label: '陕西省渭南市威清路双王路' },
-        { id: '1', label: '陕西省渭南市威清路双王路' },
-        { id: '2', label: '陕西省渭南市威清路双王路' },
-        { id: '3', label: '陕西省渭南市威清路双王路' }
-=======
       alarmForm: {
         address: "",
         time: ""
@@ -185,7 +165,6 @@ export default {
           title: "陕西省渭南市威清路",
           date: "2020-08-31  23: 00 : 00"
         }
->>>>>>> 7670c513cd6405e3599913c286e7593fc0e5467d
       ],
       values: 3,
       zoom: 12,
@@ -198,13 +177,7 @@ export default {
           const marker = new AMap.Marker({
             position: new AMap.LngLat(110.09, 34.58), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
             offset: new AMap.Pixel(-10, -10),
-<<<<<<< HEAD
-            title: '上海摩环文化有限公司',
-            // icon: icon,
-            // animation: 'AMAP_ANIMATION_BOUNCE',
-=======
             title: "上海摩环文化有限公司",
->>>>>>> 7670c513cd6405e3599913c286e7593fc0e5467d
             zoom: 13,
             color: 'red'
           })
@@ -217,10 +190,6 @@ export default {
     this.getalarmList();
   },
   mounted() {
-<<<<<<< HEAD
-    const that = this
-    that.getPanel()
-=======
     const that = this;
     that.getPanel();
     document.getElementById("alarmInfo").onclick = function() {
@@ -248,7 +217,6 @@ export default {
         });
       });
     }, 2000);
->>>>>>> 7670c513cd6405e3599913c286e7593fc0e5467d
   },
   methods: {
     getalarmList() {
@@ -414,9 +382,6 @@ export default {
     },
     handleClick(tab, event) {},
     next() {
-<<<<<<< HEAD
-      if (this.active++ > 2) this.active = 0
-=======
       if (this.active++ > 2) this.active = 0;
     },
     normal() {
@@ -424,7 +389,6 @@ export default {
     },
     unnormal() {
       this.dialogVisable = false;
->>>>>>> 7670c513cd6405e3599913c286e7593fc0e5467d
     }
   }
 }
