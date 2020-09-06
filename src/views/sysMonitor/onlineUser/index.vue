@@ -139,8 +139,9 @@ export default {
       fetchOnlineLogout( this.code).then(response => {
         console.log('强退成功')
         if (response.code === 0) {
-
           this.getList()
+        } else if (response.code === 50000) {
+          this.$router.push('/login')
         }
       })
     },

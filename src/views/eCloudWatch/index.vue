@@ -22,28 +22,16 @@
       <div class="warn">
         <div class="dispose">
           <div class="dash-title">告警处理率</div>
-          <div class="disbox">
-            <div id="panel"></div>
+          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
+            <div id="panel" style="height: 100%; width:100%"></div>
           </div>
         </div>
-        <div class="bottom">
+        <div class="bottom" style="margin-top: 13px">
           <div class="todyW">今日告警</div>
           <div class="bottom-left">
-            <el-tabs v-model="activeName" type="border-card" @click="handleClick">
+            <!-- <el-tabs v-model="activeName" type="border-card" @click="handleClick">
               <el-tab-pane label="全部" name="first">
                 <div style="height: 100%;">
-                  <!-- <el-steps :active="active" finish-status="success" direction="vertical">
-                      <el-step
-                        v-for="item in approvalProcessProject"
-                        :title="item.label"
-                        :key="item.id"
-                      >
-                        <template slot="icon">
-                          <img src="../../../src/assets/icon/已处理@1x.png" style="height:25x;width:25px;"/>
-                        </template>
-                        <template slot="description"></template>
-                      </el-step>
-                  </el-steps>-->
                   <template>
                     <div @click="showDialog">
                       <el-steps :active="values" space="50px" align-center direction="vertical">
@@ -90,7 +78,26 @@
                   </template>
                 </div>
               </el-tab-pane>
-            </el-tabs>
+            </el-tabs>-->
+            <div style="width:100%; height:35px">
+              <div class="zuo" style="line-height: 32px" @click="allTab">
+                <p>全部</p>
+              </div>
+              <div class="zhong" style="line-height: 32px" @click="yTab">
+                <p>已处理</p>
+              </div>
+              <div class="you" style="line-height: 32px" @click="wTab">
+                <p>未处理</p>
+              </div>
+            </div>
+            <div class="zuoContent" style="width:100%; height:58px">
+              <div v-if="showTabValue === 'all'">哈哈哈</div>
+              <div v-if="showTabValue === 'y'">嘻嘻嘻</div>
+              <div v-if="showTabValue === 'w'">喝喝喝</div>
+            </div>
+            <!-- <div v-if="TabLan === 'all'"></div>
+              <div v-if="TabLan === 'hand'"></div>
+            <div v-if="TabLan === 'weiChu'"></div>-->
           </div>
           <div class="bottom-right">
             <ul>
@@ -148,6 +155,7 @@ export default {
         address: '',
         time: ''
       },
+      // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
       active: 0,
@@ -169,6 +177,7 @@ export default {
       zoom: 12,
       center: [110.09, 34.58],
       markersDom: null,
+      showTabValue: '',
       markers: [],
       amapManager,
       events: {
@@ -218,6 +227,24 @@ export default {
     }, 2000)
   },
   methods: {
+    allTab() {
+      this.showTabValue = 'all'
+    },
+    yTab() {
+      this.showTabValue = 'y'
+    },
+    wTab() {
+      this.showTabValue = 'w'
+    },
+    // all() {
+    //   this.TabLan = "all";
+    // },
+    // hand() {
+    //   this.TabLan = "hand";
+    // },
+    // weiChu() {
+    //   this.TabLan = "weiChu";
+    // },
     getalarmList() {
       const params = {
         cascade: true,
@@ -242,7 +269,7 @@ export default {
       fetchalarmList(params).then(response => {
         console.log(response.body.data)
         const { data } = response.body
-        this.alarmForm.address = data.camera.address
+        // this.alarmForm.address = data.camera.address;
       })
     },
     watchClick(e) {
@@ -253,9 +280,7 @@ export default {
         }
       })
     },
-    markerClick() {
-      console.log('11111')
-    },
+    markerClick() {},
     closeDialog() {
       this.dialogForm = {
         id: '',
@@ -449,50 +474,89 @@ export default {
           height: 100%;
           float: left;
           padding-top: 8px;
-        }
-        .bottom-right {
-          width: 25%;
-          height: 100%;
-          float: right;
-          // background-color: green;
-          padding-top: 10px;
-          a {
-            color: #1890ff;
-            font-size: 12px;
-            text-align: center;
+
+          .zuo {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+            .zuoContent {
+              background-color: pink;
+            }
           }
+          .zuo:hover {
+            border: #1890ff;
+          }
+          .zhong {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+            border: #1890ff;
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+          }
+          .you {
+            float: left;
+            width: 33.3%;
+            height: 32px;
+            border: #1890ff;
+            background-color: #ffffff;
+            p {
+              color: #676767;
+              font-size: 13px;
+            }
+          }
+        }
+      }
+      .bottom-right {
+        width: 25%;
+        height: 100%;
+        float: right;
+        padding-top: 10px;
+        a {
+          color: #1890ff;
+          font-size: 12px;
+          text-align: center;
         }
       }
     }
   }
+}
 
-  .dispose {
-    height: 210px;
-    width: 100%;
-    background-color: #fff;
-    margin-top: 10px;
-  }
-  .dash-title {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    padding-left: 20px;
-    font-size: 14px;
+.dispose {
+  height: 210px;
+  width: 100%;
+  background-color: #fff;
+  margin-top: 10px;
+}
+.dash-title {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  padding-left: 20px;
+  font-size: 14px;
 
-    height: 40px;
-    line-height: 40px;
-    color: #333;
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 10px;
-      font-size: 16px;
-      transform: translate(-50%, -50%);
-    }
+  height: 40px;
+  line-height: 40px;
+  color: #333;
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    font-size: 16px;
+    transform: translate(-50%, -50%);
   }
-  .status {
-    margin-top: 20px;
-  }
+}
+.status {
+  margin-top: 20px;
 }
 
 // #app .el-tabs__item {

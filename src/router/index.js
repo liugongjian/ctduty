@@ -122,7 +122,7 @@ router.beforeEach((to, from, next) => {
 
   const token = localStorage.getItem('token')
   console.log('token', token)
-  if (to.path === '/dashboard') {
+  if (to.path === '/dashboard' || to.path === '/ecloudwatch' || to.path === '/ecloudwatch' || to.path === '/alarmMessage' || to.path === '/sysmanage/userManage' || to.path === '/sysmanage/cameraManage' || to.path === '/sysmanage/areaManage' || to.path === '/sysMonitor/notice' || to.path === '/sysMonitor/onlineUser' || to.path === '/sysMonitor/pushSet' ) {
     if (token) {
       next()
     } else {
