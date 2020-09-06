@@ -16,7 +16,18 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
       </template> -->
-
+      <div class="fullscreen" @click="screenfull">
+        <svg-icon icon-class="fullscreen"></svg-icon>
+        <span class="screen">全屏</span>
+      </div>
+      <div class="full">
+        <svg-icon icon-class="leadership"></svg-icon>
+        <span class="leader-name">领导</span>
+      </div>
+      <div class="notice">
+        <svg-icon icon-class="notice"></svg-icon>
+        <span class="noticemsg">消息</span>
+      </div>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
@@ -44,6 +55,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import screenfull from 'screenfull'
 import Cookies from 'js-cookie'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -72,7 +84,8 @@ export default {
       form: {
         re_password: '',
         new_password: ''
-      }
+      },
+      isFullscreen: false
     }
   },
   computed: {
@@ -84,7 +97,52 @@ export default {
     ])
 
   },
+  watch: {
+    isFullscreen(v) {
+      console.log(v)
+      if (v) {
+        document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
+        document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.add('texthighlight')
+      } else {
+        document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.remove('highlight')
+        document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
+      }
+    }
+  },
+  mounted() {
+    window.onresize = () => {
+      // 全屏下监控是否按键了ESC
+      if (!document.webkitIsFullScreen) {
+        this.isFullscreen = false
+      }
+      if (!this.checkFull()) {
+        // 全屏下按键esc后要执行的动作
+        this.isFullscreen = false
+      }
+    }
+  },
   methods: {
+    screenfull(e) {
+      e.path.forEach(item => {
+        if (item.className === 'fullscreen') {
+          item.childNodes[0].classList.toggle('highlight')
+          // item.childNodes[1].classList.toggle('texthighlight')
+        }
+      })
+      screenfull.toggle()
+      this.isFullscreen = !this.isFullscreen
+    },
+    /**
+   * 是否全屏并按键ESC键的方法
+   */
+    checkFull() {
+      var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+      // to fix : false || undefined == undefined
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
+    },
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
@@ -95,9 +153,9 @@ export default {
     },
     // huanglulu
     businessLogout() {
-      window.location.href = `${process.env.LOGOUT_URL}`;
-      Cookies.remove('token')
-      Cookies.remove('userId')
+      // window.location.href = `${process.env.LOGOUT_URL}`;
+      this.$router.push('/login')
+      localStorage.removeItem('token')
     },
     toUpWord() {
       if (this.form.re_password === '') {
@@ -155,6 +213,7 @@ export default {
       vertical-align: top;
     }
     .right-menu {
+      display: flex;
       float: right;
       height: 100%;
       &:focus {
@@ -195,7 +254,48 @@ export default {
           }
        }
 
-            }
+      }
+      .full {
+        margin-right: 30px;
+        display: flex;
+        color: #000;
+        .svg-icon {
+          width: 20px;
+          height: 20px;
+          margin-top: 16px;
+          margin-right: 4px;
+          border-radius: 50%;
+          vertical-align: middle;
+        }
+        .leader-name {
+          font-family: PingFangSC-Regular;
+          margin-top: 5px;
+          font-size: 14px;
+          line-height: 40px;
+        }
+      }
+      .fullscreen {
+        margin-right: 30px;
+        margin-top: 1px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .notice {
+        margin-right: 100px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .full {
+        cursor: pointer;
+      }
+      .highlight {
+        fill: #E6A23C;
+
+      }
+      .texthighlight {
+        color: #E6A23C;
+        font-weight: 700;
+      }
     }
   }
 </style>

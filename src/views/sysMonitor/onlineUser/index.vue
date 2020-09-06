@@ -65,7 +65,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'登录时间'" prop="firstLoginTime">
           <template slot-scope="scope">
-            <span>{{ scope.row.firstLoginTime }}</span>
+            <span>{{ renderTime(scope.row.firstLoginTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'最近访问时间'" prop="lastAccessTime">
@@ -75,7 +75,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" style="text-align: center" :label="'操作'">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
+            <el-button class="forced" type="warning" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,9 +95,8 @@ import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
-import {
-  fetchOnlineList, fetchOnlineLogout
-} from '@/api/applications'
+import { renderTime } from '@/utils'
+import {fetchOnlineList, fetchOnlineLogout} from '@/api/user'
 export default {
   components: { Pagination },
   data() {
@@ -112,7 +111,8 @@ export default {
       limit: 20,
       userId: Cookies.get('userId'),
       originCode: '',
-      oldSize: 20
+      oldSize: 20,
+      renderTime
     }
   },
   // watch: {
@@ -134,24 +134,10 @@ export default {
     },
     // 强退
     forcedExit(code) {
-      const getToken = function(TokenKey) {
-        return Cookies.get(TokenKey) || ''
-      }
-      const params = {
-        code: this.code,
-        token: this.getToken()
-      }
-      fetchOnlineLogout(params, this.code).then(response => {
+      const token = localStorage.getItem('token')
+      fetchOnlineLogout( this.code).then(response => {
         console.log('强退成功')
-        // this.tableData = []
-        // console.log('response',response)
-        // console.log('this tabledata', this.tableData)
-        // for (let i = 0; i < response.body.data.length; i++) {
-        //   this.tableData.push(Object.assign(response.body.data[i]))
-        // }
-        // this.tableData = response.data.result
-        // this.total = response.data.pageInfo.totalItems
-        // this.listLoading = false
+        
       })
     },
     onSearch() {
@@ -225,7 +211,6 @@ export default {
 }
 </script>
 
-<style lang='scss'>
-
+<style lang='scss' scoped>
 </style>
 

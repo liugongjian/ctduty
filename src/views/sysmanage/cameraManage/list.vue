@@ -42,11 +42,11 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creator"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="url"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
@@ -61,7 +61,7 @@
         <el-form :model="editForm" label-position="right" label-width="100px">
           <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="负责人："><el-input v-model="editForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="负责人："><el-input v-model="editForm.inCharge.username" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
           <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
@@ -97,7 +97,7 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import {
-  fetchAllCameraList, editCamera
+  fetchAllCameraList, editCamera, addCamera
 } from '@/api/camera'
 export default {
   components: { Pagination },
@@ -143,13 +143,10 @@ export default {
       this.pageChange()
     }
   },
-  created() {
-    Message.closeAll()
-    this.getList(this.$route.query._id)
-    AMap.event.addListener(marker, 'click', function(e) {
-      thit.cur = JSON.parse(JSON.stringify(e.target.getExtData()))
-    // 得到的数据
-    })
+  async created() {
+    await Message.closeAll()
+    await this.getList()
+    console.log(this.tableData, 'xxh')
   },
   methods: {
     editDialog(v) {
@@ -167,13 +164,13 @@ export default {
     editDialogConfirm() {
       const params = [{
         id: this.editForm.id,
-        inChargeId: this.editForm.inCharge,
+        inChargeId: this.editForm.inCharge.id,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url
       }]
       editCamera(params).then(response => {
-        console.log(response)
+        this.getList()
       })
       this.editVisable = false
     },
@@ -201,21 +198,10 @@ export default {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getList(this.$route.query._id)
+      this.getList()
     },
     goBack() {
       this.$router.go(-1)
-    },
-    // 导出列表为excel
-    onExport() {
-      if (!this.tableData.length) {
-        this.$message({
-          message: '无数据',
-          type: 'warning'
-        })
-        return
-      }
-      this.getExportList()
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
@@ -228,14 +214,14 @@ export default {
       }
       if (columnObj[columnObjKey].length === 0) {
         this.filteredValue = []
-        this.getList(this.$route.query._id)
+        this.getList()
       } else {
         this.filteredValue = columnObj[columnObjKey]
-        this.getList(this.$route.query._id)
+        this.getList()
       }
     },
     // 获取列表数据
-    getList(id) {
+    getList() {
       const params = {
         cascade: true,
         page: {
@@ -245,10 +231,9 @@ export default {
         params: {
         }
       }
-      fetchAllCameraList(params).then(response => {
-        console.log(response)
-        this.tableData = response.body.data
-        this.total = response.body.page.total
+      fetchAllCameraList(params).then(res => {
+        this.tableData = res.body.data
+        this.total = res.body.page.total
         this.listLoading = false
       })
     },
@@ -259,6 +244,16 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
+      const params = [{
+        id: this.dialogForm.id,
+        inChargeId: this.dialogForm.inCharge.id,
+        latitude: this.dialogForm.latitude,
+        longitude: this.dialogForm.longitude,
+        url: this.dialogForm.url
+      }]
+      addCamera(params).then(response => {
+        this.getList()
+      })
       this.dialogVisable = false
     }
   }

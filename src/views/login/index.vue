@@ -51,11 +51,11 @@ import Cookies from 'js-cookie'
 import { encryptAes } from './js/AES'
 const Base64 = require('js-base64').Base64
 import config from '@/config'
-import { loginByUsername } from '../../api/login'
+import { loginGetToken } from '../../api/login'
 const {
   prefix: { userPrefix }
 } = config
-const yzmImg = userPrefix + '/v1/verify'
+// const yzmImg = userPrefix + '/v1/verify'
 export default {
   data() {
     return {
@@ -64,7 +64,7 @@ export default {
         password: '',
         // yzm: ''  // 验证码
       },
-      verifyImgUrl: yzmImg + '?' + new Date().getTime(),
+      // verifyImgUrl: yzmImg + '?' + new Date().getTime(),
       loginRules: {
         username: [
           { required: true, trigger: 'blur', message: '请输入用户名' }
@@ -132,14 +132,12 @@ export default {
           }
           this.erroruserMsg = ''
           this.errorcodeMsg = ''
-          loginByUsername(params).then((resp) => {
+          loginGetToken(params).then((resp) => {
             if (resp.code === 0) {
               console.log('跳转首页')
               // 把token存在cookie中
-              this.token = resp.body.data
-              Cookies.set('token', this.token)
+              localStorage.setItem('token', resp.body.data)
               this.$router.push('/dashboard')
-
               if (redirect_url_front) {
                 let redirect_url
                 if (redirect_url_front.indexOf('?') > -1 && redirect_url_front.indexOf('@') > -1) {
@@ -274,7 +272,7 @@ body {
     padding-bottom: 30px;
     .logo{
       width:352px;
-      height: 60px;
+      height: 70px;
       background: url(./images/logoTitel.png) no-repeat center;
       background-size: 60% 60%;
       margin-left: 10px;
@@ -286,7 +284,7 @@ body {
       font-size: 14px;
       color: #333333;
       line-height: 24px;
-      margin: 20px 0;
+      margin: 30px 0;
     }
     .userName,
     .passWord {

@@ -1,9 +1,6 @@
 <template>
   <div id="cameraI" class="cameraIndex" @click="watchClick">
     <div v-if="formInline.typeValue === 'map'" class="camera">
-      <div class="title">
-        摄像头管理
-      </div>
       <div class="mapbox">
         <div class="serachbox">
           <div class="filter-container clearfix">
@@ -63,8 +60,10 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:50px;font-size:14px;color:#999;">
-                  <i class="el-message__icon el-icon-warning"></i>
+                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
+                  <div style="padding-bottom:10px;">
+                    <svg t="1599289905127" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1303" width="40" height="40"><path d="M24.380952 512c0 269.336381 218.282667 487.619048 487.619048 487.619048s487.619048-218.282667 487.619048-487.619048S781.336381 24.380952 512 24.380952 24.380952 242.663619 24.380952 512z m518.095238 274.285714c0 16.847238-13.628952 30.47619-30.47619 30.476191s-30.47619-13.628952-30.47619-30.476191S495.152762 755.809524 512 755.809524s30.47619 13.628952 30.47619 30.47619z m0-144.774095c0 16.018286-13.628952 28.964571-30.47619 28.964571s-30.47619-12.921905-30.47619-28.964571V236.202667c0-15.993905 13.628952-28.94019 30.47619-28.940191s30.47619 12.921905 30.47619 28.964572v405.308952z" fill="#999" p-id="1304"/></svg>
+                  </div>
                   暂无摄像头信息！
                   <br>
                   请选择您想查看的摄像头。
@@ -95,7 +94,7 @@
                     <div style=" word-wrap: break-word">{{ form.url }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ form.cl }}</div>
+                    <div style=" word-wrap: break-word">{{ form.cl ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
                   <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
@@ -228,7 +227,7 @@ export default {
         typeValue: 'map'
       },
       form: {
-        /* id: '',
+        id: '',
         inCharge: '',
         longitude: '',
         latitude: '',
@@ -236,7 +235,7 @@ export default {
         url: '',
         cl: '',
         name: '',
-        createTime: '' */
+        createTime: ''
       },
       formInfo: [],
       showZwMes: true,
@@ -261,16 +260,13 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('cameraI').onclick = function() {
-      this.watchClick()
-    }
     setTimeout(() => {
       this.formInfo = [
         { id: '567',
           inCharge: 'safsafjk',
           longitude: 110.09,
           latitude: 34.58,
-          address: '嘻嘻',
+          address: '张三家',
           url: '哈哈',
           name: '张三',
           createTime: '2020-09-10',
@@ -288,7 +284,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.093,
           latitude: 34.66,
-          address: '嘻嘻',
+          address: '王五家',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -297,7 +293,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.074,
           latitude: 34.42,
-          address: '嘻嘻',
+          address: '王二',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -306,7 +302,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.034,
           latitude: 34.56,
-          address: '嘻嘻',
+          address: '小卖部',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -315,34 +311,37 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.09,
           latitude: 34.58,
-          address: '嘻嘻',
+          address: '村委会',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
           cl: 0 }
       ]
       this.formInfo.forEach(item => {
-        this.markers.push({ position: [item.longitude, item.latitude], content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">` })
+        this.markers.push({ position: [item.longitude, item.latitude], /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */
+          content: `<?xml version="1.0"  standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class='markerImg'  data=${JSON.stringify(item)} t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890"></path></svg>` })
       })
     }, 2000)
   },
   methods: {
     watchClick(e) {
+      if (!e.path.some(item => item.className === 'amap-marker-content')) {
+        return
+      }
+      const marImgs = document.getElementsByClassName('markerImg');
+      [].forEach.call(marImgs, function(item) {
+        item.classList.remove('markerClickImg')
+      })
       e.path.forEach(item => {
-        if (item.className === 'markerImg') {
-          this.form = JSON.parse(item.attributes[1].nodeValue)
+        if (item.className === 'amap-marker-content') {
+          item.childNodes[1].classList.add('markerClickImg')
+          this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.showZwMes = false
         }
       })
     },
     editDialog(v) {
       this.editForm = this.form
-      /* this.editForm.id = v.id
-      this.editForm.inCharge = v.inCharge
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.url = v.url */
       this.editVisable = true
     },
     editCloseDialog() {
@@ -390,7 +389,7 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
-      this.markers.push({ position: [this.dialogForm.longitude, this.dialogForm.latitude], content: `<svg class="icon" style="width: 2em; height: 2em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3378"><path d="M808.96 317.44c0-164.00384-132.95104-296.96-296.96-296.96S215.04 153.43616 215.04 317.44c0 82.92352 34.02752 157.8752 88.83712 211.74784 93.696 140.06272 159.59552 300.29312 189.66528 472.86784 6.11328 0.80896 12.26752 1.2288 18.45248 1.2288a140.4416 140.4416 0 0 0 18.45248-1.2288c30.06976-172.56448 95.96928-332.79488 189.6704-472.8576C774.93248 475.32544 808.96 400.36864 808.96 317.44zM268.8 317.44c0-134.31296 108.88192-243.2 243.2-243.2s243.2 108.88704 243.2 243.2-108.88192 243.2-243.2 243.2S268.8 451.75296 268.8 317.44z" fill="#2458BE" p-id="3379"></path></svg>` })
+      this.markers.push({ position: [this.dialogForm.longitude, this.dialogForm.latitude], content: `<svg class="icon" style="width: 2em; height: 2em;vertical-align: middle;fill: #3E94F9;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3378"><path d="M808.96 317.44c0-164.00384-132.95104-296.96-296.96-296.96S215.04 153.43616 215.04 317.44c0 82.92352 34.02752 157.8752 88.83712 211.74784 93.696 140.06272 159.59552 300.29312 189.66528 472.86784 6.11328 0.80896 12.26752 1.2288 18.45248 1.2288a140.4416 140.4416 0 0 0 18.45248-1.2288c30.06976-172.56448 95.96928-332.79488 189.6704-472.8576C774.93248 475.32544 808.96 400.36864 808.96 317.44zM268.8 317.44c0-134.31296 108.88192-243.2 243.2-243.2s243.2 108.88704 243.2 243.2-108.88192 243.2-243.2 243.2S268.8 451.75296 268.8 317.44z" fill="#2458BE" p-id="3379"></path></svg>` })
       this.dialogVisable = false
     },
     positionClick(i) {
@@ -481,6 +480,11 @@ export default {
        .el-icon-warning {
          color: #E6A23C;
        }
+       .el-icon-warning:before {
+         display: block;
+         width: 50px;
+         height: 50px;
+       }
        .el-form {
          padding: 20px;
        }
@@ -492,5 +496,11 @@ export default {
        }
      }
    }
+ }
+ .markerImg {
+   fill: #3E94F9;
+ }
+ .markerClickImg {
+   fill: #E6A23C !important;
  }
 </style>
