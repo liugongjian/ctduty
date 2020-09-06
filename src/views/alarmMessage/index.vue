@@ -1,8 +1,5 @@
 <template>
   <div class="list">
-    <div class="title">
-      告警信息
-    </div>
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right">

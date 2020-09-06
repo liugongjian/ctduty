@@ -59,7 +59,7 @@
     "moment": "^2.24.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
-    "screenfull": "3.3.3",
+    "screenfull": "^5.0.2",
     "showdown": "1.8.6",
     "sortablejs": "1.7.0",
     "v-tag-cloud": "^1.0.3",

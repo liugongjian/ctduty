@@ -35,9 +35,3 @@ export function fetchOnlineList() {
   })
 }
 
-export function fetchOnlineLogout(query,code) {
-  return request({
-    url: `/nvsapi/Login/logout/${code}`,
-    params: query
-  })
-}

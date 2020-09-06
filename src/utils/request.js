@@ -3,6 +3,7 @@ import {
   Message
 } from 'element-ui'
 import Cookies from 'js-cookie'
+import {logout} from '../api/login'
 // import {
 //   getToken,
 //   getPrefix
@@ -30,10 +31,13 @@ service.interceptors.request.use(
   config => {
     // Do something before request is sent
     // const token = getToken('token')
-    // if (token) {
-    //   // 让每个请求携带token 把头部的'Bearer '去掉
-    //   config.headers['Authorization'] = token
-    // }
+    // 
+    const token = localStorage.getItem('token')
+
+    if (token) {
+      // 让每个请求携带token 把头部的'Bearer '去掉
+      config.headers['Authorization'] = token
+    }
     return config
   },
   error => {
@@ -84,6 +88,12 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
+      if (res.code === 50000 && res.message === 'Token unauthorized') {
+        logout().then(() => {
+          localStorage.removeItem('token')
+          this.$router.push('/login')
+        })
+      }
       return Promise.reject(response.data)
     } else {
       return response.data
