@@ -269,7 +269,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.09,
           latitude: 34.58,
-          address: '嘻嘻',
+          address: '张三家',
           url: '哈哈',
           name: '张三',
           createTime: '2020-09-10',
@@ -287,7 +287,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.093,
           latitude: 34.66,
-          address: '嘻嘻',
+          address: '王五家',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -296,7 +296,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.074,
           latitude: 34.42,
-          address: '嘻嘻',
+          address: '王二',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -305,7 +305,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.034,
           latitude: 34.56,
-          address: '嘻嘻',
+          address: '小卖部',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -314,7 +314,7 @@ export default {
           inCharge: 'safsafjk',
           longitude: 110.09,
           latitude: 34.58,
-          address: '嘻嘻',
+          address: '村委会',
           name: '李四',
           createTime: '2020-09-10',
           url: '哈哈',
@@ -328,6 +328,9 @@ export default {
   },
   methods: {
     watchClick(e) {
+      if (!e.path.some(item => item.className === 'amap-marker-content')) {
+        return
+      }
       const marImgs = document.getElementsByClassName('markerImg');
       [].forEach.call(marImgs, function(item) {
         item.classList.remove('markerClickImg')
