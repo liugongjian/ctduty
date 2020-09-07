@@ -154,7 +154,7 @@ export default {
       },
       addUserForm: {
         username: '',
-        name:'',
+        name: '',
         password: '',
         name: '',
         region: '',
