@@ -1054,6 +1054,9 @@ export default {
     }
   }
 }
+.el-row {
+  height: 100vh;
+}
 .mapbox {
   height: 400px;
   padding: 0;
@@ -1063,8 +1066,15 @@ export default {
     height: 330px;
     margin-top:20px;
     display: flex;
+    overflow: hidden;
+    position:relative !important;
+    div {
+      width: 100%;
+      height: 100%;
+    }
     canvas {
       width: 100%;
+      height: 100%;
       background-color: transparent;
     }
   }
