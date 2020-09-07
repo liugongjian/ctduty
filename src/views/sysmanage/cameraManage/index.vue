@@ -243,11 +243,12 @@ export default {
         createTime: ''
       },
       formInfo: [],
+      hasMarker: false,
       showZwMes: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
-      zoom: 10,
-      center: [109.5, 34.5],
+      zoom: 11,
+      center: [110.08, 34.57],
       dialogVisable: false,
       markersDom: null,
       markers: [],
@@ -260,6 +261,32 @@ export default {
             duration: 0
           }) */
         }
+      }
+    }
+  },
+  watch: {
+    markers(v) {
+      setTimeout(() => {
+        if (document.getElementsByClassName('markerImg').length) {
+          this.hasMarker = true
+          console.log(this.hasMarker)
+        } else {
+          this.hasMarker = false
+          console.log(this.hasMarker)
+        }
+      }, 1000)
+    },
+    hasMarker(v) {
+      const that = this
+      if (v) {
+        [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
+          if (index === 0) {
+            item.classList.add('markerClickImg')
+            that.form = JSON.parse(item.attributes[1].nodeValue)
+            that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            that.showZwMes = false
+          }
+        })
       }
     }
   },

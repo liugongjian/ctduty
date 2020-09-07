@@ -23,6 +23,7 @@
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
               size="mini"
+              :picker-options="pickerOptions"
               @change="timeChange"
             >
             </el-date-picker>
@@ -37,7 +38,7 @@
               :style="{width:100 + 'px',height:'10px'}"
               v-model="startTime"
               :picker-options="{
-                selectableRange:'00:00:00 -23:59:00'
+                selectableRange:'00:00:00 05:59:00'
               }"
               size="mini"
               format="HH:mm"
@@ -57,7 +58,7 @@
               :style="{width:100 + 'px'}"
               v-model="endTime"
               :picker-options="{
-                selectableRange:startTime+ ':00' + '- 23:59:00'
+                selectableRange:startTime+ ':00' + '-23:59:00'
               }"
               size="mini"
               format="HH:mm"
@@ -82,11 +83,13 @@
             :key="item"
             :label="item"
             :name="item">
+           <span>{{tabsArr[tabsArr.length-1]}} to {{tabsArr[0]}} 警告共计: {{allTotal}} 条 </span>
+           <br></br>            
             <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
               <el-table-column
                 width="55">
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="camera.id"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" ></el-table-column>
@@ -98,8 +101,15 @@
                 <svg-icon v-else class="untreated" icon-class="untreated" />
                 <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
               </template></el-table-column>
-
+              <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-link type="primary" @click="editDialog(scope.row.id)">编辑</el-link>
+                    <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                  </template>
+                </el-table-column>
             </el-table>
+          
+           
             <pagination
               v-show="total>0"
               :total="total"
@@ -122,13 +132,15 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import { getAlertInfos } from '@/api/alarm'
+import { getAlertInfos,deleteAlertInfo} from '@/api/alarm'
 export default {
   components: { Pagination },
 
   data() {
     return {
+      rowId:0,
       defaultTab: '',
+      centerDialogVisible: false,
       value1: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
       startTime: '02:00',
       endTime: '05:00',
@@ -150,11 +162,12 @@ export default {
       tableData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
+      allTotal:0,
       page: 1,
-      limit: 2,
+      limit: 10,
       userId: Cookies.get('userId'),
       originCode: '',
-      oldSize: 2,
+      oldSize: 10,
       editVisable: false,
       editForm: {
         id: '',
@@ -163,7 +176,12 @@ export default {
         latitude: '',
         address: '',
         url: ''
+      },
+      pickerOptions: {
+        disabledDate(time) {
+        return time.getTime() > Date.now() - 8.64e6
       }
+  },  
     }
   },
   watch: {
@@ -175,7 +193,7 @@ export default {
   created() {
     Message.closeAll()
     this.timeChange()
-    this.tabsArr = this.getDayAll(this.startDate, this.endDate)
+    this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
@@ -183,6 +201,17 @@ export default {
     this.getList(s, e, h)
   },
   methods: {
+    delAlert(d){
+      this.rowId=d;
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          this.deleteAlert()
+        })
+    },
+   
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
@@ -192,7 +221,7 @@ export default {
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
       this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
-      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate)
+      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     },
     getDayAll(begin, end) {
       var dateAllArr = new Array()
@@ -222,15 +251,19 @@ export default {
     },
     onSearch() {
       this.tabsArr = this.tabsDateArr
-      this.defaultTab = this.tabsArr[0]
+      const s1 = this.currentTab + ' ' + this.startTime + ':00'
+      const end1 = this.currentTab + ' ' + this.endTime + ':00'
+      const h1 = this.formInline.typeValue
+      this.oldSize = this.limit
+      this.getList(s1, end1, h1)
+      const s = this.tabsArr[this.tabsArr.length-1]  + ' ' + this.startTime + ':00'
+      const end = this.tabsArr[0] + ' ' + this.endTime + ':00'
+      console.log(s,"!!!!!!!!!!!!！")
+      //调用后续接口
+      console.log(end,"??????????/")
     },
+   
     editDialog(v) {
-      this.editForm.id = v.id
-      this.editForm.inCharge = v.inCharge
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.url = v.url
       this.editVisable = true
     },
     editCloseDialog() {
@@ -259,7 +292,7 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      console.log(this.formInline.typeValue)
+      console.log(this.formInline.typeValue,'type')
       this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
@@ -271,9 +304,7 @@ export default {
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
-      // if (this.oldSize !== this.limit) {
-      //   this.page = 1
-      // }
+     
       this.oldSize = this.limit
       this.getList(s, end, h)
     },
@@ -285,6 +316,18 @@ export default {
       const h = this.formInline.typeValue
       console.log(h)
       this.getList(s, end, h)
+    },
+    deleteAlert() {
+      const params=[this.rowId]
+      deleteAlertInfo(params).then(()=>{
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const end = this.currentTab + ' ' + this.endTime + ':00'
+      const h = this.formInline.typeValue
+      this.getList(s,end,h)
+      this.centerDialogVisible=false
+    
+      })
+      
     },
     goBack() {
       this.$router.go(-1)
@@ -370,7 +413,10 @@ export default {
   fill: #44bd32 !important;
 }
 .untreated{
-  fill: #E6A23C !important;
+  fill: #E6A23C  !important;
+}
+.deleteDialog{
+  z-index: 999 !important;
 }
   </style>
 

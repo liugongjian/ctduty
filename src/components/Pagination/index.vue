@@ -1,6 +1,6 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
-    <div class="showTotal">总条数：{{ total }}</div>
+    <div class="showTotal">当日警告总计：{{ total }} 条</div>
     <el-pagination
       :background="background"
       :current-page.sync="currentPage"
