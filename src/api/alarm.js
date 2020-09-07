@@ -124,4 +124,11 @@ export function getAlertInfos(query) {
     data: query
   })
 }
+export function deleteAlertInfo(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Alert/Delete',
+    method: 'post',
+    data: query
+  })
+}
 
