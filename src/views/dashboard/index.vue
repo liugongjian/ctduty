@@ -15,7 +15,7 @@
                 <p class="overmsg">{{ offCamera }}个</p>
               </div>
               <div class="overvBox">
-                <span class="overbgc">今日告警次数</span>
+                <span class="overbgc">告警次数</span>
                 <p class="overmsg">{{ alarmTime }}次</p>
               </div>
               <div class="overvBox">
@@ -47,7 +47,7 @@
           <div id="classify">
             <div class="dash-title">
               各类告警占比
-              <span>更多 ></span>
+              <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
             </div>
             <div class="pie">
               <div id="man" class="canFu"></div>
@@ -154,6 +154,7 @@ export default {
   async created() {
     await this.getList()
     await this.getNowList()
+    registerMap()
   },
   mounted() {
     const that = this
@@ -165,8 +166,6 @@ export default {
         that.screenWidth = element.clientWidth
       })
     })
-    registerMap()
-    // that.mapFn(that.mapData)
     that.getMap()
     that.camerarate()
     that.drawPie('man', '人员', '#1890FF', NaN)
@@ -176,6 +175,9 @@ export default {
     that.drawZhu('alarmLine')
   },
   methods: {
+    goAlarmList() {
+      this.$router.push('/alarmMessage')
+    },
     getList() {
       // fetchAllData
       const params = {
@@ -202,25 +204,6 @@ export default {
           this.zhuYdata.push(item.alertCount)
         })
         this.drawZhu(this.zhuData, this.zhuXdata, this.zhuYdata)
-        res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
-          this.hotTag.push({
-            id: new Date(), name: item.address, maxFont: index === 0 ? '12px' : (12 + index * 5) + 'px'
-          })
-          this.mapShowData.push({
-            name: item.address, value: item.alertCount, latitude: item.latitude,
-            longitude: item.longitude
-          })
-        })
-        this.getMap(this.mapShowData)
-        res.body.data.alertStatisByTypeList.forEach(item => {
-          if (item.type === '1') {
-            this.drawPie('man', '人员', '#1890FF', parseInt(item.typeRate * 100))
-          } else if (item.type === '2') {
-            this.drawPie('car', '机动车', '#5DDECF', parseInt(item.typeRate * 100))
-          } else {
-            this.drawPie('bicycle', '非机动车', '#2FC25B', parseInt(item.typeRate * 100))
-          }
-        })
       })
       // alertStatisByAddList
     },
@@ -242,6 +225,25 @@ export default {
         this.processed = res.body.data.todayHandleds
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
         this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
+        res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
+          this.hotTag.push({
+            id: new Date(), name: item.address, maxFont: index === 0 ? '12px' : (12 + index * 5) + 'px'
+          })
+          this.mapShowData.push({
+            name: item.address, value: item.alertCount, latitude: item.latitude,
+            longitude: item.longitude
+          })
+        })
+        this.getMap(this.mapShowData)
+        res.body.data.alertStatisByTypeList.forEach(item => {
+          if (item.type === '1') {
+            this.drawPie('man', '人员', '#1890FF', parseInt(item.typeRate * 100))
+          } else if (item.type === '2') {
+            this.drawPie('car', '机动车', '#5DDECF', parseInt(item.typeRate * 100))
+          } else {
+            this.drawPie('bicycle', '非机动车', '#2FC25B', parseInt(item.typeRate * 100))
+          }
+        })
       })
     },
     clickTagItem(tag) {
@@ -253,7 +255,7 @@ export default {
       var geoCoordMap = {}
       inData.forEach(item => {
         data.push({
-          name: item.name, value: item.value * 50
+          name: item.name, value: item.value
         })
         geoCoordMap[item.name] = [item.longitude, item.latitude]
       })
@@ -271,168 +273,188 @@ export default {
         return res
       }
       var option = {
-
-        tooltip: {
-          trigger: 'item'
+        backgroundColor: '#fff',
+        title: {
+          show: false
         },
+        /* tooltip: {
+          formatter: '{a} <br/>{b} : {c}%'
+        }, */
         legend: {
-          orient: 'horizontal',
-          y: 'top',
-          x: 'left',
-          // align: 'bottom',
-          icon: 'rect',
-          data: ['小于10次', '小于30次', '小于100次', '大于100次'],
-          itemWidth: 100,
+          orient: '',
+          left: 20,
+          top: 20,
+          selectedMode: false, // 取消图例上的点击事件
+          icon: 'circle',
+          data: ['小于50', '小于100', '大于100'],
           textStyle: {
             color: '#000'
+          }
+        },
+        grid: {
+          height: '100%',
+          width: '100%'
+        },
+        xAxis: {
+          type: 'category',
+          show: false
+        },
+        yAxis: {
+          position: 'right',
+          axisLabel: {
+            show: true
+          },
+          axisLine: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
           }
         },
         geo: {
           map: '渭南',
           label: {
-            emphasis: {
-              show: false
-            }
-          },
-          roam: true,
-          itemStyle: {
+            show: false,
             normal: {
-              areaColor: '#81ecec',
-              borderColor: '#111'
+              show: 0,
+              textStyle: {
+                color: '#000'
+              }
             },
             emphasis: {
-              areaColor: '#81ecec'
+              show: 0,
+              textStyle: {
+                show: 0,
+                color: '#000'
+              }
+            }
+          },
+          zoom: 1.2,
+          aspectScale: 1.2, // 长宽比
+          z: 13,
+          itemStyle: {
+            show: false,
+            normal: {
+              opacity: 0.4,
+              areaColor: 'rgba(122,193,254,0.2)',
+              borderColor: '#1c89cd',
+              borderWidth: 2
+            },
+            emphasis: { // 鼠标移动上去变色
+              areaColor: 'rgba(122,193,254,0.2)',
+              textStyle: {
+                show: 1
+              }
             }
           }
         },
-        series: [
-          {
-            name: '小于10次',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: convertData(data),
-            symbolSize: function(val) {
-              return val[2] / 10
+        series: [{
+          tooltip: {
+            trigger: 'item',
+            formatter: function(params) {
+              console.log(params)
+              return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
             },
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: false
+            extraCssText: 'height:50px; white-space:pre-wrap;'
+          },
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          z: 12,
+          symbolSize: 7,
+          showEffectOn: 'render',
+          rippleEffect: {
+            period: 2,
+            scale: 5,
+            brushType: 'fill'
+          },
+          hoverAnimation: true,
+          data: convertData(data),
+          label: {
+            normal: {
+              show: false,
+              textStyle: {
+                color: '#000'
               },
-              emphasis: {
-                show: true
+              padding: [0, 0, -50, 0],
+              formatter: function(item) {
+                return item.name
               }
             },
-            itemStyle: {
-              normal: {
-                color: '#266ABE'
+            emphasis: {
+              show: true,
+              textStyle: {
+                show: true,
+                color: '#000'
               }
             }
           },
-          {
-            name: '小于30次',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: convertData(data),
-            symbolSize: function(val) {
-              return val[2] / 10
-            },
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: false
+          itemStyle: {
+            normal: {
+              show: true,
+              color: function(params) {
+                if (params.data.value[2]) {
+                  if (params.data.value[2] < 35) {
+                    return '#17b885'
+                  }
+                  if ((params.data.value[2]) >= 35 && (params.data.value[2] <= 60)) {
+                    return '#eec511'
+                  }
+                  if (params.data.value[2] > 60) {
+                    return '#d04132'
+                  }
+                }
               },
-              emphasis: {
-                show: true
-              }
+              shadowBlur: 10,
+              shadowColor: '#333'
             },
-            itemStyle: {
-              normal: {
-                color: 'rgba(47,150,225,0.88)'
-              }
+            emphasis: {
+              areaColor: '#f00'
             }
-          },
-          {
-            name: '小于100次',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: convertData(data),
-            symbolSize: function(val) {
-              return val[2] / 10
-            },
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: '#45D0FD'
-              }
-            }
-          },
-          {
-            name: '大于100次',
-            type: 'scatter',
-            coordinateSystem: 'geo',
-            data: convertData(data),
-            symbolSize: function(val) {
-              return val[2] / 10
-            },
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: false
-              },
-              emphasis: {
-                show: true
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: '#93E7F8'
-              }
-            }
-          },
-          {
-            name: 'Top 5',
-            type: 'effectScatter',
-            coordinateSystem: 'geo',
-            data: convertData(data.sort(function(a, b) {
-              return b.value - a.value
-            }).slice(0, 6)),
-            symbolSize: function(val) {
-              return val[2] / 10
-            },
-            showEffectOn: 'render',
-            rippleEffect: {
-              brushType: 'stroke'
-            },
-            hoverAnimation: true,
-            label: {
-              normal: {
-                formatter: '{b}',
-                position: 'right',
-                show: true
-              }
-            },
-            itemStyle: {
-              normal: {
-                color: '#f4e925',
-                shadowBlur: 10,
-                shadowColor: '#333'
-              }
-            },
-            zlevel: 1
           }
+        },
+        {
+          name: '贵阳',
+          type: 'map',
+          mapType: 'guiyang',
+          zoom: 1.24, // 大小
+          aspectScale: 1.2, // 长宽比
+          silent: true, // 不显示hover等事件
+          z: 12,
+          itemStyle: {
+            normal: {
+              show: true,
+              areaColor: '#09277a'
+            },
+            emphasis: {
+              areaColor: '#09277a'
+            }
+          },
+          data: data
+        },
+        {
+          name: '小于50',
+          type: 'bar',
+          color: '#17b885',
+          tooltip: {
+            show: true
+          }
+        },
+        {
+          name: '小于100',
+          type: 'bar',
+          color: '#eec511',
+          tooltip: {
+            show: true
+          }}, {
+          name: '大于100',
+          type: 'bar',
+          color: '#d04132',
+          tooltip: {
+            show: true
+          }}
         ]
       }
       this.charts.setOption(option)
@@ -440,7 +462,6 @@ export default {
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
-        backgroundColor: '#fff',
         tooltip: {
           formatter: '{a} <br/>{b} : {c}%'
         },
@@ -729,7 +750,6 @@ export default {
     },
     drawZhu(data, xData, yData) {
       var charts = echarts.init(document.getElementById('alarmLine'))
-      console.log(data, xData, yData)
       var XName = xData
       var data1 = yData
       var img = [
@@ -755,6 +775,9 @@ export default {
             color: '#00ffff',
             fontSize: 14
           }
+        },
+        tooltip: {
+          trigger: 'axis'
         },
         yAxis: [{
           type: 'value',
@@ -799,14 +822,13 @@ export default {
               fontSize: '14',
               lineHeight: 22
             }
-
           },
           data: XName
         }],
         series: [{
           symbolSize: 150,
           symbol: img[2],
-          name: '小灯光',
+          name: '告警数',
           type: 'line',
           data: data1,
           itemStyle: {
