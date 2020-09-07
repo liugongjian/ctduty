@@ -160,6 +160,7 @@ export default {
       // window.location.href = `${process.env.LOGOUT_URL}`;
       Cookies.remove('token')
       Cookies.remove('username')
+      Cookies.remove('userId')
       Cookies.remove('level')
       this.$router.push('/login')
     },
