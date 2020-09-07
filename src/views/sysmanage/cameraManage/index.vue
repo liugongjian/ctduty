@@ -13,7 +13,7 @@
             <div class="pull-right">
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-                <el-form :model="dialogForm" label-position="right" label-width="100px">
+                <el-form :model="dialogForm" :rule="rules" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="负责人ID："><el-input v-model="dialogForm.inChargeId" placeholder="请输入负责人ID" class="filter-item" style="width: 300px;"></el-input>
@@ -26,6 +26,8 @@
                   </el-form-item>
                   <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
+                  <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
                   <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
@@ -36,7 +38,7 @@
                 <div slot="footer" class="dialog-footer">
                   <el-button
                     type="primary"
-                    @click="dialogConfirm"
+                    @click="dialogConfirm('dialogForm')"
                   >确 定</el-button>
                   <el-button @click="dialogQuxiao">取 消</el-button>
                 </div>
@@ -164,7 +166,8 @@ export default {
         url: '',
         inChargeId: '',
         manufacturer: '',
-        model: ''
+        model: '',
+        phone: ''
       },
       editVisable: false,
       editForm: {
@@ -369,24 +372,6 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
-      // addCamera
-      //      {
-      //   "address": "string",
-      //   "createTime": "2020-09-07T10:51:52.477Z",
-      //   "creatorId": 0,
-      //   "id": "string",
-      //   "inChargeId": 0,
-      //   "latitude": 0,
-      //   "longitude": 0,
-      //   "manufacturer": "string",
-      //   "model": "string",
-      //   "name": "string",
-      //   "online": 0,
-      //   "phone": "string",
-      //   "updateTime": "2020-09-07T10:51:52.477Z",
-      //   "url": "string",
-      //   "village": "string"
-      // }
       const params = [
         this.dialogForm
       ]
