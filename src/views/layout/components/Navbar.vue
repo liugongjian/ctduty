@@ -110,8 +110,10 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.username = localStorage.getItem('username')
+  },
+  mounted() {
     console.log('username', this.username)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
