@@ -32,7 +32,7 @@
           {{ row_data.row.state === 0 ? '正常' : '紧急' }}
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="creatorId"></el-table-column>
+      <el-table-column label="创建者" prop="creator.name"></el-table-column>
       <el-table-column label="创建时间" prop="createTime"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
@@ -84,9 +84,9 @@
         </el-form-item>
 
         <el-form-item label="签名档">
-              <el-select v-model="addNoticeForm.signature_id" placeholder="请选择">
-                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-              </el-select>
+          <el-select v-model="addNoticeForm.signature_id" placeholder="请选择">
+            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -131,9 +131,9 @@
         </el-form-item>
 
         <el-form-item label="签名档">
-              <el-select v-model="editNoticeForm.signature_id" :value="addNoticeForm.signature_id" placeholder="请选择">
-                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-              </el-select>
+          <el-select v-model="editNoticeForm.signature_id" :value="addNoticeForm.signature_id" placeholder="请选择">
+            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -163,10 +163,10 @@ export default {
   data() {
     return {
 
-      addFormRules:{
-        title:[{ required: true, message: '标题不能为空', trigger: 'blur' }],
-        type:[{ required: true, message: '类型不能为空', trigger: 'blur' }],
-        state:[{required: true, message: '紧急程度不能为空', trigger: 'blur' }]
+      addFormRules: {
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        state: [{ required: true, message: '紧急程度不能为空', trigger: 'blur' }]
       },
 
       editor_content: '',
@@ -199,7 +199,7 @@ export default {
         state: null,
         title: '',
         type: null,
-        signature_id:null,
+        signature_id: null
       },
       editNoticeForm: {},
       editNoticeDialogVisible: false,
@@ -208,20 +208,20 @@ export default {
       deleteNoticerId: 0,
       modifiable: false,
 
-      departmentInfo : [
-        { 
-          departmentId:3275699862611970, 
-          department:'华阴市公安支队'
+      departmentInfo: [
+        {
+          departmentId: 3275699862611970,
+          department: '华阴市公安支队'
         },
-        { 
-          departmentId:3275699862611971, 
-          department:'孟塬派出所'
+        {
+          departmentId: 3275699862611971,
+          department: '孟塬派出所'
         },
-        { 
-          departmentId:3275699862611972, 
-          department:'华山镇派出所'
-        },
-      ],
+        {
+          departmentId: 3275699862611972,
+          department: '华山镇派出所'
+        }
+      ]
     }
   },
   created() {
@@ -246,12 +246,11 @@ export default {
       }
 
       fetchNoticeList(query).then(response => {
+        console.log(response)
         if (response.code !== 0) return this.$message.error('获取通知信息失败')
         this.noticeList = response.body.data
         this.totalnum = response.body.page.total
-      });
-
-      
+      })
     },
 
     handleSizeChange(newsize) {
@@ -264,10 +263,10 @@ export default {
     },
 
     postAddANotice() {
-      this.$refs.addFormRef.validate(valid=>{
-        if(!valid) return;
+      this.$refs.addFormRef.validate(valid => {
+        if (!valid) return
         const query = [{ ...this.addNoticeForm }]
-        query[0].creatorId = parseInt(window.localStorage.getItem("userId"))
+        query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
           if (response.code !== 0) return this.$message.error('添加失败，请联系系统管理员')
@@ -276,7 +275,6 @@ export default {
           this.getNoticeList()
         })
       })
-
     },
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
@@ -300,7 +298,7 @@ export default {
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
-        
+
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
           // console.log(response)
           if (response.code !== 0) return this.$message.error('更新用户信息失败,请稍后再试')

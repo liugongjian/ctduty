@@ -52,14 +52,14 @@
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="区域/部门">
-              <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
-                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-              </el-select>
-          </el-form-item>
+          <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
+            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="岗位">
-            <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
-              <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
-            </el-select>
+          <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
+            <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
@@ -97,14 +97,14 @@
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="区域/部门">
-              <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
-                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-              </el-select>
-          </el-form-item>
+          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
+            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="岗位">
-            <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
-              <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
-            </el-select>
+          <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
+            <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
@@ -139,15 +139,12 @@
 <script>
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
 
-
 export default {
   data() {
-
-    var checkMobile=(rule,value,cb)=>{
-
-    const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
-    if(regMobile.test(value)){
-        return cb();
+    var checkMobile = (rule, value, cb) => {
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
+      if (regMobile.test(value)) {
+        return cb()
       }
       cb(new Error('请输入合法的手机号'))
     }
@@ -156,59 +153,59 @@ export default {
       addUserFormRules: {
         username: [
           { required: true, message: '用户名称不能为空', trigger: 'blur' },
-          { min:5, max:12, message:'用户名长度在5-12个字符之间',trigger:'blur'}
+          { min: 5, max: 12, message: '用户名长度在5-12个字符之间', trigger: 'blur' }
         ],
         password: [
-              {
-                  required:true,
-                  message:'密码不能为空',
-                  trigger:'blur'
-              },
-              {
-                  min:8,
-                  max:20,
-                  message:'密码长度在8-20个字符之间',
-                  trigger:'blur'
-              }
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: 'blur'
+          },
+          {
+            min: 8,
+            max: 20,
+            message: '密码长度在8-20个字符之间',
+            trigger: 'blur'
+          }
         ],
-        phone:[
-              {
-                  required:true,
-                  message:'手机号不能为空',
-                  trigger:'blur'
-              },
-              {
-                  min:11,
-                  max:11,
-                  message:'长度为11个字符',
-                  trigger:'blur'
-              },
-              {
-                  validator:checkMobile,
-                  trigger:'blur'
-              }
+        phone: [
+          {
+            required: true,
+            message: '手机号不能为空',
+            trigger: 'blur'
+          },
+          {
+            min: 11,
+            max: 11,
+            message: '长度为11个字符',
+            trigger: 'blur'
+          },
+          {
+            validator: checkMobile,
+            trigger: 'blur'
+          }
         ],
-        permissionId:[
-          {required:true, message:'权限不能为空',trigger:'blur'}
+        permissionId: [
+          { required: true, message: '权限不能为空', trigger: 'blur' }
         ]
       },
       addUserForm: {
         username: '',
-        name:'',
+        name: '',
         password: '',
         permissionId: '',
-        departmentId:null,
-        postId:null,
+        departmentId: null,
+        postId: null,
         phone: ''
       },
       editUserForm: {
         id: 0,
         username: '',
-        name:'',
+        name: '',
         password: '',
         permissionId: '',
-        departmentId:null,
-        postId:null,
+        departmentId: null,
+        postId: null,
         phone: ''
       },
       userList: [],
@@ -216,52 +213,52 @@ export default {
         pagenum: 1,
         pagesize: 10
       },
-      queryName:'',
+      queryName: '',
       totalnum: 0,
       editUserDialogVisible: false,
       deleteUserName: '',
       deleteUserDialogVisible: false,
       deleteUserId: 0,
-      departmentInfo : [
-        { 
-          departmentId:3275699862611970, 
-          department:'华阴市公安支队'
+      departmentInfo: [
+        {
+          departmentId: 3275699862611970,
+          department: '华阴市公安支队'
         },
-        { 
-          departmentId:3275699862611971, 
-          department:'孟塬派出所'
+        {
+          departmentId: 3275699862611971,
+          department: '孟塬派出所'
         },
-        { 
-          departmentId:3275699862611972, 
-          department:'华山镇派出所'
-        },
+        {
+          departmentId: 3275699862611972,
+          department: '华山镇派出所'
+        }
       ],
 
-      postInfo :[
+      postInfo: [
         {
-          postId:3275699862609920,
-          post:'所长'
+          postId: 3275699862609920,
+          post: '所长'
         },
         {
-          postId:3275699862609921,
-          post:'副所长'
+          postId: 3275699862609921,
+          post: '副所长'
         },
         {
-          postId:3275699862609922,
-          post:'民警'
+          postId: 3275699862609922,
+          post: '民警'
         },
         {
-          postId:3275699862609923,
-          post:'普通员工'
+          postId: 3275699862609923,
+          post: '普通员工'
         },
         {
-          postId:3275699862611968,
-          post:'管控中心'
+          postId: 3275699862611968,
+          post: '管控中心'
         },
         {
-          postId:3275699862611969,
-          post:'监控中心'
-        },
+          postId: 3275699862611969,
+          post: '监控中心'
+        }
       ]
     }
   },
@@ -278,8 +275,8 @@ export default {
         },
         params: {}
       }
-      if(this.queryName.trim() !== ''){
-        query.params.name=this.queryName
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
       }
       fetchUserList(query).then(response => {
         console.log(response)
@@ -287,7 +284,6 @@ export default {
         this.userList = response.body.data
         this.totalnum = response.body.total
       })
-      
     },
 
     handleSizeChange(newsize) {
@@ -299,9 +295,9 @@ export default {
       this.getUserList()
     },
     addAUser() {
-      this.$refs.addFormRef.validate(valid=>{
-        if(!valid) return;
-        const query = [{...this.addUserForm}];
+      this.$refs.addFormRef.validate(valid => {
+        if (!valid) return
+        const query = [{ ...this.addUserForm }]
         console.log(query)
         postAddUser(query).then(response => {
           console.log(response)
@@ -313,7 +309,7 @@ export default {
       })
     },
     addDialogClosed() {
-      this.addUserForm = {};
+      this.addUserForm = {}
       this.$refs.addFormRef.resetFields()
     },
     showEditDialog(id) {
@@ -389,7 +385,7 @@ export default {
 .searchbtn{
   float: left;
   margin-left: 5px;
-  
+
 }
 .addbtn{
   float: right;
