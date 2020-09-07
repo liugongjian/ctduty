@@ -104,12 +104,10 @@ export function pushSet(form) {
   return request({
     url: 'http://host31.880508.xyz:10000/Setting/Update',
     method: 'post',
-    data: [
-      {
-        id: 3275166382090240,
-        setting: JSON.stringify(form)
-      }
-    ]
+    data: [{
+      id: 3275166382090240,
+      setting: JSON.stringify(form)
+    }]
   })
 }
 export function getPushSet() {
@@ -126,6 +124,14 @@ export function getAlertInfos(query) {
     data: query
   })
 }
+export function deleteAlertInfo(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
+
 export function fetchalarmList(query) {
   return request({
     url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
