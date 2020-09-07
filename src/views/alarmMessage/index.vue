@@ -197,7 +197,7 @@ export default {
       allTotal:0,
       page: 1,
       limit: 10,
-      userId: Cookies.get('userId'),
+      userId: '',
       originCode: '',
       oldSize: 10,
       editVisable: false,
@@ -234,7 +234,8 @@ export default {
     }
   },
   created() {
-    
+    this.userId=Cookies.get('userId')
+    console.log(this.userId,'userId.........')
     this.getPushSetTime()
     console.log(this.startTime,"start.............")
     console.log(this.endTime,"end.............")
