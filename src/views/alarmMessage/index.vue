@@ -120,10 +120,10 @@
                       {{formatTime(temp.createTime) }}
                   </el-form-item>
                   <el-form-item label="原始照片：" prop="image">
-                    <el-image src="temp.image"></el-image>
+                    <el-image :src="temp.image"></el-image>
                   </el-form-item>
                   <el-form-item label="结构化照片：" prop="imageCut">
-                      <el-image src="temp.imageCut"></el-image>
+                      <el-image :src="temp.imageCut"></el-image>
                   </el-form-item> 
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -174,8 +174,8 @@ export default {
       defaultTab: '',
       state: '',
       value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
-      startTime: '02:00',
-      endTime: '',
+      startTime: '00:00',
+      endTime: '23:00',
       startDate: '',
       endDate: '',
       tabsArr: [],
@@ -235,7 +235,6 @@ export default {
   },
   created() {
     this.userId=Cookies.get('userId')
-    console.log(this.userId,'userId.........')
     this.getPushSetTime()
     console.log(this.startTime,"start.............")
     console.log(this.endTime,"end.............")
@@ -244,10 +243,10 @@ export default {
     this.value1=""
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
-    const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    const h = this.formInline.typeValue
-    this.getList(s, e, h)
+    // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+    // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+    // const h = this.formInline.typeValue
+    // this.getList(s, e, h)
   },
   methods: {
     delAlert(d) {
@@ -393,9 +392,13 @@ export default {
         } catch (err) {
           parseSetting = {}
         }
-        console.log(parseSetting)
+        console.log(parseSetting,'xxx')
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
+        const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+        const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        this.getList(s, e, h)
       })
     },
     // 获取列表数据
@@ -441,10 +444,36 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    dialogQuxiao() {
+    dialogQuxiao(val) {
+     
       this.state=1
-      this.dialogVisable = false
+      const tempData = Object.assign({}, this.temp)
+      console.log(this.temp)
+      const params = [{
+        id: tempData.id,
+        state: this.state,
+        handlerId: this.userId
+        
+      }]
+      console.log(params,"，，，，，，，，，，，，，，，，，，，")
+      //更新state状态
+      notifyState(params).then(response => {
+      const s1 = this.currentTab + ' ' + this.startTime + ':00'
+      const end1 = this.currentTab + ' ' + this.endTime + ':00'
+      const h1 = this.formInline.typeValue
+      this.oldSize = this.limit
+      this.getList(s1, end1, h1)
+        this.dialogVisable = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    
     },
+    
     dialogConfirm(val) {
       this.state=0
       const tempData = Object.assign({}, this.temp)
