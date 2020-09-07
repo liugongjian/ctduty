@@ -7,7 +7,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
-          <el-button type="text" size="small" @click="detail()">{{ '批量删除' }}</el-button>
+          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form :model="dialogForm" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
@@ -48,12 +48,16 @@
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="url"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="consumeTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
+          <template slot-scope="scope">
+            <span>{{ scope.row.isDeal ? "已处理":"未处理" }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-            <el-button type="text" size="small" @click="detail(scope.row)">{{ '删除' }}</el-button>
+            <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -98,7 +102,7 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList, editCamera, addCamera
+  fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
 export default {
   components: { Pagination },
@@ -127,6 +131,7 @@ export default {
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 20,
+      delIDArr: [],
       editVisable: false,
       editForm: {
         id: '',
@@ -147,9 +152,36 @@ export default {
   async created() {
     await Message.closeAll()
     await this.getList()
-    console.log(this.tableData, 'xxh')
   },
   methods: {
+    batchesDel() {
+      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = [...this.delIDArr]
+        delCamera(params).then(response => {
+          this.getList()
+          this.delIDArr = []
+        }).catch(() => {
+          this.delIDArr = []
+        })
+      })
+    },
+    delAlert(d) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = [d]
+        delCamera(params).then(response => {
+          this.getList()
+          this.delIDArr = []
+        })
+      })
+    },
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
@@ -171,7 +203,8 @@ export default {
         inChargeId: this.editForm.inCharge.id,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
-        url: this.editForm.url
+        url: this.editForm.url,
+        name: this.editForm.inCharge.username
       }]
       editCamera(params).then(response => {
         this.getList()
@@ -242,7 +275,11 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      val.forEach(item => {
+        if (this.delIDArr.indexOf(item.id) === -1) {
+          this.delIDArr.push(item.id)
+        }
+      })
     },
     dialogQuxiao() {
       this.dialogVisable = false

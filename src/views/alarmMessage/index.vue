@@ -17,13 +17,13 @@
               v-model="value1"
               :clearable="false"
               :style="{width:250 + 'px'}"
+              :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
               size="mini"
-              :picker-options="pickerOptions"
               @change="timeChange"
             >
             </el-date-picker>
@@ -83,8 +83,8 @@
             :key="item"
             :label="item"
             :name="item">
-           <span>{{tabsArr[tabsArr.length-1]}} to {{tabsArr[0]}} 警告共计: {{allTotal}} 条 </span>
-           <br></br>            
+            <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
+            <br></br>
             <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
               <el-table-column
                 width="55">
@@ -102,14 +102,13 @@
                 <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
               </template></el-table-column>
               <el-table-column label="操作">
-                  <template slot-scope="scope">
-                    <el-link type="primary" @click="editDialog(scope.row.id)">编辑</el-link>
-                    <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
-                  </template>
-                </el-table-column>
+                <template slot-scope="scope">
+                  <el-link type="primary" @click="editDialog(scope.row.id)">编辑</el-link>
+                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                </template>
+              </el-table-column>
             </el-table>
-          
-           
+
             <pagination
               v-show="total>0"
               :total="total"
@@ -132,13 +131,13 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import { getAlertInfos,deleteAlertInfo} from '@/api/alarm'
+import { getAlertInfos, deleteAlertInfo } from '@/api/alarm'
 export default {
   components: { Pagination },
 
   data() {
     return {
-      rowId:0,
+      rowId: 0,
       defaultTab: '',
       centerDialogVisible: false,
       value1: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
@@ -162,7 +161,7 @@ export default {
       tableData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
-      allTotal:0,
+      allTotal: 0,
       page: 1,
       limit: 10,
       userId: Cookies.get('userId'),
@@ -179,9 +178,9 @@ export default {
       },
       pickerOptions: {
         disabledDate(time) {
-        return time.getTime() > Date.now() - 8.64e6
+          return time.getTime() > Date.now() - 8.64e6
+        }
       }
-  },  
     }
   },
   watch: {
@@ -201,17 +200,16 @@ export default {
     this.getList(s, e, h)
   },
   methods: {
-    delAlert(d){
-      this.rowId=d;
+    delAlert(d) {
+      this.rowId = d
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(()=>{
-          this.deleteAlert()
-        })
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteAlert()
+      })
     },
-   
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
@@ -256,13 +254,13 @@ export default {
       const h1 = this.formInline.typeValue
       this.oldSize = this.limit
       this.getList(s1, end1, h1)
-      const s = this.tabsArr[this.tabsArr.length-1]  + ' ' + this.startTime + ':00'
+      const s = this.tabsArr[this.tabsArr.length - 1] + ' ' + this.startTime + ':00'
       const end = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      console.log(s,"!!!!!!!!!!!!！")
-      //调用后续接口
-      console.log(end,"??????????/")
+      console.log(s, '!!!!!!!!!!!!！')
+      // 调用后续接口
+      console.log(end, '??????????/')
     },
-   
+
     editDialog(v) {
       this.editVisable = true
     },
@@ -292,7 +290,7 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      console.log(this.formInline.typeValue,'type')
+      console.log(this.formInline.typeValue, 'type')
       this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
@@ -304,7 +302,7 @@ export default {
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
-     
+
       this.oldSize = this.limit
       this.getList(s, end, h)
     },
@@ -318,16 +316,14 @@ export default {
       this.getList(s, end, h)
     },
     deleteAlert() {
-      const params=[this.rowId]
-      deleteAlertInfo(params).then(()=>{
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const end = this.currentTab + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
-      this.getList(s,end,h)
-      this.centerDialogVisible=false
-    
+      const params = [this.rowId]
+      deleteAlertInfo(params).then(() => {
+        const s = this.currentTab + ' ' + this.startTime + ':00'
+        const end = this.currentTab + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        this.getList(s, end, h)
+        this.centerDialogVisible = false
       })
-      
     },
     goBack() {
       this.$router.go(-1)
