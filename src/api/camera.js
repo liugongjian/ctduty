@@ -31,3 +31,13 @@ export function addCamera(query) {
     data: query
   })
 }
+
+// 删除摄像头信息
+export function delCamera(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Camera/Delete',
+    method: 'post',
+    data: query
+  })
+}
+

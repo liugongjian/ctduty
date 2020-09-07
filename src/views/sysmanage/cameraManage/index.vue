@@ -14,17 +14,23 @@
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form :model="dialogForm" label-position="right" label-width="100px">
-                  <el-form-item label="摄像头名称："><el-input v-model="dialogForm.name" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge.id" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人ID："><el-input v-model="dialogForm.inChargeId" placeholder="请输入负责人ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="添加人："><el-input v-model="dialogForm.inCharge.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="添加人："><el-input v-model="dialogForm.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址："><el-input v-model="dialogForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -70,7 +76,7 @@
                   <br>
                   请选择您想查看的摄像头。
                 </div>
-                <el-form v-else :model="form" label-position="right" label-width="100px">
+                <el-form v-else :model="form" label-position="right" label-width="85px">
                   <el-form-item label="摄像头ID：">
                     <div style=" word-wrap: break-word">{{ form.id }}</div>
                   </el-form-item>
@@ -93,19 +99,17 @@
                     <div style=" word-wrap: break-word">{{ form.createTime }}</div>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
-                    <div style=" word-wrap: break-word">{{ 'form.url' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.isDeal ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ form.cl ? '已处理':'未处理' }}</div>
+                    <div style=" word-wrap: break-word">{{ form.dealSum }}</div>
                   </el-form-item>
                   <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
-                  <el-button type="text" @click="resetForm('ruleForm')">删除</el-button>
+                  <el-button type="text" @click="delAlert">删除</el-button>
                 </el-form>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
                 <el-form :model="editForm" label-position="right" label-width="100px">
-                  <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item>
                   <el-form-item label="负责人："><el-input v-model="editForm.inCharge.username" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
@@ -141,64 +145,26 @@
 import VueAMap from 'vue-amap'
 import CameraList from './list.vue'
 import moment from 'moment'
-import { Alert } from 'element-ui'
+import EllipsisTooltip from '@/components/EllipsisTooltip'
 import {
-  fetchAllCameraList, editCamera, addCamera
+  fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
 const amapManager = new VueAMap.AMapManager()
 export default {
-  components: { CameraList },
+  components: { CameraList, EllipsisTooltip },
   data() {
-    const validatePercent = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请输入获奖概率'))
-      } else if (+value < 0) {
-        callback(new Error('获奖概率不能为负数'))
-      } else if (+value > 100) {
-        callback(new Error('获奖概率不能大于100'))
-      } else {
-        callback()
-      }
-    }
-    const validateSort = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请输入排序优先级'))
-      } else if (+value < 0) {
-        callback(new Error('排序优先级不能为负数'))
-      } else if (+value > 100) {
-        callback(new Error('排序优先级不能大于100'))
-      } else {
-        callback()
-      }
-    }
-    const validateImg = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请选择图片'))
-      } else {
-        callback()
-      }
-    }
-    const validateAmount = (rule, value, callback) => {
-      if (value.length === 0) {
-        callback(new Error('请输入奖品数量'))
-      } else if (+value < 0) {
-        callback(new Error('奖品数量不能为负数'))
-      } else if (+value > 1000000) {
-        callback(new Error('奖品数量不能大于一百万'))
-      } else {
-        callback()
-      }
-    }
     return {
       dialogForm: {
+        address: '',
+        creatorId: '',
         id: '',
-        inCharge: {
-          id: '',
-          creatorId: ''
-        },
-        longitude: '',
+        name: '',
         latitude: '',
-        address: ''
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: ''
       },
       editVisable: false,
       editForm: {
@@ -210,21 +176,36 @@ export default {
         url: ''
       },
       rules: {
-        id: [
-          { required: true, trigger: 'change', message: '请输入奖品名称' },
-          { max: 32, message: '名称不得超过32个字符' }
+        creatorId: [
+          { required: true, trigger: 'trigger', message: '请输入创建人ID' }
         ],
-        inCharge: [
-          { required: true, trigger: 'trigger', validator: validatePercent }
+        name: [
+          { required: true, trigger: 'trigger', message: '请输入摄像头名称' }
+        ],
+        url: [
+          { required: true, trigger: 'trigger', message: '请输入视频流信息' }
+        ],
+        manufacturer: [
+          { required: true, trigger: 'trigger', message: '请输入制造厂商' }
+        ],
+        model: [
+          { required: true, trigger: 'trigger', message: '请输入设备型号' }
+        ],
+        id: [
+          { required: true, trigger: 'change', message: '请输入奖品名称' }/* ,
+          { max: 32, message: '名称不得超过32个字符' } */
+        ],
+        inChargeId: [
+          { required: true, trigger: 'trigger', message: '请输入负责人ID' }
         ],
         longitude: [
-          { required: true, trigger: 'trigger', validator: validateAmount }
+          { required: true, trigger: 'trigger', message: '请输入经度' }
         ],
         latitude: [
-          { required: true, trigger: 'trigger', validator: validateSort }
+          { required: true, trigger: 'trigger', message: '请输入纬度' }
         ],
         address: [
-          { required: true, trigger: 'trigger', validator: validateImg }
+          { required: true, trigger: 'trigger', message: '请输入地址' }
         ]
       },
       formInline: {
@@ -269,10 +250,8 @@ export default {
       setTimeout(() => {
         if (document.getElementsByClassName('markerImg').length) {
           this.hasMarker = true
-          console.log(this.hasMarker)
         } else {
           this.hasMarker = false
-          console.log(this.hasMarker)
         }
       }, 200)
     },
@@ -296,6 +275,32 @@ export default {
   mounted() {
   },
   methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields()
+    },
+    delAlert() {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = [this.form.id]
+        delCamera(params).then(response => {
+          this.getList()
+          this.delIDArr = []
+        })
+      })
+    },
     watchClick(e) {
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
@@ -323,13 +328,14 @@ export default {
     editDialogConfirm() {
       const params = [{
         id: this.editForm.id,
-        inChargeId: this.editForm.inCharge,
+        inChargeId: this.editForm.inChargeId,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
-        url: this.editForm.url
+        url: this.editForm.url,
+        name: this.editForm.inCharge.username
       }]
       editCamera(params).then(response => {
-        console.log(response)
+        this.getList()
       })
       this.editVisable = false
     },
@@ -364,20 +370,29 @@ export default {
     },
     dialogConfirm() {
       // addCamera
+      //      {
+      //   "address": "string",
+      //   "createTime": "2020-09-07T10:51:52.477Z",
+      //   "creatorId": 0,
+      //   "id": "string",
+      //   "inChargeId": 0,
+      //   "latitude": 0,
+      //   "longitude": 0,
+      //   "manufacturer": "string",
+      //   "model": "string",
+      //   "name": "string",
+      //   "online": 0,
+      //   "phone": "string",
+      //   "updateTime": "2020-09-07T10:51:52.477Z",
+      //   "url": "string",
+      //   "village": "string"
+      // }
       const params = [
-        {
-          name: this.dialogForm.name,
-          creator_id: this.dialogForm.creatorId,
-          phone: this.dialogForm.inCharge.phone,
-          create_time: this.dialogForm.createTime,
-          address: this.dialogForm.address,
-          longitude: this.dialogForm.longitude,
-          latitude: this.dialogForm.latitude,
-          in_charge_id: this.dialogForm.inCharge.id
-        }
+        this.dialogForm
       ]
       addCamera(params).then(res => {
-        console.log(res)
+        this.getList()
+        this.dialogVisable = false
       })
     },
     positionClick(i) {
@@ -494,6 +509,7 @@ export default {
        .el-form {
          padding: 5px;
          font-size: 12px !important;
+         overflow:auto !important;
        }
        .el-form-item__label {
          font-weight: 500 !important;

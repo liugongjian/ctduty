@@ -17,13 +17,13 @@
               v-model="value1"
               :clearable="false"
               :style="{width:250 + 'px'}"
+              :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
               size="mini"
-              :picker-options="pickerOptions"
               @change="timeChange"
             >
             </el-date-picker>
@@ -83,8 +83,8 @@
             :key="item"
             :label="item"
             :name="item">
-           <span>{{tabsArr[tabsArr.length-1]}} to {{tabsArr[0]}} 警告共计: {{allTotal}} 条 </span>
-           <br></br>            
+            <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
+            <br></br>
             <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
               <el-table-column
                 width="55">
@@ -194,7 +194,7 @@ export default {
       tableData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
-      allTotal:0,
+      allTotal: 0,
       page: 1,
       limit: 10,
       userId: '',
@@ -211,9 +211,9 @@ export default {
       },
       pickerOptions: {
         disabledDate(time) {
-        return time.getTime() > Date.now() - 8.64e6
+          return time.getTime() > Date.now() - 8.64e6
+        }
       }
-  },  
     }
   },
   filters: {
@@ -250,17 +250,16 @@ export default {
     this.getList(s, e, h)
   },
   methods: {
-    delAlert(d){
-      this.rowId=d;
+    delAlert(d) {
+      this.rowId = d
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(()=>{
-          this.deleteAlert()
-        })
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteAlert()
+      })
     },
-   
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
@@ -309,12 +308,12 @@ export default {
       const h1 = this.formInline.typeValue
       this.oldSize = this.limit
       this.getList(s1, end1, h1)
-      const s = this.tabsArr[this.tabsArr.length-1]  + ' ' + this.startTime + ':00'
+      const s = this.tabsArr[this.tabsArr.length - 1] + ' ' + this.startTime + ':00'
       const end = this.tabsArr[0] + ' ' + this.endTime + ':00'
       //调用后续接口
       console.log(end,"??????????/")
     },
-   
+
     editDialog(v) {
       console.log(v,"VVVVVVVVVVVVVVV"),
       this.temp=Object.assign({},v)
@@ -346,7 +345,7 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      console.log(this.formInline.typeValue,'type')
+      console.log(this.formInline.typeValue, 'type')
       this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
@@ -358,7 +357,7 @@ export default {
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
-     
+
       this.oldSize = this.limit
       this.getList(s, end, h)
     },
@@ -381,7 +380,6 @@ export default {
 
     
       })
-      
     },
     goBack() {
       this.$router.go(-1)
@@ -455,6 +453,7 @@ export default {
         id: tempData.id,
         state: this.state,
         handlerId: this.userId
+        
       }]
       console.log(params,"，，，，，，，，，，，，，，，，，，，")
       //更新state状态

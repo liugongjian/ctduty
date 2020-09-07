@@ -31,7 +31,7 @@
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ username }}</span>
+          <span class="user-name">{{ name }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -86,7 +86,7 @@ export default {
         new_password: ''
       },
       isFullscreen: false,
-      username: ''
+      // username: ''
     }
   },
   computed: {
@@ -110,11 +110,10 @@ export default {
       }
     }
   },
-  created() {
-    this.username = localStorage.getItem('username')
-  },
+  // beforeCreate() {
+  //   this.username = localStorage.getItem('username')
+  // },
   mounted() {
-    console.log('username', this.username)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
@@ -151,44 +150,46 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
-    logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
-      })
-    },
+    // logout() {
+    //   this.$store.dispatch('LogOut').then(() => {
+    //     location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+    //   })
+    // },
     // huanglulu
     businessLogout() {
       // window.location.href = `${process.env.LOGOUT_URL}`;
+      Cookies.remove('token')
+      Cookies.remove('username')
+      Cookies.remove('level')
       this.$router.push('/login')
-      localStorage.removeItem('token')
     },
-    toUpWord() {
-      if (this.form.re_password === '') {
-        this.$message.error('请输入新密码')
-        return
-      }
-      if (this.form.new_password === '') {
-        this.$message.error('请输入确认新密码')
-        return
-      }
-      var patt1 = new RegExp(/\s+/g)
-      if (patt1.test(this.form.re_password) || patt1.test(this.form.new_password)) {
-        this.$message.error('密码仅支持输入字母，数字，符号')
-        return
-      }
-      updateUserPassWord(this.form).then(() => {
-        this.$confirm('登录已失效, 请重新登录！', '密码修改成功', {
-          confirmButtonText: '确定',
-          showCancelButton: false,
-          type: 'success'
-        }).then(() => {
-          this.logout()
-        }).catch(() => {
-        })
-      }).catch((res) => {
-        this.$message.error(res.msg)
-      })
-    }
+    // toUpWord() {
+    //   if (this.form.re_password === '') {
+    //     this.$message.error('请输入新密码')
+    //     return
+    //   }
+    //   if (this.form.new_password === '') {
+    //     this.$message.error('请输入确认新密码')
+    //     return
+    //   }
+    //   var patt1 = new RegExp(/\s+/g)
+    //   if (patt1.test(this.form.re_password) || patt1.test(this.form.new_password)) {
+    //     this.$message.error('密码仅支持输入字母，数字，符号')
+    //     return
+    //   }
+    //   updateUserPassWord(this.form).then(() => {
+    //     this.$confirm('登录已失效, 请重新登录！', '密码修改成功', {
+    //       confirmButtonText: '确定',
+    //       showCancelButton: false,
+    //       type: 'success'
+    //     }).then(() => {
+    //       this.logout()
+    //     }).catch(() => {
+    //     })
+    //   }).catch((res) => {
+    //     this.$message.error(res.msg)
+    //   })
+    // }
   }
 }
 </script>

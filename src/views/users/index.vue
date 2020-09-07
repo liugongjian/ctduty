@@ -10,7 +10,7 @@
 
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="用户名" prop="username"></el-table-column>
-      <el-table-column label="姓名" prop="username"></el-table-column>
+      <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="手机号码" prop="phone"></el-table-column>
       <el-table-column label="岗位" prop="post"></el-table-column>
       <el-table-column label="区域/部门" prop="department"></el-table-column>
@@ -44,7 +44,7 @@
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="addUserForm.username" type="text"></el-input>
+          <el-input v-model="addUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码">
           <el-input v-model="addUserForm.password" type="password"></el-input>
@@ -154,6 +154,7 @@ export default {
       },
       addUserForm: {
         username: '',
+        name: '',
         password: '',
         name: '',
         region: '',
