@@ -3,18 +3,18 @@
   <div class="userManage">
     <el-divider></el-divider>
     <el-row>
-      <el-button type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
-      <el-input class="searchinput" placeholder="请输入内容" suffix-icon="el-icon-search"></el-input>
+      <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
+      <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
+      <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
     </el-row>
 
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="用户名" prop="username"></el-table-column>
-      <el-table-column label="姓名" prop="username"></el-table-column>
+      <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="手机号码" prop="phone"></el-table-column>
-      <el-table-column label="岗位" prop="post"></el-table-column>
-      <el-table-column label="区域/部门" prop="department"></el-table-column>
+      <el-table-column label="岗位" prop="post.name"></el-table-column>
+      <el-table-column label="区域/部门" prop="department.name"></el-table-column>
       <el-table-column label="权限" prop="permissions.name"></el-table-column>
-      <el-table-column label="备注"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
           <el-link type="primary" @click="showEditDialog(row_data.row.id)">编辑</el-link>
@@ -43,7 +43,7 @@
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="username">
-          <el-input v-model="addUserForm.username" type="text"></el-input>
+          <el-input v-model="addUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="addUserForm.password" type="password"></el-input>
@@ -51,18 +51,16 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <!-- <el-form-item v-model="addUserForm.region" label="区域/部门">
-                    <el-select placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="岗位">
-                    <el-select v-model="addUserForm.job" placeholder="请选择岗位">
-                    <el-option label="岗位一" value="shanghai"></el-option>
-                    <el-option label="岗位二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item> -->
+        <el-form-item label="区域/部门">
+              <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
+                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+              </el-select>
+          </el-form-item>
+        <el-form-item label="岗位">
+            <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
+              <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -90,7 +88,7 @@
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="username">
-          <el-input v-model="editUserForm.username" type="text"></el-input>
+          <el-input v-model="editUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="editUserForm.password" type="password"></el-input>
@@ -98,18 +96,16 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <!-- <el-form-item v-model="addUserForm.region" label="区域/部门">
-                    <el-select placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="岗位">
-                    <el-select v-model="addUserForm.job" placeholder="请选择岗位">
-                    <el-option label="岗位一" value="shanghai"></el-option>
-                    <el-option label="岗位二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item> -->
+        <el-form-item label="区域/部门">
+              <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
+                  <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+              </el-select>
+          </el-form-item>
+        <el-form-item label="岗位">
+            <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
+              <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -142,6 +138,8 @@
 
 <script>
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
+
+
 export default {
   data() {
 
@@ -153,8 +151,6 @@ export default {
       }
       cb(new Error('请输入合法的手机号'))
     }
-
-
     return {
       addUserDialogVisible: false,
       addUserFormRules: {
@@ -198,23 +194,21 @@ export default {
       },
       addUserForm: {
         username: '',
+        name:'',
         password: '',
-        name: '',
-        region: '',
-        job: '',
         permissionId: '',
-        des: '',
+        departmentId:null,
+        postId:null,
         phone: ''
       },
       editUserForm: {
         id: 0,
         username: '',
+        name:'',
         password: '',
-        name: '',
-        region: '',
-        job: '',
         permissionId: '',
-        des: '',
+        departmentId:null,
+        postId:null,
         phone: ''
       },
       userList: [],
@@ -222,11 +216,53 @@ export default {
         pagenum: 1,
         pagesize: 10
       },
+      queryName:'',
       totalnum: 0,
       editUserDialogVisible: false,
       deleteUserName: '',
       deleteUserDialogVisible: false,
-      deleteUserId: 0
+      deleteUserId: 0,
+      departmentInfo : [
+        { 
+          departmentId:3275699862611970, 
+          department:'华阴市公安支队'
+        },
+        { 
+          departmentId:3275699862611971, 
+          department:'孟塬派出所'
+        },
+        { 
+          departmentId:3275699862611972, 
+          department:'华山镇派出所'
+        },
+      ],
+
+      postInfo :[
+        {
+          postId:3275699862609920,
+          post:'所长'
+        },
+        {
+          postId:3275699862609921,
+          post:'副所长'
+        },
+        {
+          postId:3275699862609922,
+          post:'民警'
+        },
+        {
+          postId:3275699862609923,
+          post:'普通员工'
+        },
+        {
+          postId:3275699862611968,
+          post:'管控中心'
+        },
+        {
+          postId:3275699862611969,
+          post:'监控中心'
+        },
+      ]
     }
   },
   created() {
@@ -242,11 +278,16 @@ export default {
         },
         params: {}
       }
+      if(this.queryName.trim() !== ''){
+        query.params.name=this.queryName
+      }
       fetchUserList(query).then(response => {
+        console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
         this.totalnum = response.body.total
       })
+      
     },
 
     handleSizeChange(newsize) {
@@ -260,15 +301,10 @@ export default {
     addAUser() {
       this.$refs.addFormRef.validate(valid=>{
         if(!valid) return;
-        const query = [{
-          departmentId: 0,
-          postId: 0,
-          username: this.addUserForm.username,
-          password: this.addUserForm.password,
-          permissionId: this.addUserForm.permissionId,
-          phone: this.addUserForm.phone
-        }];
+        const query = [{...this.addUserForm}];
+        console.log(query)
         postAddUser(query).then(response => {
+          console.log(response)
           if (response.code !== 0) return this.$message.error('添加用户失败，请联系系统管理员')
           this.$message.success('添加用户成功')
           this.addUserDialogVisible = false
@@ -277,6 +313,7 @@ export default {
       })
     },
     addDialogClosed() {
+      this.addUserForm = {};
       this.$refs.addFormRef.resetFields()
     },
     showEditDialog(id) {
@@ -346,7 +383,15 @@ export default {
     margin-top: 20px;
 }
 .searchinput{
-    float: right;
+    float: left;
     width: 250px;
+}
+.searchbtn{
+  float: left;
+  margin-left: 5px;
+  
+}
+.addbtn{
+  float: right;
 }
 </style>
