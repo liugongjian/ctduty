@@ -132,3 +132,10 @@ export function deleteAlertInfo(query) {
   })
 }
 
+export function fetchalarmList(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
