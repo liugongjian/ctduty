@@ -199,7 +199,7 @@ export default {
     },
     // 模糊搜索事件 请求接口
     onSearch() {      
-      if (this.inputmsg === '华阴市公安支队') {
+      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('华阴市') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安支队') || this.inputmsg.includes('阴') || this.inputmsg.includes('市') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('支队') ) {
         this.openOrNot = false
         this.local = []
         this.local.push('华阴公安支队')
@@ -255,7 +255,7 @@ export default {
       left: 20px;
       top: 70px;
       overflow: hidden;
-      z-index: 9999;
+      z-index: 99;
       .floatword {
         background-color: #fff;
         .inputmsg {

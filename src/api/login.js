@@ -9,7 +9,6 @@ export function loginGetToken(data) {
     url: 'http://host31.880508.xyz:10000/Login',
     method: 'post',
     data: data
-    // headers: { 'contentType' : 'application/json' }
   })
 }
 
