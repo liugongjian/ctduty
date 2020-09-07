@@ -277,9 +277,9 @@ export default {
         title: {
           show: false
         },
-        /* tooltip: {
+        tooltip: {
           formatter: '{a} <br/>{b} : {c}%'
-        }, */
+        },
         legend: {
           orient: '',
           left: 20,
@@ -316,6 +316,9 @@ export default {
         },
         geo: {
           map: '渭南',
+          tooltip: {
+            formatter: '{a} <br/>{b} : {c}%'
+          },
           label: {
             show: false,
             normal: {
@@ -355,8 +358,7 @@ export default {
           tooltip: {
             trigger: 'item',
             formatter: function(params) {
-              console.log(params)
-              return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
+              console.log(params, 'ppp')
             },
             extraCssText: 'height:50px; white-space:pre-wrap;'
           },
@@ -364,6 +366,7 @@ export default {
           coordinateSystem: 'geo',
           z: 12,
           symbolSize: 7,
+          silent: false, // 不显示hover等事件
           showEffectOn: 'render',
           rippleEffect: {
             period: 2,
@@ -416,28 +419,10 @@ export default {
           }
         },
         {
-          name: '贵阳',
-          type: 'map',
-          mapType: 'guiyang',
-          zoom: 1.24, // 大小
-          aspectScale: 1.2, // 长宽比
-          silent: true, // 不显示hover等事件
-          z: 12,
-          itemStyle: {
-            normal: {
-              show: true,
-              areaColor: '#09277a'
-            },
-            emphasis: {
-              areaColor: '#09277a'
-            }
-          },
-          data: data
-        },
-        {
           name: '小于50',
           type: 'bar',
           color: '#17b885',
+          silent: false, // 不显示hover等事件
           tooltip: {
             show: true
           }
@@ -446,11 +431,13 @@ export default {
           name: '小于100',
           type: 'bar',
           color: '#eec511',
+          silent: false, // 不显示hover等事件
           tooltip: {
             show: true
           }}, {
           name: '大于100',
           type: 'bar',
+          silent: false, // 不显示hover等事件
           color: '#d04132',
           tooltip: {
             show: true
