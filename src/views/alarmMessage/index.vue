@@ -109,7 +109,26 @@
                 </el-table-column>
             </el-table>
           
-           
+            <!-- <el-dialog :visible="dialogVisable" title="报警显示" width="520px" @close="closeDialog">
+                <el-form :model="dialogForm" label-position="right" label-width="100px">
+                  <el-form-item label="流量状态："><el-input v-model="dialogForm.name" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="监控时间："><el-input v-model="dialogForm.inCharge.id" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="原始照片："><el-input v-model="dialogForm.inCharge.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="结构化照片："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button
+                    type="primary"
+                    @click="dialogConfirm"
+                  >确 定</el-button>
+                  <el-button @click="dialogQuxiao">取 消</el-button>
+                </div>
+              </el-dialog> -->
+            
             <pagination
               v-show="total>0"
               :total="total"
@@ -140,7 +159,7 @@ export default {
     return {
       rowId:0,
       defaultTab: '',
-      centerDialogVisible: false,
+     
       value1: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
       startTime: '02:00',
       endTime: '05:00',
@@ -324,7 +343,7 @@ export default {
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
       this.getList(s,end,h)
-      this.centerDialogVisible=false
+
     
       })
       
