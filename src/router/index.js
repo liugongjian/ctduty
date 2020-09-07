@@ -100,50 +100,144 @@ NProgress.configure({
 //   }
 // })
 
-router.beforeEach((to, from, next) => {
-  let timeout = null
-  // 判断当前用户是否已拉取完user_info信息
-  // store.dispatch('GetUserInfo').then((res) => {
-  //   if (res.code < 0) {
-  //     Message.error('您还没有登录')
-  //     clearTimeout(timeout)
-  //     // timeout = setTimeout(() => {
-  //     //   window.location.href = process.env.LOGIN_URL
-  //     // }, 3000)
-  //     return
+
+// 9.7
+const whiteList = ['/login'] // no redirect whitelist
+
+// router.beforeEach((to, from, next) => {
+//   store.dispatch('GetUserInfo').then(res => { // 拉取user_info
+//     console.log('ddddd', to.path, from.path)
+//     if (to.path === '/login') {
+//       next({
+//         path: '/'
+//       })
+//       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
+//     } else {
+//       console.log('aa', store.getters.level, store.getters.addRouters, router)
+//       if (!store.getters.level) {
+//         const level = res.data.permissions.level // note: roles must be a array! such as: ['editor','develop']
+//         store.dispatch('GenerateRoutes', {
+//           level
+//         }).then(() => { // 根据roles权限生成可访问的路由表
+//           console.log('innn', store.getters.addRouters)
+//           router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+//           next({
+//             ...to,
+//             replace: true
+//           }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+//           return;
+//         })
+//       } else {
+//         console.log('hhh')
+//         next();
+//         return;
+//       }
+//     }
+//   }).catch(() => {
+//     if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+//       next()
+//     } else {
+//       store.dispatch('FedLogOut').then(() => {
+//         Message.error('您暂时未有分配的权限，请联系管理员！')
+//         next('/login');
+//       })
+//     }
+//   })
+
+  // const token = Cookies.get('token')
+  // if (token) {
+  //   // console.log(to.path, store.getters.level)
+  //   if (to.path === '/login') {
+  //     next({
+  //       path: '/'
+  //     })
+  //     NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
   //   } else {
-  //     // addOprecord({
-  //     //   "userId": res.data.id,
-  //     //   "userName": res.data.name,
-  //     //   "record": `访问${to.name || to.path}`
-  //     // });
-  //     return
+  //     if (!store.getters.level) {
+  //       store.dispatch('GetUserInfo').then(res => { // 拉取user_info
+  //         const level = res.data.permissions.level // note: roles must be a array! such as: ['editor','develop']
+  //         store.dispatch('GenerateRoutes', {
+  //           level
+  //         }).then(() => { // 根据roles权限生成可访问的路由表
+  //           router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+  //           next({
+  //             ...to,
+  //             replace: true
+  //           }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+  //           return
+  //         })
+  //       }).catch(() => {
+  //         // store.dispatch('FedLogOut').then(() => {
+  //         //   Message.error('您暂时未有分配的权限，请联系管理员！')
+  //         //   next('/login');
+  //         // })
+
+  //         if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+  //           next()
+  //         } else {
+  //           store.dispatch('FedLogOut').then(() => {
+  //             Message.error('您暂时未有分配的权限，请联系管理员！')
+  //             next('/login');
+  //           })
+  //         }
+  //       })
+  //     } else {
+  //       next()
+  //     }
   //   }
-
-  const token = localStorage.getItem('token')
-  console.log('token', token)
-  if (to.path === '/dashboard' || to.path === '/ecloudwatch' || to.path === '/ecloudwatch' || to.path === '/alarmMessage' || to.path === '/sysmanage/userManage' || to.path === '/sysmanage/cameraManage' || to.path === '/sysmanage/areaManage' || to.path === '/sysMonitor/notice' || to.path === '/sysMonitor/onlineUser' || to.path === '/sysMonitor/pushSet' ) {
-    if (token) {
-      next()
-    } else {
-      next('/login')
-      // window.location.href = process.env.LOGIN_URL
-    }
-  } else {
-    next()
-  }
-})
-  // }).catch(error => {
-  //   Message.error(error.message)
-  //   // clearTimeout(timeout)
-  //   // timeout = setTimeout(() => {
-  //   //   window.location.href = process.env.LOGIN_URL
-  //   // }, 1000)
-  // })
+  // }
 
 
-// router.afterEach((to, from) => {
-//   NProgress.done() // finish progress bar
+// const whiteList = ['/login'] // no redirect whitelist
+
+// router.beforeEach((to, from, next) => {
+//   const token = Cookies.get('token')
+//   if (token) {
+
+//     store.dispatch('GetUserInfo').then(res => { // 拉取user_info
+//       console.log('ddddd', to.path, from.path)
+//       if (to.path === '/login') {
+//         next({
+//           path: '/'
+//         })
+//         NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
+//       } else {
+//         console.log('aa', store.getters.level, store.getters.addRouters, router)
+//         if (!store.getters.level) {
+//           const level = res.data.permissions.level // note: roles must be a array! such as: ['editor','develop']
+//           store.dispatch('GenerateRoutes', {
+//             level
+//           }).then(() => { // 根据roles权限生成可访问的路由表
+//             console.log('innn', store.getters.addRouters)
+//             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+//             next({
+//               ...to,
+//               replace: true
+//             }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+//             return;
+//           })
+//         } else {
+//           console.log('hhh')
+//           next();
+//           return;
+//         }
+//       }
+//     }).catch(() => {
+//       if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+//         next()
+//       } else {
+//         store.dispatch('FedLogOut').then(() => {
+//           Message.error('您暂时未有分配的权限，请联系管理员！')
+//           next('/login');
+//         })
+//       }
+//     })
+//   }
 // })
+
+
+router.afterEach((to, from) => {
+  NProgress.done() // finish progress bar
+})
 
 export default router

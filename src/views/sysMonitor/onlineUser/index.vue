@@ -135,7 +135,7 @@ export default {
     },
     // 强退
     forcedExit(code) {
-      const token = localStorage.getItem('token')
+      const token = Cookies.get('token')
       fetchOnlineLogout(this.code).then(response => {
         console.log('强退成功')
         if (response.code === 0) {
