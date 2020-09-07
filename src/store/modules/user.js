@@ -53,9 +53,6 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
-    SET_ROLE: (state, role) => {
-      state.role = role
-    },
     SET_AUTH: (state, roles) => {
       state.auth = roles
     },
@@ -118,11 +115,13 @@ const user = {
         fetchUser()
           .then(response => {
             if (response.body) {
+              localStorage.setItem('username', response.body.data.username)
+              localStorage.setItem('level', response.body.data.permissions.level)
               commit('SET_NAME', response.body.data.username)
-              // commit('SET_ROLE', response.body.data.role)
+              commit('SET_LEVEL', response.body.data.permissions)
               commit('SET_USERID', response.body.data.id)
             }
-            resolve(response)
+            resolve(response.body)
           })
           .catch(error => {
             reject(error)

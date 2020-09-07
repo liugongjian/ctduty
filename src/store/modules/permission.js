@@ -5,9 +5,10 @@ import { asyncRouterMap, constantRouterMap } from '@/router/routers'
  * @param roles
  * @param route
  */
-function hasPermission(roles, route) {
+function hasPermission(level, route) {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+    // return roles.some(role => route.meta.roles.includes(role))
+    return level < 2;
   } else {
     return true
   }
@@ -18,16 +19,16 @@ function hasPermission(roles, route) {
  * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(routes, roles) {
+function filterAsyncRouter(routes, level) {
   const res = []
 
   routes.forEach(route => {
     const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles)
-        // filterAsyncRouter(tmp.children, roles)
-      }
+    if (hasPermission(level, tmp)) {
+      // if (tmp.children) {
+      //   tmp.children = filterAsyncRouter(tmp.children, roles)
+      //   // filterAsyncRouter(tmp.children, roles)
+      // }
       res.push(tmp)
     }
   })
@@ -38,25 +39,32 @@ function filterAsyncRouter(routes, roles) {
 const permission = {
   state: {
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
+    level: false,
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
       state.routers = constantRouterMap.concat(routers)
-    }
+      console.log(routers.length, state.routers.length)
+    },
+    SET_LEVEL: (state, level) => {
+      state.level = level
+    },
   },
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
+        const { level } = data
         // let accessedRouters
         // if (roles.includes('admin')) {
         //   accessedRouters = asyncRouterMap
         // } else {
-        const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        const accessedRouters = filterAsyncRouter(asyncRouterMap, level)
+        console.log('permisssion', accessedRouters, level)
         // }
         commit('SET_ROUTERS', accessedRouters)
+        commit('SET_LEVEL', true)
         resolve()
       })
     }

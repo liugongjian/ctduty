@@ -137,12 +137,13 @@ export default {
             if (resp.code === 0) {
               console.log('跳转首页')
               // 把token存在cookie中
-              localStorage.setItem('token', resp.body.data)
+              Cookies.set('token', resp.body.data, {espires:1})
+              // localStorage.setItem('token', resp.body.data)
               this.$router.push('/dashboard')
               fetchUser().then((res) => {
                 console.log('res', res)
-                localStorage.setItem('userId', res.body.data.id)
-                localStorage.setItem('username', res.body.data.username)
+                // localStorage.setItem('userId', res.body.data.id)
+                Cookies.set('username', res.body.data.username, {espires:1})                
               }).catch(err => {
                 console.log(err)
               })

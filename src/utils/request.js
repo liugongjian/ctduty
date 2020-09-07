@@ -32,7 +32,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     // const token = getToken('token')
     // 
-    const token = localStorage.getItem('token')
+    const token = Cookies.get('token')
 
     if (token) {
       // 让每个请求携带token 把头部的'Bearer '去掉
@@ -58,17 +58,12 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    if (res.code !== 0) {
+    if (res.code == 50000) {
       // Message({
       //   message: res.msg,
       //   type: 'error',
       //   duration: 5 * 1000
       // })
-      rewriteMessage({
-        message: res.msg,
-        type: 'error',
-        duration: 5 * 1000
-      })
       // // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
       // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
       //   // 请自行在引入 MessageBox
@@ -88,13 +83,15 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      if (res.code === 50000 && res.message === 'Token unauthorized') {
-        logout().then(() => {
-          localStorage.removeItem('token')
-          this.$router.push('/login')
-        })
-      }
-      return Promise.reject(response.data)
+      // if (res.code === 50000) {
+      //   logout().then(() => {
+      //     localStorage.removeItem('token')
+      //     this.$router.push('/login')
+      //   })
+        localStorage.removeItem('token')
+        return Promise.reject(response.data)
+      // }
+      // return Promise.reject(response.data)
     } else {
       return response.data
     }
@@ -102,6 +99,7 @@ service.interceptors.response.use(
   error => {
     let timeout = null
     const msg = error.response.data.msg || error.message
+    console.log(error, msg)
     // Message({
     //   message: msg,
     //   type: 'error',

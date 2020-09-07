@@ -89,68 +89,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/sysmanage',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'sysmanage',
-      icon: 'sysmanage',
-      noCache: true
-    },
-    children: [
-      {
-        path: 'userManage',
-        component: () => import('@/views/sysmanage/userManage/index'),
-        name: 'sysUser',
-        meta: {
-          title: 'userManage',
-          icon: 'userManage',
-          noCache: false
-        }
-      },
-      {
-        path: 'cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/index'),
-        name: 'sysCameraManage',
-        meta: {
-          title: 'cameraManage',
-          icon: 'camera',
-          noCache: false
-        }
-      },
-      /*  { path: 'cameraManage/map',
-        component: () => import('@/views/sysmanage/cameraManage/map'),
-        name: 'sysCameraManageMap',
-        hidden: true,
-        meta: {
-          title: 'cameraManage',
-          icon: 'dashboard',
-          noCache: false
-        }
-      },
-      { path: 'cameraManage/list',
-        component: () => import('@/views/sysmanage/cameraManage/list'),
-        name: 'sysCameraManageList',
-        hidden: true,
-        meta: {
-          title: 'cameraManage',
-          icon: 'dashboard',
-          noCache: false
-        }
-      }, */
-      {
-        path: 'areaManage',
-        component: () => import('@/views/sysmanage/areaManage/index'),
-        name: 'sysAreaManage',
-        meta: {
-          title: 'areaManage',
-          icon: 'area',
-          noCache: false
-        }
-      }
-    ]
-  },
-  {
     path: '/sysMonitor',
     component: Layout,
     alwaysShow: true, // will always show the root menu
@@ -192,12 +130,12 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: '',
-    name: 'defaultIndex',
-    redirect: '/login',
-    hidden: true
-  },
+  // {
+  //   path: '',
+  //   name: 'defaultIndex',
+  //   redirect: '/login',
+  //   hidden: true
+  // },
   {
     path: '/login',
     name: 'login',
@@ -217,4 +155,48 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouterMap = [
+  {
+    path: '/sysmanage',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    hidden: false,
+    meta: {
+      title: 'sysmanage',
+      icon: 'sysmanage',
+      noCache: true,
+      roles: 'admin'
+    },
+    children: [
+      {
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'userManage',
+          icon: 'userManage',
+          noCache: false
+        }
+      },
+      {
+        path: 'cameraManage',
+        component: () => import('@/views/sysmanage/cameraManage/index'),
+        name: 'sysCameraManage',
+        meta: {
+          title: 'cameraManage',
+          icon: 'camera',
+          noCache: false
+        }
+      },
+      {
+        path: 'areaManage',
+        component: () => import('@/views/sysmanage/areaManage/index'),
+        name: 'sysAreaManage',
+        meta: {
+          title: 'areaManage',
+          icon: 'area',
+          noCache: false
+        }
+      }
+    ]
+  },
 ]
