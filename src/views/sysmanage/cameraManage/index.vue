@@ -274,7 +274,7 @@ export default {
           this.hasMarker = false
           console.log(this.hasMarker)
         }
-      }, 500)
+      }, 200)
     },
     hasMarker(v) {
       const that = this
