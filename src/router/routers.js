@@ -89,6 +89,50 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/sysmanage',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    hidden: false,
+    meta: {
+      title: 'sysmanage',
+      icon: 'sysmanage',
+      noCache: true,
+      roles: 'admin'
+    },
+    children: [
+      {
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'userManage',
+          icon: 'userManage',
+          noCache: false
+        }
+      },
+      {
+        path: 'cameraManage',
+        component: () => import('@/views/sysmanage/cameraManage/index'),
+        name: 'sysCameraManage',
+        meta: {
+          title: 'cameraManage',
+          icon: 'camera',
+          noCache: false
+        }
+      },
+      {
+        path: 'areaManage',
+        component: () => import('@/views/sysmanage/areaManage/index'),
+        name: 'sysAreaManage',
+        meta: {
+          title: 'areaManage',
+          icon: 'area',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
     path: '/sysMonitor',
     component: Layout,
     alwaysShow: true, // will always show the root menu
@@ -155,48 +199,48 @@ export const constantRouterMap = [
 ]
 
 export const asyncRouterMap = [
-  {
-    path: '/sysmanage',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    hidden: false,
-    meta: {
-      title: 'sysmanage',
-      icon: 'sysmanage',
-      noCache: true,
-      roles: 'admin'
-    },
-    children: [
-      {
-        path: 'userManage',
-        component: () => import('@/views/sysmanage/userManage/index'),
-        name: 'sysUser',
-        meta: {
-          title: 'userManage',
-          icon: 'userManage',
-          noCache: false
-        }
-      },
-      {
-        path: 'cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/index'),
-        name: 'sysCameraManage',
-        meta: {
-          title: 'cameraManage',
-          icon: 'camera',
-          noCache: false
-        }
-      },
-      {
-        path: 'areaManage',
-        component: () => import('@/views/sysmanage/areaManage/index'),
-        name: 'sysAreaManage',
-        meta: {
-          title: 'areaManage',
-          icon: 'area',
-          noCache: false
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/sysmanage',
+  //   component: Layout,
+  //   alwaysShow: true, // will always show the root menu
+  //   hidden: false,
+  //   meta: {
+  //     title: 'sysmanage',
+  //     icon: 'sysmanage',
+  //     noCache: true,
+  //     roles: 'admin'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'userManage',
+  //       component: () => import('@/views/sysmanage/userManage/index'),
+  //       name: 'sysUser',
+  //       meta: {
+  //         title: 'userManage',
+  //         icon: 'userManage',
+  //         noCache: false
+  //       }
+  //     },
+  //     {
+  //       path: 'cameraManage',
+  //       component: () => import('@/views/sysmanage/cameraManage/index'),
+  //       name: 'sysCameraManage',
+  //       meta: {
+  //         title: 'cameraManage',
+  //         icon: 'camera',
+  //         noCache: false
+  //       }
+  //     },
+  //     {
+  //       path: 'areaManage',
+  //       component: () => import('@/views/sysmanage/areaManage/index'),
+  //       name: 'sysAreaManage',
+  //       meta: {
+  //         title: 'areaManage',
+  //         icon: 'area',
+  //         noCache: false
+  //       }
+  //     }
+  //   ]
+  // },
 ]

@@ -143,6 +143,7 @@ export default {
               fetchUser().then((res) => {
                 console.log('res', res)
                 // localStorage.setItem('userId', res.body.data.id)
+                Cookies.set('userId', res.body.data.id, {espires:1})                
                 Cookies.set('username', res.body.data.username, {espires:1})                
               }).catch(err => {
                 console.log(err)
