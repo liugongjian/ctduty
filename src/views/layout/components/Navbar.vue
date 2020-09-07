@@ -158,9 +158,9 @@ export default {
     // huanglulu
     businessLogout() {
       // window.location.href = `${process.env.LOGOUT_URL}`;
-      localStorage.removeItem('token')
-      localStorage.removeItem('username')
-      localStorage.removeItem('level')
+      Cookies.remove('token')
+      Cookies.remove('username')
+      Cookies.remove('level')
       this.$router.push('/login')
     },
     // toUpWord() {
