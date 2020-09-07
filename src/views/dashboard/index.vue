@@ -827,8 +827,8 @@ export default {
             trailLength: 0,
             symbol: 'arrow',
             period: 10, // 光点滑动速度
-            symbolSize: 150,
-            symbol: img[0]
+            symbolSize: 150
+            // symbol: img[0]
           },
           lineStyle: {
             normal: {
