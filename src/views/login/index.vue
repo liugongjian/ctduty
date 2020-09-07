@@ -52,6 +52,7 @@ import { encryptAes } from './js/AES'
 const Base64 = require('js-base64').Base64
 import config from '@/config'
 import { loginGetToken } from '../../api/login'
+import { fetchUser } from '../../api/user'
 const {
   prefix: { userPrefix }
 } = config
@@ -138,27 +139,13 @@ export default {
               // 把token存在cookie中
               localStorage.setItem('token', resp.body.data)
               this.$router.push('/dashboard')
-              if (redirect_url_front) {
-                let redirect_url
-                if (redirect_url_front.indexOf('?') > -1 && redirect_url_front.indexOf('@') > -1) {
-                  // redirect_url_fron有多个参数 如 http://XXX?testa=aaaa@testb=bbbb
-                  redirect_url = redirect_url_front.replace(/@/g, '&')
-                  window.location.href = decodeURIComponent(redirect_url + `&token=${resp.data.token}`)
-                  return
-                } else if (redirect_url_front.indexOf('?') > -1 && redirect_url_front.indexOf('@') < 0) {
-                  // redirect_url_front有一个参数 如 http://XXX?testa=aaaa
-                  redirect_url = redirect_url_front
-                  window.location.href = decodeURIComponent(redirect_url + `&token=${resp.data.token}`)
-                } else {
-                  // redirect_url_front没有参数
-                  redirect_url = redirect_url_front
-                  window.location.href = decodeURIComponent(redirect_url + `?token=${resp.data.token}`)
-                  return
-                }
-              } else {
-                Cookies.set('_id', Base64.encode(resp.data.user._id))
-                this.$router.push({ path: redirect || '/dashboard' })
-              }
+              fetchUser().then((res) => {
+                console.log('res', res)
+                localStorage.setItem('userId', res.body.data.id)
+                localStorage.setItem('username', res.body.data.username)
+              }).catch(err => {
+                console.log(err)
+              })
             } else {
               // this.refreshImg()
               if (resp.code === 'USER_WRONG') {

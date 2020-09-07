@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div class="userManage">
     <el-divider></el-divider>
     <el-row>
       <el-button type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
@@ -38,17 +38,17 @@
       title="新增用户"
       width="50%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="addUserForm" label-width="100px">
-        <el-form-item label="用户名" prop="user_name">
+      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="addUserForm.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
         <!-- <el-form-item v-model="addUserForm.region" label="区域/部门">
@@ -63,7 +63,7 @@
                     <el-option label="岗位二" value="beijing"></el-option>
                     </el-select>
                 </el-form-item> -->
-        <el-form-item label="权限">
+        <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
             <el-radio :label="3274944196083713">管理员</el-radio>
@@ -85,17 +85,17 @@
       title="修改用户"
       width="50%"
       @close="editDialogClosed">
-      <el-form ref="editFormRef" :model="editUserForm" label-width="100px">
-        <el-form-item label="用户名" prop="user_name">
+      <el-form ref="editFormRef" :rules="addUserFormRules" :model="editUserForm" label-width="100px">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="username">
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="editUserForm.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
         <!-- <el-form-item v-model="addUserForm.region" label="区域/部门">
@@ -110,7 +110,7 @@
                     <el-option label="岗位二" value="beijing"></el-option>
                     </el-select>
                 </el-form-item> -->
-        <el-form-item label="权限">
+        <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
             <el-radio :label="3274944196083713">管理员</el-radio>
@@ -144,11 +144,56 @@
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
 export default {
   data() {
+
+    var checkMobile=(rule,value,cb)=>{
+
+    const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
+    if(regMobile.test(value)){
+        return cb();
+      }
+      cb(new Error('请输入合法的手机号'))
+    }
+
+
     return {
       addUserDialogVisible: false,
       addUserFormRules: {
-        user_name: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' }
+        username: [
+          { required: true, message: '用户名称不能为空', trigger: 'blur' },
+          { min:5, max:12, message:'用户名长度在5-12个字符之间',trigger:'blur'}
+        ],
+        password: [
+              {
+                  required:true,
+                  message:'密码不能为空',
+                  trigger:'blur'
+              },
+              {
+                  min:8,
+                  max:20,
+                  message:'密码长度在8-20个字符之间',
+                  trigger:'blur'
+              }
+        ],
+        phone:[
+              {
+                  required:true,
+                  message:'手机号不能为空',
+                  trigger:'blur'
+              },
+              {
+                  min:11,
+                  max:11,
+                  message:'长度为11个字符',
+                  trigger:'blur'
+              },
+              {
+                  validator:checkMobile,
+                  trigger:'blur'
+              }
+        ],
+        permissionId:[
+          {required:true, message:'权限不能为空',trigger:'blur'}
         ]
       },
       addUserForm: {
@@ -213,20 +258,22 @@ export default {
       this.getUserList()
     },
     addAUser() {
-      const query = [{
-        departmentId: 0,
-        postId: 0,
-        username: this.addUserForm.username,
-        password: this.addUserForm.password,
-        permissionId: this.addUserForm.permissionId,
-        phone: this.addUserForm.phone
-      }]
-      // console.log(this.addUserForm.permissionId)
-      postAddUser(query).then(response => {
-        if (response.code !== 0) return this.$message.error('添加用户失败，请联系系统管理员')
-        this.$message.success('添加用户成功')
-        this.addUserDialogVisible = false
-        this.getUserList()
+      this.$refs.addFormRef.validate(valid=>{
+        if(!valid) return;
+        const query = [{
+          departmentId: 0,
+          postId: 0,
+          username: this.addUserForm.username,
+          password: this.addUserForm.password,
+          permissionId: this.addUserForm.permissionId,
+          phone: this.addUserForm.phone
+        }];
+        postAddUser(query).then(response => {
+          if (response.code !== 0) return this.$message.error('添加用户失败，请联系系统管理员')
+          this.$message.success('添加用户成功')
+          this.addUserDialogVisible = false
+          this.getUserList()
+        })
       })
     },
     addDialogClosed() {
@@ -280,11 +327,17 @@ export default {
 </script>
 
 <style scoped>
+.userManage {
+  padding: 0px 20px;
+}
 .title{
     width:150px;height:100px;
     border:1px solid #000;
     display:-moz-inline-box; /* css注释：for ff2 */
     display:inline-block;
+}
+.el-divider--horizontal {
+  margin-top: 0px;
 }
 .el-pagination{
     float: right;

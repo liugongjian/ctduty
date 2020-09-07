@@ -5,7 +5,7 @@
         <div class="serachbox">
           <div class="filter-container clearfix">
             <div class="pull-left">
-              <el-input v-model="formInline.searchkey" placeholder="请输入摄像头ID、地址、负责人" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
+              <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
               <el-button v-waves class="filter-item" type="warning" @click="onSearch">
                 {{ '搜索' }}
               </el-button>
@@ -14,13 +14,15 @@
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form :model="dialogForm" label-position="right" label-width="100px">
-                  <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头名称："><el-input v-model="dialogForm.name" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge.id" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="添加人："><el-input v-model="dialogForm.inCharge.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="地址："><el-input v-model="dialogForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
@@ -190,7 +192,10 @@ export default {
     return {
       dialogForm: {
         id: '',
-        inCharge: '',
+        inCharge: {
+          id: '',
+          creatorId: ''
+        },
         longitude: '',
         latitude: '',
         address: ''
@@ -254,7 +259,6 @@ export default {
             message: '哈哈',
             duration: 0
           }) */
-          console.log(a)
         }
       }
     }
@@ -310,6 +314,7 @@ export default {
     },
     onSearch() {
       this.getList()
+      this.formInline.searchkey = ''
     },
     checkModel() {
       this.$emit('getdata', this.formInline.typeValue)
@@ -331,8 +336,22 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
-      this.markers.push({ position: [this.dialogForm.longitude, this.dialogForm.latitude], content: `<svg class="icon" style="width: 2em; height: 2em;vertical-align: middle;fill: #3E94F9;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3378"><path d="M808.96 317.44c0-164.00384-132.95104-296.96-296.96-296.96S215.04 153.43616 215.04 317.44c0 82.92352 34.02752 157.8752 88.83712 211.74784 93.696 140.06272 159.59552 300.29312 189.66528 472.86784 6.11328 0.80896 12.26752 1.2288 18.45248 1.2288a140.4416 140.4416 0 0 0 18.45248-1.2288c30.06976-172.56448 95.96928-332.79488 189.6704-472.8576C774.93248 475.32544 808.96 400.36864 808.96 317.44zM268.8 317.44c0-134.31296 108.88192-243.2 243.2-243.2s243.2 108.88704 243.2 243.2-108.88192 243.2-243.2 243.2S268.8 451.75296 268.8 317.44z" fill="#2458BE" p-id="3379"></path></svg>` })
-      this.dialogVisable = false
+      // addCamera
+      const params = [
+        {
+          name: this.dialogForm.name,
+          creator_id: this.dialogForm.creatorId,
+          phone: this.dialogForm.inCharge.phone,
+          create_time: this.dialogForm.createTime,
+          address: this.dialogForm.address,
+          longitude: this.dialogForm.longitude,
+          latitude: this.dialogForm.latitude,
+          in_charge_id: this.dialogForm.inCharge.id
+        }
+      ]
+      addCamera(params).then(res => {
+        console.log(res)
+      })
     },
     positionClick(i) {
       console.log(i)
@@ -356,6 +375,11 @@ export default {
         /*  this.formInfo.forEach(item => {
           item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
         }) */
+        this.markers = []
+        this.showZwMes = true
+        if (document.getElementsByClassName('markerClickImg').length) {
+          document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
+        }
         this.formInfo.forEach(item => {
           this.markers.push({ position: [item.longitude, item.latitude], /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  data=${JSON.stringify(item)}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`

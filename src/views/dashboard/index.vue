@@ -15,7 +15,7 @@
                 <p class="overmsg">{{ offCamera }}个</p>
               </div>
               <div class="overvBox">
-                <span class="overbgc">告警次数</span>
+                <span class="overbgc">今日告警次数</span>
                 <p class="overmsg">{{ alarmTime }}次</p>
               </div>
               <div class="overvBox">
@@ -32,7 +32,7 @@
         <div id="trend">
           <div class="dash-title">告警趋势预测</div>
           <p class="trendTitle">目标评估</p>
-          <p class="trenddes">治安状况保持稳定</p>
+          <p class="trenddes">{{ trendText }}</p>
           <div id="alarmLine" :style="{width: '100%', height: '120px'}" class="lineEcharts"></div>
         </div>
         <div id="dispose">
@@ -60,7 +60,7 @@
           <div id="hotarea">
             <div class="dash-title">热门告警位置</div>
             <div class="tagbox">
-              <tag-cloud :data="hotTag" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
+              <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
             </div>
           </div>
         </el-col>
@@ -89,8 +89,8 @@ require('echarts/lib/chart/bar')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import {
-  fetchUser, fetchCommunity, alarmStatus
-} from '@/api/user'
+  fetchAllData, fetchNowInfo
+} from '@/api/dashboard'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
@@ -123,24 +123,21 @@ export default {
         playbackProtocol: 0,
         updateStateTimeString: '2020-08-21 13:46:28'
       }],
-      alarmTime: '888',
-      processed: '666',
-      offCamera: '5000',
-      total: '10000',
+      alarmTime: '',
+      processed: '',
+      offCamera: '',
+      total: '',
       datay: [10, 11, 12],
       pieData: [{ value: 10, name: '嘻嘻' }],
       hotTag: [
-        { 'id': '05023f8da31c4b4187cc6899e2a3aec2', 'name': '镇远县' },
-        { 'id': '0ef028e5278f4f5ca31f99f1bd22b1cc', 'name': '剑河县' },
-        { 'id': '1a32ef04d3c548eaa6777abb46da32f2', 'name': '台江县' },
-        { 'id': '2c26488325bd493687d16315fe0e5fdd', 'name': '岑巩县' },
-        { 'id': '3a786111828a4b9f89ae9da25753eedd', 'name': '黎平' },
-        { 'id': '4ed593eed91b4244969995237f5c96c5', 'name': '丹寨县' },
-        { 'id': '615d2c178f1a47cb8d473823e74f5386', 'name': '凯里市' },
-        { 'id': '76f652df03db43349272a9aff492b065', 'name': '榕江县' },
-        { 'id': '8ff29d0d35e548feb945063b34ed9c9b', 'name': '黄平县' },
-        { 'id': 'a8ac2170008746fdadc05ea461bc5e37', 'name': '雷山县' }
-      ]
+        /* { 'id': '05023f8da31c4b4187cc6899e2a3aec2', 'name': '镇远县' } */
+      ],
+      alertHandleRate: '',
+      trendText: '保持稳定',
+      zhuData: [],
+      zhuXdata: [],
+      zhuYdata: [],
+      mapShowData: []
     }
   },
   watch: {
@@ -149,12 +146,14 @@ export default {
       // Array.prototype.forEach.call
       [].forEach.call(canvas, function(item) {
         // do whatever
-        console.log(item.parentNode.parentNode.clientWidth)
-        console.log(item.style)
         item.style.width = '100%'
         item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
     }
+  },
+  async created() {
+    await this.getList()
+    await this.getNowList()
   },
   mounted() {
     const that = this
@@ -166,29 +165,96 @@ export default {
         that.screenWidth = element.clientWidth
       })
     })
-
     registerMap()
     // that.mapFn(that.mapData)
     that.getMap()
     that.camerarate()
-    that.drawPie('man', '人员', '#1890FF', 40)
-    that.drawPie('car', '机动车', '#5DDECF', 35)
-    that.drawPie('bicycle', '非机动车', '#2FC25B', 25)
-    that.getPanel()
-    this.drawZhu('alarmLine')
+    that.drawPie('man', '人员', '#1890FF', NaN)
+    that.drawPie('car', '机动车', '#5DDECF', NaN)
+    that.drawPie('bicycle', '非机动车', '#2FC25B', NaN)
+    that.getPanel(that.cameraOnlineRate)
+    that.drawZhu('alarmLine')
   },
   methods: {
+    getList() {
+      // fetchAllData
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchAllData(params).then(res => {
+        // { name: '华阴', value: 400 }
+        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '治安案件有所降低' : res.body.data.alertAvgVariance > 0.4 ? '治安案件保持稳定' : '治安案件有所增加'
+        // alertStatisByMonthList
+        res.body.data.alertStatisByMonthList.forEach((item, index) => {
+          this.zhuData.push({
+            name: item.calMonth,
+            count: item.alertCount
+          })
+          this.zhuXdata.push(item.calMonth)
+          this.zhuYdata.push(item.alertCount)
+        })
+        this.drawZhu(this.zhuData, this.zhuXdata, this.zhuYdata)
+        res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
+          this.hotTag.push({
+            id: new Date(), name: item.address, maxFont: index === 0 ? '12px' : (12 + index * 5) + 'px'
+          })
+          this.mapShowData.push({
+            name: item.address, value: item.alertCount, latitude: item.latitude,
+            longitude: item.longitude
+          })
+        })
+        this.getMap(this.mapShowData)
+        res.body.data.alertStatisByTypeList.forEach(item => {
+          if (item.type === '1') {
+            this.drawPie('man', '人员', '#1890FF', parseInt(item.typeRate * 100))
+          } else if (item.type === '2') {
+            this.drawPie('car', '机动车', '#5DDECF', parseInt(item.typeRate * 100))
+          } else {
+            this.drawPie('bicycle', '非机动车', '#2FC25B', parseInt(item.typeRate * 100))
+          }
+        })
+      })
+      // alertStatisByAddList
+    },
+    getNowList() {
+      // fetchAllData
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchNowInfo(params).then(res => {
+        this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
+        this.offCamera = res.body.data.offlineCameras
+        this.alarmTime = res.body.data.todayAlerts
+        this.processed = res.body.data.todayHandleds
+        this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
+        this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
+      })
+    },
     clickTagItem(tag) {
       // TODO
     },
-    getMap() {
+    getMap(inData) {
       this.charts = echarts.init(document.getElementById('mapChart'))
-      var data = [
-        { name: '华阴', value: 400 }
-      ]
-      var geoCoordMap = {
-        '华阴': [110.08752, 34.56608]
-      }
+      var data = []
+      var geoCoordMap = {}
+      inData.forEach(item => {
+        data.push({
+          name: item.name, value: item.value * 50
+        })
+        geoCoordMap[item.name] = [item.longitude, item.latitude]
+      })
       var convertData = function(data) {
         var res = []
         for (var i = 0; i < data.length; i++) {
@@ -294,7 +360,7 @@ export default {
       }
       this.charts.setOption(option)
     },
-    getPanel() {
+    getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
         backgroundColor: '#fff',
@@ -319,7 +385,7 @@ export default {
             fontWeight: 'bolder'
           },
           data: [{
-            value: 60,
+            value: rate,
             name: ''
           }],
           axisLine: { // 表盘样式
@@ -396,12 +462,12 @@ export default {
         }]
       })
     },
-    camerarate() {
+    camerarate(rate) {
       var myChart = echarts.init(document.getElementById('camerarate'))
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: '在线率 \n 20%',
+          text: `在线率 \n ${rate}%`,
           textStyle: {
             fontSize: 20,
             fontFamily: 'Microsoft Yahei',
@@ -416,7 +482,6 @@ export default {
           x: 'center',
           y: '40%'
         },
-
         series: [{
           type: 'liquidFill',
           radius: '80%',
@@ -585,9 +650,8 @@ export default {
         ]
       })
     },
-    drawZhu(id) {
+    drawZhu(data, xData, yData) {
       var charts = echarts.init(document.getElementById('alarmLine'))
-      var data = [{ name: '7月', testRate: 0.56, score: 0.80, state: '薄弱' }, { name: '8月', testRate: 1.56, score: 1.81, state: '薄弱' }, { name: '9月', testRate: 0.56, score: 0.80, state: '薄弱' }]
       var option = {
         backgroundColor: '#fff',
         color: ['#1890FF', 'RGB(45,188,255)'],
@@ -612,7 +676,7 @@ export default {
         xAxis: {
           show: true,
           name: '',
-          data: ['7月', '8月', '9月'],
+          data: xData,
           axisTick: {
             show: true,
             alignWithLabel: true,
@@ -634,8 +698,7 @@ export default {
         },
         yAxis: {
           name: '',
-          max: 10,
-          min: 0,
+          data: yData,
           nameTextStyle: {
             color: '#999'
           },
@@ -670,7 +733,7 @@ export default {
           // position: 'bottom', //trigger: 'item'有效
           formatter: function(a) {
             var i = a[0].dataIndex
-            var text = a[0].name + '<br>测试概率&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].testRate + '<br>中高考分值&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].score + '<br>掌握程度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + data[i].state
+            var text = data[i].count + data[i].name
             return text
           }
         },
