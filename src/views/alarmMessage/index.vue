@@ -38,7 +38,7 @@
               :style="{width:100 + 'px',height:'10px'}"
               v-model="startTime"
               :picker-options="{
-                selectableRange:'00:00:00 05:59:00'
+                selectableRange:'00:00:00-23:59:00'
               }"
               size="mini"
               format="HH:mm"
@@ -94,8 +94,8 @@
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" ></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="camera.url"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handlerId"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                 <svg-icon v-else class="untreated" icon-class="untreated" />
@@ -103,31 +103,37 @@
               </template></el-table-column>
               <el-table-column label="操作">
                   <template slot-scope="scope">
-                    <el-link type="primary" @click="editDialog(scope.row.id)">编辑</el-link>
+                    <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
                     <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
                   </template>
                 </el-table-column>
             </el-table>
           
-            <!-- <el-dialog :visible="dialogVisable" title="报警显示" width="520px" @close="closeDialog">
-                <el-form :model="dialogForm" label-position="right" label-width="100px">
-                  <el-form-item label="流量状态："><el-input v-model="dialogForm.name" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+            <el-dialog
+            :visible.sync="dialogVisable"
+             title="报警显示" width="520px" @close="closeDialog">
+                <el-form  label-position="right" v-model="temp" label-width="100px">
+                   <el-form-item label="流量状态：" prop="camera.address">
+                      <span style="width: 300px;">{{temp.camera | formatNull }}</span>
+                  </el-form-item> 
+                   <el-form-item label="监控时间：" prop="createTime" :formatter="formatTime">
+                      {{formatTime(temp.createTime) }}
                   </el-form-item>
-                  <el-form-item label="监控时间："><el-input v-model="dialogForm.inCharge.id" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="原始照片：" prop="image">
+                    <el-image src="temp.image"></el-image>
                   </el-form-item>
-                  <el-form-item label="原始照片："><el-input v-model="dialogForm.inCharge.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label="结构化照片："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item>
+                  <el-form-item label="结构化照片：" prop="imageCut">
+                      <el-image src="temp.imageCut"></el-image>
+                  </el-form-item> 
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                   <el-button
                     type="primary"
                     @click="dialogConfirm"
-                  >确 定</el-button>
-                  <el-button @click="dialogQuxiao">取 消</el-button>
+                  >正 常</el-button>
+                  <el-button @click="dialogQuxiao">异 常</el-button>
                 </div>
-              </el-dialog> -->
+              </el-dialog>
             
             <pagination
               v-show="total>0"
@@ -149,25 +155,32 @@
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import { getAlertInfos,deleteAlertInfo} from '@/api/alarm'
+import { mapGetters } from 'vuex'
+import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState } from '@/api/alarm'
 export default {
   components: { Pagination },
 
   data() {
     return {
+      temp:{
+        camera:{},
+        createTime: '',
+        image: '',
+        imageCut: ''
+      },
       rowId:0,
       defaultTab: '',
-     
-      value1: [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
+      state: '',
+      value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
       startTime: '02:00',
-      endTime: '05:00',
+      endTime: '',
       startDate: '',
       endDate: '',
       tabsArr: [],
       tabsDateArr: [],
-      currentTab: '',
+      currentTab:'',
       formInline: {
         searchkey: '',
         typeValue: 'all'
@@ -193,7 +206,7 @@ export default {
         inCharge: '',
         longitude: '',
         latitude: '',
-        address: '',
+        // address: '',
         url: ''
       },
       pickerOptions: {
@@ -203,6 +216,17 @@ export default {
   },  
     }
   },
+  filters: {
+    formatNull: function(val) {
+      if(!val) return '无'
+      return val.address
+    }
+  },
+  // computed: {
+  //   ...mapGetters([
+  //     'userId'
+  //   ])
+  // },
   watch: {
     limit() {
       this.page = 1
@@ -210,8 +234,13 @@ export default {
     }
   },
   created() {
-    Message.closeAll()
+    
+    this.getPushSetTime()
+    console.log(this.startTime,"start.............")
+    console.log(this.endTime,"end.............")
+    this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
+    this.value1=""
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
@@ -259,17 +288,21 @@ export default {
       return dateAllArr
     },
     onClear() {
-      this.value1 = [new Date(new Date().setDate(new Date().getDate() - 6)), new Date(new Date().setDate(new Date().getDate()))],
-      this.startTime = '02:00',
-      this.endTime = '05:00',
-      this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'),
-      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD'),
-      this.tabsArr = this.getDayAll(this.startDate, this.endDate),
-      this.defaultTab = this.tabsArr[0],
+      this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+      this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
+      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
+      
+      this.value1="",
+      this.getPushSetTime()
       this.formInline.typeValue = 'all'
+      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     },
     onSearch() {
       this.tabsArr = this.tabsDateArr
+      if(this.tabsArr.indexOf(this.currentTab)===-1){
+        this.defaultTab=this.tabsArr[0]
+        this.currentTab=this.defaultTab
+      }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
       const h1 = this.formInline.typeValue
@@ -277,13 +310,14 @@ export default {
       this.getList(s1, end1, h1)
       const s = this.tabsArr[this.tabsArr.length-1]  + ' ' + this.startTime + ':00'
       const end = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      console.log(s,"!!!!!!!!!!!!！")
       //调用后续接口
       console.log(end,"??????????/")
     },
    
     editDialog(v) {
-      this.editVisable = true
+      console.log(v,"VVVVVVVVVVVVVVV"),
+      this.temp=Object.assign({},v)
+      this.dialogVisable = true
     },
     editCloseDialog() {
       this.editVisable = false
@@ -351,7 +385,20 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
-
+    getPushSetTime() {
+      getPushSet().then(response => {
+        const setting = response.body.data.setting
+        let parseSetting
+        try {
+          parseSetting = JSON.parse(setting)
+        } catch (err) {
+          parseSetting = {}
+        }
+        console.log(parseSetting)
+        this.startTime = parseSetting.date1
+        this.endTime = parseSetting.date2
+      })
+    },
     // 获取列表数据
     getList(s, e, h) {
       let oper
@@ -389,16 +436,41 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        console.log("nnnnnnnnnnnnnnnnnnn")
       })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
     dialogQuxiao() {
+      this.state=1
       this.dialogVisable = false
     },
-    dialogConfirm() {
-      this.dialogVisable = false
+    dialogConfirm(val) {
+      this.state=0
+      const tempData = Object.assign({}, this.temp)
+      console.log(this.temp)
+      const params = [{
+        id: tempData.id,
+        state: this.state,
+        handlerId: this.userId
+      }]
+      console.log(params,"，，，，，，，，，，，，，，，，，，，")
+      //更新state状态
+      notifyState(params).then(response => {
+      const s1 = this.currentTab + ' ' + this.startTime + ':00'
+      const end1 = this.currentTab + ' ' + this.endTime + ':00'
+      const h1 = this.formInline.typeValue
+      this.oldSize = this.limit
+      this.getList(s1, end1, h1)
+        this.dialogVisable = false
+        this.$notify({
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
+      })
     }
   }
 }
@@ -434,8 +506,8 @@ export default {
 .untreated{
   fill: #E6A23C  !important;
 }
-.deleteDialog{
-  z-index: 999 !important;
+.v-modal{
+  z-index: 999  !important;
 }
   </style>
 
