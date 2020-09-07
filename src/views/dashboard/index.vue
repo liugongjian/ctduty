@@ -276,10 +276,13 @@ export default {
           trigger: 'item'
         },
         legend: {
-          orient: 'vertical',
-          y: 'bottom',
+          orient: 'horizontal',
+          y: 'top',
           x: 'left',
-          data: ['告警数'],
+          // align: 'bottom',
+          icon: 'rect',
+          data: ['小于10次', '小于30次', '小于100次', '大于100次'],
+          itemWidth: 100,
           textStyle: {
             color: '#000'
           }
@@ -304,7 +307,7 @@ export default {
         },
         series: [
           {
-            name: '告警数',
+            name: '小于10次',
             type: 'scatter',
             coordinateSystem: 'geo',
             data: convertData(data),
@@ -323,7 +326,79 @@ export default {
             },
             itemStyle: {
               normal: {
-                color: '#ddb926'
+                color: '#266ABE'
+              }
+            }
+          },
+          {
+            name: '小于30次',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData(data),
+            symbolSize: function(val) {
+              return val[2] / 10
+            },
+            label: {
+              normal: {
+                formatter: '{b}',
+                position: 'right',
+                show: false
+              },
+              emphasis: {
+                show: true
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: 'rgba(47,150,225,0.88)'
+              }
+            }
+          },
+          {
+            name: '小于100次',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData(data),
+            symbolSize: function(val) {
+              return val[2] / 10
+            },
+            label: {
+              normal: {
+                formatter: '{b}',
+                position: 'right',
+                show: false
+              },
+              emphasis: {
+                show: true
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: '#45D0FD'
+              }
+            }
+          },
+          {
+            name: '大于100次',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data: convertData(data),
+            symbolSize: function(val) {
+              return val[2] / 10
+            },
+            label: {
+              normal: {
+                formatter: '{b}',
+                position: 'right',
+                show: false
+              },
+              emphasis: {
+                show: true
+              }
+            },
+            itemStyle: {
+              normal: {
+                color: '#93E7F8'
               }
             }
           },
