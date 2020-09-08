@@ -142,6 +142,7 @@ export default {
                 const level = res.body.data.permissions.level
                 // localStorage.setItem('userId', res.body.data.id)
                 Cookies.set('userId', res.body.data.id)                
+                Cookies.set('level', res.body.data.permissions.level)                
                 Cookies.set('username', res.body.data.username) 
                 if (level === 2 ) {
                   this.$router.push('/ecloudwatch')
