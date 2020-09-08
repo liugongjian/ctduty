@@ -56,16 +56,17 @@
                 <div :data="stepsData"  @click="showDialog">
                   <template>
                     <div v-for="(item, index) in stepsData" :key="index" class="stepword">
-                      <div style="height:20px; width:20px; float:left">
-                        <svg-icon v-if="+stepsData.state === 0" class="deal" icon-class="deal" />
-                        <svg-icon v-else if= "+stepsData.state === 1" class="untreated" icon-class="untreated" />
-                        <!-- <svg-icon icon-class="deal" /> -->
-                        <div style="width:2px; height:25px; background-color:blue; margin-left:8px"></div>
+                      <div style="height:32px; width:32px; float:left">
+                        <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+                        <svg-icon v-else if= "item.state === 1" class="untreated" icon-class="untreated" />
+                        <div  class="shu" ></div>
                       </div>
                       <!-- <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span> -->
                       <div class="youContent" style="float:right width:100%;">
-                        <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
-                        <svg-icon icon-class="people" />
+                        <p class="dizhi">{{ item.camera.address }}</p>
+                        <svg-icon v-if="item.type === 1" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                         <span
                           :formatter="formatTime"
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -78,13 +79,16 @@
               <div v-if="showTabValue === 'y'">
                 <template>
                   <div v-for="(item, index) in yData" :key="index" class="stepword">
-                    <div style="height:20px; width:20px; float:left">
-                      <svg-icon icon-class="deal" />
-                      <div  class="shu" ></div>
+                    <div style="height:32px; width:32px; float:left">
+                      <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+
+                      <div  class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
-                      <svg-icon icon-class="people" />
+                      <svg-icon v-if="item.type === 1" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -96,13 +100,16 @@
               <div v-if="showTabValue === 'w'">
                 <template>
                   <div v-for="(item, index) in xData" :key="index" class="stepword">
-                    <div style="height:20px; width:20px; float:left">
-                      <svg-icon icon-class="deal" />
-                      <div style="width:2px; height:25px; background-color:blue; margin-left:8px"></div>
+                    <div style="height:32px; width:32px; float:left">
+                      <!-- <svg-icon icon-class="deal" /> -->
+                      <svg-icon v-if= "item.state === 0" class="untreated" icon-class="untreated" />
+                      <div class="shu" ></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
-                      <svg-icon icon-class="people" />
+                       <svg-icon v-if="item.type === 1" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -161,6 +168,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import echarts from 'echarts'
 // 引入水球
 import 'echarts-liquidfill'
@@ -257,10 +265,11 @@ export default {
     }
   },
   async created() {
+    this.userId = Cookies.get('userId')
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
-    await this.getAlertList()
+    // await this.getAlertList()
   },
   mounted() {
     const that = this
@@ -688,10 +697,18 @@ export default {
 }
 .shu{
   width:2px;
-  height:25px;
-  background-color:blue;
+  height:23px;
+  background-color:#D9D9D9;
   margin-left:8px;
-  // margin-top: 10px;
+  margin-top: 2px;
+}
+.dizhi{
+  width: 100%;
+  font-size:15px;
+  color:#000000;
+  font-weight: 300;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .dispose {
