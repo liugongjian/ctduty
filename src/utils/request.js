@@ -3,7 +3,7 @@ import {
   Message
 } from 'element-ui'
 import Cookies from 'js-cookie'
-import {logout} from '../api/login'
+import {logout, heartbeat} from '../api/login'
 // import {
 //   getToken,
 //   getPrefix
@@ -58,6 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    console.log('request的返回信息', res)
     if (res.code == 50000) {
       // Message({
       //   message: res.msg,
@@ -83,14 +84,15 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      // if (res.code === 50000) {
-      //   logout().then(() => {
-      //     localStorage.removeItem('token')
-      //     this.$router.push('/login')
-      //   })
-        // Cookies.remove('token')
-        // Cookies.remove('userId')
-        // Cookies.remove('username')
+      if (res.code === 50000 && res.message === 'Token unauthorized.' || res.code === 50000 && res.message === 'Token not found.') {
+        console.log('token过期了')
+        logout().then(() => {
+          Cookies.remove('token')
+          Cookies.remove('userId')
+          Cookies.remove('username')
+          this.$router.push('/login')
+        })
+      }
         return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)
