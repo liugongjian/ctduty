@@ -28,14 +28,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '58.5vh'; margin-top: 20px;}">
-        <div id="trend">
+      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
+        <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
           <p class="trenddes">{{ trendText }}</p>
           <div id="alarmLine" :style="{width: '100%', height: '120px'}" class="lineEcharts"></div>
         </div>
-        <div id="dispose">
+        <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
           <div class="disbox">
             <div id="panel"></div>
@@ -44,7 +44,7 @@
       </el-col>
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
-          <div id="classify">
+          <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
               各类告警占比
               <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
@@ -57,7 +57,7 @@
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
-          <div id="hotarea">
+          <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
             <div class="tagbox">
               <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
@@ -66,7 +66,7 @@
         </el-col>
       </el-col>
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
-        <div id="net">
+        <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
           <div id="camerarate"></div>
         </div>
@@ -117,7 +117,8 @@ export default {
       zhuData: [],
       zhuXdata: [],
       zhuYdata: [],
-      mapShowData: []
+      mapShowData: [],
+      isFullscreen: false
     }
   },
   watch: {
@@ -127,7 +128,7 @@ export default {
       [].forEach.call(canvas, function(item) {
         // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 25vh;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
     }
   },
@@ -153,6 +154,10 @@ export default {
     that.drawPie('bicycle', '非机动车', '#2FC25B', NaN)
     that.getPanel(that.cameraOnlineRate)
     that.drawZhu('alarmLine')
+
+    window.onresize = function temp(v) {
+      console.log(v, '就按法律困难时刻力帆')
+    }
   },
   methods: {
     goAlarmList() {
@@ -938,11 +943,11 @@ export default {
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 58.5vh;
+    height: 440px;
     background-color: #fff;
   }
   #trend{
-    height: 28vh;
+    height: 30%;
     background-color: #fff;
     .trendTitle {
       padding: 0;
@@ -959,23 +964,23 @@ export default {
     }
   }
   #dispose {
-    height: 28vh;
+    height: 30%;
     background-color: #fff;
     margin-top:20px;
   }
   #classify {
-    height: 28vh;
+    height: 30%;
     background-color: #fff;
   }
   #hotarea {
-    height: 28vh;
+    height: 30%;
     background-color: #fff;
   }
   #net {
-    height: 28vh;
+    height: 30%;
     background-color: #fff;
     #camerarate {
-      height: 25vh;
+      height: 170px;
       display: flex;
     }
   }
@@ -1090,7 +1095,7 @@ export default {
   }
 }
 .pie {
-  height: 25vh;
+  height: 170px;
   display: flex;
   overflow: hidden;
 }
@@ -1100,7 +1105,7 @@ export default {
   }
   .tagbox {
     width: 100%;
-    height: 25vh;
+    height: 170px;
     overflow: hidden;
     .tag-cloud {
     height: 100%;
@@ -1108,7 +1113,7 @@ export default {
   }
   .disbox {
     width: 100%;
-    height: 25vh;
+    height: 170px;
     #panel {
       height: 100%;
     }
@@ -1116,14 +1121,7 @@ export default {
       height: 100%;
     }
   }
-  .el-col {
-    overflow: hidden !important;
-  }
-  .app-main {
-    background: #F0F2F5 !important;
-  }
-  .dashboard-container {
-    height: 100%;
-    background: #F0F2F5 !important;
+  .smaEcarts {
+    height: 250px !important;
   }
 </style>

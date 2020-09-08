@@ -53,13 +53,13 @@
             <div class="zuoContent" style="width:100%; height:100%">
               <div v-if="showTabValue === 'all'">
 
-                <div :data="stepsData"  @click="showDialog">
+                <div :data="stepsData" @click="showDialog">
                   <template>
                     <div v-for="(item, index) in stepsData" :key="index" class="stepword">
                       <div style="height:32px; width:32px; float:left">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
                         <svg-icon v-else if= "item.state === 1" class="untreated" icon-class="untreated" />
-                        <div  class="shu" ></div>
+                        <div class="shu" ></div>
                       </div>
                       <!-- <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span> -->
                       <div class="youContent" style="float:right width:100%;">
@@ -82,13 +82,13 @@
                     <div style="height:32px; width:32px; float:left">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
 
-                      <div  class="shu" style="height:16px;"></div>
+                      <div class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
                       <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -107,9 +107,9 @@
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
-                       <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                      <svg-icon v-if="item.type === 1" icon-class="people" />
+                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -121,8 +121,9 @@
             </div>
           </div>
 
-          <el-dialog v-model="temp"
+          <el-dialog
             v-for="(item, index) in stepsData"
+            v-model="temp"
             :visible="dialogVisable"
             :key="index"
             title="报警显示"
@@ -141,7 +142,7 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-               <el-image :src="item.image" style="width:350px; height:200px;"></el-image>
+                <el-image :src="item.image" style="width:350px; height:200px;"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="item.imageCut" style="width:150px; height:150px;"></el-image>
@@ -155,12 +156,12 @@
           </el-dialog>
 
           <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              @pagination="pageChange()"
-            />
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            @pagination="pageChange()"
+          />
         </div>
       </div>
     </div>
@@ -198,8 +199,8 @@ export default {
         address: '',
         createTime: ''
       },
-      temp:{
-        camera:{},
+      temp: {
+        camera: {},
         createTime: '',
         image: '',
         imageCut: ''

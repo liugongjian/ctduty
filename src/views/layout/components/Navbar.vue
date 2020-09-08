@@ -20,7 +20,7 @@
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
       </div>
-      <div class="full" v-if="level < 2">
+      <div v-if="level < 2" class="full">
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
@@ -179,7 +179,6 @@ export default {
     }
   },
   created() {
-    console.log(this.timer)
     clearInterval(this.timer)
   },
   mounted() {
@@ -193,6 +192,9 @@ export default {
         if (res.body.data.length > 0) {
           this.notReadNoticeTotal = res.body.page.total
           this.notReadNotice = res.body.data
+        } else {
+          this.notReadNoticeTotal = ''
+          this.notReadNotice = []
         }
       })
     }, 5000)
