@@ -58,7 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    console.log('request的返回信息', res)
+    var flag = true;
     if (res.code == 50000) {
       // Message({
       //   message: res.msg,
@@ -85,19 +85,22 @@ service.interceptors.response.use(
       //   })
       // }
       if (res.code === 50000 && res.message === 'Token not found.') {
-        console.log('token过期了')
         // this.$router.push('/login')
         // window.location.href = "/login";
-        logout().then(() => {
-          Cookies.remove('token')
-          Cookies.remove('userId')
-          Cookies.remove('username')
-          window.location.href = '/login'
-        })
+        if (flag) {
+          logout().then(() => {
+            flag = false
+            Cookies.remove('token')
+            Cookies.remove('userId')
+            Cookies.remove('username')
+            window.location.href = '/login'
+            return
+          })
+        } else {
+          return
+        }
       }
       return Promise.reject(response.data)
-      // }
-      // return Promise.reject(response.data)
     } else {
       return response.data
     }

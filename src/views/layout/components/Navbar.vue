@@ -175,6 +175,9 @@ export default {
       }
     },
     $route(to, from) {
+      if (to.path === '/login') {
+        window.clearInterval(this.timer)
+      }
       this.closeDialog()
     }
   },
