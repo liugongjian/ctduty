@@ -84,7 +84,6 @@ service.interceptors.response.use(
       //   })
       // }
       if (res.code === 50000 && res.message === 'Token not found.') {
-        console.log('token过期了')
         // this.$router.push('/login')
         // window.location.href = "/login";
         logout().then(() => {
