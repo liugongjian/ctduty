@@ -57,7 +57,7 @@
           </el-dropdown-item>
         </el-dropdown-menu> -->
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
         <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm">
           <el-form-item label="标题" prop="title">
             <el-input v-model="noticeForm.title" disabled ></el-input>
@@ -186,6 +186,9 @@ export default {
           message: `您有${v}条未读消息`
         })
       }
+    },
+    $route(to, from) {
+      this.closeDialog()
     }
   },
   mounted() {
@@ -220,6 +223,9 @@ export default {
     })
   },
   methods: {
+    closeDialog() {
+      this.dialogVisable = false
+    },
     dialogConfirm() {
       upReadNotices(this.noticeForm.id).then(res => {
         this.dialogVisable = false
