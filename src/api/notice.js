@@ -10,7 +10,7 @@ export function fetchNoticeList(query) {
 }
 export function postAddNotices(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Notice/Add',
+    url: '/nvsapi/Notice/Add',
     method: 'post',
     data: query
   })
@@ -41,7 +41,7 @@ export function deleteNotices(ids) {
 
 export function notReadNotices(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Notice/QueryNotRead',
+    url: '/nvsapi/Notice/QueryNotRead',
     method: 'post',
     data: query
   })
@@ -50,7 +50,7 @@ export function notReadNotices(query) {
 //  更新公告为已读状态
 export function upReadNotices(id) {
   return request({
-    url: `http://host31.880508.xyz:10000/Notice/UpdateReadState?id=${id}`,
+    url: `/nvsapi/Notice/UpdateReadState?id=${id}`,
     method: 'post'
   })
 }

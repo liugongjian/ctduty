@@ -2,7 +2,7 @@ import request from '@/utils/request'
 import qs from 'qs'
 export function fetchAllData(query) {
   return request({
-    url: `http://host31.880508.xyz:10000/Statis/getMonitorStatis`,
+    url: `/nvsapi/Statis/getMonitorStatis`,
     method: 'post',
     params: query
   })
@@ -12,14 +12,14 @@ export function fetchAllData(query) {
 // 监控实时情况
 export function fetchNowInfo(query) {
   return request({
-    url: `http://host31.880508.xyz:10000/Statis/getRealTimeStatis`,
+    url: `/nvsapi/Statis/getRealTimeStatis`,
     method: 'post',
     params: query
   })
 }
 export function fetchSinMan(query) {
   return request({
-    url: `http://host31.880508.xyz:10000/Alert/getMyStatis`,
+    url: `/nvsapi/Alert/getMyStatis`,
     method: 'post',
     params: query
   })

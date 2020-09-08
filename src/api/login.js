@@ -6,7 +6,7 @@ const {
 } = config
 export function loginGetToken(data) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Login',
+    url: '/nvsapi/Login',
     method: 'post',
     data: data
   })
@@ -15,7 +15,7 @@ export function loginGetToken(data) {
 // 登录心跳
 export function heartbeat() {
   return request({
-    url: 'http://host31.880508.xyz:10000/Login/heartbeat',
+    url: '/nvsapi/Login/heartbeat',
     method: 'get'
   })
 }
@@ -31,7 +31,7 @@ export function loginLdapByUsername(data) {
 
 export function logout() {
   return request({
-    url: 'http://host31.880508.xyz:10000/Login/logout',
+    url: '/nvsapi/Login/logout',
     method: 'get'
   })
 }
