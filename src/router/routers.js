@@ -24,9 +24,9 @@ export const asyncRouterMap = [
     path: '/dashboard',
     component: Layout,
     hidden: false,
-    // meta: {
-    //   roles: 'admin'
-    // },
+    meta: {
+      roles: 'admin'
+    },
     children: [
       {
         path: '/dashboard',
@@ -38,6 +38,44 @@ export const asyncRouterMap = [
           noCache: true,
           affix: true,
           roles: 'admin'
+        }
+      }
+    ]
+  },
+  {
+    path: '/ecloudwatch',
+    component: Layout,
+    redirect: '/ecloudwatch',
+    hidden: false,
+    children: [
+      {
+        path: '/ecloudwatch',
+        component: () => import('@/views/eCloudWatch/index'),
+        name: 'eCloudWatch',
+        meta: {
+          title: 'eCloudWatch',
+          icon: 'ecloudwatch',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    redirect: '/alarmMessage',
+    hidden: false,
+    children: [
+      {
+        path: '/alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'alarmMessage',
+          noCache: true,
+          affix: true
         }
       }
     ]
@@ -131,26 +169,26 @@ export const asyncRouterMap = [
   }
 ]
 export const constantRouterMap = [
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    hidden: false,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'dashboard',
-        meta: {
-          title: 'dashboard',
-          icon: 'dashboard',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'dashboard',
+  //       meta: {
+  //         title: 'dashboard',
+  //         icon: 'dashboard',
+  //         noCache: true,
+  //         affix: true,
+  //         roles: []
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: 'addnewnotice',
     component: () => import('@/views/notice/addNewNotice'),
@@ -158,46 +196,6 @@ export const constantRouterMap = [
       title: 'eCloudWatch',
       icon: 'vsearch'
     }
-  },
-  {
-    path: '/ecloudwatch',
-    component: Layout,
-    redirect: '/ecloudwatch',
-    hidden: false,
-    children: [
-      {
-        path: '/ecloudwatch',
-        component: () => import('@/views/eCloudWatch/index'),
-        name: 'eCloudWatch',
-        meta: {
-          title: 'eCloudWatch',
-          icon: 'ecloudwatch',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
-  {
-    path: '/alarmMessage',
-    component: Layout,
-    redirect: '/alarmMessage',
-    hidden: false,
-    children: [
-      {
-        path: '/alarmMessage',
-        component: () => import('@/views/alarmMessage/index'),
-        name: 'alarmMessageIndex',
-        meta: {
-          title: 'alarmMessage',
-          icon: 'alarmMessage',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
   },
   {
     path: '/login',

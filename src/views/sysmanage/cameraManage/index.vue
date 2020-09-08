@@ -229,7 +229,7 @@ export default {
         createTime: ''
       },
       formInfo: [],
-      highLightMarkerIn: NaN,
+      highLightMarkerId: NaN,
       hasMarker: false,
       showZwMes: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
@@ -263,7 +263,7 @@ export default {
           console.log(item.classList, index, 'index')
           if (index === 0) {
             item.classList.add('markerClickImg')
-            that.highLightMarkerIn = 0
+            that.highLightMarkerId = JSON.parse(item.attributes[1].nodeValue).id
             that.form = JSON.parse(item.attributes[1].nodeValue)
             that.editForm = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
@@ -334,7 +334,7 @@ export default {
       e.path.forEach((item, index) => {
         if (item.className === 'amap-marker-content') {
           item.childNodes[1].classList.add('markerClickImg')
-          this.highLightMarkerIn = index
+          this.highLightMarkerId = JSON.parse(item.childNodes[1].attributes[1].nodeValue).id
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.editForm = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
@@ -433,7 +433,12 @@ export default {
     getdata(v, v2) {
       this.formInline.typeValue = v
       setTimeout(() => {
-        document.getElementsByClassName('markerImg')[this.highLightMarkerIn].classList.add('markerClickImg')
+        const markers = document.getElementsByClassName('markerImg');
+        [].forEach.call(markers, (item) => {
+          if (JSON.parse(item.attributes[1].nodeValue).id === this.highLightMarkerId) {
+            item.classList.add('markerClickImg')
+          }
+        })
       }, 200)
     },
     dialogQuxiao() {

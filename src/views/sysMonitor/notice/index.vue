@@ -4,7 +4,7 @@
     <el-divider></el-divider>
     <el-row>
       <el-input ref="queryTitleRef" v-model="queryInfo.params.title" class="searchinput" placeholder="公告标题"></el-input>
-      <el-input ref="queryOperatorRef" class="searchinput" placeholder="操作人员"></el-input>
+      <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者姓名"></el-input>
       <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
         <el-option :value="null" label="所有">所有</el-option>
         <el-option :value="0" label="公告">通知</el-option>
@@ -32,7 +32,7 @@
           {{ row_data.row.state === 0 ? '正常' : '紧急' }}
         </template>
       </el-table-column>
-      <el-table-column label="创建者" prop="creator.name"></el-table-column>
+      <el-table-column label="创建者" prop="creator.username"></el-table-column>
       <el-table-column label="创建时间" prop="createTime"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
@@ -88,7 +88,7 @@
 
         <el-form-item label="签名档">
           <el-select v-model="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -135,7 +135,7 @@
 
         <el-form-item label="签名档">
           <el-select v-model="editNoticeForm.signature_id" :value="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -162,6 +162,7 @@
 <script>
 
 import { fetchNoticeList, postAddNotices, getNoticeInfo, updateANotice, deleteNotices } from '@/api/notice'
+import { fetchUserList } from '@/api/users'
 export default {
   data() {
     return {
@@ -187,12 +188,15 @@ export default {
 
       addUserDialogVisible: false,
       noticeList: [],
+      username: '',
+      userid:null,
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         params: {
           title: '',
-          type: null
+          type: null,
+
         }
       },
       totalnum: 0,
@@ -232,8 +236,9 @@ export default {
     this.getNoticeList()
   },
   methods: {
-    getNoticeList() {
-      const query = {
+    async getNoticeList() {
+      
+        const query = {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
@@ -241,19 +246,39 @@ export default {
         },
         params: {}
       }
-
-      if (this.queryInfo.params.title !== '') {
+      
+      if (this.queryInfo.params.title.trim() !== '') {
         query.params['title'] = this.queryInfo.params.title
       }
       if (this.queryInfo.params.type !== null) {
         query.params['type'] = this.queryInfo.params.type
       }
 
+      if (this.username.trim() !== '') {
+        await this.searchUserId()
+        if(this.userid !== null){
+          query.params['creatorId'] = this.userid
+        }else{
+          this.userid = {}
+          return
+        }
+      }
       fetchNoticeList(query).then(response => {
-        console.log(response)
-        if (response.code !== 0) return this.$message.error('获取通知信息失败')
-        this.noticeList = response.body.data
-        this.totalnum = response.body.page.total
+          console.log(response)
+          if (response.code !== 0) return this.$message.error('获取通知信息失败')
+          this.noticeList = response.body.data
+          this.noticeList.map(item=>{
+            item.createTime=item.createTime.substring(0,19).replace(/T/,' ')
+          })
+          this.totalnum = response.body.page.total
+      })
+      
+    },
+
+    async searchUserId(){
+      await fetchUserList({params:{username:this.username}}).then(response=>{
+        if(response.body.data.length == 0) return this.$message.error('该用户不存在，请重新输入')
+        this.userid = response.body.data[0].id
       })
     },
 
@@ -283,10 +308,14 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
       this.addNoticeForm = {}
+      this.username=''
+      this.userid=null
     },
     resetQuery() {
       this.queryInfo.params.title = ''
-      this.queryInfo.params.type = 0
+      this.queryInfo.params.type = null
+      this.username=''
+      this.userid=null
       this.getNoticeList()
     },
 
@@ -314,6 +343,8 @@ export default {
     },
     editDialogClosed() {
       this.editNoticeForm = {}
+      this.username=''
+      this.userid=null
     },
 
     showDeleteDialog(title, id) {
@@ -341,6 +372,9 @@ export default {
 <style scoped>
 .notice {
   padding: 0px 20px;
+}
+.input_title{
+  width:390px;
 }
 .title{
     width:150px;height:100px;
