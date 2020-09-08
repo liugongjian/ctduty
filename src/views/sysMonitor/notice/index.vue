@@ -166,12 +166,6 @@ import { fetchUserList } from '@/api/users'
 export default {
   data() {
     return {
-<<<<<<< HEAD
-
-      searchName:'',
-      searchUserIds:[],
-=======
->>>>>>> 2bf809e2ac6de275690d27b5a153f33166aa0782
       addFormRules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         creatorId: [{ required: true, message: '创建者不能为空', trigger: 'blur' }],
