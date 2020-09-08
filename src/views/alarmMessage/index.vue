@@ -121,8 +121,9 @@
                      <el-form-item label="流量状态：" prop="camera.address">
                         <span style="width: 300px;">{{temp.camera | formatNull }}</span>
                     </el-form-item> 
-                     <el-form-item label="监控时间：" prop="createTime" :formatter="formatTime">
-                        {{formatTime(temp.createTime) }}
+                     <el-form-item label="监控时间：" prop="createTime" >
+                        {{renderTime(temp.createTime) }}
+  
                     </el-form-item>
                     <el-form-item label="原始照片：" prop="image" >
                       <el-image :src="temp.image" style="width:400px; height:280px"></el-image>
@@ -158,6 +159,7 @@
   
   <script>
   import { Message } from 'element-ui'
+  import { renderTime } from '@/utils'
   import Cookies from 'js-cookie'
   import Pagination from '@/components/Pagination'
   // import 'element-ui/lib/theme-chalk/index.css'
@@ -169,6 +171,7 @@
   
     data() {
       return {
+        renderTime,
         temp:{
           camera:{},
           createTime: '',
@@ -180,7 +183,7 @@
         state: '',
         value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
         startTime: '02:00',
-        endTime: '23:00',
+        endTime: '05:00',
         startDate: '',
         endDate: '',
         tabsArr: [],
@@ -304,7 +307,7 @@
         this.value1="",
         this.page=1,
         this.startTime='02:00'
-        this.endTime='23:00'
+        this.endTime='05:00'
         // this.getPushSetTime()
         this.formInline.typeValue = 'all'
         // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
@@ -490,7 +493,13 @@
             index: this.page,
             size: this.limit
           },
-          params: param
+          params: param,
+          sorts: [
+                {
+                 field: 'create_Time',
+                 type:  "desc"
+                }
+            ]
         }
         getAlertInfos(params).then(response => {
           this.tableData = response.body.data
