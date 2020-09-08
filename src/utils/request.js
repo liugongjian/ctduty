@@ -89,11 +89,11 @@ service.interceptors.response.use(
         flg = true
         if (flg) {
           logout().then(() => {
+            flg = false
             Cookies.remove('token')
             Cookies.remove('userId')
             Cookies.remove('username')
-            window.location.href = "/login";
-            flg = false
+            window.location.href = "/login";  
           })
         }
         return Promise.reject(response.data)
