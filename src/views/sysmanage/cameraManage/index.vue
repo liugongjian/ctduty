@@ -686,6 +686,12 @@ export default {
      }
    }
  }
+ label {
+   font-weight: 700 !important;
+ }
+ .el-form-item__label {
+   font-weight: 700 !important;
+ }
  .markerImg {
    fill: #3E94F9;
  }

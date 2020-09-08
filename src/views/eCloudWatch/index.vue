@@ -152,11 +152,7 @@
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-<<<<<<< HEAD
-                  formatTime(dataDia.camera.createTime)
-=======
                     formatTime(item.camera.createTime)
->>>>>>> cca8ba5c0c4f7a72433123d98e9d935f252cb3fd
                   }}
                 </span>
               </el-form-item>
@@ -471,14 +467,8 @@ export default {
       this.dialogVisable = false
     },
     showDialog(item) {
-<<<<<<< HEAD
-      // console.log(item,'111111111111');
-      this.dataDia = item;
-      this.dialogVisable = true;
-=======
       this.dataDia = item
       this.dialogVisable = true
->>>>>>> cca8ba5c0c4f7a72433123d98e9d935f252cb3fd
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))

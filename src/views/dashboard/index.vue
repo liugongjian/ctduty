@@ -857,6 +857,7 @@ export default {
           },
           lineStyle: {
             normal: {
+              show: true,
               width: 1,
               opacity: 0.6,
               curveness: 0.2
