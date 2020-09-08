@@ -181,7 +181,7 @@
         rowId:0,
         defaultTab: '',
         state: '',
-        value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+        value1: [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
         startTime: '02:00',
         endTime: '05:00',
         startDate: '',
@@ -246,7 +246,7 @@
       // this.getPushSetTime()
       console.log(this.userId,"USERID.............")
       console.log(this.endTime,"end.............")
-      this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+      this.value1=[new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
       this.timeChange()
       this.value1=""
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
@@ -284,24 +284,37 @@
         this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
         this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
       },
-      getDayAll(begin, end) {
-        var dateAllArr = new Array()
-        var ab = begin.split('-')
-        var ae = end.split('-')
-        var db = new Date()
-        db.setUTCFullYear(ab[0], ab[1] - 1, ab[2])
-        var de = new Date()
-        de.setUTCFullYear(ae[0], ae[1] - 1, ae[2])
-        var unixDb = db.getTime()
-        var unixDe = de.getTime()
-        for (var k = unixDb; k <= unixDe;) {
-          dateAllArr.push(moment(new Date(parseInt(k))).format('YYYY-MM-DD').toString())
-          k = k + 24 * 60 * 60 * 1000
-        }
-        return dateAllArr
+      getDayAll(start, end) {
+       
+        var result = [];
+            var beginDay = start.split("-");
+            var endDay = end.split("-");
+            var diffDay = new Date();
+            var dateList = new Array;
+            var i = 0;
+            diffDay.setDate(beginDay[2]);
+            diffDay.setMonth(beginDay[1]-1);
+            diffDay.setFullYear(beginDay[0]);
+            result.push(start);
+            while(i == 0){
+                var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000;
+                diffDay.setTime(countDay);
+                dateList[2] = diffDay.getDate();
+                dateList[1] = diffDay.getMonth() + 1;
+                dateList[0] = diffDay.getFullYear();
+                if(String(dateList[1]).length == 1){dateList[1] = "0"+dateList[1]};
+                if(String(dateList[2]).length == 1){dateList[2] = "0"+dateList[2]};
+                result.push(dateList[0]+"-"+dateList[1]+"-"+dateList[2]);
+                if(dateList[0] == endDay[0] && dateList[1] == endDay[1] && dateList[2] == endDay[2]){ i = 1;
+                }
+            };
+            console.log(result.length);
+            console.log(result)
+            console.log('llllllllllllllllllll')
+            return result;
       },
       onClear() {
-        this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+        this.value1=[new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
         this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
         this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
         this.value1="",
