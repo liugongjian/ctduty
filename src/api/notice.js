@@ -46,3 +46,12 @@ export function notReadNotices(query) {
     data: query
   })
 }
+
+//  更新公告为已读状态
+export function upReadNotices(id) {
+  return request({
+    url: `/nvsapi/Notice/UpdateReadState?id=${id}`,
+    method: 'post'
+  })
+}
+

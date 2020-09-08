@@ -8,7 +8,7 @@ const {
 // 所有告警信息
 export function fetchAllCameraList(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Camera/QueryActive',
+    url: '/nvsapi/Camera/QueryActive',
     method: 'post',
     data: query
   })
@@ -17,7 +17,7 @@ export function fetchAllCameraList(query) {
 // 编辑摄像头信息
 export function editCamera(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Camera/Update',
+    url: '/nvsapi/Camera/Update',
     method: 'post',
     data: query
   })
@@ -26,7 +26,7 @@ export function editCamera(query) {
 // 新增摄像头信息
 export function addCamera(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Camera/Add',
+    url: '/nvsapi/Camera/Add',
     method: 'post',
     data: query
   })
@@ -35,7 +35,7 @@ export function addCamera(query) {
 // 删除摄像头信息
 export function delCamera(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Camera/Delete',
+    url: '/nvsapi/Camera/Delete',
     method: 'post',
     data: query
   })

@@ -46,7 +46,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
           <template slot-scope="scope">
-            <span>{{ scope.row.permissions.name }} </span>
+            <span>{{ scope.row.post || '' }} </span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'主机'" style="text-align: center" prop="ip">
@@ -139,7 +139,8 @@ export default {
     delAlert(code) {
       const token = Cookies.get('token')
       this.code = code
-      if (this.token === this.code) {
+      console.log(token, this.code)
+      if (token === this.code) {
         this.$confirm('此操作将强制退出本账号, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

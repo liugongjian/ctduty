@@ -3,7 +3,7 @@ import {
   Message
 } from 'element-ui'
 import Cookies from 'js-cookie'
-import {logout} from '../api/login'
+import { logout, heartbeat } from '../api/login'
 // import {
 //   getToken,
 //   getPrefix
@@ -31,7 +31,7 @@ service.interceptors.request.use(
   config => {
     // Do something before request is sent
     // const token = getToken('token')
-    // 
+    //
     const token = Cookies.get('token')
 
     if (token) {
@@ -58,7 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    if (res.code == 50000) {
+    // if (res.code == 50000) {
       // Message({
       //   message: res.msg,
       //   type: 'error',
@@ -83,20 +83,28 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      // if (res.code === 50000) {
-      //   logout().then(() => {
-      //     localStorage.removeItem('token')
-      //     this.$router.push('/login')
-      //   })
-        // Cookies.remove('token')
-        // Cookies.remove('userId')
-        // Cookies.remove('username')
+      var flg = false
+      if (res.code === 50000 && res.message === 'Token not found.' || res.code === 50000 && res.message === 'Token unauthorized.') {
+        console.log('token过期了')
+        flg = true
+        if (flg) {
+          logout().then(() => {
+            flg = false
+            Cookies.remove('token')
+            Cookies.remove('userId')
+            Cookies.remove('username')
+            window.location.href = "/login";  
+          })
+        }
         return Promise.reject(response.data)
+      } else {
+        return response.data
+      }
       // }
       // return Promise.reject(response.data)
-    } else {
-      return response.data
-    }
+    // } else {
+    //   return response.data
+    // }
   },
   error => {
     let timeout = null

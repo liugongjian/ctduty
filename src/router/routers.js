@@ -56,7 +56,7 @@ export const asyncRouterMap = [
           title: 'eCloudWatch',
           icon: 'ecloudwatch',
           noCache: true,
-          affix: true,
+          affix: true
         }
       }
     ]
@@ -75,7 +75,7 @@ export const asyncRouterMap = [
           title: 'alarmMessage',
           icon: 'alarmMessage',
           noCache: true,
-          affix: true,
+          affix: true
         }
       }
     ]
@@ -162,6 +162,26 @@ export const asyncRouterMap = [
         meta: {
           title: 'areaManage',
           icon: 'area',
+          noCache: false
+        }
+      },
+      {
+        path: 'carManage',
+        component: () => import('@/views/sysmanage/carManage/index'),
+        name: 'sysCarManage',
+        meta: {
+          title: 'carManage',
+          icon: 'car',
+          noCache: false
+        }
+      },
+      {
+        path: 'faceManage',
+        component: () => import('@/views/sysmanage/faceManage/index'),
+        name: 'sysFaceManage',
+        meta: {
+          title: 'faceManage',
+          icon: 'face',
           noCache: false
         }
       }

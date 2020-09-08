@@ -20,11 +20,11 @@
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
       </div>
-      <div class="full">
+      <div v-if="level < 2" class="full">
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
-      <el-dropdown class="noticeDrop" @command="handleCommand">
+      <el-dropdown placement="bottom" class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
           <div class="notice">
             <svg-icon icon-class="bells"></svg-icon>
@@ -46,33 +46,36 @@
             <span style="display:block;" @click="businessLogout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
-        <!-- <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
-            </el-dropdown-item>
-          </router-link>
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
-          </el-dropdown-item>
-        </el-dropdown-menu> -->
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
-        <el-form :model="noticeForm" label-position="right" label-width="85px">
-          <el-form-item label="标题：">
-            <div style=" word-wrap: break-word">{{ noticeForm.title }}</div>
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
+        <el-form :model="noticeForm" label-width="70px" label-position="right">
+          <el-form-item label="标题" prop="title">
+            <div>{{ noticeForm.title }}</div>
           </el-form-item>
-          <el-form-item label="创建者：">
-            <div style=" word-wrap: break-word">{{ noticeForm.creatorId }}</div>
+          <el-form-item label="创建者" prop="creatorId">
+            <div>{{ noticeForm.creatorId }}</div>
           </el-form-item>
-          <el-form-item label="类型：">
-            <div style=" word-wrap: break-word">{{ noticeForm.type }}</div>
+          <el-form-item label-width="0px">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label-width="70px" label="类型" prop="type">
+                  <el-radio v-if="noticeForm.type">公告</el-radio>
+                  <el-radio v-else>通知</el-radio>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label-width="70px" label="紧急程度" prop="state">
+                  <el-radio v-if="noticeForm.state">紧急</el-radio>
+                  <el-radio v-else>普通</el-radio>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form-item>
-          <el-form-item label="紧急程度：">
-            <div style=" word-wrap: break-word">{{ noticeForm.state }}</div>
+          <el-form-item label="内容">
+            <span style="margin-left:10px;margin-top:10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;height:150px;" v-html="noticeForm.content"></span>
           </el-form-item>
-          <el-form-item label="公告内容：" style="width:300px;height:50px;">
-            <div style=" word-wrap: break-word" v-html="noticeForm.content"></div>
+          <el-form-item label="签名档">
+            <div>{{ noticeForm.signatureId }}</div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -80,9 +83,8 @@
             type="primary"
             @click="dialogConfirm()"
           >确 定</el-button>
-          <el-button @click="()=>{dialogVisable = false}">取 消</el-button>
         </div>
-      </el-form:model="form"></el-dialog>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -101,7 +103,7 @@ import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { updateUserPassWord, fetchUser } from '@/api/user'
 import { logout } from '@/api/login'
-import { notReadNotices } from '@/api/notice'
+import { notReadNotices, upReadNotices } from '@/api/notice'
 
 export default {
   components: {
@@ -127,7 +129,22 @@ export default {
       isFullscreen: false,
       username: '',
       notReadNotice: [],
-      notReadNoticeTotal: ''
+      notReadNoticeTotal: '',
+      departmentInfo: [
+        {
+          departmentId: 3275699862611970,
+          department: '华阴市公安支队'
+        },
+        {
+          departmentId: 3275699862611971,
+          department: '孟塬派出所'
+        },
+        {
+          departmentId: 3275699862611972,
+          department: '华山镇派出所'
+        }
+      ],
+      level: Cookies.get('level')
     }
   },
   computed: {
@@ -149,17 +166,22 @@ export default {
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
       }
     },
-    notReadNoticeTotal(v) {
-      if (v) {
+    notReadNoticeTotal(v, oldV) {
+      if (v > oldV) {
         this.$message({
           type: 'info',
           message: `您有${v}条未读消息`
         })
       }
+    },
+    $route(to, from) {
+      this.closeDialog()
     }
   },
-  mounted() {
+  created() {
     clearInterval(this.timer)
+  },
+  mounted() {
     this.timer = setInterval(() => {
       const params = {
         index: 1,
@@ -170,15 +192,20 @@ export default {
         if (res.body.data.length > 0) {
           this.notReadNoticeTotal = res.body.page.total
           this.notReadNotice = res.body.data
+        } else {
+          this.notReadNoticeTotal = ''
+          this.notReadNotice = []
         }
       })
     }, 5000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
+        console.log(document.webkitIsFullScreen, 'document.webkitIsFullScreen')
         this.isFullscreen = false
       }
       if (!this.checkFull()) {
+        console.log(document.webkitIsFullScreen, 'document.webkitIsFullScreen')
         // 全屏下按键esc后要执行的动作
         this.isFullscreen = false
       }
@@ -190,6 +217,14 @@ export default {
     })
   },
   methods: {
+    closeDialog() {
+      this.dialogVisable = false
+    },
+    dialogConfirm() {
+      upReadNotices(this.noticeForm.id).then(res => {
+        this.dialogVisable = false
+      })
+    },
     handleCommand(command) {
       this.dialogVisable = true
       this.noticeForm = command

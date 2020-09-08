@@ -20,7 +20,6 @@
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
-      </el-amap>
       <div class="warn">
         <div class="dispose">
           <div class="dash-title">告警处理率</div>
@@ -44,7 +43,7 @@
               <div class="bottom-right">
                 <ul>
                   <li style="float:right; width:25%">
-                    <a href="/alarmMessage">历史告警</a>
+                    <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
                   </li>
                 </ul>
               </div>
@@ -52,16 +51,24 @@
 
             <div class="zuoContent" style="width:100%; height:100%">
               <div v-if="showTabValue === 'all'">
-
-                <div :data="stepsData"  @click="showDialog">
+                <div :data="stepsData">
                   <template>
-                    <div v-for="(item, index) in stepsData" :key="index" class="stepword">
+                    <div
+                      v-for="(item, index) in stepsData"
+                      :key="index"
+                      class="stepword"
+                      @click="showDialog(item)"
+                    >
                       <div style="height:32px; width:32px; float:left">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                        <svg-icon v-else if= "item.state === 1" class="untreated" icon-class="untreated" />
-                        <div  class="shu" ></div>
+                        <svg-icon
+                          v-else
+                          if="item.state === 1"
+                          class="untreated"
+                          icon-class="untreated"
+                        />
+                        <div class="shu"></div>
                       </div>
-                      <!-- <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span> -->
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
                         <svg-icon v-if="item.type === 1" icon-class="people" />
@@ -78,17 +85,21 @@
               </div>
               <div v-if="showTabValue === 'y'">
                 <template>
-                  <div v-for="(item, index) in yData" :key="index" class="stepword">
+                  <div
+                    v-for="(item, index) in yData"
+                    :key="index"
+                    class="stepword"
+                    @click="showDialog(item)"
+                  >
                     <div style="height:32px; width:32px; float:left">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-
-                      <div  class="shu" style="height:16px;"></div>
+                      <div class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
+                      <p class="dizhi">{{ item.camera.address }}</p>
                       <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -99,17 +110,21 @@
               </div>
               <div v-if="showTabValue === 'w'">
                 <template>
-                  <div v-for="(item, index) in xData" :key="index" class="stepword">
+                  <div
+                    v-for="(item, index) in xData"
+                    :key="index"
+                    class="stepword"
+                    @click="showDialog(item)"
+                  >
                     <div style="height:32px; width:32px; float:left">
-                      <!-- <svg-icon icon-class="deal" /> -->
-                      <svg-icon v-if= "item.state === 0" class="untreated" icon-class="untreated" />
-                      <div class="shu" ></div>
+                      <svg-icon v-if="item.state === 0" class="untreated" icon-class="untreated" />
+                      <div class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
-                       <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                      <p class="dizhi">{{ item.camera.address }}</p>
+                      <svg-icon v-if="item.type === 1" icon-class="people" />
+                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
@@ -121,19 +136,20 @@
             </div>
           </div>
 
-          <el-dialog v-model="temp"
+          <el-dialog
             v-for="(item, index) in stepsData"
+            v-model="temp"
             :visible="dialogVisable"
             :key="index"
             title="报警显示"
             width="700px"
             @close="closeDialog"
           >
-            <el-form :model="alarmForm" label-position="right" label-width="100px">
-              <el-form-item v-model="alarmForm.address" :formatter="formatTime" label="流量状态:">
-                <span style="width: 300px;">{{ item.camera.address }}</span>
+            <el-form :model="dataDia" label-position="right" label-width="100px">
+              <el-form-item :formatter="formatTime" label="流量状态:">
+                <span style="width: 300px;">{{ dataDia.camera.address }}</span>
               </el-form-item>
-              <el-form-item v-model="alarmForm.createTime" label="监控时间:">
+              <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
                     formatTime(item.camera.createTime)
@@ -141,11 +157,10 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-               <el-image :src="item.image" style="width:350px; height:200px;"></el-image>
+                <el-image :src="dataDia.image" style="width:350px; height:200px;"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
-                <el-image :src="item.imageCut" style="width:150px; height:150px;"></el-image>
-
+                <el-image :src="dataDia.imageCut" style="width:150px; height:150px;"></el-image>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -155,12 +170,12 @@
           </el-dialog>
 
           <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              @pagination="pageChange()"
-            />
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            @pagination="pageChange()"
+          />
         </div>
       </div>
     </div>
@@ -177,11 +192,9 @@ require('echarts/lib/chart/bar')
 // 引入提示框和title组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
-import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
 import { fetchalarmList } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
-import { getAlertInfos } from '@/api/alarm'
-import { fetchNowInfo, fetchSinMan } from '@/api/dashboard'
+import { fetchSinMan } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
@@ -194,12 +207,15 @@ export default {
   props: ['data', 'defaultActive'],
   data() {
     return {
-      alarmForm: {
-        address: '',
-        createTime: ''
-      },
-      temp:{
-        camera:{},
+      timer: null,
+      dataError: [],
+      dataDia: {},
+      // alarmForm: {
+      //   address: '',
+      //   createTime: ''
+      // },
+      temp: {
+        camera: {},
         createTime: '',
         image: '',
         imageCut: ''
@@ -278,8 +294,7 @@ export default {
       this.watchClick()
     }
     setTimeout(() => {
-      this.formInfo = [
-      ]
+      this.formInfo = []
       this.formInfo.forEach(item => {
         this.markers.push({
           position: [item.longitude, item.latitude],
@@ -306,7 +321,6 @@ export default {
         this.alarmTime = res.body.data.todayAlerts
         this.processed = res.body.data.todayHandleds
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
-        // this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
       })
     },
     getCameraList() {
@@ -378,35 +392,53 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 10,
+          size: 40,
           total: 0
         },
         params: [
           // {
-          //   field: 'createTime',
-          //   operator: 'BETWEEN',
-          //   value: { start: '2020-09-05 00:00:00', end: '2020-09-07 23:59:59' }
+          //   field: "createTime",
+          //   operator: "BETWEEN",
+          //   value: { start: "2020-09-05 00:00:00", end: "2020-09-10 23:59:59" }
           // },
           // {
-          //   field: 'handlerId',
-          //   operator: 'NULL',
-          //   value: 'null'
+          //   field: "handlerId",
+          //   operator: "NULL",
+          //   value: "null"
           // }
         ]
       }
       fetchalarmList(params).then(response => {
         this.showTabValue = 'all'
+        // console.log(response,78)
         const { data } = response.body
-        // console.log(response.body.data)
+        // console.log(data);
         this.stepsData = []
         for (let i = 0; i < response.body.data.length; i++) {
           this.stepsData.push(response.body.data[i])
-          // console.log(this.stepsData);
         }
-        this.stateData = data.state
-        if (this.stateData.state !== 0) {
+        this.dataDia = []
+        for (let i = 0; i < response.body.data.length; i++) {
+          if (response.body.data[i].state === 1) {
+            this.dataError.push(response.body.data[i])
+          }
+        }
+        let index = 0
+        if (this.dataError.length > 0) {
           this.dialogVisable = true
+          this.dataDia = this.dataError[index]
         }
+        this.timer = setInterval(() => {
+          console.log(345, index, this.dataError.length, this.dataError)
+          index++
+          if (this.dataError.length >= index) {
+            clearInterval(this.timer)
+            this.dialogVisable = false
+            return
+          }
+          this.dialogVisable = true
+          this.dataDia = this.dataError[index]
+        }, 5000)
       })
     },
     watchClick(e) {
@@ -430,16 +462,10 @@ export default {
     },
     markerClick() {},
     closeDialog() {
-      this.dialogForm = {
-        id: '',
-        inCharge: '',
-        longitude: '',
-        latitude: ''
-        // address: ""
-      }
       this.dialogVisable = false
     },
-    showDialog() {
+    showDialog(item) {
+      this.dataDia = item
       this.dialogVisable = true
     },
     getPanel(rate) {
@@ -561,9 +587,13 @@ export default {
       if (this.active++ > 2) this.active = 0
     },
     normal() {
+      clearInterval(this.timer)
+
       this.dialogVisable = false
+      this.getalarmList()
     },
     unnormal() {
+      clearInterval(this.timer)
       this.dialogVisable = false
     }
   }
@@ -643,15 +673,15 @@ export default {
               background-color: pink;
             }
           }
-          // .zuo:hover {
-          //   border: 1px solid #1890ff;
-          // }
-          // .zhong:hover {
-          //   border: 1px solid #1890ff;
-          // }
-          // .you:hover {
-          //   border: 1px solid #1890ff;
-          // }
+          .zuo:hover {
+            border: 1px solid #1890ff;
+          }
+          .zhong:hover {
+            border: 1px solid #1890ff;
+          }
+          .you:hover {
+            border: 1px solid #1890ff;
+          }
           .zhong {
             float: left;
             width: 25%;
@@ -695,17 +725,17 @@ export default {
     }
   }
 }
-.shu{
-  width:2px;
-  height:23px;
-  background-color:#D9D9D9;
-  margin-left:8px;
+.shu {
+  width: 2px;
+  height: 23px;
+  background-color: #d9d9d9;
+  margin-left: 8px;
   margin-top: 2px;
 }
-.dizhi{
+.dizhi {
   width: 100%;
-  font-size:15px;
-  color:#000000;
+  font-size: 15px;
+  color: #000000;
   font-weight: 300;
   margin-left: 10px;
   margin-bottom: 10px;
@@ -747,6 +777,7 @@ export default {
   fill: #3e94f9;
 }
 .markerClickImg {
-  fill: #FF1A2E !important;
+  fill: #ff1a2e !important;
 }
 </style>
+

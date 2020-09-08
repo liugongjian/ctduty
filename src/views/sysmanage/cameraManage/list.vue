@@ -12,9 +12,17 @@
             <el-form :model="dialogForm" :rule="rules" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="负责人ID："><el-input v-model="dialogForm.inChargeId" placeholder="请输入负责人ID" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="负责人：">
+                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择岗位">
+                  <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item label="添加人："><el-input v-model="dialogForm.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="添加人：">
+                <el-select v-model="dialogForm.creatorId" :value="editForm.creatorId" placeholder="请选择岗位">
+                  <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
@@ -52,12 +60,11 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inChargeId"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creatorId"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creator.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
@@ -80,7 +87,17 @@
           </el-form-item>
           <el-form-item label="摄像头名称："><el-input v-model="editForm.name" placeholder="请输入摄像头名称" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="负责人："><el-input v-model="editForm.inChargeId" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="负责人：">
+            <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
+              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="添加人：">
+            <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
+              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
@@ -119,6 +136,7 @@ import moment from 'moment'
 import {
   fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
+import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
   data() {
@@ -161,8 +179,10 @@ export default {
         latitude: '',
         address: '',
         url: '',
-        name: ''
-      }
+        name: '',
+        creatorId: ''
+      },
+      userList: []
     }
   },
   watch: {
@@ -173,9 +193,25 @@ export default {
   },
   async created() {
     await Message.closeAll()
+    await this.getUserList()
     await this.getList()
   },
   methods: {
+    getUserList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 9999999
+        },
+        params: {}
+      }
+      fetchUserList(query).then(response => {
+        if (response.code !== 0) return
+        this.userList = response.body.data
+        console.log(this.userList)
+      })
+    },
     batchesDel() {
       this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -209,6 +245,7 @@ export default {
     },
     editDialog(v) {
       this.editForm.id = v.id
+      this.editForm.creatorId = v.creatorId
       this.editForm.inChargeId = v.inChargeId
       this.editForm.longitude = v.longitude
       this.editForm.latitude = v.latitude
@@ -227,7 +264,8 @@ export default {
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url,
-        name: this.editForm.name
+        name: this.editForm.name,
+        creatorId: this.editForm.creatorId
       }]
       editCamera(params).then(response => {
         this.$notify({
@@ -346,6 +384,5 @@ export default {
 </script>
 
 <style lang='scss'>
-
 </style>
 

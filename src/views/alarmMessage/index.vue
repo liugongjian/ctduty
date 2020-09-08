@@ -84,7 +84,7 @@
               :label="item"
               :name="item">
               <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
-              <br></br>
+              <br>
               <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
                 <el-table-column
                   width="55">
@@ -121,8 +121,9 @@
                      <el-form-item label="流量状态：" prop="camera.address">
                         <span style="width: 300px;">{{temp.camera | formatNull }}</span>
                     </el-form-item> 
-                     <el-form-item label="监控时间：" prop="createTime" :formatter="formatTime">
-                        {{formatTime(temp.createTime) }}
+                     <el-form-item label="监控时间：" prop="createTime" >
+                        {{renderTime(temp.createTime) }}
+  
                     </el-form-item>
                     <el-form-item label="原始照片：" prop="image" >
                       <el-image :src="temp.image" style="width:400px; height:280px"></el-image>
@@ -158,17 +159,19 @@
   
   <script>
   import { Message } from 'element-ui'
+  import { renderTime } from '@/utils'
   import Cookies from 'js-cookie'
   import Pagination from '@/components/Pagination'
   // import 'element-ui/lib/theme-chalk/index.css'
   import moment from 'moment'
   import { mapGetters } from 'vuex'
-  import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState, getAllTotal} from '@/api/alarm'
+  import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState, getAllTotal } from '@/api/alarm'
   export default {
     components: { Pagination },
   
     data() {
       return {
+        renderTime,
         temp:{
           camera:{},
           createTime: '',
@@ -180,7 +183,7 @@
         state: '',
         value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
         startTime: '02:00',
-        endTime: '23:00',
+        endTime: '05:00',
         startDate: '',
         endDate: '',
         tabsArr: [],
@@ -252,7 +255,11 @@
       const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
       const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
+      const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      this.getTimeAllTotal(s1,e1,h)
       this.getList(s, e, h)
+      
      
     },
     methods: {
@@ -300,7 +307,7 @@
         this.value1="",
         this.page=1,
         this.startTime='02:00'
-        this.endTime='23:00'
+        this.endTime='05:00'
         // this.getPushSetTime()
         this.formInline.typeValue = 'all'
         // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
@@ -314,10 +321,17 @@
       const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
       this.getList(s, e, h)
+
+      const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      this.getTimeAllTotal(s1,e1,h)
         
       },
       onSearch() {
+        
         this.tabsArr = this.tabsDateArr
+        // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
+        this.value1=[this.startDate,this.endDate]
         if(this.tabsArr.indexOf(this.currentTab)===-1){
           this.defaultTab=this.tabsArr[0]
           this.currentTab=this.defaultTab
@@ -351,7 +365,6 @@
           url: this.editForm.url
         }]
         editCamera(params).then(response => {
-          console.log(response)
         })
         this.editVisable = false
       },
@@ -422,6 +435,8 @@
       //     this.getList(s, e, h)
       //   })
       // },
+
+      //获取多天告警总数
       getTimeAllTotal(s,e,h){
         let oper
         if (h === 'settled') {
@@ -437,13 +452,14 @@
           null: oper
         }
         console.log(params,'paramsssssssssssss')
-  
+
         getAllTotal(params).then(response => {
+          console.log(response,'response。。。。。')
           this.allTotal = response.body.data
           this.listLoading = false
-          console.log(this.allTotal,'allnnnnnnnnnnnnnnnnnnn')
         })
       },
+
       // 获取列表数据
       getList(s, e, h) {
         let oper
@@ -475,7 +491,13 @@
             index: this.page,
             size: this.limit
           },
-          params: param
+          params: param,
+          sorts: [
+                {
+                 field: 'create_Time',
+                 type:  "desc"
+                }
+            ]
         }
         getAlertInfos(params).then(response => {
           this.tableData = response.body.data

@@ -2,7 +2,7 @@
   <div id="dashID" class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
-        <div id="map">
+        <div id="map" :class="isFullscreen?'mapE':''">
           <div class="dash-title">监控实时情况</div>
           <div class="mapbox">
             <div class="overv">
@@ -29,35 +29,35 @@
         </div>
       </el-col>
       <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
-        <div id="trend">
+        <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
           <p class="trenddes">{{ trendText }}</p>
           <div id="alarmLine" :style="{width: '100%', height: '120px'}" class="lineEcharts"></div>
         </div>
-        <div id="dispose">
+        <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
           <div class="disbox">
-            <div id="panel"></div>
+            <div id="panel" :class="isFullscreen?'chartHei':''"></div>
           </div>
         </div>
       </el-col>
       <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
-          <div id="classify">
+          <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
               各类告警占比
               <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
             </div>
             <div class="pie">
-              <div id="man" class="canFu"></div>
-              <div id="car" class="canFu"></div>
-              <div id="bicycle" class="canFu"></div>
+              <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
             </div>
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
-          <div id="hotarea">
+          <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
             <div class="tagbox">
               <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
@@ -66,9 +66,9 @@
         </el-col>
       </el-col>
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
-        <div id="net">
+        <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
-          <div id="camerarate"></div>
+          <div id="camerarate" :class="isFullscreen?'chartHei':''"></div>
         </div>
       </el-col>
     </el-row>
@@ -117,18 +117,32 @@ export default {
       zhuData: [],
       zhuXdata: [],
       zhuYdata: [],
-      mapShowData: []
+      mapShowData: [],
+      isFullscreen: false,
+      screenHeight: ''
     }
   },
   watch: {
     screenWidth(v) {
       const canvas = document.getElementsByTagName('canvas');
-      // Array.prototype.forEach.call
       [].forEach.call(canvas, function(item) {
         // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
+    },
+    screenHeight(v) {
+      const canvas = document.getElementsByTagName('canvas');
+      [].forEach.call(canvas, function(item) {
+        // do whatever
+        item.style.width = '100%'
+        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+      })
+      if (v === window.screen.height - 50) {
+        this.isFullscreen = true
+      } else {
+        this.isFullscreen = false
+      }
     }
   },
   async created() {
@@ -139,11 +153,13 @@ export default {
   mounted() {
     const that = this
     that.screenWidth = document.getElementById('dashID').clientWidth
+    that.screenHeight = document.getElementById('dashID').clientHeight
     const erd = elementResizeDetectorMaker()
     erd.listenTo(document.getElementById('dashID'), element => {
       that.$nextTick(() => {
         // 监听到事件后执行的业务逻辑
         that.screenWidth = element.clientWidth
+        that.screenHeight = element.clientHeight
       })
     })
     that.getMap()
@@ -158,6 +174,14 @@ export default {
     goAlarmList() {
       this.$router.push('/alarmMessage')
     },
+    checkFull() {
+      var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+      // to fix : false || undefined == undefined
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
+    },
     getList() {
       // fetchAllData
       const params = {
@@ -170,9 +194,7 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        // { name: '华阴', value: 400 }
         this.trendText = res.body.data.alertAvgVariance > 0.8 ? '治安案件有所降低' : res.body.data.alertAvgVariance > 0.4 ? '治安案件保持稳定' : '治安案件有所增加'
-        // alertStatisByMonthList
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -259,9 +281,6 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: function(params) {
-            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
-          },
           extraCssText: 'height:50px; white-space:pre-wrap;'
         },
         legend: {
@@ -361,13 +380,13 @@ export default {
           data: convertData(data),
           label: {
             normal: {
-              show: false,
+              show: true,
               textStyle: {
                 color: '#000'
               },
               padding: [0, 0, -50, 0],
               formatter: function(item) {
-                return item.name
+                return item.name + `(${item.data.value[2]}次)`
               }
             },
             emphasis: {
@@ -408,7 +427,11 @@ export default {
           color: '#17b885',
           legendHoverLink: true,
           tooltip: {
-            show: true
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
           }
         },
         {
@@ -417,15 +440,25 @@ export default {
           color: '#eec511',
           legendHoverLink: true,
           tooltip: {
-            show: true
-          }}, {
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
+          }
+        }, {
           name: '大于100',
           type: 'bar',
           color: '#d04132',
           legendHoverLink: true,
           tooltip: {
-            show: true
-          }}
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
+          }
+        }
         ]
       }
       this.charts.setOption(option)
@@ -821,10 +854,10 @@ export default {
             symbol: 'arrow',
             period: 10, // 光点滑动速度
             symbolSize: 150
-            // symbol: img[0]
           },
           lineStyle: {
             normal: {
+              show: true,
               width: 1,
               opacity: 0.6,
               curveness: 0.2
@@ -848,6 +881,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main-container {
+  background-color: #F0F2F5;
+  }
+  #dashID{
+    height: 100%;
+  }
 #panel {
   overflow: hidden;
   position:relative !important;
@@ -931,7 +970,7 @@ export default {
     background-color: #fff;
   }
   #trend{
-    height: 210px;
+    height: 30%;
     background-color: #fff;
     .trendTitle {
       padding: 0;
@@ -948,20 +987,20 @@ export default {
     }
   }
   #dispose {
-    height: 210px;
+    height: 30%;
     background-color: #fff;
     margin-top:20px;
   }
   #classify {
-    height: 210px;
+    height: 30%;
     background-color: #fff;
   }
   #hotarea {
-    height: 210px;
+    height: 30%;
     background-color: #fff;
   }
   #net {
-    height: 210px;
+    height: 30%;
     background-color: #fff;
     #camerarate {
       height: 170px;
@@ -1104,5 +1143,14 @@ export default {
     #panel>div {
       height: 100%;
     }
+  }
+  .smaEcarts {
+    height: 240px !important;
+  }
+  .mapE {
+    height: 500px !important;
+  }
+  .chartHei {
+    height: 210px !important;
   }
 </style>

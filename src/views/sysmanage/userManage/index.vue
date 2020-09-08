@@ -99,7 +99,7 @@
         </el-form-item>
         <el-form-item label="区域/部门">
           <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
-          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">  
+          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
             <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
@@ -281,7 +281,6 @@ export default {
         query.params.name = this.queryName
       }
       fetchUserList(query).then(response => {
-        console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
         this.totalnum = response.body.total
@@ -302,7 +301,6 @@ export default {
         const query = [{ ...this.addUserForm }]
         console.log(query)
         postAddUser(query).then(response => {
-          console.log(response)
           if (response.code !== 0) return this.$message.error('添加用户失败，请联系系统管理员')
           this.$message.success('添加用户成功')
           this.addUserDialogVisible = false
@@ -360,7 +358,7 @@ export default {
       this.queryName = ''
 
       this.getUserList()
-    },
+    }
 
   }
 }

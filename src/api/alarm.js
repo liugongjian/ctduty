@@ -102,7 +102,7 @@ export function alarmStatus() {
 export function pushSet(form) {
   console.log(JSON.stringify(form), 'form')
   return request({
-    url: 'http://host31.880508.xyz:10000/Setting/Update',
+    url: '/nvsapi/Setting/Update',
     method: 'post',
     data: [{
       id: 3275166382090240,
@@ -112,28 +112,36 @@ export function pushSet(form) {
 }
 export function getPushSet() {
   return request({
-    url: 'http://host31.880508.xyz:10000/Setting/Get/3275166382090240',
+    url: '/nvsapi/Setting/Get/3275166382090240',
     method: 'get'
   })
 }
 
 export function getAlertInfos(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
+    url: '/nvsapi/Alert/QueryFilter',
     method: 'post',
     data: query
   })
 }
 export function deleteAlertInfo(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Alert/Delete',
+    url: '/nvsapi/Alert/Delete',
     method: 'post',
     data: query
   })
 }
 export function notifyState(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Alert/Update',
+    url: '/nvsapi/Alert/Update',
+    method: 'post',
+    data: query
+  })
+}
+
+export function getAllTotal(query) {
+  return request({
+    url: '/nvsapi/Alert/queryTimeBetween',
     method: 'post',
     data: query
   })
@@ -141,7 +149,7 @@ export function notifyState(query) {
 
 export function fetchalarmList(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
+    url: '/nvsapi/Alert/QueryFilter',
     method: 'post',
     data: query
   })
