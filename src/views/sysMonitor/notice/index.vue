@@ -61,9 +61,6 @@
         <el-form-item label="标题" prop="title">
           <el-input v-model="addNoticeForm.title" class="input_title" ></el-input>
         </el-form-item>
-        <el-form-item label="创建者" prop="creatorId">
-          <el-input v-model="addNoticeForm.creatorId" class="input_title" ></el-input>
-        </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="addNoticeForm.type">
             <el-radio :label="0">通知</el-radio>
@@ -86,11 +83,18 @@
           </quill-editor>
         </el-form-item>
 
-        <el-form-item label="签名档">
-          <el-select v-model="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+        <el-form-item class="select" label="签名档">
+          <el-select class="select" v-model="addNoticeForm.signature_id" placeholder="请选择">
+            <!-- <el-option value="1" label="1"></el-option> -->
+                <el-option
+                  v-for="(item,key) in departmentInfo"
+                  :key="key"
+                  :label="item.department"
+                  :value="item.departmentId">
+                </el-option>
           </el-select>
         </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -132,10 +136,9 @@
           <span>内容</span>
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
-
         <el-form-item label="签名档">
-          <el-select v-model="editNoticeForm.signature_id" :value="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          <el-select v-model="editNoticeForm.signature_id" :value="editNoticeForm.signature_id" placeholder="请选择">
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -267,7 +270,7 @@ export default {
         }
       }
       fetchNoticeList(query).then(response => {
-          console.log(response)
+          // console.log(response)
           if (response.code !== 0) return this.$message.error('获取通知信息失败')
           this.noticeList = response.body.data
           this.noticeList.map(item=>{
@@ -298,6 +301,8 @@ export default {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addNoticeForm }]
+        query[0].creatorId = this.getCookie('userId')
+        // console.log(query[0].creatorId)
         // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
@@ -366,7 +371,16 @@ export default {
         this.getNoticeList()
         this.$message.success('删除信息成功')
       })
-    }
+    },
+    getCookie(objName){//获取指定名称的cookie的值 
+    var arrStr = document.cookie.split("; "); 
+    for (var i = 0; i < arrStr.length; i++) { 
+        var temp = arrStr[i].split("="); 
+        if (temp[0] == objName){ 
+            return decodeURI(temp[1]); 
+        }
+    } 
+}
   }
 }
 
@@ -401,5 +415,9 @@ export default {
     display: inline-block;
     width:700px;
     height: 200px;
+}
+
+.select{
+  z-index: 1000;
 }
 </style>

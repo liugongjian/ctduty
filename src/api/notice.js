@@ -10,7 +10,7 @@ export function fetchNoticeList(query) {
 }
 export function postAddNotices(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Notice/Add',
+    url: '/nvsapi/Notice/Add',
     method: 'post',
     data: query
   })
@@ -41,7 +41,7 @@ export function deleteNotices(ids) {
 
 export function notReadNotices(query) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Notice/QueryNotRead',
+    url: '/nvsapi/Notice/QueryNotRead',
     method: 'post',
     data: query
   })
