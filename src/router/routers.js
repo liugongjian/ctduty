@@ -56,7 +56,7 @@ export const asyncRouterMap = [
           title: 'eCloudWatch',
           icon: 'ecloudwatch',
           noCache: true,
-          affix: true,
+          affix: true
         }
       }
     ]
@@ -75,7 +75,7 @@ export const asyncRouterMap = [
           title: 'alarmMessage',
           icon: 'alarmMessage',
           noCache: true,
-          affix: true,
+          affix: true
         }
       }
     ]

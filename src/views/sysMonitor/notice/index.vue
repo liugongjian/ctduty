@@ -88,7 +88,7 @@
 
         <el-form-item label="签名档">
           <el-select v-model="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -135,7 +135,7 @@
 
         <el-form-item label="签名档">
           <el-select v-model="editNoticeForm.signature_id" :value="addNoticeForm.signature_id" placeholder="请选择">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>

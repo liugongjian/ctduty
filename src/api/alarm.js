@@ -139,6 +139,14 @@ export function notifyState(query) {
   })
 }
 
+export function getAllTotal(query) {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Alert/queryTimeBetween',
+    method: 'post',
+    data: query
+  })
+}
+
 export function fetchalarmList(query) {
   return request({
     url: 'http://host31.880508.xyz:10000/Alert/QueryFilter',
