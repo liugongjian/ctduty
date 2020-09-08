@@ -175,7 +175,6 @@ export default {
       }
     },
     $route(to, from) {
-      window.clearInterval(this.timer)
       if (to.path === '/login') {
         window.clearInterval(this.timer)
       }
