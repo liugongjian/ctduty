@@ -134,7 +134,6 @@ export default {
     screenHeight(v) {
       const canvas = document.getElementsByTagName('canvas');
       [].forEach.call(canvas, function(item) {
-        console.log('嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻')
         // do whatever
         item.style.width = '100%'
         item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
@@ -155,7 +154,6 @@ export default {
     const that = this
     that.screenWidth = document.getElementById('dashID').clientWidth
     that.screenHeight = document.getElementById('dashID').clientHeight
-    console.log(document.getElementById('dashID').clientHeight)
     const erd = elementResizeDetectorMaker()
     erd.listenTo(document.getElementById('dashID'), element => {
       that.$nextTick(() => {
@@ -388,7 +386,7 @@ export default {
               },
               padding: [0, 0, -50, 0],
               formatter: function(item) {
-                return item.name
+                return item.name + `(${item.data.value[2]}次)`
               }
             },
             emphasis: {
