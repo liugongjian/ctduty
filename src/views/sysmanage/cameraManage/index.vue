@@ -691,6 +691,8 @@ export default {
  }
  .el-form-item__label {
    font-weight: 700 !important;
+    text-align: left !important;
+    padding-left: 20px;
  }
  .markerImg {
    fill: #3E94F9;
@@ -698,4 +700,9 @@ export default {
  .markerClickImg {
    fill: #E6A23C !important;
  }
+ label{
+    display:inline-block;
+    width:100px;
+    text-align: left !important;
+    }
 </style>
