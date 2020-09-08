@@ -100,6 +100,7 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { updateUserPassWord, fetchUser } from '@/api/user'
+import { logout } from '@/api/login'
 import { notReadNotices } from '@/api/notice'
 
 export default {
@@ -224,11 +225,25 @@ export default {
     // huanglulu
     businessLogout() {
       // window.location.href = `${process.env.LOGOUT_URL}`;
-      Cookies.remove('token')
-      Cookies.remove('username')
-      Cookies.remove('userId')
-      Cookies.remove('level')
-      this.$router.push('/login')
+      logout().then((res) => {
+        Cookies.remove('token')
+        Cookies.remove('username')
+        Cookies.remove('userId')
+        Cookies.remove('level')
+        this.$store.dispatch('FedLogOut').then(() => {
+          this.$router.push('/login')
+        })
+      }).catch(err => {
+        return err
+      })
+
+      // Cookies.remove('token')
+      // Cookies.remove('username')
+      // Cookies.remove('userId')
+      // Cookies.remove('level')
+      // this.$store.dispatch('FedLogOut').then(() => {
+      //   this.$router.push('/login')
+      // })
     }
     // toUpWord() {
     //   if (this.form.re_password === '') {
