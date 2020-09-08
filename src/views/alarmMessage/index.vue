@@ -365,7 +365,6 @@
           url: this.editForm.url
         }]
         editCamera(params).then(response => {
-          console.log(response)
         })
         this.editVisable = false
       },
@@ -458,7 +457,6 @@
           console.log(response,'response。。。。。')
           this.allTotal = response.body.data
           this.listLoading = false
-          console.log(this.allTotal,'allnnnnnnnnnnnnnnnnnnn')
         })
       },
 
