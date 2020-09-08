@@ -75,9 +75,8 @@
                         <svg-icon v-else-if="item.type === 2" icon-class="car" />
                         <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                         <span
-                          :formatter="formatTime"
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                        >{{ formatTime(item.camera.createTime) }}</span>
+                        >{{ renderTime(item.camera.createTime) }}</span>
                       </div>
                     </div>
                   </template>
@@ -101,9 +100,8 @@
                       <svg-icon v-else-if="item.type === 2" icon-class="car" />
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
-                        :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ formatTime(item.camera.createTime) }}</span>
+                      >{{ renderTime(item.camera.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -126,9 +124,8 @@
                       <svg-icon v-else-if="item.type === 2" icon-class="car" />
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
-                        :formatter="formatTime"
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ formatTime(item.camera.createTime) }}</span>
+                      >{{ renderTime(item.camera.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -146,13 +143,13 @@
             @close="closeDialog"
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
-              <el-form-item :formatter="formatTime" label="流量状态:">
+              <el-form-item label="流量状态:">
                 <span style="width: 300px;">{{ dataDia.camera.address }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                    formatTime(item.camera.createTime)
+                    renderTime(item.camera.createTime)
                   }}
                 </span>
               </el-form-item>
@@ -244,7 +241,8 @@ export default {
       limit: 10,
       events: {
         click: a => {}
-      }
+      },
+      renderTime
     }
   },
   watch: {
@@ -356,9 +354,6 @@ export default {
           })
         })
       })
-    },
-    formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     allTab() {
       this.showTabValue = 'all'
