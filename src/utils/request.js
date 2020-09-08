@@ -58,7 +58,8 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    // if (res.code == 50000) {
+    console.log('request的返回信息', res)
+    if (res.code == 50000) {
       // Message({
       //   message: res.msg,
       //   type: 'error',
@@ -83,28 +84,23 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      var flg = false
-      if (res.code === 50000 && res.message === 'Token not found.' || res.code === 50000 && res.message === 'Token unauthorized.') {
+      if (res.code === 50000 && res.message === 'Token not found.') {
         console.log('token过期了')
-        flg = true
-        if (flg) {
-          logout().then(() => {
-            flg = false
-            Cookies.remove('token')
-            Cookies.remove('userId')
-            Cookies.remove('username')
-            window.location.href = "/login";  
-          })
-        }
-        return Promise.reject(response.data)
-      } else {
-        return response.data
+        // this.$router.push('/login')
+        // window.location.href = "/login";
+        logout().then(() => {
+          Cookies.remove('token')
+          Cookies.remove('userId')
+          Cookies.remove('username')
+          window.location.href = '/login'
+        })
       }
+      return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)
-    // } else {
-    //   return response.data
-    // }
+    } else {
+      return response.data
+    }
   },
   error => {
     let timeout = null
