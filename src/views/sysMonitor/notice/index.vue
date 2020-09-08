@@ -264,7 +264,6 @@ export default {
         }
       }
       fetchNoticeList(query).then(response => {
-          console.log(response)
           if (response.code !== 0) return this.$message.error('获取通知信息失败')
           this.noticeList = response.body.data
           this.noticeList.map(item=>{

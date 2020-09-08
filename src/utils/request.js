@@ -58,8 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    console.log('request的返回信息', res)
-    if (res.code == 50000) {
+    // if (res.code == 50000) {
       // Message({
       //   message: res.msg,
       //   type: 'error',
@@ -85,7 +84,7 @@ service.interceptors.response.use(
       //   })
       // }
       var flg = false
-      if (res.code === 50000 && res.message === 'Token not found.') {
+      if (res.code === 50000 && res.message === 'Token not found.' || res.code === 50000 && res.message === 'Token unauthorized.') {
         console.log('token过期了')
         flg = true
         if (flg) {
@@ -97,13 +96,15 @@ service.interceptors.response.use(
             flg = false
           })
         }
+        return Promise.reject(response.data)
+      } else {
+        return response.data
       }
-      return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)
-    } else {
-      return response.data
-    }
+    // } else {
+    //   return response.data
+    // }
   },
   error => {
     let timeout = null
