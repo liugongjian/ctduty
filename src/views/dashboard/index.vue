@@ -118,18 +118,24 @@ export default {
       zhuXdata: [],
       zhuYdata: [],
       mapShowData: [],
-      isFullscreen: false
+      isFullscreen: false,
+      screenHeight: ''
     }
   },
   watch: {
     screenWidth(v) {
       const canvas = document.getElementsByTagName('canvas');
-      // Array.prototype.forEach.call
       [].forEach.call(canvas, function(item) {
         // do whatever
         item.style.width = '100%'
         item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
+    },
+    screenHeight(v) {
+      console.log(window.screen.height, v, '1231231')
+      if (v === window.screen.height - 50) {
+        console.log('全屏了')
+      }
     }
   },
   async created() {
@@ -140,11 +146,14 @@ export default {
   mounted() {
     const that = this
     that.screenWidth = document.getElementById('dashID').clientWidth
+    that.screenHeight = document.getElementById('dashID').clientHeight
+    console.log(document.getElementById('dashID').clientHeight)
     const erd = elementResizeDetectorMaker()
     erd.listenTo(document.getElementById('dashID'), element => {
       that.$nextTick(() => {
         // 监听到事件后执行的业务逻辑
         that.screenWidth = element.clientWidth
+        that.screenHeight = element.clientHeight
       })
     })
     that.getMap()
@@ -154,14 +163,18 @@ export default {
     that.drawPie('bicycle', '非机动车', '#2FC25B', NaN)
     that.getPanel(that.cameraOnlineRate)
     that.drawZhu('alarmLine')
-
-    window.onresize = function temp(v) {
-      console.log(v, '就按法律困难时刻力帆')
-    }
   },
   methods: {
     goAlarmList() {
       this.$router.push('/alarmMessage')
+    },
+    checkFull() {
+      var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+      // to fix : false || undefined == undefined
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
     },
     getList() {
       // fetchAllData
@@ -863,6 +876,9 @@ export default {
 <style lang="scss" scoped>
 .main-container {
   background-color: #F0F2F5;
+  }
+  #dashID{
+    height: 100%;
   }
 #panel {
   overflow: hidden;

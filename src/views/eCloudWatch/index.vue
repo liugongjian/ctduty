@@ -44,7 +44,7 @@
               <div class="bottom-right">
                 <ul>
                   <li style="float:right; width:25%">
-                    <a href="/alarmMessage">历史告警</a>
+                    <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
                   </li>
                 </ul>
               </div>
