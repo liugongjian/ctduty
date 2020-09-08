@@ -24,7 +24,7 @@ export function loginLdapByUsername(data) {
 export function logout() {
   return request({
     url: 'http://host31.880508.xyz:10000/Login/logout',
-    method: 'post'
+    method: 'get'
   })
 }
 
