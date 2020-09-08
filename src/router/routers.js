@@ -170,8 +170,18 @@ export const asyncRouterMap = [
         component: () => import('@/views/sysmanage/carManage/index'),
         name: 'sysCarManage',
         meta: {
-          title: '车辆管理',
-          icon: 'pushSet',
+          title: 'carManage',
+          icon: 'car',
+          noCache: false
+        }
+      },
+      {
+        path: 'faceManage',
+        component: () => import('@/views/sysmanage/faceManage/index'),
+        name: 'sysFaceManage',
+        meta: {
+          title: 'faceManage',
+          icon: 'face',
           noCache: false
         }
       }
