@@ -93,6 +93,7 @@ service.interceptors.response.use(
           Cookies.remove('userId')
           Cookies.remove('username')
           window.location.href = '/login'
+          return
         })
       }
       return Promise.reject(response.data)
