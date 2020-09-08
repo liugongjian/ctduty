@@ -154,3 +154,10 @@ export function fetchalarmList(query) {
     data: query
   })
 }
+
+export function fetchNormalStatus(id, state) {
+  return request({
+    url: `/nvsapi/Alert/UpdateState?id=${id}&state=${state}`,
+    method: 'post'
+  })
+}
