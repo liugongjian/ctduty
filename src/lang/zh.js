@@ -50,7 +50,9 @@ export default {
     sysMonitor: '系统监控',
     notice: '通知公告',
     onlineUser: '在线用户',
-    pushSet: '推送设置'
+    pushSet: '推送设置',
+    carManage: '车辆管理',
+    faceManage: '人脸管理'
   },
   activeList: {
     name: '名称',

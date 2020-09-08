@@ -3,7 +3,7 @@ import {
   Message
 } from 'element-ui'
 import Cookies from 'js-cookie'
-import {logout, heartbeat} from '../api/login'
+import { logout, heartbeat } from '../api/login'
 // import {
 //   getToken,
 //   getPrefix
@@ -31,7 +31,7 @@ service.interceptors.request.use(
   config => {
     // Do something before request is sent
     // const token = getToken('token')
-    // 
+    //
     const token = Cookies.get('token')
 
     if (token) {
@@ -94,10 +94,11 @@ service.interceptors.response.use(
             Cookies.remove('userId')
             Cookies.remove('username')
             window.location.href = "/login";
+            flg = false
           })
         }
       }
-        return Promise.reject(response.data)
+      return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)
     } else {
