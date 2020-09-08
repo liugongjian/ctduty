@@ -2,7 +2,7 @@
   <div id="dashID" class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
-        <div id="map">
+        <div id="map" :class="isFullscreen?'mapE':''">
           <div class="dash-title">监控实时情况</div>
           <div class="mapbox">
             <div class="overv">
@@ -38,7 +38,7 @@
         <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
           <div class="disbox">
-            <div id="panel"></div>
+            <div id="panel" :class="isFullscreen?'chartHei':''"></div>
           </div>
         </div>
       </el-col>
@@ -50,9 +50,9 @@
               <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
             </div>
             <div class="pie">
-              <div id="man" class="canFu"></div>
-              <div id="car" class="canFu"></div>
-              <div id="bicycle" class="canFu"></div>
+              <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
             </div>
           </div>
         </el-col>
@@ -68,7 +68,7 @@
       <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
         <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
-          <div id="camerarate"></div>
+          <div id="camerarate" :class="isFullscreen?'chartHei':''"></div>
         </div>
       </el-col>
     </el-row>
@@ -128,13 +128,21 @@ export default {
       [].forEach.call(canvas, function(item) {
         // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
     },
     screenHeight(v) {
-      console.log(window.screen.height, v, '1231231')
+      const canvas = document.getElementsByTagName('canvas');
+      [].forEach.call(canvas, function(item) {
+        console.log('嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻')
+        // do whatever
+        item.style.width = '100%'
+        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+      })
       if (v === window.screen.height - 50) {
-        console.log('全屏了')
+        this.isFullscreen = true
+      } else {
+        this.isFullscreen = false
       }
     }
   },
@@ -1138,6 +1146,12 @@ export default {
     }
   }
   .smaEcarts {
-    height: 250px !important;
+    height: 240px !important;
+  }
+  .mapE {
+    height: 500px !important;
+  }
+  .chartHei {
+    height: 210px !important;
   }
 </style>

@@ -20,7 +20,6 @@
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
-      </el-amap>
       <div class="warn">
         <div class="dispose">
           <div class="dash-title">告警处理率</div>
@@ -52,16 +51,24 @@
 
             <div class="zuoContent" style="width:100%; height:100%">
               <div v-if="showTabValue === 'all'">
-
                 <div :data="stepsData" @click="showDialog">
                   <template>
-                    <div v-for="(item, index) in stepsData" :key="index" class="stepword">
+                    <div
+                      v-for="(item, index) in stepsData"
+                      :key="index"
+                      class="stepword"
+                      @click="showDialog(item)"
+                    >
                       <div style="height:32px; width:32px; float:left">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                        <svg-icon v-else if= "item.state === 1" class="untreated" icon-class="untreated" />
-                        <div class="shu" ></div>
+                        <svg-icon
+                          v-else
+                          if="item.state === 1"
+                          class="untreated"
+                          icon-class="untreated"
+                        />
+                        <div class="shu"></div>
                       </div>
-                      <!-- <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span> -->
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
                         <svg-icon v-if="item.type === 1" icon-class="people" />
@@ -78,14 +85,18 @@
               </div>
               <div v-if="showTabValue === 'y'">
                 <template>
-                  <div v-for="(item, index) in yData" :key="index" class="stepword">
+                  <div
+                    v-for="(item, index) in yData"
+                    :key="index"
+                    class="stepword"
+                    @click="showDialog(item)"
+                  >
                     <div style="height:32px; width:32px; float:left">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-
                       <div class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
+                      <p class="dizhi">{{ item.camera.address }}</p>
                       <svg-icon v-if="item.type === 1" icon-class="people" />
                       <svg-icon v-else-if="item.type === 2" icon-class="car" />
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
@@ -99,14 +110,18 @@
               </div>
               <div v-if="showTabValue === 'w'">
                 <template>
-                  <div v-for="(item, index) in xData" :key="index" class="stepword">
+                  <div
+                    v-for="(item, index) in xData"
+                    :key="index"
+                    class="stepword"
+                    @click="showDialog(item)"
+                  >
                     <div style="height:32px; width:32px; float:left">
-                      <!-- <svg-icon icon-class="deal" /> -->
-                      <svg-icon v-if= "item.state === 0" class="untreated" icon-class="untreated" />
-                      <div class="shu" ></div>
+                      <svg-icon v-if="item.state === 0" class="untreated" icon-class="untreated" />
+                      <div class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p style="width: 100%" font-size="14px">{{ item.camera.address }}</p>
+                      <p class="dizhi">{{ item.camera.address }}</p>
                       <svg-icon v-if="item.type === 1" icon-class="people" />
                       <svg-icon v-else-if="item.type === 2" icon-class="car" />
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
@@ -130,14 +145,14 @@
             width="700px"
             @close="closeDialog"
           >
-            <el-form :model="alarmForm" label-position="right" label-width="100px">
-              <el-form-item v-model="alarmForm.address" :formatter="formatTime" label="流量状态:">
+            <el-form label-position="right" label-width="100px">
+              <el-form-item :formatter="formatTime" label="流量状态:">
                 <span style="width: 300px;">{{ item.camera.address }}</span>
               </el-form-item>
-              <el-form-item v-model="alarmForm.createTime" label="监控时间:">
+              <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                    formatTime(item.camera.createTime)
+                  formatTime(item.camera.createTime)
                   }}
                 </span>
               </el-form-item>
@@ -146,7 +161,6 @@
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="item.imageCut" style="width:150px; height:150px;"></el-image>
-
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -169,49 +183,52 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-import echarts from 'echarts'
+import Cookies from "js-cookie";
+import echarts from "echarts";
 // 引入水球
-import 'echarts-liquidfill'
+import "echarts-liquidfill";
 // 引入基本模板
-require('echarts/lib/chart/bar')
+require("echarts/lib/chart/bar");
 // 引入提示框和title组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
-import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
-import { fetchalarmList } from '@/api/alarm'
-import { fetchAllCameraList } from '@/api/camera'
-import { getAlertInfos } from '@/api/alarm'
-import { fetchNowInfo, fetchSinMan } from '@/api/dashboard'
-import Pagination from '@/components/Pagination'
-import { renderTime } from '@/utils'
-import VueAMap from 'vue-amap'
-import moment from 'moment'
-const amapManager = new VueAMap.AMapManager()
+require("echarts/lib/component/tooltip");
+require("echarts/lib/component/title");
+import { fetchUser, fetchCommunity, alarmStatus } from "@/api/user";
+import { fetchalarmList } from "@/api/alarm";
+import { fetchAllCameraList } from "@/api/camera";
+import { getAlertInfos } from "@/api/alarm";
+import { fetchNowInfo, fetchSinMan } from "@/api/dashboard";
+import Pagination from "@/components/Pagination";
+import { renderTime } from "@/utils";
+import VueAMap from "vue-amap";
+import moment from "moment";
+const amapManager = new VueAMap.AMapManager();
 export default {
-  name: 'ECloudWatch',
+  name: "ECloudWatch",
   // components: { CameraList },
   components: { Pagination },
-  props: ['data', 'defaultActive'],
+  props: ["data", "defaultActive"],
   data() {
     return {
-      alarmForm: {
-        address: '',
-        createTime: ''
-      },
+      timer: null,
+      dataError: [],
+      dataDia: {},
+      // alarmForm: {
+      //   address: '',
+      //   createTime: ''
+      // },
       temp: {
         camera: {},
-        createTime: '',
-        image: '',
-        imageCut: ''
+        createTime: "",
+        image: "",
+        imageCut: ""
       },
       yData: [],
       // TabLan: all,
       dialogVisable: false,
-      activeName: 'first',
+      activeName: "first",
       formInfo: [],
       active: 0,
-      stateData: '',
+      stateData: "",
       stepsData: [],
       values: 3,
       xData: [],
@@ -220,7 +237,7 @@ export default {
       showZwMes: true,
       center: [110.09, 34.58],
       markersDom: null,
-      showTabValue: '',
+      showTabValue: "",
       markers: [],
       amapManager,
       total: 0,
@@ -230,65 +247,64 @@ export default {
       events: {
         click: a => {}
       }
-    }
+    };
   },
   watch: {
     markers(v) {
       setTimeout(() => {
-        if (document.getElementsByClassName('markerImg').length) {
-          this.hasMarker = true
+        if (document.getElementsByClassName("markerImg").length) {
+          this.hasMarker = true;
         } else {
-          this.hasMarker = false
+          this.hasMarker = false;
         }
-      }, 200)
+      }, 200);
     },
     hasMarker(v) {
-      const that = this
+      const that = this;
       if (v) {
-        [].forEach.call(document.getElementsByClassName('markerImg'), function(
+        [].forEach.call(document.getElementsByClassName("markerImg"), function(
           item,
           index
         ) {
           if (index === 0) {
-            item.classList.add('markerClickImg')
-            that.form = JSON.parse(item.attributes[1].nodeValue)
+            item.classList.add("markerClickImg");
+            that.form = JSON.parse(item.attributes[1].nodeValue);
             that.form.createTime = moment(that.form.createTime).format(
-              'YYYY-MM-DD HH:mm:SS'
-            )
-            that.showZwMes = false
+              "YYYY-MM-DD HH:mm:SS"
+            );
+            that.showZwMes = false;
           }
-        })
+        });
       }
     },
     limit() {
-      this.page = 1
-      this.pageChange()
+      this.page = 1;
+      this.pageChange();
     }
   },
   async created() {
-    this.userId = Cookies.get('userId')
-    await this.getalarmList()
-    await this.getCameraList()
-    await this.getPanelList()
+    this.userId = Cookies.get("userId");
+    await this.getalarmList();
+    await this.getCameraList();
+    await this.getPanelList();
     // await this.getAlertList()
   },
   mounted() {
-    const that = this
-    that.getPanel()
-    document.getElementById('alarmInfo').onclick = function() {
-      this.watchClick()
-    }
+    const that = this;
+    that.getPanel();
+    document.getElementById("alarmInfo").onclick = function() {
+      this.watchClick();
+    };
     setTimeout(() => {
-      this.formInfo = [
-      ]
+      this.formInfo = [];
       this.formInfo.forEach(item => {
         this.markers.push({
           position: [item.longitude, item.latitude],
           content: `<img class='markerImg' data=${JSON.stringify(item)}
           src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
-        })
-      })
-    }, 2000)
+        });
+      });
+    }, 2000);
   },
   methods: {
     getPanelList() {
@@ -300,15 +316,14 @@ export default {
           size: 0
         },
         params: {}
-      }
+      };
       fetchSinMan(params).then(res => {
-        this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
-        this.offCamera = res.body.data.offlineCameras
-        this.alarmTime = res.body.data.todayAlerts
-        this.processed = res.body.data.todayHandleds
-        this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
-        // this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
-      })
+        this.total = res.body.data.offlineCameras + res.body.data.onlineCameras;
+        this.offCamera = res.body.data.offlineCameras;
+        this.alarmTime = res.body.data.todayAlerts;
+        this.processed = res.body.data.todayHandleds;
+        this.getPanel(parseInt(res.body.data.alertHandleRate * 100));
+      });
     },
     getCameraList() {
       const params = {
@@ -318,18 +333,18 @@ export default {
           size: 20
         },
         params: {}
-      }
+      };
       fetchAllCameraList(params).then(res => {
-        this.formInfo = res.body.data
+        this.formInfo = res.body.data;
         /*  this.formInfo.forEach(item => {
           item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
         }) */
-        this.markers = []
-        this.showZwMes = true
-        if (document.getElementsByClassName('markerClickImg').length) {
+        this.markers = [];
+        this.showZwMes = true;
+        if (document.getElementsByClassName("markerClickImg").length) {
           document
-            .getElementsByClassName('markerClickImg')[0]
-            .classList.remove('markerClickImg')
+            .getElementsByClassName("markerClickImg")[0]
+            .classList.remove("markerClickImg");
         }
         this.formInfo.forEach(item => {
           this.markers.push({
@@ -340,53 +355,53 @@ export default {
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  data=${JSON.stringify(
               item
             )}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
-          })
-        })
-      })
+          });
+        });
+      });
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
     },
     allTab() {
-      this.showTabValue = 'all'
+      this.showTabValue = "all";
     },
     yTab() {
-      this.showTabValue = 'y'
-      this.yData = []
-      this.xData = []
+      this.showTabValue = "y";
+      this.yData = [];
+      this.xData = [];
       this.stepsData.forEach((item, index) => {
         if (+item.state === 0) {
-          this.yData.push(item)
+          this.yData.push(item);
         } else {
-          this.xData.push(item)
+          this.xData.push(item);
         }
-      })
+      });
     },
     wTab() {
-      this.showTabValue = 'w'
-      this.yData = []
-      this.xData = []
+      this.showTabValue = "w";
+      this.yData = [];
+      this.xData = [];
       this.stepsData.forEach((item, index) => {
         if (+item.state === 0) {
-          this.yData.push(item)
+          this.yData.push(item);
         } else {
-          this.xData.push(item)
+          this.xData.push(item);
         }
-      })
+      });
     },
     getalarmList() {
       const params = {
         cascade: true,
         page: {
           index: 1,
-          size: 10,
+          size: 30,
           total: 0
         },
         params: [
           // {
           //   field: 'createTime',
           //   operator: 'BETWEEN',
-          //   value: { start: '2020-09-05 00:00:00', end: '2020-09-07 23:59:59' }
+          //   value: { start: '2020-09-05 00:00:00', end: '2020-09-10 23:59:59' }
           // },
           // {
           //   field: 'handlerId',
@@ -394,61 +409,73 @@ export default {
           //   value: 'null'
           // }
         ]
-      }
+      };
       fetchalarmList(params).then(response => {
-        this.showTabValue = 'all'
-        const { data } = response.body
-        // console.log(response.body.data)
-        this.stepsData = []
+        this.showTabValue = "all";
+        // console.log(response,78)
+        const { data } = response.body;
+        // console.log(data);
+        this.stepsData = [];
         for (let i = 0; i < response.body.data.length; i++) {
-          this.stepsData.push(response.body.data[i])
-          // console.log(this.stepsData);
+          this.stepsData.push(response.body.data[i]);
         }
-        this.stateData = data.state
-        if (this.stateData.state !== 0) {
-          this.dialogVisable = true
+        this.dataDia = [];
+        for (let i = 0; i < response.body.data.length; i++) {
+          if (response.body.data[i].state === 1) {
+            this.dataError.push(response.body.data[i]);
+          }
         }
-      })
+        let index = 0;
+        if (this.dataError.length > 0) {
+          this.dialogVisable = true;
+          this.dataDia = this.dataError[index];
+        }
+        this.timer = setInterval(() => {
+          console.log(345, index, this.dataError.length, this.dataError);
+          index++;
+          if (this.dataError.length >= index) {
+            clearInterval(this.timer);
+            this.dialogVisable = false;
+            return;
+          }
+          this.dialogVisable = true;
+          this.dataDia = this.dataError[index];
+        }, 5000);
+      });
     },
     watchClick(e) {
-      if (!e.path.some(item => item.className === 'amap-marker-content')) {
-        return
+      if (!e.path.some(item => item.className === "amap-marker-content")) {
+        return;
       }
-      const marImgs = document.getElementsByClassName('markerImg');
+      const marImgs = document.getElementsByClassName("markerImg");
       [].forEach.call(marImgs, function(item) {
-        item.classList.remove('markerClickImg')
-      })
+        item.classList.remove("markerClickImg");
+      });
       e.path.forEach(item => {
-        if (item.className === 'amap-marker-content') {
-          item.childNodes[1].classList.add('markerClickImg')
-          this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
+        if (item.className === "amap-marker-content") {
+          item.childNodes[1].classList.add("markerClickImg");
+          this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue);
           this.form.createTime = moment(this.form.createTime).format(
-            'YYYY-MM-DD HH:mm:SS'
-          )
-          this.showZwMes = false
+            "YYYY-MM-DD HH:mm:SS"
+          );
+          this.showZwMes = false;
         }
-      })
+      });
     },
     markerClick() {},
     closeDialog() {
-      this.dialogForm = {
-        id: '',
-        inCharge: '',
-        longitude: '',
-        latitude: ''
-        // address: ""
-      }
-      this.dialogVisable = false
+      this.dialogVisable = false;
     },
-    showDialog() {
-      this.dialogVisable = true
+    showDialog(item) {
+      this.dataDia = item;
+      this.dialogVisable = true;
     },
     getPanel(rate) {
-      this.charts = echarts.init(document.getElementById('panel'))
+      this.charts = echarts.init(document.getElementById("panel"));
       this.charts.setOption({
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
         tooltip: {
-          formatter: '{a} <br/>{b} : {c}%'
+          formatter: "{a} <br/>{b} : {c}%"
         },
         toolbox: {
           // 工具栏小图标
@@ -460,20 +487,20 @@ export default {
         },
         series: [
           {
-            name: '业务指标',
-            type: 'gauge',
+            name: "业务指标",
+            type: "gauge",
             splitNumber: 5,
             detail: {
               // 仪表盘详情，用于显示数据
-              formatter: '{value}%',
-              color: '#333333',
+              formatter: "{value}%",
+              color: "#333333",
               fontSize: 16,
-              fontWeight: 'bolder'
+              fontWeight: "bolder"
             },
             data: [
               {
                 value: rate,
-                name: ''
+                name: ""
               }
             ],
             axisLine: {
@@ -481,9 +508,9 @@ export default {
               show: true,
               lineStyle: {
                 width: 6, // 表盘粗细
-                color: [[1, '#2d82ff']],
+                color: [[1, "#2d82ff"]],
                 shadowBlur: 10,
-                shadowColor: 'rgba(0, 103, 255, 0.2)',
+                shadowColor: "rgba(0, 103, 255, 0.2)",
                 shadowOffsetX: 0,
                 shadowOffsetY: 8
               }
@@ -494,7 +521,7 @@ export default {
               length: 8, // 属性length控制线长
               lineStyle: {
                 // 属性lineStyle控制线条样式
-                color: '#fff'
+                color: "#fff"
               }
             },
             splitLine: {
@@ -502,7 +529,7 @@ export default {
               length: 8, // 属性length控制线长
               lineStyle: {
                 // 属性lineStyle（详见lineStyle）控制线条样式
-                color: 'rgba(255, 255, 255, 0.2)'
+                color: "rgba(255, 255, 255, 0.2)"
               }
             },
             pointer: {
@@ -512,7 +539,7 @@ export default {
             itemStyle: {
               // 指针阴影
               shadowBlur: 10,
-              shadowColor: 'rgba(0, 103, 255, 0.2)',
+              shadowColor: "rgba(0, 103, 255, 0.2)",
               shadowOffsetX: 0,
               shadowOffsetY: 8
             },
@@ -520,55 +547,59 @@ export default {
               // 刻度标签。
               show: true, // 是否显示标签,默认 true。
               distance: 5, // 标签与刻度线的距离,默认 5。
-              color: '#000', // 文字的颜色,默认 #fff。
+              color: "#000", // 文字的颜色,默认 #fff。
               fontSize: 12, // 文字的字体大小,默认 5。
               formatter: function(value) {
                 if (parseInt(value) === 0) {
-                  return ''
+                  return "";
                 } else if (parseInt(value) === 20) {
-                  return '差'
+                  return "差";
                 } else if (parseInt(value) === 40) {
-                  return '中'
+                  return "中";
                 } else if (parseInt(value) === 60) {
-                  return '良'
+                  return "良";
                 } else if (parseInt(value) === 80) {
-                  return '优'
+                  return "优";
                 } else if (parseInt(value) === 100) {
-                  return ''
+                  return "";
                 }
               } // 刻度标签的内容格式器，支持字符串模板和回调函数两种形式。 示例:// 使用字符串模板，模板变量为刻度默认标签 {value},如:formatter: '{value} kg'; // 使用函数模板，函数参数分别为刻度数值,如formatter: function (value) {return value + 'km/h';}
             },
             markPoint: {
               // 指针中心加一个小白点
-              symbol: 'circle',
+              symbol: "circle",
               symbolSize: 5,
               data: [
                 // 跟你的仪表盘的中心位置对应上，颜色可以和画板底色一样
                 {
-                  x: 'center',
-                  y: 'center',
+                  x: "center",
+                  y: "center",
                   itemStyle: {
-                    color: '#FFF'
+                    color: "#FFF"
                   }
                 }
               ]
             }
           }
         ]
-      })
+      });
     },
     handleClick(tab, event) {},
     next() {
-      if (this.active++ > 2) this.active = 0
+      if (this.active++ > 2) this.active = 0;
     },
     normal() {
-      this.dialogVisable = false
+      clearInterval(this.timer);
+
+      this.dialogVisable = false;
+      this.getalarmList();
     },
     unnormal() {
-      this.dialogVisable = false
+      clearInterval(this.timer);
+      this.dialogVisable = false;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -644,15 +675,15 @@ export default {
               background-color: pink;
             }
           }
-          // .zuo:hover {
-          //   border: 1px solid #1890ff;
-          // }
-          // .zhong:hover {
-          //   border: 1px solid #1890ff;
-          // }
-          // .you:hover {
-          //   border: 1px solid #1890ff;
-          // }
+          .zuo:hover {
+            border: 1px solid #1890ff;
+          }
+          .zhong:hover {
+            border: 1px solid #1890ff;
+          }
+          .you:hover {
+            border: 1px solid #1890ff;
+          }
           .zhong {
             float: left;
             width: 25%;
@@ -696,17 +727,17 @@ export default {
     }
   }
 }
-.shu{
-  width:2px;
-  height:23px;
-  background-color:#D9D9D9;
-  margin-left:8px;
+.shu {
+  width: 2px;
+  height: 23px;
+  background-color: #d9d9d9;
+  margin-left: 8px;
   margin-top: 2px;
 }
-.dizhi{
+.dizhi {
   width: 100%;
-  font-size:15px;
-  color:#000000;
+  font-size: 15px;
+  color: #000000;
   font-weight: 300;
   margin-left: 10px;
   margin-bottom: 10px;
@@ -748,6 +779,7 @@ export default {
   fill: #3e94f9;
 }
 .markerClickImg {
-  fill: #FF1A2E !important;
+  fill: #ff1a2e !important;
 }
 </style>
+
