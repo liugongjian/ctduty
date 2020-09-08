@@ -31,7 +31,7 @@
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ name }}</span>
+          <span class="user-name">{{ this.username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -86,13 +86,13 @@ export default {
         new_password: ''
       },
       isFullscreen: false,
-      // username: ''
+      username: ''
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
+      // 'name',
       'avatar',
       'device'
     ])
@@ -110,9 +110,10 @@ export default {
       }
     }
   },
-  // beforeCreate() {
-  //   this.username = localStorage.getItem('username')
-  // },
+  beforeCreate() {
+    this.username = Cookies.get('username')
+    console.log('username', this.username)
+  },
   mounted() {
     window.onresize = () => {
       // 全屏下监控是否按键了ESC

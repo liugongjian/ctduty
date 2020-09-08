@@ -102,7 +102,7 @@ NProgress.configure({
 
 
 // 9.7
-const whiteList = ['/login'] // no redirect whitelist
+// const whiteList = ['/login'] // no redirect whitelist
 
 // router.beforeEach((to, from, next) => {
 //   store.dispatch('GetUserInfo').then(res => { // 拉取user_info
