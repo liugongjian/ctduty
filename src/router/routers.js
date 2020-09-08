@@ -21,26 +21,6 @@ import Layout from '@/views/layout/Layout'
  **/
 export const constantRouterMap = [
   {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    hidden: false,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'dashboard',
-        meta: {
-          title: 'dashboard',
-          icon: 'dashboard',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
-  {
     path: 'addnewnotice',
     component: () => import('@/views/notice/addNewNotice'),
     meta: {
@@ -62,8 +42,7 @@ export const constantRouterMap = [
           title: 'eCloudWatch',
           icon: 'ecloudwatch',
           noCache: true,
-          affix: true,
-          roles: []
+          affix: true
         }
       }
     ]
@@ -83,7 +62,6 @@ export const constantRouterMap = [
           icon: 'alarmMessage',
           noCache: true,
           affix: true,
-          roles: []
         }
       }
     ]
@@ -108,13 +86,37 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
   {
+    path: '/dashboard',
+    component: Layout,
+    hidden: false,
+    // meta: {
+    //   roles: 'admin'
+    // },
+    children: [
+      {
+        path: '/dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
+        meta: {
+          title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true,
+          affix: true,
+          roles: 'admin'
+
+        }
+      }
+    ]
+  },
+  {
     path: '/sysMonitor',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     meta: {
       title: 'sysMonitor',
       icon: 'sysMonitor',
-      noCache: true
+      noCache: true,
+      roles: 'admin'
     },
     children: [
       {

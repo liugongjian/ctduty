@@ -206,6 +206,7 @@ router.beforeEach((to, from, next) => {
           store.dispatch('GenerateRoutes', {
             level
           }).then(() => { // 根据roles权限生成可访问的路由表
+            console.log('动态添加的路由', store.getters.addRouters)
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({
               ...to,
