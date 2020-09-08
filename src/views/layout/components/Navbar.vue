@@ -24,7 +24,7 @@
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
-      <el-dropdown class="noticeDrop" @command="handleCommand">
+      <el-dropdown placement="bottom" class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
           <div class="notice">
             <svg-icon icon-class="bells"></svg-icon>
@@ -57,40 +57,39 @@
           </el-dropdown-item>
         </el-dropdown-menu> -->
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="720px" @close="()=>{dialogVisable = false}">
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
         <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="noticeForm.title" disabled class="input_title" ></el-input>
+            <el-input v-model="noticeForm.title" disabled ></el-input>
           </el-form-item>
           <el-form-item label="创建者" prop="creatorId">
-            <el-input v-model="noticeForm.creatorId" disabled class="input_title" ></el-input>
-          </el-form-item>
-          <el-form-item label="类型" prop="type">
-            <el-radio-group v-model="noticeForm.type" disabled>
-              <el-radio :label="0">通知</el-radio>
-              <el-radio :label="1">公告</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="紧急程度" prop="state">
-            <el-radio-group v-model="noticeForm.state" disabled>
-              <el-radio :label="0">普通</el-radio>
-              <el-radio :label="1">紧急</el-radio>
-            </el-radio-group>
+            <el-input v-model="noticeForm.creatorId" disabled ></el-input>
           </el-form-item>
           <el-form-item>
-            <span>内容</span>
-            <quill-editor
-              ref="myQuillEditor"
-              v-model="noticeForm.content"
-              :options="editorOption"
-              disabled>
-            </quill-editor>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="类型" prop="type">
+                  <el-radio-group v-model="noticeForm.type" label="类型" disabled>
+                    <el-radio :label="0">通知</el-radio>
+                    <el-radio :label="1">公告</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="紧急程度" prop="state">
+                  <el-radio-group v-model="noticeForm.state" label="紧急程度" disabled>
+                    <el-radio :label="0">普通</el-radio>
+                    <el-radio :label="1">紧急</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form-item>
-
+          <el-form-item label="内容">
+            <span style="margin-left:50px;margin-top:10px;border-radius: 5px;display:block;border:2px dashed #ccc;width: 400px;height:150px;" v-html="noticeForm.content"></span>
+          </el-form-item>
           <el-form-item label="签名档">
-            <el-select v-model="noticeForm.signatureId" disabled placeholder="请选择">
-              <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-            </el-select>
+            <div>{{ noticeForm.signatureId }}</div>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -99,7 +98,7 @@
             @click="dialogConfirm()"
           >确 定</el-button>
         </div>
-      </el-form:model="form"></el-dialog>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -118,7 +117,7 @@ import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { updateUserPassWord, fetchUser } from '@/api/user'
 import { logout } from '@/api/login'
-import { notReadNotices } from '@/api/notice'
+import { notReadNotices, upReadNotices } from '@/api/notice'
 
 export default {
   components: {
@@ -180,8 +179,8 @@ export default {
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
       }
     },
-    notReadNoticeTotal(v) {
-      if (v) {
+    notReadNoticeTotal(v, oldV) {
+      if (v > oldV) {
         this.$message({
           type: 'info',
           message: `您有${v}条未读消息`
@@ -221,6 +220,11 @@ export default {
     })
   },
   methods: {
+    dialogConfirm() {
+      upReadNotices(this.noticeForm.id).then(res => {
+        this.dialogVisable = false
+      })
+    },
     handleCommand(command) {
       this.dialogVisable = true
       this.noticeForm = command

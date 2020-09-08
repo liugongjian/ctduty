@@ -48,11 +48,10 @@ export function notReadNotices(query) {
 }
 
 //  更新公告为已读状态
-export function upReadNotices(query) {
+export function upReadNotices(id) {
   return request({
-    url: 'http://host31.880508.xyz:10000/Notice/UpdateReadState',
-    method: 'post',
-    data: query
+    url: `http://host31.880508.xyz:10000/Notice/UpdateReadState?id=${id}`,
+    method: 'post'
   })
 }
 

@@ -115,7 +115,7 @@
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
                 <el-form :model="editForm" label-position="right" label-width="100px">
-                  <el-form-item label="负责人："><el-input v-model="editForm.inCharge.username" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人："><el-input v-model="editForm.inChargeId" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
@@ -179,7 +179,8 @@ export default {
         longitude: '',
         latitude: '',
         address: '',
-        url: ''
+        url: '',
+        name: ''
       },
       addrules: {
         creatorId: [
@@ -265,6 +266,7 @@ export default {
             item.classList.add('markerClickImg')
             that.highLightMarkerId = JSON.parse(item.attributes[1].nodeValue).id
             that.form = JSON.parse(item.attributes[1].nodeValue)
+            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
             that.editForm = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             that.showZwMes = false
@@ -335,6 +337,7 @@ export default {
         if (item.className === 'amap-marker-content') {
           item.childNodes[1].classList.add('markerClickImg')
           this.highLightMarkerId = JSON.parse(item.childNodes[1].attributes[1].nodeValue).id
+          this.center = [JSON.parse(item.childNodes[1].attributes[1].nodeValue).longitude, JSON.parse(item.childNodes[1].attributes[1].nodeValue).latitude]
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.editForm = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
@@ -355,7 +358,7 @@ export default {
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url,
-        name: this.editForm.inCharge.username
+        name: this.editForm.name
       }]
       editCamera(params).then(response => {
         this.$notify({
