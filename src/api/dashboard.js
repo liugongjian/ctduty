@@ -1,11 +1,11 @@
-import request from "@/utils/request";
-import qs from "qs";
+import request from '@/utils/request'
+import qs from 'qs'
 export function fetchAllData(query) {
   return request({
     url: `http://host31.880508.xyz:10000/Statis/getMonitorStatis`,
-    method: "post",
+    method: 'post',
     params: query
-  });
+  })
 }
 
 // http://host31.880508.xyz:10000/Statis/getRealTimeStatis?token=***
@@ -13,14 +13,14 @@ export function fetchAllData(query) {
 export function fetchNowInfo(query) {
   return request({
     url: `http://host31.880508.xyz:10000/Statis/getRealTimeStatis`,
-    method: "post",
+    method: 'post',
     params: query
-  });
+  })
 }
 export function fetchSinMan(query) {
   return request({
     url: `http://host31.880508.xyz:10000/Alert/getMyStatis`,
-    method: "post",
+    method: 'post',
     params: query
-  });
+  })
 }

@@ -119,7 +119,6 @@ export default {
     // },
     login() {
       this.$refs.loginForm.validate(valid => {
-        console.log(valid, 'valid')
         if (valid) {
           const redirect_url_front = this.$route.query.redirect_url
           const redirect = this.$route.query.redirect
@@ -135,7 +134,6 @@ export default {
           this.errorcodeMsg = ''
           loginGetToken(params).then((resp) => {
             if (resp.code === 0) {
-              console.log('跳转首页')
               // 把token存在cookie中
               Cookies.set('token', resp.body.data, {espires:1})
               // localStorage.setItem('token', resp.body.data)

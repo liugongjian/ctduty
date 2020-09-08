@@ -133,47 +133,47 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/sysMonitor',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'sysMonitor',
-      icon: 'sysMonitor',
-      noCache: true
-    },
-    children: [
-      {
-        path: 'notice',
-        component: () => import('@/views/sysMonitor/notice/index'),
-        name: 'noticeIndex',
-        meta: {
-          title: 'notice',
-          icon: 'notice',
-          noCache: false
-        }
-      },
-      {
-        path: 'onlineUser',
-        component: () => import('@/views/sysMonitor/onlineUser/index'),
-        name: 'onlineUserIndex',
-        meta: {
-          title: 'onlineUser',
-          icon: 'onlineUser',
-          noCache: false
-        }
-      },
-      {
-        path: 'pushSet',
-        component: () => import('@/views/sysMonitor/pushSet/index'),
-        name: 'pushSetIndex',
-        meta: {
-          title: 'pushSet',
-          icon: 'pushSet',
-          noCache: false
-        }
-      }
-    ]
-  },
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'sysMonitor',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'notice',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'onlineUser',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'pushSet',
+          noCache: false
+        }
+      }
+    ]
+  },
   // {
   //   path: '',
   //   name: 'defaultIndex',

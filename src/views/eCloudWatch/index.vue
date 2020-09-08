@@ -1,42 +1,25 @@
 <template>
   <div id="alarmInfo" class="alarmInfo">
     <div class="map">
-      <!-- <el-amap
-        :amap-manager="amapManager"
-        :center="center"
-        :events="events"
-        :zoom="zoom"
-        class="amap-demo"
-        vid="amapDemo"
-      ></el-amap>
-      <el-amap-marker
-        v-for="(marker, index) in markers"
-        :events="events"
-        :id="'point' + index"
-        :key="index"
-        :position="marker.position"
-        :vid="index"
-        :content="marker.content"
-        @click="markerClick"
-      ></el-amap-marker>-->
-      <el-amap
-        :amap-manager="amapManager"
-        :center="center"
-        :events="events"
-        :zoom="zoom"
-        class="amap-demo"
-        vid="amapDemo"
-      >
-        <el-amap-marker
-          v-for="(marker, index) in markers"
+        <el-amap
+          :amap-manager="amapManager"
+          :center="center"
           :events="events"
-          :id="'point' + index"
-          :key="index"
-          :position="marker.position"
-          :vid="index"
-          :content="marker.content"
-          @click="markerClick"
-        ></el-amap-marker>
+          :zoom="zoom"
+          class="amap-demo"
+          vid="amapDemo"
+        >
+          <el-amap-marker
+            v-for="(marker, index) in markers"
+            :events="events"
+            :id="'point'+index"
+            :key="index"
+            :position="marker.position"
+            :vid="index"
+            :content="marker.content"
+            @click="markerClick"
+          ></el-amap-marker>
+        </el-amap>
       </el-amap>
       <div class="warn">
         <div class="dispose">
@@ -48,40 +31,6 @@
         <div class="bottom" style="margin-top: 13px">
           <div class="todyW">今日告警</div>
           <div class="bottom-left">
-            <!-- <el-tabs v-model="activeName" type="border-card" @click="handleClick">
-              <el-tab-pane label="全部" name="first">
-                <div style="height: 100%;">
-                  <template>
-                    <div @click="showDialog">
-                      <el-steps :active="values" space="50px" align-center direction="vertical">
-                        <el-step
-                          v-for="(item,index) in stepsData"
-                          :title="item.title"
-                          :description="item.date"
-                          :key="index"
-                        ></el-step>
-                      </el-steps>
-                    </div>
-                  </template>
-                </div>
-              </el-tab-pane>
-              <el-tab-pane label="未处理" name="second">
-                <div style="height: 100%;">
-                  <template>
-                    <div @click="showDialog">
-                      <el-steps :active="values" space="50px" align-center direction="vertical">
-                        <el-step
-                          v-for="(item,index) in stepsData"
-                          :title="item.title"
-                          :description="item.date"
-                          :key="index"
-                        ></el-step>
-                      </el-steps>
-                    </div>
-                  </template>
-                </div>
-              </el-tab-pane>
-            </el-tabs>-->
             <div style="width:100%; height:35px">
               <div class="zuo" style="line-height: 32px" @click="allTab">
                 <p>全部</p>
@@ -256,11 +205,6 @@ export default {
       }
     };
   },
-  async created() {
-    await this.getalarmList();
-    await this.getCameraList();
-    await this.getPanelList();
-  },
   watch: {
     markers(v) {
       setTimeout(() => {
@@ -279,7 +223,7 @@ export default {
           index
         ) {
           if (index === 0) {
-            // item.classList.add("markerClickImg");
+            item.classList.add("markerClickImg");
             that.form = JSON.parse(item.attributes[1].nodeValue);
             that.form.createTime = moment(that.form.createTime).format(
               "YYYY-MM-DD HH:mm:SS"
@@ -290,6 +234,11 @@ export default {
       }
     }
   },
+  async created() {
+    await this.getalarmList();
+    await this.getCameraList();
+    await this.getPanelList();
+  },
   mounted() {
     const that = this;
     that.getPanel();
@@ -298,17 +247,6 @@ export default {
     };
     setTimeout(() => {
       this.formInfo = [
-        // {
-        //   id: "567",
-        //   inCharge: "safsafjk",
-        //   longitude: 110.034,
-        //   latitude: 34.56,
-        //   address: "嘻嘻",
-        //   name: "李四",
-        //   createTime: "2020-09-10",
-        //   url: "哈哈",
-        //   cl: 0
-        // }
       ];
       this.formInfo.forEach(item => {
         this.markers.push({
@@ -350,11 +288,9 @@ export default {
       };
       fetchAllCameraList(params).then(res => {
         this.formInfo = res.body.data;
-        // this.formInfo.forEach(item => {
-        //   item.createTime = moment(item.createTime).format(
-        //     "YYYY-MM-DD HH:mm:SS"
-        //   );
-        // });
+        /*  this.formInfo.forEach(item => {
+          item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
+        }) */
         this.markers = [];
         this.showZwMes = true;
         if (document.getElementsByClassName("markerClickImg").length) {
@@ -383,6 +319,8 @@ export default {
     },
     yTab() {
       this.showTabValue = "y";
+      this.yData = []
+      this.xData = []
       this.stepsData.forEach((item, index) => {
         if (+item.state === 0) {
           this.yData.push(item);
@@ -393,6 +331,8 @@ export default {
     },
     wTab() {
       this.showTabValue = "w";
+      this.yData = []
+      this.xData = []
       this.stepsData.forEach((item, index) => {
         if (+item.state === 0) {
           this.yData.push(item);
