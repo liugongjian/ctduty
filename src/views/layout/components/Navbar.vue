@@ -24,14 +24,26 @@
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
-      <div class="notice">
-        <svg-icon icon-class="notice"></svg-icon>
-        <span class="noticemsg">消息</span>
-      </div>
+      <el-dropdown class="noticeDrop">
+        <span class="el-dropdown-link">
+          <div class="notice">
+            <svg-icon icon-class="bells"></svg-icon>
+            <span class="noticemsg">消息</span>
+            <span class="noRcount">22</span>
+          </div>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>黄金糕</el-dropdown-item>
+          <el-dropdown-item>狮子头</el-dropdown-item>
+          <el-dropdown-item>螺蛳粉</el-dropdown-item>
+          <el-dropdown-item disabled>双皮奶</el-dropdown-item>
+          <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ this.username }}</span>
+          <span class="user-name">{{ username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -66,6 +78,7 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { updateUserPassWord, fetchUser } from '@/api/user'
+import { notReadNotices } from '@/api/notice'
 
 export default {
   components: {
@@ -100,7 +113,6 @@ export default {
   },
   watch: {
     isFullscreen(v) {
-      console.log(v)
       if (v) {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.add('texthighlight')
@@ -111,6 +123,19 @@ export default {
     }
   },
   mounted() {
+    clearInterval(noticeRTimer)
+    const noticeRTimer = setInterval(() => {
+      const params = {
+        index: 0,
+        size: 0,
+        total: 0
+      }
+      notReadNotices(params).then((res) => {
+        if (res.body.data.length > 0) {
+          console.log(res.body.data.length, 'res.body.data.length')
+        }
+      })
+    }, 5000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
@@ -122,9 +147,9 @@ export default {
       }
     }
     fetchUser().then((res) => {
-      this.username = res.body.data.username           
+      this.username = res.body.data.username
     }).catch(err => {
-      console.log(err)
+      return err
     })
   },
   methods: {
@@ -165,7 +190,7 @@ export default {
       Cookies.remove('userId')
       Cookies.remove('level')
       this.$router.push('/login')
-    },
+    }
     // toUpWord() {
     //   if (this.form.re_password === '') {
     //     this.$message.error('请输入新密码')
@@ -304,5 +329,26 @@ export default {
         font-weight: 700;
       }
     }
+  }
+  .notice {
+    position:relative;
+    color: #000;
+    .noRcount {
+      display: inline-block;
+      width: 20px;
+      height: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+      color: #fff;
+      position: absolute;
+      border-radius: 5px 5px 5px 0;
+      background-color: red;
+      top: 5px;
+      right: -20px;
+    }
+  }
+  .noticeDrop {
+    border: none !important;
   }
 </style>

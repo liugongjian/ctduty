@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      // 'permission_routers',
+      'permission_routers',
       'sidebar'
     ]),
     isCollapse() {
