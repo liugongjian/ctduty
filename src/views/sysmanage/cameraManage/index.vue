@@ -13,7 +13,7 @@
             <div class="pull-right">
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-                <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="100px">
+                <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="110px">
                   <el-form-item label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                   <el-form-item label="负责人：" prop="inChargeId">
