@@ -416,7 +416,7 @@ export default {
     height: 200px;
 }
 
-.select{
-  z-index: 1000;
-}
+.el-select-dropdown {
+    z-index: 9999999999999999999999999999999999 !important;
+  }
 </style>
