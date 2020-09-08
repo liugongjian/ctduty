@@ -88,24 +88,39 @@
                 </div>
                 <el-form v-else :model="form" label-position="right" label-width="85px">
                   <el-form-item label="摄像头ID：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
+                    <el-tooltip :content="form.id" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="负责人：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.username }}</div>
+                    <el-tooltip :content="form.inCharge.username" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.username }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="添加人：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
-                  </el-form-item>  <el-form-item label="经度信息：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2) }}</div>
+                    <el-tooltip :content="form.creator.username " placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
+                    </el-tooltip>
+                  </el-form-item>
+                  <el-form-item label="经度信息：">
+                    <el-tooltip :content="form.longitude" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2) }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="纬度信息：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
+                    <el-tooltip :content="form.latitude" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="地址：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
+                    <el-tooltip :content="form.address" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="添加时间：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
+                    <el-tooltip :content="form.createTime" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
                     <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
@@ -114,7 +129,9 @@
                       {{ form.isDeal ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
+                    <el-tooltip :content="form.dealSum" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <div>
                     <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
