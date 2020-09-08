@@ -65,7 +65,7 @@ import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
-import { updateUserPassWord } from '@/api/user'
+import { updateUserPassWord, fetchUser } from '@/api/user'
 
 export default {
   components: {
@@ -110,10 +110,6 @@ export default {
       }
     }
   },
-  beforeCreate() {
-    this.username = Cookies.get('username')
-    console.log('username', this.username)
-  },
   mounted() {
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
@@ -125,6 +121,11 @@ export default {
         this.isFullscreen = false
       }
     }
+    fetchUser().then((res) => {
+      this.username = res.body.data.username           
+    }).catch(err => {
+      console.log(err)
+    })
   },
   methods: {
     screenfull(e) {
