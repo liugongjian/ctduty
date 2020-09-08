@@ -83,14 +83,15 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      // if (res.code === 50000) {
-      //   logout().then(() => {
-      //     localStorage.removeItem('token')
-      //     this.$router.push('/login')
-      //   })
-        // Cookies.remove('token')
-        // Cookies.remove('userId')
-        // Cookies.remove('username')
+      if (res.code === 50000 && res.message === 'Token unauthorized.') {
+        console.log('token过期了')
+        logout().then(() => {
+          Cookies.remove('token')
+          Cookies.remove('userId')
+          Cookies.remove('username')
+          this.$router.push('/login')
+        })
+      }
         return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)
