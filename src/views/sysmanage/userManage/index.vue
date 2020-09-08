@@ -54,12 +54,12 @@
         </el-form-item>
         <el-form-item label="区域/部门">
           <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
-            <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="岗位">
           <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
-            <el-option v-for="item in this.postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
+            <el-option v-for="item in postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">

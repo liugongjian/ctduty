@@ -17,3 +17,10 @@ export function fetchNowInfo(query) {
     params: query
   })
 }
+export function fetchSinMan(query) {
+  return request({
+    url: `http://host31.880508.xyz:10000/Alert/getMyStatis`,
+    method: 'post',
+    params: query
+  })
+}

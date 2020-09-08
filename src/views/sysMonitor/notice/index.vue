@@ -61,6 +61,9 @@
         <el-form-item label="标题" prop="title">
           <el-input v-model="addNoticeForm.title" class="input_title" ></el-input>
         </el-form-item>
+        <el-form-item label="创建者" prop="creatorId">
+          <el-input v-model="addNoticeForm.creatorId" class="input_title" ></el-input>
+        </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="addNoticeForm.type">
             <el-radio :label="0">通知</el-radio>
@@ -163,11 +166,15 @@ import { fetchUserList } from '@/api/users'
 export default {
   data() {
     return {
+<<<<<<< HEAD
 
       searchName:'',
       searchUserIds:[],
+=======
+>>>>>>> 2bf809e2ac6de275690d27b5a153f33166aa0782
       addFormRules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        creatorId: [{ required: true, message: '创建者不能为空', trigger: 'blur' }],
         type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
         state: [{ required: true, message: '紧急程度不能为空', trigger: 'blur' }]
       },
@@ -205,7 +212,8 @@ export default {
         state: null,
         title: '',
         type: null,
-        signature_id: null
+        signature_id: null,
+        creatorId: ''
       },
       editNoticeForm: {},
       editNoticeDialogVisible: false,
@@ -293,7 +301,7 @@ export default {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addNoticeForm }]
-        query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
+        // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
           if (response.code !== 0) return this.$message.error('添加失败，请联系系统管理员')

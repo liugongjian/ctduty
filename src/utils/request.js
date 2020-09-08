@@ -88,9 +88,9 @@ service.interceptors.response.use(
       //     localStorage.removeItem('token')
       //     this.$router.push('/login')
       //   })
-        Cookies.remove('token')
-        Cookies.remove('userId')
-        Cookies.remove('username')
+        // Cookies.remove('token')
+        // Cookies.remove('userId')
+        // Cookies.remove('username')
         return Promise.reject(response.data)
       // }
       // return Promise.reject(response.data)

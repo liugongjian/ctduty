@@ -28,7 +28,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '532px'; margin-top: 20px;}">
+      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
         <div id="trend">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
@@ -103,26 +103,6 @@ export default {
   data() {
     return {
       screenWidth: '',
-      mapData: [{
-        cloudStorageType: 1,
-        deviceId: 46600,
-        deviceName: '何滩村三队（低端）',
-        deviceNum: '64050200001327272790',
-        devicePassword: 'zwdx@2020',
-        devicePublicIp: '',
-        devicePublicPort: '',
-        id: '4028855e740f8e0501740f8e0fcc0000',
-        installAddress: '渭南',
-        isOnline: 1,
-        isSupportPtz: 1,
-        latitude: '34.56608',
-        loginName: '',
-        loginPassword: '',
-        longitude: '110.08752',
-        parentNvrNum: '',
-        playbackProtocol: 0,
-        updateStateTimeString: '2020-08-21 13:46:28'
-      }],
       alarmTime: '',
       processed: '',
       offCamera: '',
@@ -277,9 +257,13 @@ export default {
         title: {
           show: false
         },
-        /* tooltip: {
-          formatter: '{a} <br/>{b} : {c}%'
-        }, */
+        tooltip: {
+          trigger: 'item',
+          formatter: function(params) {
+            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
+          },
+          extraCssText: 'height:50px; white-space:pre-wrap;'
+        },
         legend: {
           orient: '',
           left: 20,
@@ -297,7 +281,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          show: false
+          show: true
         },
         yAxis: {
           position: 'right',
@@ -305,19 +289,24 @@ export default {
             show: true
           },
           axisLine: {
-            show: false
+            show: true
           },
           splitLine: {
-            show: false
+            show: true
           },
           axisTick: {
-            show: false
+            show: true
           }
         },
         geo: {
           map: '渭南',
+          roam: true,
+          aspectScale: 1,
+          tooltip: {
+            formatter: '{a} <br/>{b} : {c}%'
+          },
           label: {
-            show: false,
+            show: true,
             normal: {
               show: 0,
               textStyle: {
@@ -333,10 +322,9 @@ export default {
             }
           },
           zoom: 1.2,
-          aspectScale: 1.2, // 长宽比
           z: 13,
           itemStyle: {
-            show: false,
+            show: true,
             normal: {
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
@@ -354,9 +342,8 @@ export default {
         series: [{
           tooltip: {
             trigger: 'item',
-            formatter: function(params) {
-              console.log(params)
-              return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
+            formatter: function(item) {
+              return item.name
             },
             extraCssText: 'height:50px; white-space:pre-wrap;'
           },
@@ -416,28 +403,10 @@ export default {
           }
         },
         {
-          name: '贵阳',
-          type: 'map',
-          mapType: 'guiyang',
-          zoom: 1.24, // 大小
-          aspectScale: 1.2, // 长宽比
-          silent: true, // 不显示hover等事件
-          z: 12,
-          itemStyle: {
-            normal: {
-              show: true,
-              areaColor: '#09277a'
-            },
-            emphasis: {
-              areaColor: '#09277a'
-            }
-          },
-          data: data
-        },
-        {
           name: '小于50',
           type: 'bar',
           color: '#17b885',
+          legendHoverLink: true,
           tooltip: {
             show: true
           }
@@ -446,12 +415,14 @@ export default {
           name: '小于100',
           type: 'bar',
           color: '#eec511',
+          legendHoverLink: true,
           tooltip: {
             show: true
           }}, {
           name: '大于100',
           type: 'bar',
           color: '#d04132',
+          legendHoverLink: true,
           tooltip: {
             show: true
           }}
@@ -952,6 +923,7 @@ export default {
   }
 }
 .dashboard-container {
+  height: 759px;
   padding: 0px 20px;
   background: #F0F2F5;
   #map {

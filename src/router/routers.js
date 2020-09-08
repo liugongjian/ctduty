@@ -19,15 +19,17 @@ import Layout from '@/views/layout/Layout'
     noCache: true                if true ,the page will no be cached(default is false)
   }
  **/
-export const constantRouterMap = [
+export const asyncRouterMap = [
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
-    redirect: '/dashboard',
     hidden: false,
+    meta: {
+      roles: 'admin'
+    },
     children: [
       {
-        path: 'dashboard',
+        path: '/dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'dashboard',
         meta: {
@@ -35,18 +37,10 @@ export const constantRouterMap = [
           icon: 'dashboard',
           noCache: true,
           affix: true,
-          roles: []
+          roles: 'admin'
         }
       }
     ]
-  },
-  {
-    path: 'addnewnotice',
-    component: () => import('@/views/notice/addNewNotice'),
-    meta: {
-      title: 'eCloudWatch',
-      icon: 'vsearch'
-    }
   },
   {
     path: '/ecloudwatch',
@@ -63,7 +57,6 @@ export const constantRouterMap = [
           icon: 'ecloudwatch',
           noCache: true,
           affix: true,
-          roles: []
         }
       }
     ]
@@ -83,7 +76,49 @@ export const constantRouterMap = [
           icon: 'alarmMessage',
           noCache: true,
           affix: true,
-          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'sysMonitor',
+      noCache: true,
+      roles: 'admin'
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'notice',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'onlineUser',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'pushSet',
+          noCache: false
         }
       }
     ]
@@ -131,116 +166,52 @@ export const constantRouterMap = [
         }
       }
     ]
-  },
-  {
-    path: '/sysMonitor',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'sysMonitor',
-      icon: 'sysMonitor',
-      noCache: true
-    },
-    children: [
-      {
-        path: 'notice',
-        component: () => import('@/views/sysMonitor/notice/index'),
-        name: 'noticeIndex',
-        meta: {
-          title: 'notice',
-          icon: 'notice',
-          noCache: false
-        }
-      },
-      {
-        path: 'onlineUser',
-        component: () => import('@/views/sysMonitor/onlineUser/index'),
-        name: 'onlineUserIndex',
-        meta: {
-          title: 'onlineUser',
-          icon: 'onlineUser',
-          noCache: false
-        }
-      },
-      {
-        path: 'pushSet',
-        component: () => import('@/views/sysMonitor/pushSet/index'),
-        name: 'pushSetIndex',
-        meta: {
-          title: 'pushSet',
-          icon: 'pushSet',
-          noCache: false
-        }
-      }
-    ]
-  },
-  // {
-  //   path: '',
-  //   name: 'defaultIndex',
-  //   redirect: '/login',
-  //   hidden: true
-  // },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/login/index'),
-    hidden: false
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: false
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/errorPage/401')
-    // hidden:true
   }
 ]
-
-export const asyncRouterMap = [
+export const constantRouterMap = [
   // {
-  //   path: '/sysmanage',
+  //   path: '/',
   //   component: Layout,
-  //   alwaysShow: true, // will always show the root menu
+  //   redirect: '/dashboard',
   //   hidden: false,
-  //   meta: {
-  //     title: 'sysmanage',
-  //     icon: 'sysmanage',
-  //     noCache: true,
-  //     roles: 'admin'
-  //   },
   //   children: [
   //     {
-  //       path: 'userManage',
-  //       component: () => import('@/views/sysmanage/userManage/index'),
-  //       name: 'sysUser',
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'dashboard',
   //       meta: {
-  //         title: 'userManage',
-  //         icon: 'userManage',
-  //         noCache: false
-  //       }
-  //     },
-  //     {
-  //       path: 'cameraManage',
-  //       component: () => import('@/views/sysmanage/cameraManage/index'),
-  //       name: 'sysCameraManage',
-  //       meta: {
-  //         title: 'cameraManage',
-  //         icon: 'camera',
-  //         noCache: false
-  //       }
-  //     },
-  //     {
-  //       path: 'areaManage',
-  //       component: () => import('@/views/sysmanage/areaManage/index'),
-  //       name: 'sysAreaManage',
-  //       meta: {
-  //         title: 'areaManage',
-  //         icon: 'area',
-  //         noCache: false
+  //         title: 'dashboard',
+  //         icon: 'dashboard',
+  //         noCache: true,
+  //         affix: true,
+  //         roles: []
   //       }
   //     }
   //   ]
   // },
+  {
+    path: 'addnewnotice',
+    component: () => import('@/views/notice/addNewNotice'),
+    meta: {
+      title: 'eCloudWatch',
+      icon: 'vsearch'
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/errorPage/401'),
+    hidden: true
+  }
 ]
+

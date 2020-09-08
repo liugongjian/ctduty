@@ -9,9 +9,7 @@
     "build:test": "cross-env NODE_ENV=production env_config=test node build/build.js",
     "build:prev": "cross-env NODE_ENV=production env_config=prev node build/build.js",
     "build:prod": "cross-env NODE_ENV=production env_config=prod node build/build.js",
-    "lint": "eslint --ext .js,.vue src",
     "test": "npm run lint",
-    "precommit": "lint-staged",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "lint-staged": {

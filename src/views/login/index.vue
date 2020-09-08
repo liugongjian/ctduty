@@ -119,7 +119,6 @@ export default {
     // },
     login() {
       this.$refs.loginForm.validate(valid => {
-        console.log(valid, 'valid')
         if (valid) {
           const redirect_url_front = this.$route.query.redirect_url
           const redirect = this.$route.query.redirect
@@ -135,16 +134,20 @@ export default {
           this.errorcodeMsg = ''
           loginGetToken(params).then((resp) => {
             if (resp.code === 0) {
-              console.log('跳转首页')
               // 把token存在cookie中
-              Cookies.set('token', resp.body.data, {espires:1})
+              Cookies.set('token', resp.body.data)
               // localStorage.setItem('token', resp.body.data)
-              this.$router.push('/dashboard')
               fetchUser().then((res) => {
-                console.log('res', res)
+                console.log('res level', res.body.data.permissions.level)
+                const level = res.body.data.permissions.level
                 // localStorage.setItem('userId', res.body.data.id)
-                Cookies.set('userId', res.body.data.id, {espires:1})                
-                Cookies.set('username', res.body.data.username, {espires:1})                
+                Cookies.set('userId', res.body.data.id)                
+                Cookies.set('username', res.body.data.username) 
+                if (level === 2 ) {
+                  this.$router.push('/ecloudwatch')
+                } else {
+                  this.$router.push('/dashboard')
+                }            
               }).catch(err => {
                 console.log(err)
               })
@@ -255,7 +258,10 @@ body {
     height: 420px;
     padding: 20px 20px;
     border-radius: 10px;
-    margin-left: 50%;
+    position: fixed;
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);
     flex-direction: column;
     justify-content: center;
     padding-bottom: 30px;
