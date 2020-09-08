@@ -89,72 +89,66 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/sysMonitor',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'sysMonitor',
-      icon: 'sysMonitor',
-      noCache: true
-    },
-    children: [
-      {
-        path: 'notice',
-        component: () => import('@/views/sysMonitor/notice/index'),
-        name: 'noticeIndex',
-        meta: {
-          title: 'notice',
-          icon: 'notice',
-          noCache: false
-        }
-      },
-      {
-        path: 'onlineUser',
-        component: () => import('@/views/sysMonitor/onlineUser/index'),
-        name: 'onlineUserIndex',
-        meta: {
-          title: 'onlineUser',
-          icon: 'onlineUser',
-          noCache: false
-        }
-      },
-      {
-        path: 'pushSet',
-        component: () => import('@/views/sysMonitor/pushSet/index'),
-        name: 'pushSetIndex',
-        meta: {
-          title: 'pushSet',
-          icon: 'pushSet',
-          noCache: false
-        }
-      }
-    ]
-  },
-  // {
-  //   path: '',
-  //   name: 'defaultIndex',
-  //   redirect: '/login',
-  //   hidden: true
-  // },
-  {
     path: '/login',
     name: 'login',
     component: () => import('@/views/login/index'),
-    hidden: false
+    hidden: true
   },
   {
     path: '/404',
     component: () => import('@/views/errorPage/404'),
-    hidden: false
+    hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/errorPage/401')
-    // hidden:true
+    component: () => import('@/views/errorPage/401'),
+    hidden: true
   }
 ]
 
 export const asyncRouterMap = [
+  {
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'sysMonitor',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'notice',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'onlineUser',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'pushSet',
+          noCache: false
+        }
+      }
+    ]
+  },
   {
     path: '/sysmanage',
     component: Layout,
@@ -198,5 +192,5 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  }
 ]
