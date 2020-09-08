@@ -28,7 +28,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
+      <el-col :span="6" style="{width: '50%'; height: '58.5vh'; margin-top: 20px;}">
         <div id="trend">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
@@ -127,7 +127,7 @@ export default {
       [].forEach.call(canvas, function(item) {
         // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 170px;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `position: absolute; width: 100%;height: 25vh;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
       })
     }
   },
@@ -170,9 +170,7 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        // { name: '华阴', value: 400 }
         this.trendText = res.body.data.alertAvgVariance > 0.8 ? '治安案件有所降低' : res.body.data.alertAvgVariance > 0.4 ? '治安案件保持稳定' : '治安案件有所增加'
-        // alertStatisByMonthList
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -358,7 +356,7 @@ export default {
           data: convertData(data),
           label: {
             normal: {
-              show: false,
+              show: true,
               textStyle: {
                 color: '#000'
               },
@@ -832,7 +830,6 @@ export default {
             symbol: 'arrow',
             period: 10, // 光点滑动速度
             symbolSize: 150
-            // symbol: img[0]
           },
           lineStyle: {
             normal: {
@@ -941,11 +938,11 @@ export default {
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 440px;
+    height: 58.5vh;
     background-color: #fff;
   }
   #trend{
-    height: 210px;
+    height: 28vh;
     background-color: #fff;
     .trendTitle {
       padding: 0;
@@ -962,23 +959,23 @@ export default {
     }
   }
   #dispose {
-    height: 210px;
+    height: 28vh;
     background-color: #fff;
     margin-top:20px;
   }
   #classify {
-    height: 210px;
+    height: 28vh;
     background-color: #fff;
   }
   #hotarea {
-    height: 210px;
+    height: 28vh;
     background-color: #fff;
   }
   #net {
-    height: 210px;
+    height: 28vh;
     background-color: #fff;
     #camerarate {
-      height: 170px;
+      height: 25vh;
       display: flex;
     }
   }
@@ -1093,7 +1090,7 @@ export default {
   }
 }
 .pie {
-  height: 170px;
+  height: 25vh;
   display: flex;
   overflow: hidden;
 }
@@ -1103,7 +1100,7 @@ export default {
   }
   .tagbox {
     width: 100%;
-    height: 170px;
+    height: 25vh;
     overflow: hidden;
     .tag-cloud {
     height: 100%;
@@ -1111,12 +1108,22 @@ export default {
   }
   .disbox {
     width: 100%;
-    height: 170px;
+    height: 25vh;
     #panel {
       height: 100%;
     }
     #panel>div {
       height: 100%;
     }
+  }
+  .el-col {
+    overflow: hidden !important;
+  }
+  .app-main {
+    background: #F0F2F5 !important;
+  }
+  .dashboard-container {
+    height: 100%;
+    background: #F0F2F5 !important;
   }
 </style>
