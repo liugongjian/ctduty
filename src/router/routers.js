@@ -103,7 +103,6 @@ export const asyncRouterMap = [
           noCache: true,
           affix: true,
           roles: 'admin'
-
         }
       }
     ]

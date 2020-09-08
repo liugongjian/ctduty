@@ -130,11 +130,11 @@ export default {
         size: 0,
         total: 0
       }
-      notReadNotices(params).then((res) => {
-        if (res.body.data.length > 0) {
-          console.log(res.body.data.length, 'res.body.data.length')
-        }
-      })
+      // notReadNotices(params).then((res) => {
+      //   if (res.body.data.length > 0) {
+      //     console.log(res.body.data.length, 'res.body.data.length')
+      //   }
+      // })
     }, 5000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC

@@ -190,6 +190,7 @@ const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   const token = Cookies.get('token')
+  console.log('导航守卫token', token)
   if (token) {
     // if is logged in, redirect to the home page
     if (to.path === '/login') {

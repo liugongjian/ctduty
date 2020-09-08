@@ -143,7 +143,7 @@ export default {
                 // localStorage.setItem('userId', res.body.data.id)
                 Cookies.set('userId', res.body.data.id)                
                 Cookies.set('username', res.body.data.username) 
-                if ( this.level === 2 ) {
+                if (level === 2 ) {
                   this.$router.push('/ecloudwatch')
                 } else {
                   this.$router.push('/dashboard')
