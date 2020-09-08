@@ -137,29 +137,42 @@ export default {
     },
     // 强退
     delAlert(code) {
+      const token = Cookies.get('token')
       this.code = code
-      this.$confirm('此操作将强制退出该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.forcedSure()
-      })
+      if (this.token === this.code) {
+        this.$confirm('此操作将强制退出本账号, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.lineLogout()
+        })
+      } else {
+        this.$confirm('此操作将强制退出该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.forcedSure()
+        })
+      }
+
     },
     forcedSure() {
       const token = Cookies.get('token')
       fetchOnlineLogout(this.code).then(response => {
-        console.log('强退成功')
         if (response.code === 0) {
           this.getList()
-        } else {
-          // console.log('hhhhhhhhh')
-          // Cookies.remove('userId')
-          // Cookies.remove('username')
-          // Cookies.remove('token')
-          this.$router.push('/login')
         }
       })
+    },
+    lineLogout() {
+      // window.location.href = `${process.env.LOGOUT_URL}`;
+      Cookies.remove('token')
+      Cookies.remove('username')
+      Cookies.remove('userId')
+      Cookies.remove('level')
+      this.$router.push('/login')
     },
     onSearch() {
       console.log('搜索')

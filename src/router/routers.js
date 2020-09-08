@@ -21,13 +21,36 @@ import Layout from '@/views/layout/Layout'
  **/
 export const asyncRouterMap = [
   {
+    path: '/dashboard',
+    component: Layout,
+    hidden: false,
+    // meta: {
+    //   roles: 'admin'
+    // },
+    children: [
+      {
+        path: '/dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
+        meta: {
+          title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true,
+          affix: true,
+          roles: 'admin'
+        }
+      }
+    ]
+  },
+  {
     path: '/sysMonitor',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     meta: {
       title: 'sysMonitor',
       icon: 'sysMonitor',
-      noCache: true
+      noCache: true,
+      roles: 'admin'
     },
     children: [
       {

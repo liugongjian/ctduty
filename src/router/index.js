@@ -190,6 +190,7 @@ const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
   const token = Cookies.get('token')
+  console.log('导航守卫token', token)
   if (token) {
     // if is logged in, redirect to the home page
     if (to.path === '/login') {
@@ -206,6 +207,7 @@ router.beforeEach((to, from, next) => {
           store.dispatch('GenerateRoutes', {
             level
           }).then(() => { // 根据roles权限生成可访问的路由表
+            console.log('动态添加的路由', store.getters.addRouters)
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({
               ...to,
