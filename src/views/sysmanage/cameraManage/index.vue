@@ -16,9 +16,17 @@
                 <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="100px">
                   <el-form-item label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人ID：" prop="inChargeId"><el-input v-model="dialogForm.inChargeId" placeholder="请输入负责人ID" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人：" prop="inChargeId">
+                    <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择负责人">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
-                  <el-form-item label="添加人：" prop="creatorId"><el-input v-model="dialogForm.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="添加人：" prop="creatorId">
+                    <el-select v-model="dialogForm.creatorId" :value="dialogForm.creatorId" placeholder="请选择添加人">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
@@ -83,9 +91,11 @@
                     <div style=" word-wrap: break-word">{{ form.id }}</div>
                   </el-form-item>
                   <el-form-item label="负责人：">
-                    <div style=" word-wrap: break-word">{{ form.inChargeId }}</div>
+                    <div style=" word-wrap: break-word">{{ form.inCharge.username }}</div>
                   </el-form-item>
-                  <el-form-item label="经度信息：">
+                  <el-form-item label="添加人：">
+                    <div style=" word-wrap: break-word">{{ form.creator.username }}</div>
+                  </el-form-item>  <el-form-item label="经度信息：">
                     <div style=" word-wrap: break-word">{{ form.longitude.toFixed(2) }}</div>
                   </el-form-item>
                   <el-form-item label="纬度信息：">
@@ -93,9 +103,6 @@
                   </el-form-item>
                   <el-form-item label="地址：">
                     <div style=" word-wrap: break-word">{{ form.address }}</div>
-                  </el-form-item>
-                  <el-form-item label="添加人：">
-                    <div style=" word-wrap: break-word">{{ form.creatorId }}</div>
                   </el-form-item>
                   <el-form-item label="添加时间：">
                     <div style=" word-wrap: break-word">{{ form.createTime }}</div>
@@ -115,7 +122,17 @@
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
                 <el-form :model="editForm" label-position="right" label-width="100px">
-                  <el-form-item label="负责人："><el-input v-model="editForm.inChargeId" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="负责人：">
+                    <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="添加人：">
+                    <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
@@ -154,11 +171,13 @@ import EllipsisTooltip from '@/components/EllipsisTooltip'
 import {
   fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
+import { fetchUserList } from '@/api/users'
 const amapManager = new VueAMap.AMapManager()
 export default {
   components: { CameraList, EllipsisTooltip },
   data() {
     return {
+      userList: [],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -175,12 +194,13 @@ export default {
       editVisable: false,
       editForm: {
         id: '',
-        inCharge: '',
+        inChargeId: '',
         longitude: '',
         latitude: '',
         address: '',
         url: '',
-        name: ''
+        name: '',
+        creatorId: ''
       },
       addrules: {
         creatorId: [
@@ -261,8 +281,7 @@ export default {
       const that = this
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
-          console.log(item.classList, index, 'index')
-          if (index === 0) {
+          if (index === 0 && !that.highLightMarkerId) {
             item.classList.add('markerClickImg')
             that.highLightMarkerId = JSON.parse(item.attributes[1].nodeValue).id
             that.form = JSON.parse(item.attributes[1].nodeValue)
@@ -270,25 +289,53 @@ export default {
             that.editForm = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             that.showZwMes = false
+          } else {
+            console.log('else')
+            setTimeout(() => {
+              const markers = document.getElementsByClassName('markerImg');
+              [].forEach.call(markers, (item) => {
+                console.log(JSON.parse(item.attributes[1].nodeValue).id === that.highLightMarkerId, '???')
+                if (JSON.parse(item.attributes[1].nodeValue).id === that.highLightMarkerId) {
+                  that.form = JSON.parse(item.attributes[1].nodeValue)
+                  that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+                  that.editForm = JSON.parse(item.attributes[1].nodeValue)
+                  that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+                  that.showZwMes = false
+                  item.classList.add('markerClickImg')
+                }
+              })
+            }, 200)
           }
         })
       }
     }
   },
   created() {
+    this.getUserList()
     this.getList()
-    console.log('creted')
   },
   mounted() {
-    console.log(this.form.id)
   },
   methods: {
+    getUserList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 9999999
+        },
+        params: {}
+      }
+      fetchUserList(query).then(response => {
+        if (response.code !== 0) return
+        this.userList = response.body.data
+      })
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           alert('submit!')
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -328,7 +375,6 @@ export default {
       }
       const marImgs = document.getElementsByClassName('markerImg')
       if (this.formInline.typeValue === 'map') {
-        console.log(marImgs, 'marImgs');
         [].forEach.call(marImgs, function(item) {
           item.classList.remove('markerClickImg')
         })
@@ -358,7 +404,8 @@ export default {
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url,
-        name: this.editForm.name
+        name: this.editForm.name,
+        creatorId: this.editForm.creatorId
       }]
       editCamera(params).then(response => {
         this.$notify({
@@ -367,8 +414,16 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.highLightMarkerId = this.editForm.id
         this.getList()
-        this.hasMarker = true
+        setTimeout(() => {
+          const markers = document.getElementsByClassName('markerImg');
+          [].forEach.call(markers, (item) => {
+            if (JSON.parse(item.attributes[1].nodeValue).id === this.highLightMarkerId) {
+              item.classList.add('markerClickImg')
+            }
+          })
+        }, 200)
         this.editVisable = false
       }).catch(() => {
         this.$notify({
@@ -449,7 +504,6 @@ export default {
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
-        console.log(valid, 'valid')
         if (!valid) return
         const params = [
           this.dialogForm
@@ -487,10 +541,8 @@ export default {
       })
     },
     positionClick(i) {
-      console.log(i)
     },
     markerClick() {
-      console.log('哈哈哈')
     },
     getList() {
       const params = {

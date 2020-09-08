@@ -13,7 +13,7 @@
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
               <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择岗位">
+                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择岗位">
                   <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
                   </el-option>
                 </el-select>
@@ -264,7 +264,8 @@ export default {
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url,
-        name: this.editForm.name
+        name: this.editForm.name,
+        creatorId: this.editForm.creatorId
       }]
       editCamera(params).then(response => {
         this.$notify({
