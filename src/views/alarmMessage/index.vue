@@ -163,7 +163,7 @@
   // import 'element-ui/lib/theme-chalk/index.css'
   import moment from 'moment'
   import { mapGetters } from 'vuex'
-  import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState, getAllTotal} from '@/api/alarm'
+  import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState, getAllTotal } from '@/api/alarm'
   export default {
     components: { Pagination },
   
@@ -252,7 +252,11 @@
       const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
       const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
+      const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      this.getTimeAllTotal(s1,e1,h)
       this.getList(s, e, h)
+      
      
     },
     methods: {
@@ -314,10 +318,17 @@
       const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
       this.getList(s, e, h)
+
+      const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      this.getTimeAllTotal(s1,e1,h)
         
       },
       onSearch() {
+        
         this.tabsArr = this.tabsDateArr
+        // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
+        this.value1=[this.startDate,this.endDate]
         if(this.tabsArr.indexOf(this.currentTab)===-1){
           this.defaultTab=this.tabsArr[0]
           this.currentTab=this.defaultTab
@@ -422,6 +433,8 @@
       //     this.getList(s, e, h)
       //   })
       // },
+
+      //获取多天告警总数
       getTimeAllTotal(s,e,h){
         let oper
         if (h === 'settled') {
@@ -437,13 +450,15 @@
           null: oper
         }
         console.log(params,'paramsssssssssssss')
-  
+
         getAllTotal(params).then(response => {
+          console.log(response,'response。。。。。')
           this.allTotal = response.body.data
           this.listLoading = false
           console.log(this.allTotal,'allnnnnnnnnnnnnnnnnnnn')
         })
       },
+
       // 获取列表数据
       getList(s, e, h) {
         let oper
