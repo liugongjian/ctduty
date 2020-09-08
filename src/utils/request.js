@@ -58,6 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    console.log('request的返回信息', res)
     if (res.code == 50000) {
       // Message({
       //   message: res.msg,

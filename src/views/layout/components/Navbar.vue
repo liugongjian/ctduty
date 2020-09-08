@@ -20,7 +20,7 @@
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
       </div>
-      <div class="full">
+      <div class="full" v-if="level < 2">
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
@@ -157,7 +157,8 @@ export default {
           departmentId: 3275699862611972,
           department: '华山镇派出所'
         }
-      ]
+      ],
+      level: Cookies.get('level')
     }
   },
   computed: {
