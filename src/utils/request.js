@@ -3,7 +3,7 @@ import {
   Message
 } from 'element-ui'
 import Cookies from 'js-cookie'
-import {logout} from '../api/login'
+import {logout, heartbeat} from '../api/login'
 // import {
 //   getToken,
 //   getPrefix
@@ -84,7 +84,7 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      if (res.code === 50000 && res.message === 'Token unauthorized.') {
+      if (res.code === 50000 && res.message === 'Token unauthorized.' || res.code === 50000 && res.message === 'Token not found.') {
         console.log('token过期了')
         logout().then(() => {
           Cookies.remove('token')

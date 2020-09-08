@@ -12,6 +12,14 @@ export function loginGetToken(data) {
   })
 }
 
+// 登录心跳
+export function heartbeat() {
+  return request({
+    url: 'http://host31.880508.xyz:10000/Login/heartbeat',
+    method: 'get'
+  })
+}
+
 // login ldap
 export function loginLdapByUsername(data) {
   return request({
