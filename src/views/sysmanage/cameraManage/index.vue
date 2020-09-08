@@ -433,7 +433,8 @@ export default {
     getdata(v, v2) {
       this.formInline.typeValue = v
       setTimeout(() => {
-        [].forEach.call(document.getElementsByClassName('markerImg'), function(item) {
+        const markers = document.getElementsByClassName('markerImg');
+        [].forEach.call(markers, (item) => {
           if (JSON.parse(item.attributes[1].nodeValue).id === this.highLightMarkerId) {
             item.classList.add('markerClickImg')
           }

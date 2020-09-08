@@ -19,6 +19,92 @@ import Layout from '@/views/layout/Layout'
     noCache: true                if true ,the page will no be cached(default is false)
   }
  **/
+export const constantRouterMap = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    hidden: false,
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
+        meta: {
+          title: 'dashboard',
+          icon: 'dashboard',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: 'addnewnotice',
+    component: () => import('@/views/notice/addNewNotice'),
+    meta: {
+      title: 'eCloudWatch',
+      icon: 'vsearch'
+    }
+  },
+  {
+    path: '/ecloudwatch',
+    component: Layout,
+    redirect: '/ecloudwatch',
+    hidden: false,
+    children: [
+      {
+        path: '/ecloudwatch',
+        component: () => import('@/views/eCloudWatch/index'),
+        name: 'eCloudWatch',
+        meta: {
+          title: 'eCloudWatch',
+          icon: 'ecloudwatch',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    redirect: '/alarmMessage',
+    hidden: false,
+    children: [
+      {
+        path: '/alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'alarmMessage',
+          noCache: true,
+          affix: true,
+          roles: []
+        }
+      }
+    ]
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/errorPage/401'),
+    hidden: true
+  }
+]
 export const asyncRouterMap = [
   {
     path: '/dashboard',
@@ -128,92 +214,6 @@ export const asyncRouterMap = [
         }
       }
     ]
-  }
-]
-export const constantRouterMap = [
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    hidden: false,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'dashboard',
-        meta: {
-          title: 'dashboard',
-          icon: 'dashboard',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
-  {
-    path: 'addnewnotice',
-    component: () => import('@/views/notice/addNewNotice'),
-    meta: {
-      title: 'eCloudWatch',
-      icon: 'vsearch'
-    }
-  },
-  {
-    path: '/ecloudwatch',
-    component: Layout,
-    redirect: '/ecloudwatch',
-    hidden: false,
-    children: [
-      {
-        path: '/ecloudwatch',
-        component: () => import('@/views/eCloudWatch/index'),
-        name: 'eCloudWatch',
-        meta: {
-          title: 'eCloudWatch',
-          icon: 'ecloudwatch',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
-  {
-    path: '/alarmMessage',
-    component: Layout,
-    redirect: '/alarmMessage',
-    hidden: false,
-    children: [
-      {
-        path: '/alarmMessage',
-        component: () => import('@/views/alarmMessage/index'),
-        name: 'alarmMessageIndex',
-        meta: {
-          title: 'alarmMessage',
-          icon: 'alarmMessage',
-          noCache: true,
-          affix: true,
-          roles: []
-        }
-      }
-    ]
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/errorPage/401'),
-    hidden: true
   }
 ]
 

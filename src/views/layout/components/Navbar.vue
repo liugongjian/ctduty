@@ -57,22 +57,40 @@
           </el-dropdown-item>
         </el-dropdown-menu> -->
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
-        <el-form :model="noticeForm" label-position="right" label-width="85px">
-          <el-form-item label="标题：">
-            <div style=" word-wrap: break-word">{{ noticeForm.title }}</div>
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="720px" @close="()=>{dialogVisable = false}">
+        <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm">
+          <el-form-item label="标题" prop="title">
+            <el-input v-model="noticeForm.title" disabled class="input_title" ></el-input>
           </el-form-item>
-          <el-form-item label="创建者：">
-            <div style=" word-wrap: break-word">{{ noticeForm.creatorId }}</div>
+          <el-form-item label="创建者" prop="creatorId">
+            <el-input v-model="noticeForm.creatorId" disabled class="input_title" ></el-input>
           </el-form-item>
-          <el-form-item label="类型：">
-            <div style=" word-wrap: break-word">{{ noticeForm.type }}</div>
+          <el-form-item label="类型" prop="type">
+            <el-radio-group v-model="noticeForm.type" disabled>
+              <el-radio :label="0">通知</el-radio>
+              <el-radio :label="1">公告</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="紧急程度：">
-            <div style=" word-wrap: break-word">{{ noticeForm.state }}</div>
+          <el-form-item label="紧急程度" prop="state">
+            <el-radio-group v-model="noticeForm.state" disabled>
+              <el-radio :label="0">普通</el-radio>
+              <el-radio :label="1">紧急</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="公告内容：" style="width:300px;height:50px;">
-            <div style=" word-wrap: break-word" v-html="noticeForm.content"></div>
+          <el-form-item>
+            <span>内容</span>
+            <quill-editor
+              ref="myQuillEditor"
+              v-model="noticeForm.content"
+              :options="editorOption"
+              disabled>
+            </quill-editor>
+          </el-form-item>
+
+          <el-form-item label="签名档">
+            <el-select v-model="noticeForm.signatureId" disabled placeholder="请选择">
+              <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -80,7 +98,6 @@
             type="primary"
             @click="dialogConfirm()"
           >确 定</el-button>
-          <el-button @click="()=>{dialogVisable = false}">取 消</el-button>
         </div>
       </el-form:model="form"></el-dialog>
     </div>
@@ -126,7 +143,21 @@ export default {
       isFullscreen: false,
       username: '',
       notReadNotice: [],
-      notReadNoticeTotal: ''
+      notReadNoticeTotal: '',
+      departmentInfo: [
+        {
+          departmentId: 3275699862611970,
+          department: '华阴市公安支队'
+        },
+        {
+          departmentId: 3275699862611971,
+          department: '孟塬派出所'
+        },
+        {
+          departmentId: 3275699862611972,
+          department: '华山镇派出所'
+        }
+      ]
     }
   },
   computed: {
@@ -150,6 +181,7 @@ export default {
     },
     notReadNoticeTotal(v) {
       if (v) {
+        clearInterval(this.timer)
         this.$message({
           type: 'info',
           message: `您有${v}条未读消息`
