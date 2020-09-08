@@ -288,3 +288,15 @@ code {
  .markerClickImg {
    fill: #E6A23C !important;
  }
+ .deal {
+  fill: #44bd32 !important;
+}
+.untreated{
+  fill: #E6A23C  !important;
+}
+ .v-modal{
+    z-index: 999  !important;
+  }
+  .el-dialog__wrapper {
+    z-index: 99999999999999999999999999999 !important;
+  }

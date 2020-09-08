@@ -24,14 +24,22 @@
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
-      <div class="notice">
-        <svg-icon icon-class="notice"></svg-icon>
-        <span class="noticemsg">消息</span>
-      </div>
+      <el-dropdown class="noticeDrop" @command="handleCommand">
+        <span class="el-dropdown-link">
+          <div class="notice">
+            <svg-icon icon-class="bells"></svg-icon>
+            <span class="noticemsg">消息</span>
+            <span :style="{display:notReadNoticeTotal?'block':'none'}" class="noRcount">{{ notReadNoticeTotal }}</span>
+          </div>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-for="item in notReadNotice" :key="item.id" :command="item">{{ '公告: '+ item.title }}</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ name }}</span>
+          <span class="user-name">{{ username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -49,6 +57,32 @@
           </el-dropdown-item>
         </el-dropdown-menu> -->
       </el-dropdown>
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
+        <el-form :model="noticeForm" label-position="right" label-width="85px">
+          <el-form-item label="标题：">
+            <div style=" word-wrap: break-word">{{ noticeForm.title }}</div>
+          </el-form-item>
+          <el-form-item label="创建者：">
+            <div style=" word-wrap: break-word">{{ noticeForm.creatorId }}</div>
+          </el-form-item>
+          <el-form-item label="类型：">
+            <div style=" word-wrap: break-word">{{ noticeForm.type }}</div>
+          </el-form-item>
+          <el-form-item label="紧急程度：">
+            <div style=" word-wrap: break-word">{{ noticeForm.state }}</div>
+          </el-form-item>
+          <el-form-item label="公告内容：" style="width:300px;height:50px;">
+            <div style=" word-wrap: break-word" v-html="noticeForm.content"></div>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="dialogConfirm()"
+          >确 定</el-button>
+          <el-button @click="()=>{dialogVisable = false}">取 消</el-button>
+        </div>
+      </el-form:model="form"></el-dialog>
     </div>
   </div>
 </template>
@@ -65,7 +99,8 @@ import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
-import { updateUserPassWord } from '@/api/user'
+import { updateUserPassWord, fetchUser } from '@/api/user'
+import { notReadNotices } from '@/api/notice'
 
 export default {
   components: {
@@ -80,19 +115,24 @@ export default {
   data() {
     return {
       minLogo,
+      dialogVisable: false,
+      timer: '',
+      noticeForm: {},
       dialogFormVisible: false,
       form: {
         re_password: '',
         new_password: ''
       },
       isFullscreen: false,
-      // username: ''
+      username: '',
+      notReadNotice: [],
+      notReadNoticeTotal: ''
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
+      // 'name',
       'avatar',
       'device'
     ])
@@ -100,7 +140,6 @@ export default {
   },
   watch: {
     isFullscreen(v) {
-      console.log(v)
       if (v) {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.add('texthighlight')
@@ -108,12 +147,31 @@ export default {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.remove('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
       }
+    },
+    notReadNoticeTotal(v) {
+      if (v) {
+        this.$message({
+          type: 'info',
+          message: `您有${v}条未读消息`
+        })
+      }
     }
   },
-  // beforeCreate() {
-  //   this.username = localStorage.getItem('username')
-  // },
   mounted() {
+    clearInterval(this.timer)
+    this.timer = setInterval(() => {
+      const params = {
+        index: 1,
+        size: 10000,
+        total: 0
+      }
+      notReadNotices(params).then((res) => {
+        if (res.body.data.length > 0) {
+          this.notReadNoticeTotal = res.body.page.total
+          this.notReadNotice = res.body.data
+        }
+      })
+    }, 5000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
@@ -124,13 +182,21 @@ export default {
         this.isFullscreen = false
       }
     }
+    fetchUser().then((res) => {
+      this.username = res.body.data.username
+    }).catch(err => {
+      return err
+    })
   },
   methods: {
+    handleCommand(command) {
+      this.dialogVisable = true
+      this.noticeForm = command
+    },
     screenfull(e) {
       e.path.forEach(item => {
         if (item.className === 'fullscreen') {
           item.childNodes[0].classList.toggle('highlight')
-          // item.childNodes[1].classList.toggle('texthighlight')
         }
       })
       screenfull.toggle()
@@ -163,7 +229,7 @@ export default {
       Cookies.remove('userId')
       Cookies.remove('level')
       this.$router.push('/login')
-    },
+    }
     // toUpWord() {
     //   if (this.form.re_password === '') {
     //     this.$message.error('请输入新密码')
@@ -303,4 +369,26 @@ export default {
       }
     }
   }
+  .notice {
+    position:relative;
+    color: #000;
+    .noRcount {
+      display: inline-block;
+      width: 20px;
+      height: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+      color: #fff;
+      position: absolute;
+      border-radius: 5px 5px 5px 0;
+      background-color: red;
+      top: 5px;
+      right: -20px;
+    }
+  }
+  .noticeDrop {
+    border: none !important;
+  }
+
 </style>

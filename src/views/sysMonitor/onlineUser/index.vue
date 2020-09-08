@@ -76,7 +76,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'" style="text-align: center">
           <template slot-scope="scope">
-            <el-button class="forced" type="warning" size="small" @click="forcedExit(scope.row.code)">{{ $t('login.logout') }}</el-button>
+            <el-button class="forced" type="warning" size="small" @click="delAlert(scope.row.code)">{{ $t('login.logout') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +113,9 @@ export default {
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 20,
-      renderTime
+      renderTime,
+      dialogVisible: false,
+      code: ''
     }
   },
   // watch: {
@@ -134,16 +136,43 @@ export default {
       this.dialogVisable = false
     },
     // 强退
-    forcedExit(code) {
+    delAlert(code) {
+      const token = Cookies.get('token')
+      this.code = code
+      if (this.token === this.code) {
+        this.$confirm('此操作将强制退出本账号, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.lineLogout()
+        })
+      } else {
+        this.$confirm('此操作将强制退出该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.forcedSure()
+        })
+      }
+
+    },
+    forcedSure() {
       const token = Cookies.get('token')
       fetchOnlineLogout(this.code).then(response => {
-        console.log('强退成功')
         if (response.code === 0) {
           this.getList()
-        } else if (response.code === 50000) {
-          this.$router.push('/login')
         }
       })
+    },
+    lineLogout() {
+      // window.location.href = `${process.env.LOGOUT_URL}`;
+      Cookies.remove('token')
+      Cookies.remove('username')
+      Cookies.remove('userId')
+      Cookies.remove('level')
+      this.$router.push('/login')
     },
     onSearch() {
       console.log('搜索')
@@ -192,8 +221,6 @@ export default {
     getList() {
       fetchOnlineList().then(response => {
         this.tableData = []
-        console.log('response', response)
-        console.log('this tabledata', this.tableData)
         for (let i = 0; i < response.body.data.length; i++) {
           this.code = response.body.data[i].code
           this.tableData.push(Object.assign(response.body.data[i]))
