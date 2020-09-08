@@ -859,6 +859,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main-container {
+  background-color: #F0F2F5;
+  }
 #panel {
   overflow: hidden;
   position:relative !important;

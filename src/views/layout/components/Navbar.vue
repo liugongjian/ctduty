@@ -48,7 +48,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
-        <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm" label-width="70px" label-position="right">
+        <el-form :model="noticeForm" label-width="70px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
           </el-form-item>
@@ -65,7 +65,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label-width="70px" label="紧急程度" prop="state">
-                  <el-radio v-if="state">紧急</el-radio>
+                  <el-radio v-if="noticeForm.state">紧急</el-radio>
                   <el-radio v-else>普通</el-radio>
                 </el-form-item>
               </el-col>
