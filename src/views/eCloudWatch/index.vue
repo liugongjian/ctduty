@@ -51,7 +51,7 @@
 
             <div class="zuoContent" style="width:100%; height:100%">
               <div v-if="showTabValue === 'all'">
-                <div :data="stepsData" @click="showDialog">
+                <div :data="stepsData">
                   <template>
                     <div
                       v-for="(item, index) in stepsData"
@@ -145,22 +145,22 @@
             width="700px"
             @close="closeDialog"
           >
-            <el-form label-position="right" label-width="100px">
+            <el-form :model="dataDia" label-position="right" label-width="100px">
               <el-form-item :formatter="formatTime" label="流量状态:">
-                <span style="width: 300px;">{{ item.camera.address }}</span>
+                <span style="width: 300px;">{{ dataDia.camera.address }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                  formatTime(item.camera.createTime)
+                  formatTime(dataDia.camera.createTime)
                   }}
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-                <el-image :src="item.image" style="width:350px; height:200px;"></el-image>
+                <el-image :src="dataDia.image" style="width:350px; height:200px;"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
-                <el-image :src="item.imageCut" style="width:150px; height:150px;"></el-image>
+                <el-image :src="dataDia.imageCut" style="width:150px; height:150px;"></el-image>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -394,19 +394,19 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 30,
+          size: 40,
           total: 0
         },
         params: [
           // {
-          //   field: 'createTime',
-          //   operator: 'BETWEEN',
-          //   value: { start: '2020-09-05 00:00:00', end: '2020-09-10 23:59:59' }
+          //   field: "createTime",
+          //   operator: "BETWEEN",
+          //   value: { start: "2020-09-05 00:00:00", end: "2020-09-10 23:59:59" }
           // },
           // {
-          //   field: 'handlerId',
-          //   operator: 'NULL',
-          //   value: 'null'
+          //   field: "handlerId",
+          //   operator: "NULL",
+          //   value: "null"
           // }
         ]
       };
@@ -467,6 +467,7 @@ export default {
       this.dialogVisable = false;
     },
     showDialog(item) {
+      // console.log(item,'111111111111');
       this.dataDia = item;
       this.dialogVisable = true;
     },
