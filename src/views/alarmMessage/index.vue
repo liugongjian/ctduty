@@ -84,7 +84,7 @@
               :label="item"
               :name="item">
               <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
-              <br></br>
+              <br>
               <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
                 <el-table-column
                   width="55">
