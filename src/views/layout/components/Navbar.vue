@@ -182,7 +182,6 @@ export default {
     },
     notReadNoticeTotal(v) {
       if (v) {
-        clearInterval(this.timer)
         this.$message({
           type: 'info',
           message: `您有${v}条未读消息`
