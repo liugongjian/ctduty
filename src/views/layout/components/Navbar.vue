@@ -24,20 +24,16 @@
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
       </div>
-      <el-dropdown class="noticeDrop">
+      <el-dropdown class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
           <div class="notice">
             <svg-icon icon-class="bells"></svg-icon>
             <span class="noticemsg">消息</span>
-            <span class="noRcount">22</span>
+            <span :style="{display:notReadNoticeTotal?'block':'none'}" class="noRcount">{{ notReadNoticeTotal }}</span>
           </div>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>黄金糕</el-dropdown-item>
-          <el-dropdown-item>狮子头</el-dropdown-item>
-          <el-dropdown-item>螺蛳粉</el-dropdown-item>
-          <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-          <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
+          <el-dropdown-item v-for="item in notReadNotice" :key="item.id" :command="item">{{ '公告: '+ item.title }}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
@@ -61,6 +57,32 @@
           </el-dropdown-item>
         </el-dropdown-menu> -->
       </el-dropdown>
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
+        <el-form :model="noticeForm" label-position="right" label-width="85px">
+          <el-form-item label="标题：">
+            <div style=" word-wrap: break-word">{{ noticeForm.title }}</div>
+          </el-form-item>
+          <el-form-item label="创建者：">
+            <div style=" word-wrap: break-word">{{ noticeForm.creatorId }}</div>
+          </el-form-item>
+          <el-form-item label="类型：">
+            <div style=" word-wrap: break-word">{{ noticeForm.type }}</div>
+          </el-form-item>
+          <el-form-item label="紧急程度：">
+            <div style=" word-wrap: break-word">{{ noticeForm.state }}</div>
+          </el-form-item>
+          <el-form-item label="公告内容：" style="width:300px;height:50px;">
+            <div style=" word-wrap: break-word" v-html="noticeForm.content"></div>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="dialogConfirm()"
+          >确 定</el-button>
+          <el-button @click="()=>{dialogVisable = false}">取 消</el-button>
+        </div>
+      </el-form:model="form"></el-dialog>
     </div>
   </div>
 </template>
@@ -93,13 +115,18 @@ export default {
   data() {
     return {
       minLogo,
+      dialogVisable: false,
+      timer: '',
+      noticeForm: {},
       dialogFormVisible: false,
       form: {
         re_password: '',
         new_password: ''
       },
       isFullscreen: false,
-      username: ''
+      username: '',
+      notReadNotice: [],
+      notReadNoticeTotal: ''
     }
   },
   computed: {
@@ -120,19 +147,28 @@ export default {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.remove('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
       }
+    },
+    notReadNoticeTotal(v) {
+      if (v) {
+        this.$message({
+          type: 'info',
+          message: `您有${v}条未读消息`
+        })
+      }
     }
   },
   mounted() {
-    clearInterval(noticeRTimer)
-    const noticeRTimer = setInterval(() => {
+    clearInterval(this.timer)
+    this.timer = setInterval(() => {
       const params = {
-        index: 0,
-        size: 0,
+        index: 1,
+        size: 10000,
         total: 0
       }
       notReadNotices(params).then((res) => {
         if (res.body.data.length > 0) {
-          console.log(res.body.data.length, 'res.body.data.length')
+          this.notReadNoticeTotal = res.body.page.total
+          this.notReadNotice = res.body.data
         }
       })
     }, 5000)
@@ -153,11 +189,14 @@ export default {
     })
   },
   methods: {
+    handleCommand(command) {
+      this.dialogVisable = true
+      this.noticeForm = command
+    },
     screenfull(e) {
       e.path.forEach(item => {
         if (item.className === 'fullscreen') {
           item.childNodes[0].classList.toggle('highlight')
-          // item.childNodes[1].classList.toggle('texthighlight')
         }
       })
       screenfull.toggle()
@@ -351,4 +390,5 @@ export default {
   .noticeDrop {
     border: none !important;
   }
+
 </style>
