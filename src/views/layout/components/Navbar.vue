@@ -165,20 +165,12 @@ export default {
         size: 10000,
         total: 0
       }
-<<<<<<< HEAD
       notReadNotices(params).then((res) => {
         if (res.body.data.length > 0) {
           this.notReadNoticeTotal = res.body.page.total
           this.notReadNotice = res.body.data
         }
       })
-=======
-      // notReadNotices(params).then((res) => {
-      //   if (res.body.data.length > 0) {
-      //     console.log(res.body.data.length, 'res.body.data.length')
-      //   }
-      // })
->>>>>>> d021f4428fa9da56170c22a82a9c6392a10de719
     }, 5000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
