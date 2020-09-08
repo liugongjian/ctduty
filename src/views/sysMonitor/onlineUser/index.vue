@@ -46,7 +46,7 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
           <template slot-scope="scope">
-            <span>{{ scope.row.permissions.name }} </span>
+            <span>{{ scope.row.post || '' }} </span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'主机'" style="text-align: center" prop="ip">

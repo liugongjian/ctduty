@@ -88,36 +88,55 @@
                 </div>
                 <el-form v-else :model="form" label-position="right" label-width="85px">
                   <el-form-item label="摄像头ID：">
-                    <div style=" word-wrap: break-word">{{ form.id }}</div>
+                    <el-tooltip :content="form.id" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="负责人：">
-                    <div style=" word-wrap: break-word">{{ form.inCharge.username }}</div>
+                    <el-tooltip :content="form.inCharge.username" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.username }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="添加人：">
-                    <div style=" word-wrap: break-word">{{ form.creator.username }}</div>
-                  </el-form-item>  <el-form-item label="经度信息：">
-                    <div style=" word-wrap: break-word">{{ form.longitude.toFixed(2) }}</div>
+                    <el-tooltip :content="form.creator.username " placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
+                    </el-tooltip>
+                  </el-form-item>
+                  <el-form-item label="经度信息：">
+                    <el-tooltip :content="form.longitude" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2) }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="纬度信息：">
-                    <div style=" word-wrap: break-word">{{ form.latitude.toFixed(2) }}</div>
+                    <el-tooltip :content="form.latitude" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="地址：">
-                    <div style=" word-wrap: break-word">{{ form.address }}</div>
+                    <el-tooltip :content="form.address" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="添加时间：">
-                    <div style=" word-wrap: break-word">{{ form.createTime }}</div>
+                    <el-tooltip :content="form.createTime" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
+                    </el-tooltip>
                   </el-form-item>
                   <el-form-item label="视频流信息：">
-                    <div style=" word-wrap: break-word">
+                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
                       <svg-icon v-if="form.isDeal" class="deal" icon-class="deal" />
                       <svg-icon v-else class="untreated" icon-class="untreated" />
                       {{ form.isDeal ? '已处理':'未处理' }}</div>
                   </el-form-item>
                   <el-form-item label="告警信息：">
-                    <div style=" word-wrap: break-word">{{ form.dealSum }}</div>
+                    <el-tooltip :content="form.dealSum" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
+                    </el-tooltip>
                   </el-form-item>
-                  <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
-                  <el-button type="text" @click="delAlert">删除</el-button>
+                  <div>
+                    <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
+                    <el-button type="text" @click="delAlert">删除</el-button>
+                  </div>
                 </el-form>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
