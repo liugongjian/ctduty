@@ -84,16 +84,18 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
+      var flg = false
       if (res.code === 50000 && res.message === 'Token not found.') {
         console.log('token过期了')
-        // this.$router.push('/login')
-        // window.location.href = "/login";
-        logout().then(() => {
-          Cookies.remove('token')
-          Cookies.remove('userId')
-          Cookies.remove('username')
-          window.location.href = "/login";
-        })
+        flg = true
+        if (flg) {
+          logout().then(() => {
+            Cookies.remove('token')
+            Cookies.remove('userId')
+            Cookies.remove('username')
+            window.location.href = "/login";
+          })
+        }
       }
         return Promise.reject(response.data)
       // }
