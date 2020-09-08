@@ -164,6 +164,16 @@ export const asyncRouterMap = [
           icon: 'area',
           noCache: false
         }
+      },
+      {
+        path: 'carManage',
+        component: () => import('@/views/sysmanage/carManage/index'),
+        name: 'sysCarManage',
+        meta: {
+          title: '车辆管理',
+          icon: 'pushSet',
+          noCache: false
+        }
       }
     ]
   }
