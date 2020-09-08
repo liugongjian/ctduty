@@ -89,6 +89,67 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/errorPage/401'),
+    hidden: true
+  }
+]
+
+export const asyncRouterMap = [
+  {
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'sysMonitor',
+      noCache: true
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'notice',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'onlineUser',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'pushSet',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
     path: '/sysmanage',
     component: Layout,
     alwaysShow: true, // will always show the root menu
@@ -131,116 +192,5 @@ export const constantRouterMap = [
         }
       }
     ]
-  },
-  {
-    path: '/sysMonitor',
-    component: Layout,
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'sysMonitor',
-      icon: 'sysMonitor',
-      noCache: true
-    },
-    children: [
-      {
-        path: 'notice',
-        component: () => import('@/views/sysMonitor/notice/index'),
-        name: 'noticeIndex',
-        meta: {
-          title: 'notice',
-          icon: 'notice',
-          noCache: false
-        }
-      },
-      {
-        path: 'onlineUser',
-        component: () => import('@/views/sysMonitor/onlineUser/index'),
-        name: 'onlineUserIndex',
-        meta: {
-          title: 'onlineUser',
-          icon: 'onlineUser',
-          noCache: false
-        }
-      },
-      {
-        path: 'pushSet',
-        component: () => import('@/views/sysMonitor/pushSet/index'),
-        name: 'pushSetIndex',
-        meta: {
-          title: 'pushSet',
-          icon: 'pushSet',
-          noCache: false
-        }
-      }
-    ]
-  },
-  // {
-  //   path: '',
-  //   name: 'defaultIndex',
-  //   redirect: '/login',
-  //   hidden: true
-  // },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/login/index'),
-    hidden: false
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: false
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/errorPage/401')
-    // hidden:true
   }
-]
-
-export const asyncRouterMap = [
-  // {
-  //   path: '/sysmanage',
-  //   component: Layout,
-  //   alwaysShow: true, // will always show the root menu
-  //   hidden: false,
-  //   meta: {
-  //     title: 'sysmanage',
-  //     icon: 'sysmanage',
-  //     noCache: true,
-  //     roles: 'admin'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'userManage',
-  //       component: () => import('@/views/sysmanage/userManage/index'),
-  //       name: 'sysUser',
-  //       meta: {
-  //         title: 'userManage',
-  //         icon: 'userManage',
-  //         noCache: false
-  //       }
-  //     },
-  //     {
-  //       path: 'cameraManage',
-  //       component: () => import('@/views/sysmanage/cameraManage/index'),
-  //       name: 'sysCameraManage',
-  //       meta: {
-  //         title: 'cameraManage',
-  //         icon: 'camera',
-  //         noCache: false
-  //       }
-  //     },
-  //     {
-  //       path: 'areaManage',
-  //       component: () => import('@/views/sysmanage/areaManage/index'),
-  //       name: 'sysAreaManage',
-  //       meta: {
-  //         title: 'areaManage',
-  //         icon: 'area',
-  //         noCache: false
-  //       }
-  //     }
-  //   ]
-  // },
 ]

@@ -27,22 +27,18 @@ import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo-max.png'
-import {
-  constantRouterMap
-} from '@/router/routers'
 
 export default {
   components: { SidebarItem },
   data() {
     return {
       minLogo,
-      maxLogo,
-      permission_routers: constantRouterMap
+      maxLogo
     }
   },
   computed: {
     ...mapGetters([
-      // 'permission_routers',
+      'permission_routers',
       'sidebar'
     ]),
     isCollapse() {

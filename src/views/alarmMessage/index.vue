@@ -102,39 +102,41 @@
                 <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
               </template></el-table-column>
               <el-table-column label="操作">
-                  <template slot-scope="scope">
-                    <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
-                    <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
-                  </template>
-                </el-table-column>
+                <template slot-scope="scope">
+                  <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
+                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                </template>
+              </el-table-column>
             </el-table>
-          
+
             <el-dialog
-            :visible.sync="dialogVisable"
-             title="报警显示" width="520px" @close="closeDialog">
-                <el-form  label-position="right" v-model="temp" label-width="100px">
-                   <el-form-item label="流量状态：" prop="camera.address">
-                      <span style="width: 300px;">{{temp.camera | formatNull }}</span>
-                  </el-form-item> 
-                   <el-form-item label="监控时间：" prop="createTime" :formatter="formatTime">
-                      {{formatTime(temp.createTime) }}
-                  </el-form-item>
-                  <el-form-item label="原始照片：" prop="image">
-                    <el-image :src="temp.image"></el-image>
-                  </el-form-item>
-                  <el-form-item label="结构化照片：" prop="imageCut">
-                      <el-image :src="temp.imageCut"></el-image>
-                  </el-form-item> 
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                  <el-button
-                    type="primary"
-                    @click="dialogConfirm"
-                  >正 常</el-button>
-                  <el-button @click="dialogQuxiao">异 常</el-button>
-                </div>
-              </el-dialog>
-            
+              :visible.sync="dialogVisable"
+              title="报警显示"
+              width="520px"
+              @close="closeDialog">
+              <el-form v-model="temp" label-position="right" label-width="100px">
+                <el-form-item label="流量状态：" prop="camera.address">
+                  <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
+                </el-form-item>
+                <el-form-item :formatter="formatTime" label="监控时间：" prop="createTime">
+                  {{ formatTime(temp.createTime) }}
+                </el-form-item>
+                <el-form-item label="原始照片：" prop="image">
+                  <el-image :src="temp.image"></el-image>
+                </el-form-item>
+                <el-form-item label="结构化照片：" prop="imageCut">
+                  <el-image :src="temp.imageCut"></el-image>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button
+                  type="primary"
+                  @click="dialogConfirm"
+                >正 常</el-button>
+                <el-button @click="dialogQuxiao">异 常</el-button>
+              </div>
+            </el-dialog>
+
             <pagination
               v-show="total>0"
               :total="total"
@@ -158,19 +160,25 @@ import Pagination from '@/components/Pagination'
 // import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
-import { getAlertInfos,deleteAlertInfo,getPushSet, notifyState } from '@/api/alarm'
+import { getAlertInfos, deleteAlertInfo, getPushSet, notifyState } from '@/api/alarm'
 export default {
   components: { Pagination },
+  filters: {
+    formatNull: function(val) {
+      if (!val) return '无'
+      return val.address
+    }
+  },
 
   data() {
     return {
-      temp:{
-        camera:{},
+      temp: {
+        camera: {},
         createTime: '',
         image: '',
         imageCut: ''
       },
-      rowId:0,
+      rowId: 0,
       defaultTab: '',
       state: '',
       value1: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
@@ -180,7 +188,7 @@ export default {
       endDate: '',
       tabsArr: [],
       tabsDateArr: [],
-      currentTab:'',
+      currentTab: '',
       formInline: {
         searchkey: '',
         typeValue: 'all'
@@ -216,12 +224,6 @@ export default {
       }
     }
   },
-  filters: {
-    formatNull: function(val) {
-      if(!val) return '无'
-      return val.address
-    }
-  },
   // computed: {
   //   ...mapGetters([
   //     'userId'
@@ -234,13 +236,13 @@ export default {
     }
   },
   created() {
-    this.userId=Cookies.get('userId')
+    this.userId = Cookies.get('userId')
     this.getPushSetTime()
-    console.log(this.startTime,"start.............")
-    console.log(this.endTime,"end.............")
-    this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+    console.log(this.startTime, 'start.............')
+    console.log(this.endTime, 'end.............')
+    this.value1 = [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
-    this.value1=""
+    this.value1 = ''
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
@@ -287,20 +289,20 @@ export default {
       return dateAllArr
     },
     onClear() {
-      this.value1=[new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
+      this.value1 = [new Date(new Date().setDate(new Date().getDate() - 30)), new Date(new Date().setDate(new Date().getDate()))],
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
       this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
-      
-      this.value1="",
+
+      this.value1 = '',
       this.getPushSetTime()
       this.formInline.typeValue = 'all'
       this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     },
     onSearch() {
       this.tabsArr = this.tabsDateArr
-      if(this.tabsArr.indexOf(this.currentTab)===-1){
-        this.defaultTab=this.tabsArr[0]
-        this.currentTab=this.defaultTab
+      if (this.tabsArr.indexOf(this.currentTab) === -1) {
+        this.defaultTab = this.tabsArr[0]
+        this.currentTab = this.defaultTab
       }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
@@ -309,13 +311,13 @@ export default {
       this.getList(s1, end1, h1)
       const s = this.tabsArr[this.tabsArr.length - 1] + ' ' + this.startTime + ':00'
       const end = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      //调用后续接口
-      console.log(end,"??????????/")
+      // 调用后续接口
+      console.log(end, '??????????/')
     },
 
     editDialog(v) {
-      console.log(v,"VVVVVVVVVVVVVVV"),
-      this.temp=Object.assign({},v)
+      console.log(v, 'VVVVVVVVVVVVVVV'),
+      this.temp = Object.assign({}, v)
       this.dialogVisable = true
     },
     editCloseDialog() {
@@ -370,14 +372,12 @@ export default {
       this.getList(s, end, h)
     },
     deleteAlert() {
-      const params=[this.rowId]
-      deleteAlertInfo(params).then(()=>{
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const end = this.currentTab + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
-      this.getList(s,end,h)
-
-    
+      const params = [this.rowId]
+      deleteAlertInfo(params).then(() => {
+        const s = this.currentTab + ' ' + this.startTime + ':00'
+        const end = this.currentTab + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        this.getList(s, end, h)
       })
     },
     goBack() {
@@ -392,7 +392,7 @@ export default {
         } catch (err) {
           parseSetting = {}
         }
-        console.log(parseSetting,'xxx')
+        console.log(parseSetting, 'xxx')
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
         const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
@@ -438,31 +438,30 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        console.log("nnnnnnnnnnnnnnnnnnn")
+        console.log('nnnnnnnnnnnnnnnnnnn')
       })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
     dialogQuxiao(val) {
-     
-      this.state=1
+      this.state = 1
       const tempData = Object.assign({}, this.temp)
       console.log(this.temp)
       const params = [{
         id: tempData.id,
         state: this.state,
         handlerId: this.userId
-        
+
       }]
-      console.log(params,"，，，，，，，，，，，，，，，，，，，")
-      //更新state状态
+      console.log(params, '，，，，，，，，，，，，，，，，，，，')
+      // 更新state状态
       notifyState(params).then(response => {
-      const s1 = this.currentTab + ' ' + this.startTime + ':00'
-      const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
-      this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+        const s1 = this.currentTab + ' ' + this.startTime + ':00'
+        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const h1 = this.formInline.typeValue
+        this.oldSize = this.limit
+        this.getList(s1, end1, h1)
         this.dialogVisable = false
         this.$notify({
           title: '成功',
@@ -471,27 +470,26 @@ export default {
           duration: 2000
         })
       })
-    
     },
-    
+
     dialogConfirm(val) {
-      this.state=0
+      this.state = 0
       const tempData = Object.assign({}, this.temp)
       console.log(this.temp)
       const params = [{
         id: tempData.id,
         state: this.state,
         handlerId: this.userId
-        
+
       }]
-      console.log(params,"，，，，，，，，，，，，，，，，，，，")
-      //更新state状态
+      console.log(params, '，，，，，，，，，，，，，，，，，，，')
+      // 更新state状态
       notifyState(params).then(response => {
-      const s1 = this.currentTab + ' ' + this.startTime + ':00'
-      const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
-      this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+        const s1 = this.currentTab + ' ' + this.startTime + ':00'
+        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const h1 = this.formInline.typeValue
+        this.oldSize = this.limit
+        this.getList(s1, end1, h1)
         this.dialogVisable = false
         this.$notify({
           title: '成功',
