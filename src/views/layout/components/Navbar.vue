@@ -46,47 +46,33 @@
             <span style="display:block;" @click="businessLogout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
-        <!-- <el-dropdown-menu slot="dropdown">
-          <router-link to="/">
-            <el-dropdown-item>
-              {{ $t('navbar.dashboard') }}
-            </el-dropdown-item>
-          </router-link>
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
-          </el-dropdown-item>
-        </el-dropdown-menu> -->
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="()=>{dialogVisable = false}">
-        <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm">
+      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
+        <el-form ref="addFormRef" :rules="addFormRules" :model="noticeForm" label-width="70px" label-position="right">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="noticeForm.title" disabled ></el-input>
+            <div>{{ noticeForm.title }}</div>
           </el-form-item>
           <el-form-item label="创建者" prop="creatorId">
-            <el-input v-model="noticeForm.creatorId" disabled ></el-input>
+            <div>{{ noticeForm.creatorId }}</div>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label-width="0px">
             <el-row>
               <el-col :span="12">
-                <el-form-item label="类型" prop="type">
-                  <el-radio-group v-model="noticeForm.type" label="类型" disabled>
-                    <el-radio :label="0">通知</el-radio>
-                    <el-radio :label="1">公告</el-radio>
-                  </el-radio-group>
+                <el-form-item label-width="70px" label="类型" prop="type">
+                  <el-radio v-if="noticeForm.type">公告</el-radio>
+                  <el-radio v-else>通知</el-radio>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="紧急程度" prop="state">
-                  <el-radio-group v-model="noticeForm.state" label="紧急程度" disabled>
-                    <el-radio :label="0">普通</el-radio>
-                    <el-radio :label="1">紧急</el-radio>
-                  </el-radio-group>
+                <el-form-item label-width="70px" label="紧急程度" prop="state">
+                  <el-radio v-if="state">紧急</el-radio>
+                  <el-radio v-else>普通</el-radio>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="内容">
-            <span style="margin-left:50px;margin-top:10px;border-radius: 5px;display:block;border:2px dashed #ccc;width: 400px;height:150px;" v-html="noticeForm.content"></span>
+            <span style="margin-left:10px;margin-top:10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;height:150px;" v-html="noticeForm.content"></span>
           </el-form-item>
           <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId }}</div>
@@ -187,10 +173,16 @@ export default {
           message: `您有${v}条未读消息`
         })
       }
+    },
+    $route(to, from) {
+      this.closeDialog()
     }
   },
-  mounted() {
+  created() {
+    console.log(this.timer)
     clearInterval(this.timer)
+  },
+  mounted() {
     this.timer = setInterval(() => {
       const params = {
         index: 1,
@@ -221,6 +213,9 @@ export default {
     })
   },
   methods: {
+    closeDialog() {
+      this.dialogVisable = false
+    },
     dialogConfirm() {
       upReadNotices(this.noticeForm.id).then(res => {
         this.dialogVisable = false

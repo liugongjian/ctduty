@@ -259,9 +259,6 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: function(params) {
-            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
-          },
           extraCssText: 'height:50px; white-space:pre-wrap;'
         },
         legend: {
@@ -408,7 +405,11 @@ export default {
           color: '#17b885',
           legendHoverLink: true,
           tooltip: {
-            show: true
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
           }
         },
         {
@@ -417,15 +418,25 @@ export default {
           color: '#eec511',
           legendHoverLink: true,
           tooltip: {
-            show: true
-          }}, {
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
+          }
+        }, {
           name: '大于100',
           type: 'bar',
           color: '#d04132',
           legendHoverLink: true,
           tooltip: {
-            show: true
-          }}
+            position: [10, 10],
+            backgroundColor: 'rgba(50,50,50,0.7)',
+            formatter: function(params) {
+              return params.data.name
+            }
+          }
+        }
         ]
       }
       this.charts.setOption(option)
