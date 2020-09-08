@@ -6,6 +6,7 @@
       <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
       <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
+      <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
 
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
@@ -97,7 +98,8 @@
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="区域/部门">
-          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
+          <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
+          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">  
             <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
@@ -153,7 +155,7 @@ export default {
       addUserFormRules: {
         username: [
           { required: true, message: '用户名称不能为空', trigger: 'blur' },
-          { min: 5, max: 12, message: '用户名长度在5-12个字符之间', trigger: 'blur' }
+          { min: 5, max: 10, message: '用户名长度在5-12个字符之间', trigger: 'blur' }
         ],
         password: [
           {
@@ -352,7 +354,13 @@ export default {
         this.getUserList()
         this.$message.success('删除用户信息')
       })
-    }
+    },
+
+    resetQuery() {
+      this.queryName = ''
+
+      this.getUserList()
+    },
 
   }
 }
