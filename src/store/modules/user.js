@@ -118,7 +118,6 @@ const user = {
               localStorage.setItem('username', response.body.data.username)
               localStorage.setItem('level', response.body.data.permissions.level)
               commit('SET_NAME', response.body.data.username)
-              commit('SET_LEVEL', response.body.data.permissions)
               commit('SET_USERID', response.body.data.id)
             }
             resolve(response.body)
