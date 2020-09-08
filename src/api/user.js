@@ -40,7 +40,7 @@ export function fetchOnlineList() {
 // 强退
 export function fetchOnlineLogout(code) {
   return request({
-    url: `/nvsapi/Login/logout/${code}`,
+    url: `http://host31.880508.xyz:10000/Login/logout/${code}`,
     method: 'get'
   })
 }

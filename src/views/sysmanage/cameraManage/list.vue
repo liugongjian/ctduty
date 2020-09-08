@@ -9,22 +9,32 @@
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form :model="dialogForm" label-position="right" label-width="100px">
+            <el-form :model="dialogForm" :rule="rules" label-position="right" label-width="100px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="负责人："><el-input v-model="dialogForm.inCharge" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="负责人ID："><el-input v-model="dialogForm.inChargeId" placeholder="请输入负责人ID" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="添加人："><el-input v-model="dialogForm.creatorId" placeholder="请输入添加人" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+              </el-form-item>
+              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button
                 type="primary"
-                @click="dialogConfirm"
+                @click="dialogConfirm('dialogForm')"
               >确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
@@ -42,14 +52,17 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
+
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inChargeId"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creatorId"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
+            <svg-icon v-if="scope.row.isDeal" class="deal" icon-class="deal" />
+            <svg-icon v-else class="untreated" icon-class="untreated" />
             <span>{{ scope.row.isDeal ? "已处理":"未处理" }}</span>
           </template>
         </el-table-column>
@@ -65,7 +78,9 @@
         <el-form :model="editForm" label-position="right" label-width="100px">
           <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="负责人："><el-input v-model="editForm.inCharge.username" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="摄像头名称："><el-input v-model="editForm.name" placeholder="请输入摄像头名称" class="filter-item" style="width: 300px;"></el-input>
+          </el-form-item>
+          <el-form-item label="负责人："><el-input v-model="editForm.inChargeId" placeholder="请输入负责人" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
           <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
@@ -109,11 +124,17 @@ export default {
   data() {
     return {
       dialogForm: {
+        address: '',
+        creatorId: '',
         id: '',
-        inCharge: '',
-        longitude: '',
+        name: '',
         latitude: '',
-        address: ''
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
       formInline: {
         searchkey: '',
@@ -135,11 +156,12 @@ export default {
       editVisable: false,
       editForm: {
         id: '',
-        inCharge: '',
+        inChargeId: '',
         longitude: '',
         latitude: '',
         address: '',
-        url: ''
+        url: '',
+        name: ''
       }
     }
   },
@@ -187,10 +209,11 @@ export default {
     },
     editDialog(v) {
       this.editForm.id = v.id
-      this.editForm.inCharge = v.inCharge
+      this.editForm.inChargeId = v.inChargeId
       this.editForm.longitude = v.longitude
       this.editForm.latitude = v.latitude
       this.editForm.address = v.address
+      this.editForm.name = v.name
       this.editForm.url = v.url
       this.editVisable = true
     },
@@ -200,16 +223,22 @@ export default {
     editDialogConfirm() {
       const params = [{
         id: this.editForm.id,
-        inChargeId: this.editForm.inCharge.id,
+        inChargeId: this.editForm.inChargeId,
         latitude: this.editForm.latitude,
         longitude: this.editForm.longitude,
         url: this.editForm.url,
-        name: this.editForm.inCharge.username
+        name: this.editForm.name
       }]
       editCamera(params).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
+          duration: 2000
+        })
         this.getList()
+        this.editVisable = false
       })
-      this.editVisable = false
     },
     editDialogQuxiao() {
       this.editVisable = false
@@ -224,7 +253,7 @@ export default {
       console.log('搜索')
     },
     checkModel() {
-      this.$emit('getdata', this.formInline.typeValue)
+      this.$emit('getdata', this.formInline.typeValue, true)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
@@ -285,17 +314,32 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
-      const params = [{
-        id: this.dialogForm.id,
-        inChargeId: this.dialogForm.inCharge.id,
-        latitude: this.dialogForm.latitude,
-        longitude: this.dialogForm.longitude,
-        url: this.dialogForm.url
-      }]
-      addCamera(params).then(response => {
+      const params = [
+        this.dialogForm
+      ]
+      addCamera(params).then(res => {
+        this.dialogForm = {
+          address: '',
+          creatorId: '',
+          id: '',
+          name: '',
+          latitude: '',
+          longitude: '',
+          url: '',
+          inChargeId: '',
+          manufacturer: '',
+          model: '',
+          phone: ''
+        }
+        this.$notify({
+          title: '成功',
+          message: '增加成功',
+          type: 'success',
+          duration: 2000
+        })
         this.getList()
+        this.dialogVisable = false
       })
-      this.dialogVisable = false
     }
   }
 }

@@ -31,7 +31,7 @@
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
           <img src="../../../assets/images/username_icon.png" alt>
-          <span class="user-name">{{ name }}</span>
+          <span class="user-name">{{ this.username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item >
@@ -65,7 +65,7 @@ import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
-import { updateUserPassWord } from '@/api/user'
+import { updateUserPassWord, fetchUser } from '@/api/user'
 
 export default {
   components: {
@@ -86,13 +86,13 @@ export default {
         new_password: ''
       },
       isFullscreen: false,
-      // username: ''
+      username: ''
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
+      // 'name',
       'avatar',
       'device'
     ])
@@ -110,9 +110,6 @@ export default {
       }
     }
   },
-  // beforeCreate() {
-  //   this.username = localStorage.getItem('username')
-  // },
   mounted() {
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
@@ -124,6 +121,11 @@ export default {
         this.isFullscreen = false
       }
     }
+    fetchUser().then((res) => {
+      this.username = res.body.data.username           
+    }).catch(err => {
+      console.log(err)
+    })
   },
   methods: {
     screenfull(e) {
