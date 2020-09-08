@@ -84,13 +84,15 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      if (res.code === 50000 && res.message === 'Token unauthorized.' || res.code === 50000 && res.message === 'Token not found.') {
+      if (res.code === 50000 && res.message === 'Token not found.') {
         console.log('token过期了')
+        // this.$router.push('/login')
+        // window.location.href = "/login";
         logout().then(() => {
           Cookies.remove('token')
           Cookies.remove('userId')
           Cookies.remove('username')
-          this.$router.push('/login')
+          window.location.href = "/login";
         })
       }
         return Promise.reject(response.data)
