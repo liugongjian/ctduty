@@ -192,11 +192,9 @@ require('echarts/lib/chart/bar')
 // 引入提示框和title组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
-import { fetchUser, fetchCommunity, alarmStatus } from '@/api/user'
 import { fetchalarmList } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
-import { getAlertInfos } from '@/api/alarm'
-import { fetchNowInfo, fetchSinMan } from '@/api/dashboard'
+import { fetchSinMan } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
