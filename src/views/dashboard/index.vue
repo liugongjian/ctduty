@@ -258,7 +258,11 @@ export default {
           show: false
         },
         tooltip: {
-          formatter: '{a} <br/>{b} : {c}%'
+          trigger: 'item',
+          formatter: function(params) {
+            return '更新时间: ' + params.data.createTime[2] + '<br/>' + '设备名称: ' + params.data.deviceName[2] + '<br/>' + '安装位置: ' + params.data.installAddress[2]
+          },
+          extraCssText: 'height:50px; white-space:pre-wrap;'
         },
         legend: {
           orient: '',
@@ -277,7 +281,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          show: false
+          show: true
         },
         yAxis: {
           position: 'right',
@@ -285,22 +289,24 @@ export default {
             show: true
           },
           axisLine: {
-            show: false
+            show: true
           },
           splitLine: {
-            show: false
+            show: true
           },
           axisTick: {
-            show: false
+            show: true
           }
         },
         geo: {
           map: '渭南',
+          roam: true,
+          aspectScale: 1,
           tooltip: {
             formatter: '{a} <br/>{b} : {c}%'
           },
           label: {
-            show: false,
+            show: true,
             normal: {
               show: 0,
               textStyle: {
@@ -316,10 +322,9 @@ export default {
             }
           },
           zoom: 1.2,
-          aspectScale: 1.2, // 长宽比
           z: 13,
           itemStyle: {
-            show: false,
+            show: true,
             normal: {
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
@@ -337,8 +342,8 @@ export default {
         series: [{
           tooltip: {
             trigger: 'item',
-            formatter: function(params) {
-              console.log(params, 'ppp')
+            formatter: function(item) {
+              return item.name
             },
             extraCssText: 'height:50px; white-space:pre-wrap;'
           },
@@ -346,7 +351,6 @@ export default {
           coordinateSystem: 'geo',
           z: 12,
           symbolSize: 7,
-          silent: false, // 不显示hover等事件
           showEffectOn: 'render',
           rippleEffect: {
             period: 2,
@@ -402,7 +406,7 @@ export default {
           name: '小于50',
           type: 'bar',
           color: '#17b885',
-          silent: false, // 不显示hover等事件
+          legendHoverLink: true,
           tooltip: {
             show: true
           }
@@ -411,14 +415,14 @@ export default {
           name: '小于100',
           type: 'bar',
           color: '#eec511',
-          silent: false, // 不显示hover等事件
+          legendHoverLink: true,
           tooltip: {
             show: true
           }}, {
           name: '大于100',
           type: 'bar',
-          silent: false, // 不显示hover等事件
           color: '#d04132',
+          legendHoverLink: true,
           tooltip: {
             show: true
           }}
