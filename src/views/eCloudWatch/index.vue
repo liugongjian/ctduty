@@ -600,7 +600,7 @@ export default {
           ]
         }
         fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data
+          this.stepsData = response.body.data.reverse()
           this.dialogVisable = false
         })
       })
@@ -621,7 +621,7 @@ export default {
           ]
         }
         fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data
+          this.stepsData = response.body.data.reverse()
           this.dialogVisable = false
         })
       })
