@@ -134,22 +134,20 @@
           </div>
 
           <el-dialog
-            v-for="(item, index) in stepsData"
-            v-model="temp"
+            v-if="dialogVisable"
             :visible="dialogVisable"
-            :key="index"
             title="报警显示"
             width="700px"
             @close="closeDialog"
           >
-            <el-form :model="dataDia" label-position="right" label-width="100px">
+            <el-form :model="dataDia" v-if="dataDia" label-position="right" label-width="100px">
               <el-form-item label="流量状态:">
                 <span style="width: 300px;">{{ dataDia.camera.address }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                  renderTime(item.camera.createTime)
+                  renderTime(dataDia.camera.createTime)
                   }}
                 </span>
               </el-form-item>
@@ -205,8 +203,9 @@ export default {
   data() {
     return {
       timer: null,
+      timeOut: null,
       dataError: [],
-      dataDia: {},
+      dataDia: null,
       // alarmForm: {
       //   address: '',
       //   createTime: ''
@@ -278,15 +277,17 @@ export default {
       this.pageChange();
     }
   },
-  async created() {
-    this.userId = Cookies.get("userId");
-    await this.getalarmList();
-    await this.getCameraList();
-    await this.getPanelList();
-    // await this.getAlertList()
-  },
   mounted() {
     const that = this;
+    this.userId = Cookies.get("userId");
+    this.getalarmList();
+    this.getCameraList();
+    this.getPanelList();
+    this.timer = setInterval(() => {
+      this.getalarmList();
+      this.getCameraList();
+      this.getPanelList();
+    }, 10000);
     that.getPanel();
     document.getElementById("alarmInfo").onclick = function() {
       this.watchClick();
@@ -301,6 +302,14 @@ export default {
         });
       });
     }, 2000);
+  },
+  beforeDestroy() {
+    if (this.timeOut) {
+      clearTimeout(this.timeOut);
+    }
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
   methods: {
     getPanelList() {
@@ -391,49 +400,24 @@ export default {
           total: 0
         },
         params: [
-          // {
-          //   field: "createTime",
-          //   operator: "BETWEEN",
-          //   value: { start: "2020-09-05 00:00:00", end: "2020-09-10 23:59:59" }
-          // },
-          // {
-          //   field: "handlerId",
-          //   operator: "NULL",
-          //   value: "null"
-          // }
+          //      sorts: [
+          //   {
+          //     field: "string",
+          //     type: "asc"
+          //   }
         ]
       };
       fetchalarmList(params).then(response => {
-        this.showTabValue = "all";
-        // console.log(response,78)
-        const { data } = response.body;
-        // console.log(data);
-        this.stepsData = [];
-        for (let i = 0; i < response.body.data.length; i++) {
-          this.stepsData.push(response.body.data[i]);
+        if (response.body.data.length) {
+          this.stepsData = response.body.data.reverse();
+          this.showDialog(this.stepsData[0]);
         }
-        this.dataDia = [];
-        for (let i = 0; i < response.body.data.length; i++) {
-          if (response.body.data[i].state === 1) {
-            this.dataError.push(response.body.data[i]);
-          }
-        }
-        let index = 0;
-        if (this.dataError.length > 0) {
-          this.dialogVisable = true;
-          this.dataDia = this.dataError[index];
-        }
-        this.timer = setInterval(() => {
-          console.log(345, index, this.dataError.length, this.dataError);
-          index++;
-          if (this.dataError.length >= index) {
-            clearInterval(this.timer);
-            this.dialogVisable = false;
-            return;
-          }
-          this.dialogVisable = true;
-          this.dataDia = this.dataError[index];
-        }, 5000);
+        // this.dataDia = [];
+        // for (let i = 0; i < response.body.data.length; i++) {
+        //   if (response.body.data[i].state === 1) {
+        //     this.dataError.push(response.body.data[i]);
+        //   }
+        // }
       });
     },
     watchClick(e) {
@@ -460,8 +444,15 @@ export default {
       this.dialogVisable = false;
     },
     showDialog(item) {
+      if (this.timeOut) {
+        clearTimeout(this.timeOut);
+      }
+      // this.dialogVisable = false;
       this.dataDia = item;
       this.dialogVisable = true;
+      this.timeOut = setTimeout(() => {
+        this.dialogVisable = false;
+      }, 5000);
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById("panel"));
@@ -582,14 +573,40 @@ export default {
       if (this.active++ > 2) this.active = 0;
     },
     normal() {
-      clearInterval(this.timer);
-
-      this.dialogVisable = false;
-      this.getalarmList();
+      fetchNormalStatus(this.dataDia.id, 0).then(res => {
+        // this.getalarmList()
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: []
+        };
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data.reverse();
+          // this.dialogVisable = false;
+        });
+      });
     },
     unnormal() {
-      clearInterval(this.timer);
-      this.dialogVisable = false;
+      fetchNormalStatus(this.dataDia.id, 1).then(res => {
+        // this.getalarmList()
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: []
+        };
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data.reverse();
+          // this.dialogVisable = false;
+        });
+      });
     }
   }
 };
