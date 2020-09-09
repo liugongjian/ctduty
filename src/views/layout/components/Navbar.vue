@@ -52,8 +52,8 @@
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
           </el-form-item>
-          <el-form-item label="创建者" prop="creatorId">
-            <div>{{ noticeForm.creatorId }}</div>
+          <el-form-item label="创建者" prop="creator.username">
+            <div>{{ noticeForm.creator.username }}</div>
           </el-form-item>
           <el-form-item label-width="0px">
             <el-row>
