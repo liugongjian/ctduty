@@ -83,16 +83,14 @@
               :key="item"
               :label="item"
               :name="item">
-              <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
-              <br>
+              <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div>
+              
               <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
-                <el-table-column
-                  width="55">
-                </el-table-column>
-                <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
+             
+                <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id" ></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
                 </el-table-column>
-                <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" ></el-table-column>
+                <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image">
                     <template slot-scope="scope">
@@ -100,7 +98,7 @@
                       </template>
                 </el-table-column>
                
-                <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username"></el-table-column>
+                <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" ></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId"><template slot-scope="scope">
                   <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                   <svg-icon v-else class="untreated" icon-class="untreated" />
@@ -618,6 +616,9 @@
   .buttonText{
     color: #409EFF;
     text-decoration:underline;
+  }
+  .kb{
+    margin-block-end: 14px;
   }
     </style>
   
