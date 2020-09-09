@@ -48,23 +48,23 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
-        <el-form :model="noticeForm" label-width="70px" label-position="right">
+        <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
           </el-form-item>
-          <el-form-item label="创建者" prop="creatorId">
-            <div>{{ noticeForm.creatorId }}</div>
+          <el-form-item label="创建者" prop="creator.username">
+            <div>{{ noticeForm.creator.username }}</div>
           </el-form-item>
           <el-form-item label-width="0px">
             <el-row>
               <el-col :span="12">
-                <el-form-item label-width="70px" label="类型" prop="type">
+                <el-form-item label-width="85px" label="类型" prop="type">
                   <el-radio v-if="noticeForm.type">公告</el-radio>
                   <el-radio v-else>通知</el-radio>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label-width="70px" label="紧急程度" prop="state">
+                <el-form-item label-width="85px" label="紧急程度" prop="state">
                   <el-radio v-if="noticeForm.state">紧急</el-radio>
                   <el-radio v-else>普通</el-radio>
                 </el-form-item>
@@ -316,7 +316,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .navToggle {
-    padding-left: 70px !important;
+    padding-left: 85px !important;
     transition: all .18s linear;
   }
   .navbar {
@@ -421,6 +421,9 @@ export default {
         font-weight: 700;
       }
     }
+  }
+  label {
+    width: 100px;
   }
   .notice {
     position:relative;

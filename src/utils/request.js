@@ -58,6 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    var flag = true;
     if (res.code == 50000) {
       // Message({
       //   message: res.msg,
@@ -83,18 +84,23 @@ service.interceptors.response.use(
       //     location.reload() // 为了重新实例化vue-router对象 避免bug
       //   })
       // }
-      if (res.code === 50000 && res.message === 'Token not found.' || res.code === 50000 && res.message === 'Token unauthorized.') {
-        console.log('token')
-        const token = Cookies.get('token')
-        if (!token) {
+      if (res.code === 50000 && res.message === 'Token not found.') {
+        // this.$router.push('/login')
+        // window.location.href = "/login";
+        if (flag) {
           logout().then(() => {
+            flag = false
             Cookies.remove('token')
             Cookies.remove('userId')
             Cookies.remove('username')
-            window.location.href = "/login";  
+            location.reload()
+            window.location.href = '/login'
           })
+          return
+        } else {
+          return
         }
-      } 
+      }
       return Promise.reject(response.data)
     } else {
       return response.data

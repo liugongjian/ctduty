@@ -380,7 +380,7 @@ export default {
           data: convertData(data),
           label: {
             normal: {
-              show: true,
+              show: false,
               textStyle: {
                 color: '#000'
               },
