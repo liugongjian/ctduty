@@ -119,7 +119,7 @@ export default {
     return {
       minLogo,
       dialogVisable: false,
-      timer: '',
+      timer: null,
       noticeForm: {
         creator: {
           username: ''
@@ -185,8 +185,10 @@ export default {
       this.closeDialog()
     }
   },
-  created() {
-    clearInterval(this.timer)
+  beforeDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
   },
   mounted() {
     this.timer = setInterval(() => {
@@ -204,7 +206,7 @@ export default {
           this.notReadNotice = []
         }
       })
-    }, 5000)
+    }, 5*1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
