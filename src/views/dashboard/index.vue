@@ -281,6 +281,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
+          formatter: '{a}',
           extraCssText: 'height:50px; white-space:pre-wrap;'
         },
         legend: {
@@ -359,13 +360,6 @@ export default {
           }
         },
         series: [{
-          tooltip: {
-            trigger: 'item',
-            formatter: function(item) {
-              return item.name
-            },
-            extraCssText: 'height:50px; white-space:pre-wrap;'
-          },
           type: 'effectScatter',
           coordinateSystem: 'geo',
           z: 12,
@@ -430,6 +424,7 @@ export default {
             position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
             formatter: function(params) {
+              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
             }
           }
@@ -443,6 +438,7 @@ export default {
             position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
             formatter: function(params) {
+              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
             }
           }
@@ -455,6 +451,7 @@ export default {
             position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
             formatter: function(params) {
+              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
             }
           }

@@ -120,7 +120,11 @@ export default {
       minLogo,
       dialogVisable: false,
       timer: '',
-      noticeForm: {},
+      noticeForm: {
+        creator: {
+          username: ''
+        }
+      },
       dialogFormVisible: false,
       form: {
         re_password: '',
