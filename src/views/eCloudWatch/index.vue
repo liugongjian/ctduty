@@ -115,7 +115,7 @@
                     @click="showDialog(item)"
                   >
                     <div style="height:32px; width:32px; float:left">
-                      <svg-icon v-if="item.state === 0" class="untreated" icon-class="untreated" />
+                      <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
                       <div class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
