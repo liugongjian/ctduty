@@ -391,16 +391,7 @@ export default {
           total: 0
         },
         params: [
-          // {
-          //   field: "createTime",
-          //   operator: "BETWEEN",
-          //   value: { start: "2020-09-05 00:00:00", end: "2020-09-10 23:59:59" }
-          // },
-          // {
-          //   field: "handlerId",
-          //   operator: "NULL",
-          //   value: "null"
-          // }
+
         ]
       }
       fetchalarmList(params).then(response => {
@@ -408,7 +399,7 @@ export default {
           if (!this.stepsData.length) {
             this.stepsData = response.body.data.reverse()
             this.dialogVisable = false
-          } else if (JSON.stringify(this.stepsData[0]) !== JSON.stringify(response.body.data.reverse()[0])) {
+          } else if (this.stepsData[0].createTime && (JSON.stringify(this.stepsData[0]) !== JSON.stringify(response.body.data.reverse()[0]))) {
             this.showDialog(this.stepsData[0])
             setTimeout(() => {
               this.dialogVisable = false
@@ -419,7 +410,7 @@ export default {
           }
           this.stepsData.forEach(item => {
             if (item.id === response.body.data.reverse()[0].id) {
-              this.showDialog()
+              this.showDialog(item)
             } else {
               this.dialogVisable = false
             }
@@ -597,14 +588,42 @@ export default {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 0).then((res) => {
         // this.getalarmList()
-        this.dialogVisable = false
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: [
+
+          ]
+        }
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data
+          this.dialogVisable = false
+        })
       })
     },
     unnormal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 1).then((res) => {
         // this.getalarmList()
-        this.dialogVisable = false
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: [
+
+          ]
+        }
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data
+          this.dialogVisable = false
+        })
       })
     }
   }
