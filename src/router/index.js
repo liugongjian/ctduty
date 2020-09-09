@@ -220,7 +220,6 @@ router.beforeEach((to, from, next) => {
             Cookies.remove('username')
             Cookies.remove('userId')
             Cookies.remove('level')
-            Message.error('您暂时未有分配的权限，请联系管理员！')
             // setTagNavListInLocalstorage([])
             next('/login')
             NProgress.done()
