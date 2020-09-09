@@ -84,7 +84,7 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select class="select" v-model="addNoticeForm.signature_id" placeholder="请选择">
+          <el-select class="select" v-model="addNoticeForm.signatureId" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
                 <el-option
                   v-for="(item,key) in departmentInfo"
@@ -137,13 +137,13 @@
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
-          <el-select v-model="editNoticeForm.signature_id" :value="editNoticeForm.signature_id" placeholder="请选择">
+          <el-select v-model="editNoticeForm.signatureId" :value="editNoticeForm.signatureId" placeholder="请选择">
             <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="getEditANotice">确 定</el-button>
+        <el-button type="warning" @click="getEditANotice" v-if="modifiable==='true'">确 定</el-button>
         <el-button @click="editNoticeDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -212,7 +212,7 @@ export default {
         state: null,
         title: '',
         type: null,
-        signature_id: null,
+        signatureId: null,
         creatorId: ''
       },
       editNoticeForm: {},
@@ -329,7 +329,7 @@ export default {
     showEditDialog(id, modifiable) {
       getNoticeInfo(id).then(response => {
         // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取用户信息失败')
+        if (response.code !== 0) return this.$message.error('获取信息失败')
         this.editNoticeForm = response.body.data
         this.editNoticeDialogVisible = true
         this.modifiable = modifiable
@@ -338,10 +338,10 @@ export default {
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
-
+        console.log(this.editNoticeForm.signatureId)
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
-          // console.log(response)
-          if (response.code !== 0) return this.$message.error('更新用户信息失败,请稍后再试')
+          console.log(response)
+          if (response.code !== 0) return this.$message.error('更新信息失败,请稍后再试')
           this.editNoticeDialogVisible = false
           this.getNoticeList()
           this.$message.success('更新成功')
