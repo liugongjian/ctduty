@@ -281,6 +281,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
+          triggerOn: 'mousemove',
           formatter: function(params) {
             if (typeof (params.value)[2] === 'undefined') {
               console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
@@ -328,6 +329,7 @@ export default {
           roam: true,
           aspectScale: 1,
           tooltip: {
+            triggerOn: 'mousemove',
             formatter: '{a} <br/>{b} : {c}%'
           },
           label: {
@@ -360,6 +362,7 @@ export default {
               borderWidth: 2
             },
             emphasis: { // 鼠标移动上去变色
+              show: false,
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               textStyle: {
@@ -433,6 +436,7 @@ export default {
           tooltip: {
             position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
+            triggerOn: 'mousemove',
             formatter: function(params) {
               console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
@@ -447,6 +451,7 @@ export default {
           tooltip: {
             position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
+            triggerOn: 'mousemove',
             formatter: function(params) {
               console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
@@ -458,10 +463,9 @@ export default {
           color: '#d04132',
           legendHoverLink: true,
           tooltip: {
-            position: [10, 10],
             backgroundColor: 'rgba(50,50,50,0.7)',
+            triggerOn: 'mousemove',
             formatter: function(params) {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
               return params.data.name
             }
           }
