@@ -51,8 +51,8 @@ export default {
     notice: '通知公告',
     onlineUser: '在线用户',
     pushSet: '推送设置',
-    carManage: '车辆管理',
-    faceManage: '人脸管理'
+    carManage: '车牌数据管理',
+    faceManage: '人脸数据管理'
   },
   activeList: {
     name: '名称',
