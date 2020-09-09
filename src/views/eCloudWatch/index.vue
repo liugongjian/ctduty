@@ -76,7 +76,7 @@
                         <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                         <span
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                        >{{ renderTime(item.camera.createTime) }}</span>
+                        >{{ renderTime(item.createTime) }}</span>
                       </div>
                     </div>
                   </template>
@@ -101,7 +101,7 @@
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ renderTime(item.camera.createTime) }}</span>
+                      >{{ renderTime(item.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -125,7 +125,7 @@
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ renderTime(item.camera.createTime) }}</span>
+                      >{{ renderTime(item.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -134,10 +134,8 @@
           </div>
 
           <el-dialog
-            v-for="(item, index) in stepsData"
             v-model="temp"
             :visible="dialogVisable"
-            :key="index"
             title="报警显示"
             width="700px"
             @close="closeDialog"
@@ -149,7 +147,7 @@
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                    renderTime(item.camera.createTime)
+                    renderTime(dataDia.createTime)
                   }}
                 </span>
               </el-form-item>
@@ -189,7 +187,7 @@ require('echarts/lib/chart/bar')
 // 引入提示框和title组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
-import { fetchalarmList } from '@/api/alarm'
+import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { fetchSinMan } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
@@ -232,7 +230,7 @@ export default {
       showZwMes: true,
       center: [110.09, 34.58],
       markersDom: null,
-      showTabValue: '',
+      showTabValue: 'all',
       markers: [],
       amapManager,
       total: 0,
@@ -283,7 +281,6 @@ export default {
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
-    // await this.getAlertList()
   },
   mounted() {
     const that = this
@@ -291,6 +288,9 @@ export default {
     document.getElementById('alarmInfo').onclick = function() {
       this.watchClick()
     }
+    setInterval(() => {
+      that.getalarmList()
+    }, 5000)
     setTimeout(() => {
       this.formInfo = []
       this.formInfo.forEach(item => {
@@ -363,7 +363,7 @@ export default {
       this.yData = []
       this.xData = []
       this.stepsData.forEach((item, index) => {
-        if (+item.state === 0) {
+        if (item.state !== null) {
           this.yData.push(item)
         } else {
           this.xData.push(item)
@@ -375,7 +375,7 @@ export default {
       this.yData = []
       this.xData = []
       this.stepsData.forEach((item, index) => {
-        if (+item.state === 0) {
+        if (item.state !== null) {
           this.yData.push(item)
         } else {
           this.xData.push(item)
@@ -391,39 +391,42 @@ export default {
           total: 0
         },
         params: [
-          // {
-          //   field: "createTime",
-          //   operator: "BETWEEN",
-          //   value: { start: "2020-09-05 00:00:00", end: "2020-09-10 23:59:59" }
-          // },
-          // {
-          //   field: "handlerId",
-          //   operator: "NULL",
-          //   value: "null"
-          // }
+
         ]
       }
       fetchalarmList(params).then(response => {
-        this.showTabValue = 'all'
-        // console.log(response,78)
-        const { data } = response.body
-        // console.log(data);
-        this.stepsData = []
-        for (let i = 0; i < response.body.data.length; i++) {
-          this.stepsData.push(response.body.data[i])
+        if (response.body.data.length) {
+          if (!this.stepsData.length) {
+            this.stepsData = response.body.data.reverse()
+            this.dialogVisable = false
+          } else if (this.stepsData[0].createTime && (JSON.stringify(this.stepsData[0]) !== JSON.stringify(response.body.data.reverse()[0]))) {
+            this.showDialog(this.stepsData[0])
+            setTimeout(() => {
+              this.dialogVisable = false
+            }, 5000)
+          } else {
+            this.closeDialog()
+            this.dialogVisable = false
+          }
+          this.stepsData.forEach(item => {
+            if (item.id === response.body.data.reverse()[0].id) {
+              this.showDialog(item)
+            } else {
+              this.dialogVisable = false
+            }
+          })
         }
-        this.dataDia = []
         for (let i = 0; i < response.body.data.length; i++) {
           if (response.body.data[i].state === 1) {
             this.dataError.push(response.body.data[i])
           }
         }
-        let index = 0
+        const index = 0
         if (this.dataError.length > 0) {
           this.dialogVisable = true
           this.dataDia = this.dataError[index]
         }
-        this.timer = setInterval(() => {
+        /*  this.timer = setInterval(() => {
           console.log(345, index, this.dataError.length, this.dataError)
           index++
           if (this.dataError.length >= index) {
@@ -433,7 +436,7 @@ export default {
           }
           this.dialogVisable = true
           this.dataDia = this.dataError[index]
-        }, 5000)
+        }, 5000) */
       })
     },
     watchClick(e) {
@@ -583,13 +586,45 @@ export default {
     },
     normal() {
       clearInterval(this.timer)
+      fetchNormalStatus(this.dataDia.id, 0).then((res) => {
+        // this.getalarmList()
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: [
 
-      this.dialogVisable = false
-      this.getalarmList()
+          ]
+        }
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data.reverse()
+          this.dialogVisable = false
+        })
+      })
     },
     unnormal() {
       clearInterval(this.timer)
-      this.dialogVisable = false
+      fetchNormalStatus(this.dataDia.id, 1).then((res) => {
+        // this.getalarmList()
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 40,
+            total: 0
+          },
+          params: [
+
+          ]
+        }
+        fetchalarmList(params).then(response => {
+          this.stepsData = response.body.data.reverse()
+          this.dialogVisable = false
+        })
+      })
     }
   }
 }

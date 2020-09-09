@@ -93,9 +93,10 @@ service.interceptors.response.use(
             Cookies.remove('token')
             Cookies.remove('userId')
             Cookies.remove('username')
+            location.reload()
             window.location.href = '/login'
-            return
           })
+          return
         } else {
           return
         }
