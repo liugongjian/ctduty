@@ -79,7 +79,7 @@
 import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
-import huayin from '@/json/huayin.json'
+import huayin from '@/json/weinan.json'
 import elementResizeDetectorMaker from 'element-resize-detector'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
@@ -162,7 +162,7 @@ export default {
         that.screenHeight = element.clientHeight
       })
     })
-    that.getMap()
+    // that.getMap()
     that.camerarate()
     that.drawPie('man', '人员', '#1890FF', NaN)
     that.drawPie('car', '机动车', '#5DDECF', NaN)
@@ -281,8 +281,13 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          formatter: '{a}',
-          extraCssText: 'height:50px; white-space:pre-wrap;'
+          formatter: function(params) {
+            if (typeof (params.value)[2] === 'undefined') {
+              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
+            } else {
+              console.log(params, 'paramsparamsparamsparamsparamsparamsparamsparamsparamsparamsparams')
+            }
+          }
         },
         legend: {
           orient: '',
@@ -328,15 +333,18 @@ export default {
           label: {
             show: true,
             normal: {
-              show: 0,
+              // show: 0,
+              show: true,
               textStyle: {
                 color: '#000'
               }
             },
             emphasis: {
-              show: 0,
+              // show: 0,
+              show: true,
               textStyle: {
-                show: 0,
+                // show: 0,
+                show: true,
                 color: '#000'
               }
             }
@@ -352,9 +360,10 @@ export default {
               borderWidth: 2
             },
             emphasis: { // 鼠标移动上去变色
+              opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               textStyle: {
-                show: 1
+                show: true
               }
             }
           }
@@ -411,6 +420,7 @@ export default {
               shadowColor: '#333'
             },
             emphasis: {
+              show: true,
               areaColor: '#f00'
             }
           }
