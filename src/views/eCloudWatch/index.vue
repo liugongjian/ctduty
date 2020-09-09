@@ -132,7 +132,6 @@
               </div>
             </div>
           </div>
-
           <el-dialog
             v-model="temp"
             :visible="dialogVisable"
@@ -163,7 +162,6 @@
               <el-button type="warning" round @click="unnormal">异 常</el-button>
             </div>
           </el-dialog>
-
           <pagination
             v-show="total>0"
             :total="total"
@@ -307,8 +305,9 @@ export default {
           {
             field: 'create_time',
             operator: 'BETWEEN',
-            value: { start: moment(new Date(new Date().setSeconds(new Date().getSeconds() - 5))).format('YYYY-MM-DD HH:mm:SS'),
-              end: moment(new Date()).format('YYYY-MM-DD HH:mm:SS')
+            value: {
+              start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
+              end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
           }
         ],
@@ -323,6 +322,9 @@ export default {
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
           this.showDialog(response.body.data[0])
+          setTimeout(() => {
+            this.closeDialog()
+          }, 5000)
         }
         for (let i = 0; i < response.body.data.length; i++) {
           if (response.body.data[i].state === 1) {
@@ -442,7 +444,7 @@ export default {
             value: { start: moment(Date.now()).format(
               'YYYY-MM-DD 00:00:00'
             ),
-            end: moment().format('YYYY-MM-DD HH:mm:SS')
+            end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
           }
         ],
