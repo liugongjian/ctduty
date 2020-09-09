@@ -84,14 +84,14 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select class="select" v-model="addNoticeForm.signatureId" placeholder="请选择">
+          <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
-                <el-option
-                  v-for="(item,key) in departmentInfo"
-                  :key="key"
-                  :label="item.department"
-                  :value="item.departmentId">
-                </el-option>
+            <el-option
+              v-for="(item,key) in departmentInfo"
+              :key="key"
+              :label="item.department"
+              :value="item.departmentId">
+            </el-option>
           </el-select>
         </el-form-item>
 
@@ -143,7 +143,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="getEditANotice" v-if="modifiable==='true'">确 定</el-button>
+        <el-button v-if="modifiable==='true'" type="warning" @click="getEditANotice">确 定</el-button>
         <el-button @click="editNoticeDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -170,8 +170,8 @@ export default {
   data() {
     return {
 
-      searchName:'',
-      searchUserIds:[],
+      searchName: '',
+      searchUserIds: [],
       addFormRules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
         creatorId: [{ required: true, message: '创建者不能为空', trigger: 'blur' }],
@@ -195,13 +195,13 @@ export default {
       addUserDialogVisible: false,
       noticeList: [],
       username: '',
-      userid:null,
+      userid: null,
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         params: {
           title: '',
-          type: null,
+          type: null
 
         }
       },
@@ -243,8 +243,7 @@ export default {
   },
   methods: {
     async getNoticeList() {
-      
-        const query = {
+      const query = {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
@@ -252,7 +251,7 @@ export default {
         },
         params: {}
       }
-      
+
       if (this.queryInfo.params.title.trim() !== '') {
         query.params['title'] = this.queryInfo.params.title
       }
@@ -262,27 +261,26 @@ export default {
 
       if (this.username.trim() !== '') {
         await this.searchUserId()
-        if(this.userid !== null){
+        if (this.userid !== null) {
           query.params['creatorId'] = this.userid
-        }else{
+        } else {
           this.userid = {}
           return
         }
       }
       fetchNoticeList(query).then(response => {
-          if (response.code !== 0) return this.$message.error('获取通知信息失败')
-          this.noticeList = response.body.data
-          this.noticeList.map(item=>{
-            item.createTime=item.createTime.substring(0,19).replace(/T/,' ')
-          })
-          this.totalnum = response.body.page.total
+        if (response.code !== 0) return this.$message.error('获取通知信息失败')
+        this.noticeList = response.body.data
+        this.noticeList.map(item => {
+          item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
+        })
+        this.totalnum = response.body.page.total
       })
-      
     },
 
-    async searchUserId(){
-      await fetchUserList({params:{username:this.username}}).then(response=>{
-        if(response.body.data.length == 0) return this.$message.error('该用户不存在，请重新输入')
+    async searchUserId() {
+      await fetchUserList({ params: { username: this.username }}).then(response => {
+        if (response.body.data.length == 0) return this.$message.error('该用户不存在，请重新输入')
         this.userid = response.body.data[0].id
       })
     },
@@ -315,14 +313,14 @@ export default {
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
       this.addNoticeForm = {}
-      this.username=''
-      this.userid=null
+      this.username = ''
+      this.userid = null
     },
     resetQuery() {
       this.queryInfo.params.title = ''
       this.queryInfo.params.type = null
-      this.username=''
-      this.userid=null
+      this.username = ''
+      this.userid = null
       this.getNoticeList()
     },
 
@@ -350,8 +348,8 @@ export default {
     },
     editDialogClosed() {
       this.editNoticeForm = {}
-      this.username=''
-      this.userid=null
+      this.username = ''
+      this.userid = null
     },
 
     showDeleteDialog(title, id) {
@@ -371,15 +369,15 @@ export default {
         this.$message.success('删除信息成功')
       })
     },
-    getCookie(objName){//获取指定名称的cookie的值 
-    var arrStr = document.cookie.split("; "); 
-    for (var i = 0; i < arrStr.length; i++) { 
-        var temp = arrStr[i].split("="); 
-        if (temp[0] == objName){ 
-            return decodeURI(temp[1]); 
+    getCookie(objName) { // 获取指定名称的cookie的值
+      var arrStr = document.cookie.split('; ')
+      for (var i = 0; i < arrStr.length; i++) {
+        var temp = arrStr[i].split('=')
+        if (temp[0] == objName) {
+          return decodeURI(temp[1])
         }
-    } 
-}
+      }
+    }
   }
 }
 
