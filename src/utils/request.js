@@ -58,6 +58,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
+    var flag = true;
     if (res.code == 50000) {
       // Message({
       //   message: res.msg,
@@ -86,13 +87,18 @@ service.interceptors.response.use(
       if (res.code === 50000 && res.message === 'Token not found.') {
         // this.$router.push('/login')
         // window.location.href = "/login";
-        logout().then(() => {
-          Cookies.remove('token')
-          Cookies.remove('userId')
-          Cookies.remove('username')
-          window.location.href = '/login'
+        if (flag) {
+          logout().then(() => {
+            flag = false
+            Cookies.remove('token')
+            Cookies.remove('userId')
+            Cookies.remove('username')
+            window.location.href = '/login'
+          })
           return
-        })
+        } else {
+          return
+        }
       }
       return Promise.reject(response.data)
     } else {
