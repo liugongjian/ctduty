@@ -76,7 +76,7 @@
                         <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                         <span
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                        >{{ item.createTime }}</span>
+                        >{{ renderTime(item.createTime) }}</span>
                       </div>
                     </div>
                   </template>
@@ -101,7 +101,7 @@
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ item.createTime }}</span>
+                      >{{ renderTime(item.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -125,7 +125,7 @@
                       <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
                       <span
                         style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ item.createTime }}</span>
+                      >{{ renderTime(item.createTime) }}</span>
                     </div>
                   </div>
                 </template>
@@ -147,7 +147,7 @@
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
                   {{
-                    dataDia.createTime
+                    renderTime(dataDia.createTime)
                   }}
                 </span>
               </el-form-item>
