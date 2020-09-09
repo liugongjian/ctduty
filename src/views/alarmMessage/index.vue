@@ -83,16 +83,14 @@
               :key="item"
               :label="item"
               :name="item">
-              <span>{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </span>
-              <br>
+              <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div>
+              
               <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
-                <el-table-column
-                  width="55">
-                </el-table-column>
-                <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id"></el-table-column>
+             
+                <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id" ></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
                 </el-table-column>
-                <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" ></el-table-column>
+                <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" width="100"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
                 <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image">
                     <template slot-scope="scope">
@@ -100,13 +98,13 @@
                       </template>
                 </el-table-column>
                
-                <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username"></el-table-column>
-                <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId"><template slot-scope="scope">
+                <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" ></el-table-column>
+                <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
                   <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                   <svg-icon v-else class="untreated" icon-class="untreated" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" width="80">
                     <template slot-scope="scope">
                       <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
                       <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
@@ -116,28 +114,29 @@
             
               <el-dialog
               :visible.sync="dialogVisable"
-               title="报警显示" width="650px" @close="closeDialog">
+               title="报警显示" width="600px" @close="closeDialog">
                   <el-form  label-position="right" v-model="temp" label-width="100px">
                      <el-form-item label="流量状态：" prop="camera.address">
                         <span style="width: 300px;">{{temp.camera | formatNull }}</span>
                     </el-form-item> 
                      <el-form-item label="监控时间：" prop="createTime" >
+                        <span style="width: 300px;"></span>
                         {{renderTime(temp.createTime) }}
   
                     </el-form-item>
                     <el-form-item label="原始照片：" prop="image" >
-                      <el-image :src="temp.image" style="width:400px; height:280px"></el-image>
+                      <el-image :src="temp.image" style="width:350px; height:200px"></el-image>
                     </el-form-item>
-                    <el-form-item label="结构化照片：" prop="imageCut">
-                        <el-image :src="temp.imageCut" ></el-image>
+                    <el-form-item label="结构化照片：" prop="imageCut" >
+                        <el-image :src="temp.imageCut" style="width:150px; height:150px;" ></el-image>
                     </el-form-item> 
                   </el-form>
                   <div slot="footer" class="dialog-footer">
                     <el-button
-                      type="primary"
+                     round
                       @click="dialogConfirm"
                     >正 常</el-button>
-                    <el-button @click="dialogQuxiao">异 常</el-button>
+                    <el-button type="warning" round @click="dialogQuxiao">异 常</el-button>
                   </div>
                 </el-dialog>
               
@@ -341,8 +340,8 @@
         
       },
       onSearch() {
-        
-        this.tabsArr = this.tabsDateArr
+        this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
+        // this.tabsArr = this.tabsDateArr
         // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
         this.value1=[this.startDate,this.endDate]
         if(this.tabsArr.indexOf(this.currentTab)===-1){
@@ -618,6 +617,9 @@
   .buttonText{
     color: #409EFF;
     text-decoration:underline;
+  }
+  .kb{
+    margin-block-end: 14px;
   }
     </style>
   
