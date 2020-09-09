@@ -137,7 +137,7 @@
             v-if="dialogVisable"
             :visible="dialogVisable"
             title="报警显示"
-            width="700px"
+            width="600px"
             @close="closeDialog"
           >
             <el-form :model="dataDia" v-if="dataDia" label-position="right" label-width="100px">
@@ -280,14 +280,14 @@ export default {
   mounted() {
     const that = this;
     this.userId = Cookies.get("userId");
-    this.getalarmList();
+    this.getInitAlarmList();
     this.getCameraList();
     this.getPanelList();
     this.timer = setInterval(() => {
       this.getalarmList();
       this.getCameraList();
       this.getPanelList();
-    }, 10000);
+    }, 5 * 1000);
     that.getPanel();
     document.getElementById("alarmInfo").onclick = function() {
       this.watchClick();
@@ -391,6 +391,36 @@ export default {
         }
       });
     },
+    // 获取初始全部数据，取当天数据
+    getInitAlarmList() {
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 40,
+          total: 0
+        },
+        params: [
+          {
+            field: "createTime",
+            operator: "BETWEEN",
+            value: {
+              start: moment(Date.now() - 86400 * 1000).format(
+                "YYYY-MM-DD HH:mm:SS"
+              ),
+              end: moment().format("YYYY-MM-DD HH:mm:SS")
+            }
+          }
+        ]
+      };
+      fetchalarmList(params).then(response => {
+        if (response.body.data.length) {
+          this.stepsData = response.body.data.reverse();
+          // this.showDialog(this.stepsData[0]);
+        }
+      });
+    },
+    // 获取时间段内告警数据，增量
     getalarmList() {
       const params = {
         cascade: true,
@@ -400,24 +430,23 @@ export default {
           total: 0
         },
         params: [
-          //      sorts: [
-          //   {
-          //     field: "string",
-          //     type: "asc"
-          //   }
+          {
+            field: "createTime",
+            operator: "BETWEEN",
+            value: {
+              start: moment(Date.now() - 60 * 1000).format(
+                "YYYY-MM-DD HH:mm:SS"
+              ),
+              end: moment(new Date()).format("YYYY-MM-DD HH:mm:SS")
+            }
+          }
         ]
       };
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
-          this.stepsData = response.body.data.reverse();
-          this.showDialog(this.stepsData[0]);
+          this.stepsData.push(response.body.data.reverse());
+          this.showDialog(response.body.data.reverse()[0]);
         }
-        // this.dataDia = [];
-        // for (let i = 0; i < response.body.data.length; i++) {
-        //   if (response.body.data[i].state === 1) {
-        //     this.dataError.push(response.body.data[i]);
-        //   }
-        // }
       });
     },
     watchClick(e) {
@@ -452,7 +481,7 @@ export default {
       this.dialogVisable = true;
       this.timeOut = setTimeout(() => {
         this.dialogVisable = false;
-      }, 5000);
+      }, 4 * 1000);
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById("panel"));
@@ -682,6 +711,7 @@ export default {
             }
             .zuoContent {
               background-color: pink;
+              overflow: auto;
             }
           }
           .zuo:hover {
