@@ -1088,7 +1088,7 @@ export default {
     height: 330px;
     margin-top:20px;
     display: flex;
-    overflow: hidden;
+    // overflow: hidden;
     position:relative !important;
     div {
       width: 100%;
@@ -1097,7 +1097,6 @@ export default {
     canvas {
       width: 100%;
       height: 100%;
-      background-color: transparent;
     }
   }
   .overv {

@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <div class="zuoContent" style="width:100%; height:100%">
+            <div class="zuoContent" style="width:100%; height:100%;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -204,13 +204,19 @@ export default {
     return {
       timer: null,
       dataError: [],
-      dataDia: {},
+      dataDia: {
+        camera: {
+          address: ''
+        }
+      },
       // alarmForm: {
       //   address: '',
       //   createTime: ''
       // },
       temp: {
-        camera: {},
+        camera: {
+          address: ''
+        },
         createTime: '',
         image: '',
         imageCut: ''
@@ -289,7 +295,46 @@ export default {
       this.watchClick()
     }
     setInterval(() => {
-      that.getalarmList()
+      // that.getalarmList()
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 40,
+          total: 0
+        },
+        params: [
+          {
+            field: 'create_time',
+            operator: 'BETWEEN',
+            value: { start: moment(new Date(new Date().setSeconds(new Date().getSeconds() - 5))).format('YYYY-MM-DD HH:mm:SS'),
+              end: moment(new Date()).format('YYYY-MM-DD HH:mm:SS')
+            }
+          }
+        ],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
+
+      }
+      fetchalarmList(params).then(response => {
+        if (response.body.data.length) {
+          this.showDialog(response.body.data[0])
+        }
+        for (let i = 0; i < response.body.data.length; i++) {
+          if (response.body.data[i].state === 1) {
+            this.dataError.push(response.body.data[i])
+          }
+        }
+        const index = 0
+        if (this.dataError.length > 0) {
+          this.dialogVisable = true
+          this.dataDia = this.dataError[index]
+        }
+      })
     }, 5000)
     setTimeout(() => {
       this.formInfo = []
@@ -391,30 +436,28 @@ export default {
           total: 0
         },
         params: [
-
+          {
+            field: 'create_time',
+            operator: 'BETWEEN',
+            value: { start: moment(Date.now()).format(
+              'YYYY-MM-DD 00:00:00'
+            ),
+            end: moment().format('YYYY-MM-DD HH:mm:SS')
+            }
+          }
+        ],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
         ]
+
       }
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
-          if (!this.stepsData.length) {
-            this.stepsData = response.body.data.reverse()
-            this.dialogVisable = false
-          } else if (this.stepsData[0].createTime && (JSON.stringify(this.stepsData[0]) !== JSON.stringify(response.body.data.reverse()[0]))) {
-            this.showDialog(this.stepsData[0])
-            setTimeout(() => {
-              this.dialogVisable = false
-            }, 5000)
-          } else {
-            this.closeDialog()
-            this.dialogVisable = false
-          }
-          this.stepsData.forEach(item => {
-            if (item.id === response.body.data.reverse()[0].id) {
-              this.showDialog(item)
-            } else {
-              this.dialogVisable = false
-            }
-          })
+          console.log(response.body.data, 'response.body.data')
+          this.stepsData = response.body.data
         }
         for (let i = 0; i < response.body.data.length; i++) {
           if (response.body.data[i].state === 1) {
@@ -426,17 +469,6 @@ export default {
           this.dialogVisable = true
           this.dataDia = this.dataError[index]
         }
-        /*  this.timer = setInterval(() => {
-          console.log(345, index, this.dataError.length, this.dataError)
-          index++
-          if (this.dataError.length >= index) {
-            clearInterval(this.timer)
-            this.dialogVisable = false
-            return
-          }
-          this.dialogVisable = true
-          this.dataDia = this.dataError[index]
-        }, 5000) */
       })
     },
     watchClick(e) {
