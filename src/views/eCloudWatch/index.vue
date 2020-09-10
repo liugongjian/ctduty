@@ -59,7 +59,7 @@
                       class="stepword"
                       @click="showDialog(item)"
                     >
-                      <div style="height:32px; width:32px; float:left">
+                      <div style="height:32px; width:32px; float:left" class="lefticon">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
                         <svg-icon
                           v-else
@@ -71,12 +71,14 @@
                       </div>
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
-                        <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
-                        <span
-                          style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                        >{{ renderTime(item.createTime) }}</span>
+                        <div class="addressword">
+                          <svg-icon v-if="item.type === 1" icon-class="people" />
+                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                          <span
+                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                          >{{ renderTime(item.createTime) }}</span>
+                       </div>
                       </div>
                     </div>
                   </template>
@@ -90,18 +92,20 @@
                     class="stepword"
                     @click="showDialog(item)"
                   >
-                    <div style="height:32px; width:32px; float:left">
+                    <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
                       <div class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
-                      <svg-icon v-if="item.type === 1" icon-class="people" />
-                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
-                      <span
-                        style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ renderTime(item.createTime) }}</span>
+                      <div class="addressword">
+                          <svg-icon v-if="item.type === 1" icon-class="people" />
+                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                          <span
+                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                          >{{ renderTime(item.createTime) }}</span>
+                       </div>
                     </div>
                   </div>
                 </template>
@@ -114,18 +118,20 @@
                     class="stepword"
                     @click="showDialog(item)"
                   >
-                    <div style="height:32px; width:32px; float:left">
+                    <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
                       <div class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
-                      <svg-icon v-if="item.type === 1" icon-class="people" />
-                      <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                      <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
-                      <span
-                        style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                      >{{ renderTime(item.createTime) }}</span>
+                      <div class="addressword">
+                          <svg-icon v-if="item.type === 1" icon-class="people" />
+                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                          <span
+                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                          >{{ renderTime(item.createTime) }}</span>
+                       </div>
                     </div>
                   </div>
                 </template>
@@ -769,13 +775,22 @@ export default {
     }
   }
 }
-.shu {
-  width: 2px;
-  height: 23px;
-  background-color: #d9d9d9;
-  margin-left: 8px;
-  margin-top: 2px;
+.lefticon {
+  height: 100%;
+  .shu {
+    width: 2px;
+    height: 30px;
+    background-color: #d9d9d9;
+    margin-left: 8px;
+    margin-top: 2px;
+  }
 }
+.youContent {
+  margin-bottom: 5px;
+}
+.youContent .addressword {
+  margin-left: 30px;
+} 
 .dizhi {
   width: 100%;
   font-size: 15px;
