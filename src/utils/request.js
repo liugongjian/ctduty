@@ -82,7 +82,7 @@ service.interceptors.response.use(
   error => {
     let timeout = null
     const msg = error.response.data.msg || error.message
-    console.log(error, msg)
+    // console.log(error, msg)
     // Message({
     //   message: msg,
     //   type: 'error',

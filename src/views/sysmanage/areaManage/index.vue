@@ -41,7 +41,7 @@
         <div v-else-if="addressdata.huapolice" :model="addressdata" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            华阴市公安支队
+            华阴公安局
           </p>
           <p class="msg msg2">
             陕西省渭南市华阴市华岳东路岳庙中学向东300米左右
@@ -131,7 +131,7 @@ export default {
         }
       ],
       local: [
-        '华阴公安支队'
+        '华阴公安局'
       ],
       defaultProps: {
         children: 'children',
@@ -162,7 +162,7 @@ export default {
   },
   mounted() {
     this.markers = [
-      { position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴市公安支队"></path></svg>  ` }
+      { position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴公安局"></path></svg>  ` }
     ]
   },
   methods: {
@@ -186,11 +186,11 @@ export default {
       } else if (node.level === 1 && !node.expanded) {
         this.openOrNot = false
         this.local = []
-        this.local.push('华阴公安支队')
+        this.local.push('华阴公安局')
         this.addressdata.huapolice = true
         this.addressdata.mengpolice = false
         this.addressdata.mountainpolice = false
-        this.markers = [{ position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴市公安支队"></path></svg>` }]
+        this.markers = [{ position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴公安局"></path></svg>` }]
         setTimeout(() => {
           this.openOrNot = true
         })
@@ -199,14 +199,14 @@ export default {
     },
     // 模糊搜索事件 请求接口
     onSearch() {      
-      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('华阴市') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安支队') || this.inputmsg.includes('阴') || this.inputmsg.includes('市') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('支队') || this.inputmsg.includes('华阴市公安支队') ) {
+      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安局') || this.inputmsg.includes('局') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('阴') || this.inputmsg.includes('华阴公安局') ) {
         this.openOrNot = false
         this.local = []
-        this.local.push('华阴公安支队')
+        this.local.push('华阴公安局')
         this.addressdata.huapolice = true
         this.addressdata.mengpolice = false
         this.addressdata.mountainpolice = false
-        this.markers = [{ position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴市公安支队"></path></svg>` }]
+        this.markers = [{ position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴公安局"></path></svg>` }]
         setTimeout(() => {
           this.openOrNot = true
         })

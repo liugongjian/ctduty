@@ -224,7 +224,7 @@ export default {
       departmentInfo: [
         {
           departmentId: 3275699862611970,
-          department: '华阴市公安支队'
+          department: '华阴公安局'
         },
         {
           departmentId: 3275699862611971,
