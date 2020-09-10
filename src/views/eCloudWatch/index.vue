@@ -21,35 +21,35 @@
         ></el-amap-marker>
       </el-amap>
       <div class="warn">
-        <div class="dispose">
+        <div class="dispose" style="border-bottom:1px solid #000;">
           <div class="dash-title">告警处理率</div>
           <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 100%; width:100%"></div>
           </div>
         </div>
-        <div class="bottom" style="margin-top: 13px">
-          <div class="todyW">今日告警</div>
+        <div class="bottom" style="margin-top: 13px;border-top:1px solid #000;">
+          <div class="dash-title">今日告警</div>
           <div class="bottom-left">
-            <div style="width:100%; height:35px">
-              <div class="zuo" style="line-height: 32px" @click="allTab">
+            <div style="width:100%; height:35px;padding:0 20px;">
+              <div class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p>全部</p>
               </div>
-              <div class="zhong" style="line-height: 32px" @click="yTab">
+              <div class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p>已处理</p>
               </div>
-              <div class="you" style="line-height: 32px" @click="wTab">
+              <div class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p>未处理</p>
               </div>
               <div class="bottom-right">
                 <ul>
-                  <li style="float:right; width:25%">
+                  <li style="float:right;line-height: 20px;margin-left:5px;font-size:12px;">
                     <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
                   </li>
                 </ul>
               </div>
             </div>
 
-            <div class="zuoContent" style="width:100%; height:100%;overflow: auto;">
+            <div class="zuoContent" style="width:100%; height:100%;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -662,6 +662,12 @@ export default {
   margin: 0;
   list-style: none;
 }
+#alarmInfo {
+  padding: 0 !important;
+}
+.dispose {
+  border-bottom: 2px solid #000 !important;
+}
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
@@ -719,7 +725,6 @@ export default {
             float: left;
             width: 25%;
             height: 32px;
-
             background-color: #ffffff;
             p {
               color: #676767;
@@ -730,13 +735,22 @@ export default {
             }
           }
           .zuo:hover {
-            border: 1px solid #1890ff;
+            border: 1px solid #1890ff !important;
           }
           .zhong:hover {
-            border: 1px solid #1890ff;
+            border: 1px solid #1890ff !important;
           }
           .you:hover {
-            border: 1px solid #1890ff;
+            border: 1px solid #1890ff !important;
+          }
+          .zuo:active {
+            border: 1px solid #1890ff !important;
+          }
+          .zhong:active {
+            border: 1px solid #1890ff !important;
+          }
+          .you:active {
+            border: 1px solid #1890ff !important;
           }
           .zhong {
             float: left;
