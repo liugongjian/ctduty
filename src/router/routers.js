@@ -21,9 +21,10 @@ import Layout from '@/views/layout/Layout'
  **/
 export const asyncRouterMap = [
   {
-    path: '/dashboard',
+    path: '/',
     component: Layout,
     hidden: false,
+    redirect: '/dashboard',
     meta: {
       roles: 'admin'
     },

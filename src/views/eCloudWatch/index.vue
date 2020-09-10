@@ -31,14 +31,14 @@
           <div class="dash-title">今日告警</div>
           <div class="bottom-left">
             <div style="width:100%; height:35px;padding:0 20px;">
-              <div class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p>全部</p>
+              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+                <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
               </div>
-              <div class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p>已处理</p>
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
               </div>
-              <div class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p>未处理</p>
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -188,6 +188,7 @@ require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { fetchSinMan } from '@/api/dashboard'
+import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
@@ -244,7 +245,8 @@ export default {
       events: {
         click: a => {}
       },
-      renderTime
+      renderTime,
+      isPush: null
     }
   },
   watch: {
@@ -278,10 +280,57 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    $route(to, from) {
+      window.clearInterval(this.timer)
+    },
+    isPush(v) {
+      console.log(v, 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
+      if (v) {
+        this.timer = setInterval(() => {
+        // that.getalarmList()
+          const params = {
+            cascade: true,
+            page: {
+              index: 1,
+              size: 40,
+              total: 0
+            },
+            params: [
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: {
+                  start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
+                  end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
+              }
+            ],
+            sorts: [
+              {
+                field: 'create_time',
+                type: 'desc'
+              }
+            ]
+
+          }
+          fetchalarmList(params).then(response => {
+            if (response.body.data.length) {
+              this.getalarmList()
+              console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
+              this.showDialog(response.body.data[0])
+              setTimeout(() => {
+                this.closeDialog()
+              }, 5000)
+            }
+          })
+        }, 5000)
+      }
     }
   },
   async created() {
     this.userId = Cookies.get('userId')
+    await this.getPush()
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
@@ -292,44 +341,6 @@ export default {
     document.getElementById('alarmInfo').onclick = function() {
       this.watchClick()
     }
-    setInterval(() => {
-      // that.getalarmList()
-      const params = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 40,
-          total: 0
-        },
-        params: [
-          {
-            field: 'create_time',
-            operator: 'BETWEEN',
-            value: {
-              start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
-              end: moment().format('YYYY-MM-DD HH:mm:ss')
-            }
-          }
-        ],
-        sorts: [
-          {
-            field: 'create_time',
-            type: 'desc'
-          }
-        ]
-
-      }
-      fetchalarmList(params).then(response => {
-        if (response.body.data.length) {
-          this.getalarmList()
-          console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
-          this.showDialog(response.body.data[0])
-          setTimeout(() => {
-            this.closeDialog()
-          }, 5000)
-        }
-      })
-    }, 5000)
     setTimeout(() => {
       this.formInfo = []
       this.formInfo.forEach(item => {
@@ -341,7 +352,15 @@ export default {
       })
     }, 2000)
   },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
+  },
   methods: {
+    getPush() {
+      getPushSet().then(res => {
+        this.isPush = JSON.parse(res.body.data.setting).deliveryPush
+      })
+    },
     getPanelList() {
       // fetchAllData
       const params = {
@@ -399,27 +418,9 @@ export default {
     },
     yTab() {
       this.showTabValue = 'y'
-      this.yData = []
-      this.xData = []
-      this.stepsData.forEach((item, index) => {
-        if (item.state !== null) {
-          this.yData.push(item)
-        } else {
-          this.xData.push(item)
-        }
-      })
     },
     wTab() {
       this.showTabValue = 'w'
-      this.yData = []
-      this.xData = []
-      this.stepsData.forEach((item, index) => {
-        if (item.state !== null) {
-          this.yData.push(item)
-        } else {
-          this.xData.push(item)
-        }
-      })
     },
     getalarmList() {
       const params = {
@@ -451,16 +452,15 @@ export default {
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
           this.stepsData = response.body.data
-        }
-        for (let i = 0; i < response.body.data.length; i++) {
-          if (response.body.data[i].state === 1) {
-            this.dataError.push(response.body.data[i])
-          }
-        }
-        const index = 0
-        if (this.dataError.length > 0) {
-          this.dialogVisable = true
-          this.dataDia = this.dataError[index]
+          this.yData = []
+          this.xData = []
+          response.body.data.forEach(item => {
+            if (item.state !== null) {
+              this.yData.push(item)
+            } else {
+              this.xData.push(item)
+            }
+          })
         }
       })
     },
@@ -488,7 +488,6 @@ export default {
       this.dialogVisable = false
     },
     showDialog(item) {
-      console.log(item, 'itemitemitemitemitemitemitemitem')
       this.dataDia = item
       this.dialogVisable = true
     },
@@ -613,43 +612,15 @@ export default {
     normal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 0).then((res) => {
-        // this.getalarmList()
-        const params = {
-          cascade: true,
-          page: {
-            index: 1,
-            size: 40,
-            total: 0
-          },
-          params: [
-
-          ]
-        }
-        fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data.reverse()
-          this.dialogVisable = false
-        })
+        this.getalarmList()
+        this.dialogVisable = false
       })
     },
     unnormal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 1).then((res) => {
-        // this.getalarmList()
-        const params = {
-          cascade: true,
-          page: {
-            index: 1,
-            size: 40,
-            total: 0
-          },
-          params: [
-
-          ]
-        }
-        fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data.reverse()
-          this.dialogVisable = false
-        })
+        this.getalarmList()
+        this.dialogVisable = false
       })
     }
   }
@@ -744,12 +715,15 @@ export default {
             border: 1px solid #1890ff !important;
           }
           .zuo:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .zhong:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .you:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .zhong {

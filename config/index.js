@@ -13,7 +13,6 @@ module.exports = {
       '/nvsapi': {
         // target: 'http://host31.880508.xyz:10000',
         target: 'http://36.41.71.26:8920',
-
         changeOrigin: true,
         pathRewrite: {
           '^/nvsapi': ''
