@@ -101,7 +101,7 @@ import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
-import { updateUserPassWord, fetchUser } from '@/api/user'
+import { fetchUser } from '@/api/user'
 import { logout } from '@/api/login'
 import { notReadNotices, upReadNotices } from '@/api/notice'
 
@@ -207,7 +207,7 @@ export default {
           this.notReadNotice = []
         }
       })
-    }, 5*1000)
+    }, 5 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
