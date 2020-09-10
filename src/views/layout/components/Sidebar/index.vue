@@ -25,6 +25,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import store from '@/store'
 import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo-max.png'
 
@@ -52,7 +53,7 @@ export default {
     toHome() {
       this.$nextTick(() => {
         this.$router.push({
-          path: '/'
+          path: store.getters.level === 2 ? '/ecloudwatch' : '/'
         })
       })
     }

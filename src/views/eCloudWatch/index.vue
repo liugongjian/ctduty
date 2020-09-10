@@ -188,6 +188,7 @@ require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { fetchSinMan } from '@/api/dashboard'
+import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
@@ -244,7 +245,8 @@ export default {
       events: {
         click: a => {}
       },
-      renderTime
+      renderTime,
+      isPush: null
     }
   },
   watch: {
@@ -278,10 +280,57 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    $route(to, from) {
+      window.clearInterval(this.timer)
+    },
+    isPush(v) {
+      console.log(v, 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
+      if (v) {
+        this.timer = setInterval(() => {
+        // that.getalarmList()
+          const params = {
+            cascade: true,
+            page: {
+              index: 1,
+              size: 40,
+              total: 0
+            },
+            params: [
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: {
+                  start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
+                  end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
+              }
+            ],
+            sorts: [
+              {
+                field: 'create_time',
+                type: 'desc'
+              }
+            ]
+
+          }
+          fetchalarmList(params).then(response => {
+            if (response.body.data.length) {
+              this.getalarmList()
+              console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
+              this.showDialog(response.body.data[0])
+              setTimeout(() => {
+                this.closeDialog()
+              }, 5000)
+            }
+          })
+        }, 5000)
+      }
     }
   },
   async created() {
     this.userId = Cookies.get('userId')
+    await this.getPush()
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
@@ -292,44 +341,6 @@ export default {
     document.getElementById('alarmInfo').onclick = function() {
       this.watchClick()
     }
-    setInterval(() => {
-      // that.getalarmList()
-      const params = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 40,
-          total: 0
-        },
-        params: [
-          {
-            field: 'create_time',
-            operator: 'BETWEEN',
-            value: {
-              start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
-              end: moment().format('YYYY-MM-DD HH:mm:ss')
-            }
-          }
-        ],
-        sorts: [
-          {
-            field: 'create_time',
-            type: 'desc'
-          }
-        ]
-
-      }
-      fetchalarmList(params).then(response => {
-        if (response.body.data.length) {
-          this.getalarmList()
-          console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
-          this.showDialog(response.body.data[0])
-          setTimeout(() => {
-            this.closeDialog()
-          }, 5000)
-        }
-      })
-    }, 5000)
     setTimeout(() => {
       this.formInfo = []
       this.formInfo.forEach(item => {
@@ -341,7 +352,16 @@ export default {
       })
     }, 2000)
   },
+  beforeDestroy() {
+    window.clearInterval(this.timer)
+  },
   methods: {
+    getPush() {
+      getPushSet().then(res => {
+        console.log(JSON.parse(res.body.data.setting).deliveryPush, 'JSON.parse(res.body.data.setting).deliveryPush')
+        this.isPush = JSON.parse(res.body.data.setting).deliveryPush
+      })
+    },
     getPanelList() {
       // fetchAllData
       const params = {
@@ -614,12 +634,14 @@ export default {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 0).then((res) => {
         this.getalarmList()
+        this.dialogVisable = false
       })
     },
     unnormal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 1).then((res) => {
         this.getalarmList()
+        this.dialogVisable = false
       })
     }
   }
