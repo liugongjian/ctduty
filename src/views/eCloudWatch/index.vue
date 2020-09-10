@@ -458,7 +458,6 @@ export default {
       }
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
-          console.log(response.body.data, 'response.body.data')
           this.stepsData = response.body.data
         }
         for (let i = 0; i < response.body.data.length; i++) {
