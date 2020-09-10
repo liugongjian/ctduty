@@ -31,14 +31,14 @@
           <div class="dash-title">今日告警</div>
           <div class="bottom-left">
             <div style="width:100%; height:35px;padding:0 20px;">
-              <div class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p>全部</p>
+              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+                <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
               </div>
-              <div class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p>已处理</p>
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
               </div>
-              <div class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p>未处理</p>
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -358,7 +358,6 @@ export default {
   methods: {
     getPush() {
       getPushSet().then(res => {
-        console.log(JSON.parse(res.body.data.setting).deliveryPush, 'JSON.parse(res.body.data.setting).deliveryPush')
         this.isPush = JSON.parse(res.body.data.setting).deliveryPush
       })
     },
@@ -419,27 +418,9 @@ export default {
     },
     yTab() {
       this.showTabValue = 'y'
-      this.yData = []
-      this.xData = []
-      this.stepsData.forEach((item, index) => {
-        if (item.state !== null) {
-          this.yData.push(item)
-        } else {
-          this.xData.push(item)
-        }
-      })
     },
     wTab() {
       this.showTabValue = 'w'
-      this.yData = []
-      this.xData = []
-      this.stepsData.forEach((item, index) => {
-        if (item.state !== null) {
-          this.yData.push(item)
-        } else {
-          this.xData.push(item)
-        }
-      })
     },
     getalarmList() {
       const params = {
@@ -471,17 +452,16 @@ export default {
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
           this.stepsData = response.body.data
+          this.yData = []
+          this.xData = []
+          response.body.data.forEach(item => {
+            if (item.state !== null) {
+              this.yData.push(item)
+            } else {
+              this.xData.push(item)
+            }
+          })
         }
-        /*  for (let i = 0; i < response.body.data.length; i++) {
-          if (response.body.data[i].state === 1) {
-            this.dataError.push(response.body.data[i])
-          }
-        }
-        const index = 0
-        if (this.dataError.length > 0) {
-          this.dialogVisable = true
-          this.dataDia = this.dataError[index]
-        } */
       })
     },
     watchClick(e) {
@@ -508,7 +488,6 @@ export default {
       this.dialogVisable = false
     },
     showDialog(item) {
-      console.log(item, 'itemitemitemitemitemitemitemitem')
       this.dataDia = item
       this.dialogVisable = true
     },
@@ -736,12 +715,15 @@ export default {
             border: 1px solid #1890ff !important;
           }
           .zuo:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .zhong:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .you:active {
+            color: #1890ff;
             border: 1px solid #1890ff !important;
           }
           .zhong {
