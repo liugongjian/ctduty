@@ -340,10 +340,10 @@
         
       },
       onSearch() {
-        
-        this.tabsArr = this.tabsDateArr
+        this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
+        // this.tabsArr = this.tabsDateArr
         // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
-        this.value1=[this.startDate,this.endDate]
+        // this.value1=[this.startDate,this.endDate]
         if(this.tabsArr.indexOf(this.currentTab)===-1){
           this.defaultTab=this.tabsArr[0]
           this.currentTab=this.defaultTab
