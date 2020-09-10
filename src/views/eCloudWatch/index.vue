@@ -321,20 +321,12 @@ export default {
       }
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
+          this.getalarmList()
+          console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
           this.showDialog(response.body.data[0])
           setTimeout(() => {
             this.closeDialog()
           }, 5000)
-        }
-        for (let i = 0; i < response.body.data.length; i++) {
-          if (response.body.data[i].state === 1) {
-            this.dataError.push(response.body.data[i])
-          }
-        }
-        const index = 0
-        if (this.dataError.length > 0) {
-          this.dialogVisable = true
-          this.dataDia = this.dataError[index]
         }
       })
     }, 5000)
@@ -496,6 +488,7 @@ export default {
       this.dialogVisable = false
     },
     showDialog(item) {
+      console.log(item, 'itemitemitemitemitemitemitemitem')
       this.dataDia = item
       this.dialogVisable = true
     },
