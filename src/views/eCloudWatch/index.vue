@@ -452,7 +452,7 @@ export default {
         if (response.body.data.length) {
           this.stepsData = response.body.data
         }
-        for (let i = 0; i < response.body.data.length; i++) {
+        /*  for (let i = 0; i < response.body.data.length; i++) {
           if (response.body.data[i].state === 1) {
             this.dataError.push(response.body.data[i])
           }
@@ -461,7 +461,7 @@ export default {
         if (this.dataError.length > 0) {
           this.dialogVisable = true
           this.dataDia = this.dataError[index]
-        }
+        } */
       })
     },
     watchClick(e) {
@@ -613,43 +613,13 @@ export default {
     normal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 0).then((res) => {
-        // this.getalarmList()
-        const params = {
-          cascade: true,
-          page: {
-            index: 1,
-            size: 40,
-            total: 0
-          },
-          params: [
-
-          ]
-        }
-        fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data.reverse()
-          this.dialogVisable = false
-        })
+        this.getalarmList()
       })
     },
     unnormal() {
       clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 1).then((res) => {
-        // this.getalarmList()
-        const params = {
-          cascade: true,
-          page: {
-            index: 1,
-            size: 40,
-            total: 0
-          },
-          params: [
-
-          ]
-        }
-        fetchalarmList(params).then(response => {
-          this.stepsData = response.body.data.reverse()
-          this.dialogVisable = false
-        })
+        this.getalarmList()
       })
     }
   }
