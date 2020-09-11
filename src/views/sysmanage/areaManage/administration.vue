@@ -63,7 +63,7 @@
             <div class="block">
               <el-cascader
                 v-model="value"
-                :options="options"
+                :options="aboutTownOptions"
                 @change="handleChange"
               >
               </el-cascader>
@@ -200,6 +200,7 @@ export default {
       },
       regionalism: 'town',
       aboutTown: [],
+      aboutTownOptions: [],
       editUserForm: {
         id: 0,
         username: '',
