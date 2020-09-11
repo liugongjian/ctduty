@@ -60,7 +60,14 @@
           <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
             <div class="tagbox">
-              <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud>
+              <WordCloud
+                v-if="hotTag.length"
+                id="echarts05"
+                :data="hotTag"
+                height="100%"
+                width="100%"
+              />
+              <!--  <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud> -->
             </div>
           </div>
         </el-col>
@@ -79,6 +86,7 @@
 import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
+import WordCloud from '@/components/WordCloud'
 import huayin from '@/json/weinan.json'
 import elementResizeDetectorMaker from 'element-resize-detector'
 // 引入基本模板
@@ -98,7 +106,7 @@ export default {
   name: 'Dashboard',
   // mixins: [PreCheck],
   components: {
-
+    WordCloud
   },
   data() {
     return {
@@ -119,7 +127,10 @@ export default {
       zhuYdata: [],
       mapShowData: [],
       isFullscreen: false,
-      screenHeight: ''
+      screenHeight: '',
+      wordCloudData: [
+
+      ]
     }
   },
   watch: {
@@ -146,8 +157,8 @@ export default {
     }
   },
   async created() {
-    await this.getList()
     await this.getNowList()
+    await this.getList()
     registerMap()
   },
   mounted() {
@@ -229,7 +240,7 @@ export default {
         this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
         res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
           this.hotTag.push({
-            id: new Date(), name: item.address, maxFont: index === 0 ? '12px' : (12 + index * 5) + 'px'
+            value: item.alertCount, name: item.address
           })
           this.mapShowData.push({
             name: item.address, value: item.alertCount, latitude: item.latitude,
@@ -935,6 +946,16 @@ export default {
   div {
     width: 100%;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+}
+#echarts05 {
+   position:relative !important;
+  div {
+    width: 100%;
+    position: absolute !important;
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);

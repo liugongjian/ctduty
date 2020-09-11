@@ -14,7 +14,7 @@
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="110px">
-                  <el-form-item label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
                   <el-form-item label="负责人：" prop="inChargeId">
                     <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择负责人">
@@ -28,19 +28,19 @@
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="设备型号：" prop="model"><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="设备型号：" prop="model"><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="视频流：" prop="url"><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="视频流：" prop="url"><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="手机：" prop="phone"><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="手机：" prop="phone"><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头经度：" prop="longitude"><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头经度：" prop="longitude"><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度：" prop="latitude"><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头纬度：" prop="latitude"><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址：" prop="address"><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="地址：" prop="address"><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -223,34 +223,37 @@ export default {
       },
       addrules: {
         creatorId: [
-          { required: true, trigger: 'blur', message: '请输入创建人ID' }
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
         ],
         name: [
-          { required: true, trigger: 'blur', message: '请输入摄像头名称' }
+          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
         ],
         url: [
-          { required: true, trigger: 'blur', message: '请输入视频流信息' }
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
+        ],
+        phone: [
+          { required: true, trigger: 'blur', message: '手机号不能为空' }
         ],
         manufacturer: [
-          { required: true, trigger: 'blur', message: '请输入制造厂商' }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: 'blur', message: '请输入设备型号' }
+          { required: true, trigger: 'blur', message: '设备型号不能为空' }
         ],
         id: [
-          { required: true, trigger: 'blur', message: '请输入摄像头ID' }
+          { required: true, trigger: 'blur', message: '摄像头ID不能为空' }
         ],
         inChargeId: [
-          { required: true, trigger: 'blur', message: '请输入负责人ID' }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
         longitude: [
-          { required: true, trigger: 'blur', message: '请输入经度' }
+          { required: true, trigger: 'blur', message: '经度不能为空' }
         ],
         latitude: [
-          { required: true, trigger: 'blur', message: '请输入纬度' }
+          { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
         address: [
-          { required: true, trigger: 'blur', message: '请输入地址' }
+          { required: true, trigger: 'blur', message: '地址不能为空' }
         ]
       },
       formInline: {
@@ -309,11 +312,9 @@ export default {
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             that.showZwMes = false
           } else {
-            console.log('else')
             setTimeout(() => {
               const markers = document.getElementsByClassName('markerImg');
               [].forEach.call(markers, (item) => {
-                console.log(JSON.parse(item.attributes[1].nodeValue).id === that.highLightMarkerId, '???')
                 if (JSON.parse(item.attributes[1].nodeValue).id === that.highLightMarkerId) {
                   that.form = JSON.parse(item.attributes[1].nodeValue)
                   that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
@@ -702,7 +703,7 @@ export default {
  }
  label{
     display:inline-block;
-    width:100px;
+    width:100px !important;
     text-align: left !important;
     }
 </style>

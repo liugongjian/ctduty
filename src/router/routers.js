@@ -1,5 +1,6 @@
 /* Layout */
 import Layout from '@/views/layout/Layout'
+import MainLayout from '@/views/layout/MainLayout'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -157,14 +158,43 @@ export const asyncRouterMap = [
         }
       },
       {
-        path: 'areaManage',
-        component: () => import('@/views/sysmanage/areaManage/index'),
-        name: 'sysAreaManage',
+        path: '/areaManage',
+        component: MainLayout,
+        alwaysShow: true,
         meta: {
           title: 'areaManage',
-          icon: 'area',
-          noCache: false
-        }
+          icon: 'area'
+        },
+        children: [
+          {
+            path: 'area',
+            component: () => import('@/views/sysmanage/areaManage/index'),
+            name: 'sysAreaManageArea',
+            meta: {
+              title: '区域管理',
+              icon: 'area'
+            }
+          },
+          {
+            path: 'administration',
+            component: () => import('@/views/sysmanage/areaManage/administration'),
+            name: 'sysAreaManageAdministration',
+            meta: {
+              title: '行政管理',
+              icon: 'area'
+            }
+          },
+          {
+            path: 'policeManage',
+            component: () => import('@/views/sysmanage/areaManage/policeManage'),
+            name: 'sysAreaManagePoliceManage',
+            meta: {
+              title: '派出所管理',
+              icon: 'area'
+            }
+          }
+
+        ]
       },
       {
         path: 'carManage',
