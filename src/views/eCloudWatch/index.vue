@@ -628,6 +628,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.warn {
+  margin-bottom: 20px;
+}
+.zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
+    margin-right: 20px;
+    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+.zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(230,162,60,1);
+}
+.zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
 * {
   padding: 0;
   margin: 0;

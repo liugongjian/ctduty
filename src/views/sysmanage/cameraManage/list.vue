@@ -9,8 +9,8 @@
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form :model="dialogForm" :rule="rules" label-position="right" label-width="100px">
-              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+            <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="100px">
+              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
               <el-form-item label="负责人：">
                 <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择岗位">
@@ -24,19 +24,19 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -153,6 +153,41 @@ export default {
         manufacturer: '',
         model: '',
         phone: ''
+      },
+      addrules: {
+        creatorId: [
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
+        ],
+        name: [
+          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
+        ],
+        url: [
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
+        ],
+        phone: [
+          { required: true, trigger: 'blur', message: '手机号不能为空' }
+        ],
+        manufacturer: [
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
+        ],
+        model: [
+          { required: true, trigger: 'blur', message: '设备型号不能为空' }
+        ],
+        id: [
+          { required: true, trigger: 'blur', message: '摄像头ID不能为空' }
+        ],
+        inChargeId: [
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
+        ],
+        longitude: [
+          { required: true, trigger: 'blur', message: '经度不能为空' }
+        ],
+        latitude: [
+          { required: true, trigger: 'blur', message: '纬度不能为空' }
+        ],
+        address: [
+          { required: true, trigger: 'blur', message: '地址不能为空' }
+        ]
       },
       formInline: {
         searchkey: '',
@@ -352,31 +387,41 @@ export default {
       this.dialogVisable = false
     },
     dialogConfirm() {
-      const params = [
-        this.dialogForm
-      ]
-      addCamera(params).then(res => {
-        this.dialogForm = {
-          address: '',
-          creatorId: '',
-          id: '',
-          name: '',
-          latitude: '',
-          longitude: '',
-          url: '',
-          inChargeId: '',
-          manufacturer: '',
-          model: '',
-          phone: ''
-        }
-        this.$notify({
-          title: '成功',
-          message: '增加成功',
-          type: 'success',
-          duration: 2000
+      this.$refs.addForm.validate(valid => {
+        if (!valid) return
+        const params = [
+          this.dialogForm
+        ]
+        addCamera(params).then(res => {
+          this.dialogForm = {
+            address: '',
+            creatorId: '',
+            id: '',
+            name: '',
+            latitude: '',
+            longitude: '',
+            url: '',
+            inChargeId: '',
+            manufacturer: '',
+            model: '',
+            phone: ''
+          }
+          this.$notify({
+            title: '成功',
+            message: '增加成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.dialogVisable = false
+        }).catch(() => {
+          this.$notify({
+            title: '失败',
+            message: '增加失败',
+            type: 'error',
+            duration: 2000
+          })
         })
-        this.getList()
-        this.dialogVisable = false
       })
     }
   }
