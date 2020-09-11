@@ -138,26 +138,6 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'userManage',
-        component: () => import('@/views/sysmanage/userManage/index'),
-        name: 'sysUser',
-        meta: {
-          title: 'userManage',
-          icon: 'userManage',
-          noCache: false
-        }
-      },
-      {
-        path: 'cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/index'),
-        name: 'sysCameraManage',
-        meta: {
-          title: 'cameraManage',
-          icon: 'camera',
-          noCache: false
-        }
-      },
-      {
         path: '/areaManage',
         component: MainLayout,
         alwaysShow: true,
@@ -195,6 +175,26 @@ export const asyncRouterMap = [
           }
 
         ]
+      },
+      {
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'userManage',
+          icon: 'userManage',
+          noCache: false
+        }
+      },
+      {
+        path: 'cameraManage',
+        component: () => import('@/views/sysmanage/cameraManage/index'),
+        name: 'sysCameraManage',
+        meta: {
+          title: 'cameraManage',
+          icon: 'camera',
+          noCache: false
+        }
       },
       {
         path: 'carManage',

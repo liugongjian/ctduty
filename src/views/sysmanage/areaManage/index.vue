@@ -1,5 +1,5 @@
 <template>
-  <div class="area" style="height: 100%" @click="watchClick">
+  <div class="area" style="height: 100vh" @click="watchClick">
     <div class="floatmsg">
       <div class="floatword">
         <input v-model="inputmsg" type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
@@ -198,8 +198,8 @@ export default {
       }
     },
     // 模糊搜索事件 请求接口
-    onSearch() {      
-      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安局') || this.inputmsg.includes('局') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('阴') || this.inputmsg.includes('华阴公安局') ) {
+    onSearch() {
+      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安局') || this.inputmsg.includes('局') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('阴') || this.inputmsg.includes('华阴公安局')) {
         this.openOrNot = false
         this.local = []
         this.local.push('华阴公安局')
@@ -211,20 +211,20 @@ export default {
           this.openOrNot = true
         })
         clearTimeout()
-      } else if (this.inputmsg.includes('孟') || this.inputmsg.includes('孟塬') || this.inputmsg.includes('孟塬镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('塬') || this.inputmsg.includes('派出') || this.inputmsg.includes('孟塬镇派出所') || this.inputmsg.includes('镇') ) {
+      } else if (this.inputmsg.includes('孟') || this.inputmsg.includes('孟塬') || this.inputmsg.includes('孟塬镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('塬') || this.inputmsg.includes('派出') || this.inputmsg.includes('孟塬镇派出所') || this.inputmsg.includes('镇')) {
         this.local = []
         this.local.push('孟塬镇派出所')
         this.addressdata.mengpolice = true
         this.addressdata.mountainpolice = false
         this.addressdata.huapolice = false
-        this.markers = [{position: [110.147774, 34.558654], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="孟塬镇派出所"></path></svg>` }]
-      } else if (this.inputmsg.includes('华山') || this.inputmsg.includes('华山镇') || this.inputmsg.includes('镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('山') || this.inputmsg.includes('华山镇派出所') ) {
+        this.markers = [{ position: [110.147774, 34.558654], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="孟塬镇派出所"></path></svg>` }]
+      } else if (this.inputmsg.includes('华山') || this.inputmsg.includes('华山镇') || this.inputmsg.includes('镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('山') || this.inputmsg.includes('华山镇派出所')) {
         this.local = []
         this.local.push('华山镇派出所')
         this.addressdata.mountainpolice = true
         this.addressdata.huapolice = false
         this.addressdata.mengpolice = false
-        this.markers = [{position: [110.0877, 34.534504], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华山镇派出所"></path></svg>` }]
+        this.markers = [{ position: [110.0877, 34.534504], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华山镇派出所"></path></svg>` }]
       }
     },
     watchClick(e) {
