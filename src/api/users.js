@@ -1,6 +1,15 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
+export function fetchUserList(query) {
+  return request({
+    url: '/nvsapi/User/QueryActive',
+    method: 'post',
+    data: query
+  })
+}
+
+
 export function fetchAreaList(query) {
   return request({
     url: '/nvsapi/Area/QueryActive',
