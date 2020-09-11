@@ -325,3 +325,7 @@ code {
       }
   }
 }
+
+.el-cascader__dropdown {
+  z-index: 9999999999999999999999999999999999 !important;
+}

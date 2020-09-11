@@ -37,41 +37,40 @@
     <el-dialog
       :visible.sync="addUserDialogVisible"
       title="新增用户"
-      width="50%"
+      width="40%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addUserForm.username" type="text"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="username">
-          <el-input v-model="addUserForm.name" type="text"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="addUserForm.password" type="password"></el-input>
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="addUserForm.phone" type="text"></el-input>
-        </el-form-item>
-        <el-form-item label="区域/部门">
-          <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
-            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="岗位">
-          <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
-            <el-option v-for="item in postInfo" :value="item.postId" :label="item.post" :key="item.postId"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="权限" prop="permissionId">
-          <el-radio-group v-model="addUserForm.permissionId">
-            <el-radio :label="3274944196083712">系统管理员</el-radio>
-            <el-radio :label="3274944196083713">管理员</el-radio>
-            <el-radio :label="3274944196083714">普通用户</el-radio>
+      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">   
+        <el-form-item label="村/镇" prop="permissionId">
+          <el-radio-group v-model="regionalism">
+            <el-radio label="town">镇</el-radio>
+            <el-radio label="country">村</el-radio>
           </el-radio-group>
         </el-form-item>
-        <!-- <el-form-item label="备注">
-                    <el-input v-model="addUserForm.des" type="textarea"></el-input>
-                </el-form-item> -->
+        <template v-if="regionalism === 'town'">
+          <el-form-item label="镇名" prop="username">
+            <el-input v-model="addUserForm.username" type="text"></el-input>
+          </el-form-item>
+          <el-form-item label="所属派出所">
+            <el-select v-model="addUserForm.departmentId" placeholder="请选择所属派出所">
+              <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+            </el-select>
+          </el-form-item>
+        </template>
+        <template v-if="regionalism === 'country'">
+          <el-form-item label="村名" prop="username">
+            <el-input v-model="addUserForm.username" type="text"></el-input>
+          </el-form-item>
+          <el-form-item label="隶属" v-model="aboutTown">
+            <div class="block">
+              <el-cascader
+                v-model="value"
+                :options="options"
+                @change="handleChange"
+              >
+              </el-cascader>
+            </div>
+          </el-form-item>
+        </template>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="addAUser">确 定</el-button>
@@ -200,6 +199,8 @@ export default {
         postId: null,
         phone: ''
       },
+      regionalism: 'town',
+      aboutTown: [],
       editUserForm: {
         id: 0,
         username: '',
@@ -398,7 +399,7 @@ export default {
 .addbtn{
   float: right;
 }
- .el-select-dropdown {
-    z-index: 9999999999999999999999999999999999 !important;
-  }
+.el-select-dropdown {
+  z-index: 9999999999999999999999999999999999 !important;
+}
 </style>
