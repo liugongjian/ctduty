@@ -8,7 +8,6 @@
       <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
-
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="姓名" prop="name"></el-table-column>
