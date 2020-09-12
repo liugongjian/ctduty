@@ -216,7 +216,10 @@ export default {
     },
 
     getCountryList() {
-      getCountry({"cascade": true}).then((res) => {
+      const query = {
+        cascade: true
+      }
+      getCountry(query).then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
           this.data = this.formatCountry(res.body.data, 2);
