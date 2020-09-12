@@ -429,5 +429,8 @@ export default {
 </script>
 
 <style lang='scss'>
+.list {
+  min-height: 100%;
+}
 </style>
 

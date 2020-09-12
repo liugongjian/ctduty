@@ -10,7 +10,7 @@
 
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="ID" prop="id"></el-table-column>
-      <el-table-column label="派出所名称" prop="username"></el-table-column>
+      <el-table-column label="派出所名称" prop="name"></el-table-column>
       <el-table-column label="所在经度" prop="longitude"></el-table-column>
       <el-table-column label="所在纬度" prop="latitude"></el-table-column>
       <el-table-column label="地址" prop="address"></el-table-column>
@@ -323,5 +323,8 @@ export default {
 }
  .el-select-dropdown {
     z-index: 9999999999999999999999999999999999 !important;
+  }
+  td {
+    padding: 5px !important;
   }
 </style>
