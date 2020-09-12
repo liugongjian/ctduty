@@ -23,22 +23,22 @@
           </el-tree>
         </div>
         <div class="local">
-          <div v-for="(item, index) in local" :key="index" class="huapolice" >{{ item }}</div>
+          <div class="huapolice" >{{ local }}</div>
         </div>
         <div class="border"></div>
       </div>
       <div class="address">
         <div class="leftborder"></div>
-        <div v-if="addressdata.mengpolice" :model="addressdata" class="addressmsg">
+        <div v-show="addressdata.police" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            孟塬镇派出所
+            {{ addressdata.police }}
           </p>
           <p class="msg msg2">
-            陕西省渭南市华阴市孟塬镇孟塬大酒店西南150米
+            {{ addressdata.address }}
           </p>
         </div>
-        <div v-else-if="addressdata.huapolice" :model="addressdata" class="addressmsg">
+        <!-- <div v-else-if="addressdata.huapolice" :model="addressdata" class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
             华阴公安局
@@ -55,7 +55,7 @@
           <p class="msg msg2">
             玉泉路与金勃路交叉口西北150米
           </p>
-        </div>
+        </div> -->
         <div class="addressimg">
           <img src="../../../assets/images/police.jpg" alt="">
         </div>
@@ -120,9 +120,8 @@ export default {
         }
       },
       addressdata: {
-        huapolice: true,
-        mengpolice: false,
-        mountainpolice: false
+        police: '',
+        address: '',
       },
       markers: [],
       formInfo: [],
@@ -147,6 +146,8 @@ export default {
       console.log(obj, 'obj');
       if(node.level === 1 ) {
         this.local = data.policeStation.name
+        this.addressdata.police = data.policeStation.name
+        this.addressdata.address = data.policeStation.address
       }
       // if (node.level === 2 && data.label === '孟塬镇') {
       //   this.local = []
