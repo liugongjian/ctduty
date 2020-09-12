@@ -1,20 +1,14 @@
 <template>
   <div class="loginContainer" style="display: flex; height: 100%;">
+    <div class="fffmark"></div>
+    <div class="huashanBJ">
+      <div class="line">
+        <img width="720px" height="540px" src="./images/line.svg" alt="">
+      </div>
+    </div>
     <div class="leftLogo">
-      <div class="leftTop">
-        <img src="./images/leftTop.png" alt="">
-      </div>
-      <div class="rightTop">
-        <img src="./images/rightTop.png" alt="">
-      </div>
-      <div class="leftBottom">
-        <img src="./images/leftBottom.png" alt="">
-      </div>
-      <div class="rightBottom">
-        <img src="./images/rightBottom.png" alt="">
-      </div>
       <div class="logo">
-        <img src="./images/logo.png" alt="">
+        <img src="./images/logo.svg" alt="">
       </div>
     </div>
     <div class="loginFormContainer">
@@ -141,14 +135,14 @@ export default {
                 console.log('res level', res.body.data.permissions.level)
                 const level = res.body.data.permissions.level
                 // localStorage.setItem('userId', res.body.data.id)
-                Cookies.set('userId', res.body.data.id)                
-                Cookies.set('level', res.body.data.permissions.level)                
-                Cookies.set('username', res.body.data.username) 
-                if (level === 2 ) {
+                Cookies.set('userId', res.body.data.id)
+                Cookies.set('level', res.body.data.permissions.level)
+                Cookies.set('username', res.body.data.username)
+                if (level === 2) {
                   this.$router.push('/ecloudwatch')
                 } else {
                   this.$router.push('/dashboard')
-                }            
+                }
               }).catch(err => {
                 console.log(err)
               })
@@ -182,50 +176,6 @@ export default {
 body {
   .leftLogo {
     position: relative;
-    .leftTop {
-      position: absolute;
-      top: -200px;
-      left: -30px;
-      width: 300px;
-      height: 300px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .rightTop {
-      position: fixed;
-      top: -124px;
-      right: -160px;
-      width: 300px;
-      height: 300px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .leftBottom {
-      position: fixed;
-      bottom: -260px;
-      left: -150px;
-      width: 400px;
-      height: 400px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-    .rightBottom {
-      position: fixed;
-      bottom: -200px;
-      right: -180px;
-      width: 400px;
-      height: 400px;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
     .logo {
       position: absolute;
       top: 20px;
@@ -241,9 +191,21 @@ body {
   .loginContainer {
     width: 100%;
     height: 100%;
-    background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
+    background-color: #9DB0C4;
+   /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
     background-size: 100% 100%;
     background-position: bottom center;
+    position: relative;
+    overflow: hidden;
+    .fffmark{
+      background-color: #fff;
+      height: 220vh;
+      width:50vw;
+      position:absolute;
+      left: 0;
+      top: 0;
+      transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
+    }
   }
 
   .loginFormContainer {
@@ -253,22 +215,37 @@ body {
     flex-direction: column;
     flex:1;
   }
-  .login {
-    background-color: #fff;
-    width: 400px;
-    height: 420px;
-    padding: 20px 20px;
-    border-radius: 10px;
+  .huashanBJ {
+    width: 792px;
+    height: 594px;
+    background-image: url(./images/huashanBJ.jpg);
+    background-size: cover;
     position: fixed;
     top: 50%;
-    right: 50px;
+    left: 10%;
+    transform: translateY(-50%);
+    .line {
+      position: absolute;
+      top: 27px;
+      left:36px;
+    }
+  }
+  .login {
+    background-color: #fff;
+    width: 350px;
+    height: 370px;
+    padding: 20px 30px;
+    border-radius: 10px;
+    position: fixed;
+    top: 46%;
+    right: 6%;
     transform: translateY(-50%);
     flex-direction: column;
     justify-content: center;
     padding-bottom: 30px;
     .logo{
-      width:352px;
-      height: 70px;
+      width:290px;
+      height: 58px;
       background: url(./images/logoTitel.png) no-repeat center;
       background-size: 60% 60%;
       margin-left: 10px;
@@ -280,7 +257,7 @@ body {
       font-size: 14px;
       color: #333333;
       line-height: 24px;
-      margin: 30px 0;
+      margin: 18px 0;
     }
     .userName,
     .passWord {
@@ -288,7 +265,7 @@ body {
       height: 40px;
     }
     .btn {
-      width: 368px;
+      width: 290px;
       height: 40px;
       border-radius: 4px;
       font-family: PingFangSC-Regular;

@@ -3,21 +3,21 @@
   <div class="userManage">
     <el-divider></el-divider>
     <el-row>
-      <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增派出所</el-button>
+      <el-button class="addbtn" type="warning" @click="addPoliceDialogVisible=true">+新增派出所</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入派出所姓名"></el-input>
-      <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
+      <el-button class="searchbtn" type="warning" @click="getPoliceList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
 
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
-      <el-table-column label="ID" prop="username"></el-table-column>
+      <el-table-column label="ID" prop="id"></el-table-column>
       <el-table-column label="派出所名称" prop="name"></el-table-column>
-      <el-table-column label="所在经度" prop="phone"></el-table-column>
-      <el-table-column label="所在纬度" prop="post.name"></el-table-column>
-      <el-table-column label="区域/部门" prop="department.name"></el-table-column>
+      <el-table-column label="所在经度" prop="longitude"></el-table-column>
+      <el-table-column label="所在纬度" prop="latitude"></el-table-column>
+      <el-table-column label="地址" prop="address"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
-          <el-link type="primary" @click="showEditDialog(row_data.row.id)">编辑</el-link>
+          <el-link type="primary" @click="showEditDialog(row_data.row)">编辑</el-link>
           <el-link type="primary" @click="showDeleteDialog(row_data.row.username,row_data.row.id)">删除</el-link>
         </template>
       </el-table-column>
@@ -34,50 +34,62 @@
     </el-pagination>
 
     <el-dialog
-      :visible.sync="addUserDialogVisible"
+      :visible.sync="addPoliceDialogVisible"
       title="新增派出所"
       width="50%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
-        <el-form-item label="派出所名称" prop="username">
-          <el-input v-model="addUserForm.username" type="text"></el-input>
+      <el-form ref="addFormRef" :model="addPoliceForm" :rules="addPoliceFormRules" label-width="100px">
+        <el-form-item label="派出所名称" prop="name">
+          <el-input v-model="addPoliceForm.name" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="派出所ID" prop="id">
+          <el-input v-model="addPoliceForm.id" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="addPoliceForm.address" type="text"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="addAUser">确 定</el-button>
-        <el-button @click="addUserDialogVisible = false">取 消</el-button>
+        <el-button type="warning" @click="addAPolice">确 定</el-button>
+        <el-button @click="addPoliceDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="editUserDialogVisible"
+      :visible.sync="editPoliceDialogVisible"
       title="编辑派出所"
       width="50%"
       @close="editDialogClosed">
-      <el-form ref="editFormRef" :rules="addUserFormRules" :model="editUserForm" label-width="100px">
-        <el-form-item label="派出所名称" prop="username">
-          <el-input v-model="editUserForm.username" type="text"></el-input>
+      <el-form ref="editFormRef" :rules="addPoliceFormRules" :model="editPoliceForm" label-width="100px">
+        <el-form-item label="派出所名称" prop="name">
+          <el-input v-model="editPoliceForm.name" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="派出所ID" prop="id">
+          <el-input v-model="editPoliceForm.id" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="editPoliceForm.address" type="text"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="editAUser">确 定</el-button>
-        <el-button @click="editUserDialogVisible = false">取 消</el-button>
+        <el-button type="warning" @click="editAPolice">确 定</el-button>
+        <el-button @click="editPoliceDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
     <el-dialog
-      :visible.sync="deleteUserDialogVisible"
+      :visible.sync="deletePoliceDialogVisible"
       title="删除派出所"
       width="50%">
-      <span>确认删除派出所{{ deleteUserName }}？</span>
+      <span>确认删除派出所{{ deletePoliceName }}？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="deleteAUser">确 定</el-button>
-        <el-button @click="deleteUserDialogVisible = false">取 消</el-button>
+        <el-button type="warning" @click="deleteAPolice">确 定</el-button>
+        <el-button @click="deletePoliceDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
+import { getPoliceList, addPolice, updatePolice } from '@/api/areaManage'
 
 export default {
   data() {
@@ -89,8 +101,8 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
-      addUserDialogVisible: false,
-      addUserFormRules: {
+      addPoliceDialogVisible: false,
+      addPoliceFormRules: {
         username: [
           { required: true, message: '派出所名称不能为空', trigger: 'blur' },
           { min: 5, max: 10, message: '派出所名长度在5-12个字符之间', trigger: 'blur' }
@@ -129,7 +141,7 @@ export default {
           { required: true, message: '权限不能为空', trigger: 'blur' }
         ]
       },
-      addUserForm: {
+      addPoliceForm: {
         username: '',
         name: '',
         password: '',
@@ -138,7 +150,7 @@ export default {
         postId: null,
         phone: ''
       },
-      editUserForm: {
+      editPoliceForm: {
         id: 0,
         username: '',
         name: '',
@@ -155,10 +167,10 @@ export default {
       },
       queryName: '',
       totalnum: 0,
-      editUserDialogVisible: false,
-      deleteUserName: '',
-      deleteUserDialogVisible: false,
-      deleteUserId: 0,
+      editPoliceDialogVisible: false,
+      deletePoliceName: '',
+      deletePoliceDialogVisible: false,
+      deletePoliceId: 0,
       departmentInfo: [
         {
           departmentId: 3275699862611970,
@@ -203,10 +215,10 @@ export default {
     }
   },
   created() {
-    this.getUserList()
+    this.getPoliceList()
   },
   methods: {
-    getUserList() {
+    getPoliceList() {
       const query = {
         cascade: true,
         page: {
@@ -218,7 +230,7 @@ export default {
       if (this.queryName.trim() !== '') {
         query.params.name = this.queryName
       }
-      fetchUserList(query).then(response => {
+      getPoliceList(query).then(response => {
         console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
@@ -228,68 +240,64 @@ export default {
 
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
-      this.getUserList()
+      this.getPoliceList()
     },
     handleCurrentChange(newpage) {
       this.queryInfo.pagenum = newpage
-      this.getUserList()
+      this.getPoliceList()
     },
-    addAUser() {
+    addAPolice() {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
-        const query = [{ ...this.addUserForm }]
+        const query = [{ ...this.addPoliceForm }]
         console.log(query)
-        postAddUser(query).then(response => {
+        addPolice(query).then(response => {
           console.log(response)
           if (response.code !== 0) return this.$message.error('添加派出所失败，请联系系统管理员')
           this.$message.success('添加派出所成功')
-          this.addUserDialogVisible = false
-          this.getUserList()
+          this.addPoliceDialogVisible = false
+          this.getPoliceList()
         })
       })
     },
     addDialogClosed() {
-      this.addUserForm = {}
+      this.addPoliceForm = {}
       this.$refs.addFormRef.resetFields()
     },
-    showEditDialog(id) {
-      const { data: res } = getUserInfo(id).then(response => {
-        // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取派出所信息失败')
-        this.editUserForm = response.body.data
-        this.editUserDialogVisible = true
-      })
+    showEditDialog(item) {
+      this.editPoliceForm = item
+      this.editPoliceDialogVisible = true
     },
-    editAUser() {
+    editAPolice() {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
-        updateUser([{ ...this.editUserForm }]).then(response => {
+        updatePolice([{ ...this.editPoliceForm }]).then(response => {
           // console.log(response)
           if (response.code !== 0) return this.$message.error('更新派出所信息失败,请稍后再试')
-          this.editUserDialogVisible = false
-          this.getUserList()
+          this.editPoliceDialogVisible = false
+          this.getPoliceList()
           this.$message.success('更新派出所信息成功')
         })
       })
     },
     editDialogClosed() {
-      this.editUserForm = {}
+      this.editPoliceForm = {}
     },
     showDeleteDialog(username, id) {
-      this.deleteUserDialogVisible = true
-      this.deleteUserName = username
-      this.deleteUserId = id
+      this.deletePoliceDialogVisible = true
+      this.deletePoliceName = username
+      this.deletePoliceId = id
     },
 
-    deleteAUser() {
+    deleteAPolice() {
       const ids = []
-      ids.push(this.deleteUserId)
-      deleteUser(ids).then(response => {
+      ids.push(this.deletePoliceId)
+      deletePolice(ids).then(response => {
         if (response.code !== 0) return this.$message.error('删除派出所失败,请稍后再试')
-        this.deleteUserDialogVisible = false
-        this.deleteUserId = 0
-        this.deleteUserName = ''
-        this.getUserList()
+        this.deletePoliceDialogVisible = false
+        this.deletePoliceId = 0
+        this.deletePoliceName = ''
+        this.getPoliceList()
         this.$message.success('删除派出所信息')
       })
     },
@@ -297,7 +305,7 @@ export default {
     resetQuery() {
       this.queryName = ''
 
-      this.getUserList()
+      this.getPoliceList()
     }
 
   }
