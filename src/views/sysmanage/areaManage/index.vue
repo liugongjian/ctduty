@@ -145,6 +145,9 @@ export default {
       console.log(data, 'data');
       console.log(node, 'node');
       console.log(obj, 'obj');
+      if(node.level === 1 ) {
+        this.local = data.policeStation.name
+      }
       // if (node.level === 2 && data.label === '孟塬镇') {
       //   this.local = []
       //   this.local.push('孟塬镇派出所')
@@ -237,13 +240,15 @@ export default {
             icon: 'el-icon-remove-outline',
             label: item.name,
             id: item.id,
-            children: this.formatCountry(item.children, level)
+            children: this.formatCountry(item.children, level),
+            policeStation: item.policeStation,
           }
         } else {
           return {
             icon: 'el-icon-remove-outline',
             id: item.id,
-            label: item.name
+            label: item.name,
+            policeStation: item.policeStation,
           };
         }
       })
