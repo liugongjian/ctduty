@@ -41,6 +41,15 @@
         <el-form-item label="派出所名称" prop="username">
           <el-input v-model="addUserForm.name" type="text"></el-input>
         </el-form-item>
+        <el-form-item label="所在经度" prop="longitude">
+          <el-input v-model="addUserForm.longitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="所在纬度" prop="latitude">
+          <el-input v-model="addUserForm.latitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="addUserForm.address" type="text"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="addPolice">确 定</el-button>
@@ -56,9 +65,18 @@
         <el-form-item label="派出所名称" prop="username">
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
+        <el-form-item label="所在经度" prop="longitude">
+          <el-input v-model="editUserForm.longitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="所在纬度" prop="latitude">
+          <el-input v-model="editUserForm.latitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="editUserForm.address" type="text"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="editAUser">确 定</el-button>
+        <el-button type="warning" @click="editAPolice">确 定</el-button>
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -77,6 +95,7 @@
 
 <script>
 import { fetchPoliceList, addPolice, getUserInfo, updateUser, deleteUser } from '@/api/users'
+import { updatePolice } from '@/api/areaManage'
 
 export default {
   data() {
@@ -201,26 +220,23 @@ export default {
       this.addUserForm = {}
       this.$refs.addFormRef.resetFields()
     },
-    showEditDialog(id) {
-      const { data: res } = getUserInfo(id).then(response => {
-        // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取派出所信息失败')
-        this.editUserForm = response.body.data
-        this.editUserDialogVisible = true
-      })
+    showEditDialog(item) {
+      this.editPoliceForm = item
+      this.editPoliceDialogVisible = true
     },
-    editAUser() {
+    editAPolice() {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
-        updateUser([{ ...this.editUserForm }]).then(response => {
+        updatePolice([{ ...this.editPoliceForm }]).then(response => {
           // console.log(response)
           if (response.code !== 0) return this.$message.error('更新派出所信息失败,请稍后再试')
-          this.editUserDialogVisible = false
+          this.editPoliceDialogVisible = false
           this.getPoliceList()
           this.$message.success('更新派出所信息成功')
         })
       })
     },
+
     editDialogClosed() {
       this.editUserForm = {}
     },
