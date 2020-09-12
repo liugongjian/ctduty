@@ -120,23 +120,6 @@ export default {
             trigger: 'blur'
           }
         ],
-        phone: [
-          {
-            required: true,
-            message: '手机号不能为空',
-            trigger: 'blur'
-          },
-          {
-            min: 11,
-            max: 11,
-            message: '长度为11个字符',
-            trigger: 'blur'
-          },
-          {
-            validator: checkMobile,
-            trigger: 'blur'
-          }
-        ],
         permissionId: [
           { required: true, message: '权限不能为空', trigger: 'blur' }
         ]
@@ -183,33 +166,6 @@ export default {
         {
           departmentId: 3275699862611972,
           department: '华山镇派出所'
-        }
-      ],
-
-      postInfo: [
-        {
-          postId: 3275699862609920,
-          post: '所长'
-        },
-        {
-          postId: 3275699862609921,
-          post: '副所长'
-        },
-        {
-          postId: 3275699862609922,
-          post: '民警'
-        },
-        {
-          postId: 3275699862609923,
-          post: '普通员工'
-        },
-        {
-          postId: 3275699862611968,
-          post: '管控中心'
-        },
-        {
-          postId: 3275699862611969,
-          post: '监控中心'
         }
       ]
     }
