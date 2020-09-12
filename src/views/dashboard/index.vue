@@ -1100,9 +1100,9 @@ export default {
     }
   }
 }
-.el-row {
+/* .el-row {
   height: 100vh;
-}
+} */
 .mapbox {
   height: 400px;
   padding: 0;
