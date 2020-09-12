@@ -201,7 +201,7 @@ export default {
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
-      limit: 20,
+      limit: 10,
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 20,
@@ -364,8 +364,8 @@ export default {
       const params = {
         cascade: true,
         page: {
-          index: 1,
-          size: 20
+          index: this.page,
+          size: this.limit
         },
         params: {
         }

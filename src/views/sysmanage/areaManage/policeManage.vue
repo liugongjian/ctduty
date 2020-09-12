@@ -38,8 +38,8 @@
       width="50%"
       @close="addDialogClosed">
       <el-form ref="addFormRef" :model="addPoliceForm" :rules="addPoliceFormRules" label-width="100px">
-        <el-form-item label="派出所名称" prop="username">
-          <el-input v-model="addPoliceForm.username" type="text"></el-input>
+        <el-form-item label="派出所名称" prop="name">
+          <el-input v-model="addPoliceForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="所在经度" prop="longitude">
           <el-input v-model="addPoliceForm.longitude" type="text"></el-input>
@@ -62,8 +62,8 @@
       width="50%"
       @close="editDialogClosed">
       <el-form ref="editFormRef" :rules="addPoliceFormRules" :model="editPoliceForm" label-width="100px">
-        <el-form-item label="派出所名称" prop="username">
-          <el-input v-model="editPoliceForm.username" type="text"></el-input>
+        <el-form-item label="派出所名称" prop="name">
+          <el-input v-model="editPoliceForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="所在经度" prop="longitude">
           <el-input v-model="editPoliceForm.longitude" type="text"></el-input>
