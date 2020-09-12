@@ -78,7 +78,7 @@
                           <span
                             style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
                           >{{ renderTime(item.createTime) }}</span>
-                       </div>
+                        </div>
                       </div>
                     </div>
                   </template>
@@ -99,13 +99,13 @@
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
                       <div class="addressword">
-                          <svg-icon v-if="item.type === 1" icon-class="people" />
-                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
-                          <span
-                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                          >{{ renderTime(item.createTime) }}</span>
-                       </div>
+                        <svg-icon v-if="item.type === 1" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                        <span
+                          style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                        >{{ renderTime(item.createTime) }}</span>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -125,13 +125,13 @@
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
                       <div class="addressword">
-                          <svg-icon v-if="item.type === 1" icon-class="people" />
-                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
-                          <span
-                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
-                          >{{ renderTime(item.createTime) }}</span>
-                       </div>
+                        <svg-icon v-if="item.type === 1" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
+                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                        <span
+                          style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                        >{{ renderTime(item.createTime) }}</span>
+                      </div>
                     </div>
                   </div>
                 </template>
@@ -142,7 +142,7 @@
             v-model="temp"
             :visible="dialogVisable"
             title="报警显示"
-            width="700px"
+            width="750px"
             @close="closeDialog"
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
@@ -157,7 +157,7 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-                <el-image :src="dataDia.image" style="width:350px; height:200px;"></el-image>
+                <el-image :src="dataDia.image" style="width:525px; height:300px;"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px; height:150px;"></el-image>
@@ -808,7 +808,7 @@ export default {
 }
 .youContent .addressword {
   margin-left: 30px;
-} 
+}
 .dizhi {
   width: 100%;
   font-size: 15px;
