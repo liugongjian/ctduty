@@ -431,10 +431,10 @@ export default {
 <style lang='scss'>
 .list {
   overflow: auto !important;
+  min-height: calc(100vh - 50px) !important;
 }
 .app-main {
   padding-top: 50px;
-  min-height: calc(100vh - 84px) !important;
 }
 </style>
 

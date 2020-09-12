@@ -3,7 +3,7 @@
     <el-divider></el-divider>
     <el-row>
       <el-button class="addbtn" type="warning" @click="addPoliceDialogVisible=true">+新增派出所</el-button>
-      <el-input v-model="queryName" class="searchinput" placeholder="请输入派出所姓名"></el-input>
+      <el-input v-model="queryName" class="searchinput" placeholder="请输入派出所名称"></el-input>
       <el-button class="searchbtn" type="warning" @click="getPoliceList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
