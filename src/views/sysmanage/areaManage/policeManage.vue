@@ -93,8 +93,10 @@
 
 <script>
 import { getPoliceList, addPolice, updatePolice, deletePolice, filterPoliceList } from '@/api/areaManage'
+import Pagination from '@/components/Pagination'
 
 export default {
+  components: { Pagination },
   data() {
     var checkMobile = (rule, value, cb) => {
       const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/

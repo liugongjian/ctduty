@@ -122,8 +122,10 @@
 <script>
 import { renderTime } from '@/utils'
 import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountry, addCountry, getPolice } from '@/api/users'
+import Pagination from '@/components/Pagination'
 
 export default {
+  components: { Pagination },
   data() {
     return {
       renderTime,
