@@ -431,6 +431,7 @@ export default {
 <style lang='scss'>
 .list {
   min-height: 100%;
+  overflow: auto !important;
 }
 </style>
 
