@@ -204,7 +204,7 @@ export default {
       limit: 10,
       userId: Cookies.get('userId'),
       originCode: '',
-      oldSize: 20,
+      oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {

@@ -29,15 +29,13 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[10, 20, 50]"
-      :page-size="queryInfo.pagesize"
-      :total="totalnum"
-      layout="total, prev, pager, next, sizes, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="page"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addAreaDialogVisible"
@@ -124,8 +122,10 @@
 <script>
 import { renderTime } from '@/utils'
 import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountry, addCountry, getPolice } from '@/api/users'
+import Pagination from '@/components/Pagination'
 
 export default {
+  components: { Pagination },
   data() {
     return {
       renderTime,
@@ -177,11 +177,17 @@ export default {
         pagesize: 10
       },
       queryName: '',
-      totalnum: 0,
+      total: 0,
       editAreaDialogVisible: false,
       deleteAreaName: '',
       deleteAreaDialogVisible: false,
       deleteAreaId: 0
+    }
+  },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
@@ -193,8 +199,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          index: this.page,
+          size: this.limit
         },
         params: {}
       }
@@ -206,10 +212,16 @@ export default {
         console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
-
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getList()
+    },
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
       this.getareaList()
