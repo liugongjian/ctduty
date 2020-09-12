@@ -27,3 +27,11 @@ export function updatePolice(query) {
   })
 }
 
+export function deletePolice(query) {
+  return request({
+    url: '/nvsapi/PoliceStation/Delete',
+    method: 'post',
+    data: query
+  })
+}
+

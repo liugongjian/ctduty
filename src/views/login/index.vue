@@ -243,6 +243,7 @@ body {
     flex-direction: column;
     justify-content: center;
     padding-bottom: 30px;
+    box-shadow: 0 1px 20px 0 #87959E;
     .logo{
       width:204.6px;
       height: 56px;

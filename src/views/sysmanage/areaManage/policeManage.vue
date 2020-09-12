@@ -17,7 +17,7 @@
       <el-table-column label="操作">
         <template slot-scope="row_data">
           <el-link type="primary" @click="showEditDialog(row_data.row)">编辑</el-link>
-          <el-link type="primary" @click="showDeleteDialog(row_data.row.username,row_data.row.id)">删除</el-link>
+          <el-link type="primary" @click="deleatePolice(row_data.row.id)">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { getPoliceList, addPolice, updatePolice } from '@/api/areaManage'
+import { getPoliceList, addPolice, updatePolice, deletePolice } from '@/api/areaManage'
 
 export default {
   data() {
@@ -244,10 +244,27 @@ export default {
     editDialogClosed() {
       this.editPoliceForm = {}
     },
-    showDeleteDialog(username, id) {
-      this.deletePoliceDialogVisible = true
-      this.deletePoliceName = username
-      this.deletePoliceId = id
+    deleatePolice(id) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const params = [id]
+        deletePolice(params).then(response => {
+          this.getList()
+          this.delIDArr = []
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: '删除失败'
+          })
+        })
+      })
     },
 
     deleteAPolice() {
