@@ -433,7 +433,7 @@ export default {
     //     try {
     //       parseSetting = JSON.parse(setting)
     //     } catch (err) {
-    //       parseSetting = {}
+    //       parseSetting ={}
     //     }
     //     console.log(parseSetting,'xxx')
     //     this.startTime = parseSetting.date1
