@@ -23,8 +23,8 @@
     </el-table>
 
     <pagination
-      v-show="totalnum>0"
-      :total="totalnum"
+      v-show="total>0"
+      :total="total"
       :page.sync="page"
       :limit.sync="limit"
       @pagination="pageChange()"
@@ -157,7 +157,7 @@ export default {
         pagesize: 10
       },
       queryName: '',
-      totalnum: 0,
+      total: 0,
       editPoliceDialogVisible: false,
       deletePoliceName: '',
       deletePoliceDialogVisible: false,
@@ -212,7 +212,7 @@ export default {
       filterPoliceList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
     getPoliceList() {
@@ -231,7 +231,7 @@ export default {
         console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
 

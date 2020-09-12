@@ -30,8 +30,8 @@
     </el-table>
 
     <pagination
-      v-show="totalnum>0"
-      :total="totalnum"
+      v-show="total>0"
+      :total="total"
       :page.sync="page"
       :limit.sync="limit"
       @pagination="pageChange()"
@@ -177,7 +177,7 @@ export default {
         pagesize: 10
       },
       queryName: '',
-      totalnum: 0,
+      total: 0,
       editAreaDialogVisible: false,
       deleteAreaName: '',
       deleteAreaDialogVisible: false,
@@ -211,7 +211,7 @@ export default {
         console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
     pageChange() {
