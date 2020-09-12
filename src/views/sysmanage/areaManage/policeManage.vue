@@ -233,11 +233,10 @@ export default {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
         updatePolice([{ ...this.editPoliceForm }]).then(response => {
-          // console.log(response)
           if (response.code !== 0) return this.$message.error('更新派出所信息失败,请稍后再试')
           this.editPoliceDialogVisible = false
-          this.getPoliceList()
           this.$message.success('更新派出所信息成功')
+          this.getPoliceList()
         })
       })
     },
@@ -252,7 +251,7 @@ export default {
       }).then(() => {
         const params = [id]
         deletePolice(params).then(response => {
-          this.getList()
+          this.getPoliceList()
           this.delIDArr = []
           this.$message({
             type: 'success',
