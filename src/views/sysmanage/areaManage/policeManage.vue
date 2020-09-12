@@ -183,8 +183,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.pagenum,
-          size: this.pagesize
+          index: this.queryInfo.pagenum,
+          size: this.queryInfo.pagesize
         },
         params: {
           name: this.queryName
