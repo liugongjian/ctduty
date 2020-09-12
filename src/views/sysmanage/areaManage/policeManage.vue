@@ -22,14 +22,13 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      v-show="total>0"
+    <pagination
+      v-show="totalnum>0"
+      :total="totalnum"
       :page.sync="page"
       :limit.sync="limit"
-      :total="totalnum"
       @pagination="pageChange()"
-    >
-    </el-pagination>
+    />
 
     <el-dialog
       :visible.sync="addPoliceDialogVisible"
