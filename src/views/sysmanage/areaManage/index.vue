@@ -143,8 +143,8 @@ export default {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
       console.log(data, 'data');
-      console.log(data, 'node');
-      console.log(data, 'obj');
+      console.log(node, 'node');
+      console.log(obj, 'obj');
       if(node.level === 1) {
         // this.local = data.policeStation.name;
       }
