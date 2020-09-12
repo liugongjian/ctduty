@@ -8,6 +8,14 @@ export function getPoliceList(query) {
     data: query
   })
 }
+
+export function filterPoliceList(query) {
+  return request({
+    url: '/nvsapi/PoliceStation/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
 //
 
 export function addPolice(query) {
