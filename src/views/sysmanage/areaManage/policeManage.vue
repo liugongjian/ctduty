@@ -4,7 +4,7 @@
     <el-row>
       <el-button class="addbtn" type="warning" @click="addPoliceDialogVisible=true">+新增派出所</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入派出所名称"></el-input>
-      <el-button class="searchbtn" type="warning" @click="getPoliceList">搜索</el-button>
+      <el-button class="searchbtn" type="warning" @click="search">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
 
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import { getPoliceList, addPolice, updatePolice, deletePolice } from '@/api/areaManage'
+import { getPoliceList, addPolice, updatePolice, deletePolice, filterPoliceList } from '@/api/areaManage'
 
 export default {
   data() {
@@ -179,6 +179,26 @@ export default {
     this.getPoliceList()
   },
   methods: {
+    search() {
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
+      }
+      const query = {
+        cascade: true,
+        page: {
+          index: this.queryInfo.pagenum,
+          size: this.queryInfo.pagesize
+        },
+        params: {
+          name: this.queryName
+        }
+      }
+      filterPoliceList(query).then(response => {
+        if (response.code !== 0) return
+        this.userList = response.body.data
+        this.totalnum = response.body.total
+      })
+    },
     getPoliceList() {
       const query = {
         cascade: true,
