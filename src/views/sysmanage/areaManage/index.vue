@@ -79,6 +79,7 @@
 
 <script>
 import VueAMap from 'vue-amap'
+import { getCountry } from '@/api/users'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'AreaManage',
@@ -86,46 +87,17 @@ export default {
     return {
       data: [
         {
-          id: 1,
+          id: '',
           icon: 'el-icon-remove-outline',
-          label: '华阴市',
+          label: '',
           children: [{
-            id: 2,
+            id: '',
             icon: 'el-icon-remove-outline',
-            label: '孟塬镇',
+            label: '',
             children: [{
-              id: 3,
+              id: '',
               icon: 'el-icon-house',
-              label: '小寨村'
-            }, {
-              id: 4,
-              icon: 'el-icon-house',
-              label: '宋峪村'
-            }, {
-              id: 5,
-              icon: 'el-icon-house',
-              label: '晓棚村'
-            }, {
-              id: 6,
-              icon: 'el-icon-house',
-              label: '三义村'
-            }, {
-              id: 7,
-              icon: 'el-icon-house',
-              label: '大寨北城'
-            }, {
-              id: 8,
-              icon: 'el-icon-house',
-              label: '彭家村'
-            }]
-          }, {
-            id: 8,
-            icon: 'el-icon-remove-outline',
-            label: '华山镇',
-            children: [{
-              id: 9,
-              icon: 'el-icon-house',
-              label: '高家村'
+              label: ''
             }]
           }]
         }
@@ -159,6 +131,9 @@ export default {
       inputmsg: ''
 
     }
+  },
+  created() {
+    this.getCountryList()
   },
   mounted() {
     this.markers = [
@@ -237,7 +212,32 @@ export default {
     },
     markerClick() {
       console.log('哈哈哈')
-    }
+    },
+
+    getCountryList() {
+      getCountry().then((res) => {
+        if (res.code === 0) {
+          console.log('村镇res', res.body.data)
+          this.data = this.formatCountry(res.body.data, 2);
+        }
+      })
+    },
+    formatCountry(arr, level) {
+      return arr.map(item => {
+        if (item.level < level) {
+          return {
+            label: item.name,
+            id: item.id,
+            children: this.formatCountry(item.children, level)
+          }
+        } else {
+          return {
+            id: item.id,
+            label: item.name
+          };
+        }
+      })
+    },
   }
 }
 </script>
