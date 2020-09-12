@@ -3,8 +3,8 @@
   <div class="userManage">
     <el-divider></el-divider>
     <el-row>
-      <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
-      <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
+      <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增区域</el-button>
+      <el-input v-model="queryName" class="searchinput" placeholder="请输入..."></el-input>
       <el-button class="searchbtn" type="warning" @click="getareaList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
@@ -41,7 +41,7 @@
 
     <el-dialog
       :visible.sync="addUserDialogVisible"
-      title="新增用户"
+      title="新增区域"
       width="40%"
       @close="addDialogClosed">
       <el-form ref="addFormRef" :model="town" :rules="addUserFormRules" label-width="100px">   
@@ -102,21 +102,14 @@ import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteUser, getCou
 
 export default {
   data() {
-    var checkMobile = (rule, value, cb) => {
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
-      if (regMobile.test(value)) {
-        return cb()
-      }
-      cb(new Error('请输入合法的手机号'))
-    }
     return {
       renderTime,
       policeList: [],
       addUserDialogVisible: false,
       addUserFormRules: {
         name: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' },
-          { min: 5, max: 10, message: '用户名长度在5-12个字符之间', trigger: 'blur' }
+          { required: true, message: '名称不能为空', trigger: 'blur' },
+          { min: 5, max: 10, message: '长度在5-12个字符之间', trigger: 'blur' }
         ]
       },
       town: {
