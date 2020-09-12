@@ -128,6 +128,9 @@ export default {
   components: { Pagination },
   data() {
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       renderTime,
       policeList: [],
       addAreaDialogVisible: false,
