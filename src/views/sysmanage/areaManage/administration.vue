@@ -219,7 +219,7 @@ export default {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getList()
+      this.getareaList()
     },
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
