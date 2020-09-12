@@ -903,6 +903,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app-main {
+  height: 100%;
+}
 .main-container {
   background-color: #F0F2F5;
   }
