@@ -434,7 +434,6 @@ export default {
 }
 .app-main {
   padding-top: 50px;
-  min-height: calc(100vh - 84px) !important;
 }
 </style>
 
