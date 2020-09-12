@@ -3,7 +3,7 @@
   <div class="userManage">
     <el-divider></el-divider>
     <el-row>
-      <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增区域</el-button>
+      <el-button class="addbtn" type="warning" @click="getCountryList">+新增区域</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入..."></el-input>
       <el-button class="searchbtn" type="warning" @click="getareaList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
@@ -40,7 +40,7 @@
     </el-pagination>
 
     <el-dialog
-      :visible.sync="addUserDialogVisible"
+      :visible.sync="addAreaDialogVisible"
       title="新增区域"
       width="40%"
       @close="addDialogClosed">
@@ -79,7 +79,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="addArea">确 定</el-button>
-        <el-button @click="addUserDialogVisible = false">取 消</el-button>
+        <el-button @click="addAreaDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
@@ -130,7 +130,7 @@ export default {
     return {
       renderTime,
       policeList: [],
-      addUserDialogVisible: false,
+      addAreaDialogVisible: false,
       addUserFormRules: {
         name: [
           { required: true, message: '名称不能为空', trigger: 'blur' },
@@ -186,7 +186,6 @@ export default {
   },
   async created() {
     await this.getareaList()
-    await this.getCountryList()
     this.getTownList()
   },
   methods: {
@@ -227,7 +226,7 @@ export default {
           console.log(response)
           if (response.code !== 0) return this.$message.error('添加区域失败')
           this.$message.success('添加区域成功')
-          this.addUserDialogVisible = false
+          this.addAreaDialogVisible = false
           this.getareaList()
         })
       })
@@ -272,6 +271,7 @@ export default {
     },
 
     getCountryList() {
+      this.addAreaDialogVisible=true
       getCountry().then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
