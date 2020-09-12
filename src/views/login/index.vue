@@ -244,11 +244,11 @@ body {
     justify-content: center;
     padding-bottom: 30px;
     .logo{
-      width:290px;
-      height: 58px;
-      background: url(./images/logoTitel.png) no-repeat center;
+      width:204.6px;
+      height: 56px;
+      background: url(./images/zglogo.png) no-repeat center;
       background-size: 60% 60%;
-      margin-left: 10px;
+      margin-left: 43px;
       // background-size: contain;
     }
     .title {
