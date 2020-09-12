@@ -603,9 +603,6 @@ export default {
 .main-container {
   height: 100%;
 }
-.app-main {
-  height: 100%;
-}
 .cameraIndex {
   height: 100%;
 }
