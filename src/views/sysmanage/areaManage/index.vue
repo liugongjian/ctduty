@@ -27,9 +27,9 @@
         </div>
         <div class="border"></div>
       </div>
-      <div class="address" v-show="addressdata.police">
+      <div v-show="addressdata.police" class="address">
         <div class="leftborder"></div>
-        <div  class="addressmsg">
+        <div class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
             {{ addressdata.police }}
@@ -103,7 +103,7 @@ export default {
       },
       addressdata: {
         police: '玉泉派出所',
-        address: '陕西省渭南市华阴市华山镇玉泉路8号',
+        address: '陕西省渭南市华阴市华山镇玉泉路8号'
       },
       markers: [],
       formInfo: [],
@@ -123,10 +123,10 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
-      console.log(data, 'data');
-      console.log(node, 'node');
-      console.log(obj, 'obj');
-      if(node.level === 1 ) {
+      console.log(data, 'data')
+      console.log(node, 'node')
+      console.log(obj, 'obj')
+      if (node.level === 1) {
         this.local = data.policeStation.name
         this.addressdata.police = data.policeStation.name
         this.addressdata.address = data.policeStation.address
@@ -225,15 +225,15 @@ export default {
             label: item.name,
             id: item.id,
             children: this.formatCountry(item.children, level),
-            policeStation: item.policeStation,
+            policeStation: item.policeStation
           }
         } else {
           return {
             icon: 'el-icon-remove-outline',
             id: item.id,
             label: item.name,
-            policeStation: item.policeStation,
-          };
+            policeStation: item.policeStation
+          }
         }
       })
     }
@@ -241,7 +241,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .main-container {
     height: 100%;
   }
@@ -336,7 +336,7 @@ export default {
         .addressmsg {
           width: 248px;
           height: 60px;
-          margin-left: 20px;  
+          margin-left: 20px;
           margin-right: 10px;
           .msg {
             margin: 0;
