@@ -10,7 +10,7 @@
     </el-row>
     <el-table :data="areaList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="区域名称" prop="name"></el-table-column>
-      <el-table-column label="公安局名称" prop="policeStation.name">{{policeStation ? policeStation.name : ''}}</el-table-column>
+      <el-table-column label="公安局名称" prop="policeStation.name">{{ policeStation ? policeStation.name : '' }}</el-table-column>
       <el-table-column label="创建时间" prop="createTime">
         <template slot-scope="scope">
           <span>{{ renderTime(scope.row.createTime) }}</span>
@@ -44,7 +44,7 @@
       title="新增区域"
       width="40%"
       @close="addDialogClosed">
-      <el-form ref="addFormRef" :model="town" :rules="addUserFormRules" label-width="100px">   
+      <el-form ref="addFormRef" :model="town" :rules="addUserFormRules" label-width="100px">
         <el-form-item label="村/镇" prop="level">
           <el-radio-group v-model="town.level">
             <el-radio :label="1">镇</el-radio>
@@ -65,7 +65,7 @@
           <el-form-item label="村名">
             <el-input v-model="town.name" type="text"></el-input>
           </el-form-item>
-          <el-form-item label="隶属" v-model="town.parentId">
+          <el-form-item v-model="town.parentId" label="隶属">
             <div class="block">
               <el-cascader
                 v-model="value"
@@ -159,7 +159,7 @@ export default {
         label: '',
         children: [{
           value: '',
-          label: ''}]
+          label: '' }]
       }],
       editAreaForm: {
         id: 0,
@@ -181,7 +181,7 @@ export default {
       editAreaDialogVisible: false,
       deleteAreaName: '',
       deleteAreaDialogVisible: false,
-      deleteAreaId: 0,
+      deleteAreaId: 0
     }
   },
   async created() {
@@ -193,8 +193,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.pagenum,
-          size: this.pagesize
+          index: this.queryInfo.pagenum,
+          size: this.queryInfo.pagesize
         },
         params: {}
       }
@@ -221,9 +221,7 @@ export default {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.town }]
-        console.log(query)
         addCountry(query).then(response => {
-          console.log(response)
           if (response.code !== 0) return this.$message.error('添加区域失败')
           this.$message.success('添加区域成功')
           this.addAreaDialogVisible = false
@@ -271,11 +269,11 @@ export default {
     },
 
     getCountryList() {
-      this.addAreaDialogVisible=true
+      this.addAreaDialogVisible = true
       getCountry().then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
-          this.options = this.formatCountry(res.body.data, 1);
+          this.options = this.formatCountry(res.body.data, 1)
         }
       })
     },
@@ -291,7 +289,7 @@ export default {
           return {
             value: item.id,
             label: item.name
-          };
+          }
         }
       })
     },
@@ -309,7 +307,7 @@ export default {
           console.log(this.policeList)
         }
       })
-    },
+    }
 
   }
 }
