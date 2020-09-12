@@ -140,7 +140,7 @@
                 </el-form>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-                <el-form :model="editForm" label-position="right" label-width="100px">
+                <el-form :model="editForm" label-position="right" label-width="130px">
                   <el-form-item label="负责人：">
                     <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
@@ -697,7 +697,7 @@ export default {
  }
  label{
     display:inline-block;
-    width:100px !important;
+    width:130px !important;
     text-align: left !important;
     }
 </style>
