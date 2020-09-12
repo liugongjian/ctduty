@@ -180,6 +180,9 @@ export default {
   },
   methods: {
     search() {
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
+      }
       const query = {
         cascade: true,
         page: {
@@ -187,11 +190,8 @@ export default {
           size: this.queryInfo.pagesize
         },
         params: {
-          name: this.queryName
+          'name': this.queryName
         }
-      }
-      if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
       }
       filterPoliceList(query).then(response => {
         if (response.code !== 0) return
