@@ -108,7 +108,7 @@ export default {
       markers: [],
       formInfo: [],
       inputmsg: '',
-      queryName: '',
+      queryName: ''
 
     }
   },
@@ -213,7 +213,7 @@ export default {
       getCountry(query).then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
-          this.data = this.formatCountry(res.body.data, 2);
+          this.data = this.formatCountry(res.body.data, 2)
         }
       })
     },
@@ -231,12 +231,17 @@ export default {
           return {
             icon: 'el-icon-remove-outline',
             id: item.id,
+<<<<<<< HEAD
             label: item.name,
             policeStation: item.policeStation,
           };
+=======
+            label: item.name
+          }
+>>>>>>> 7f957a64a065b2513473f875a544996c66e284b9
         }
       })
-    },
+    }
   }
 }
 </script>
