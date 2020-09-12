@@ -65,11 +65,11 @@ export function deleteUser(ids) {
     })
 }
 
-export function getCountry() {
+export function getCountry(query) {
   return request({
     url: '/nvsapi/Area/QueryTree',
     method: 'post',
-    data: {}
+    data: query
   })
 }
 
