@@ -142,6 +142,9 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
+      console.log(data, 'data');
+      console.log(data, 'node');
+      console.log(data, 'obj');
       if(node.level === 1) {
         this.local = data.policeStation.name;
       }
@@ -235,12 +238,14 @@ export default {
       return arr.map(item => {
         if (item.level < level) {
           return {
+            icon: 'el-icon-remove-outline',
             label: item.name,
             id: item.id,
             children: this.formatCountry(item.children, level)
           }
         } else {
           return {
+            icon: 'el-icon-remove-outline',
             id: item.id,
             label: item.name
           };
