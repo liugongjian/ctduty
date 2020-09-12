@@ -142,10 +142,9 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
-      if(node.level === 1) {
-        this.local = data.policeStation.name;
-      }
-      console.log(node)
+      console.log(data, 'data');
+      console.log(node, 'node');
+      console.log(obj, 'obj');
       // if (node.level === 2 && data.label === '孟塬镇') {
       //   this.local = []
       //   this.local.push('孟塬镇派出所')
@@ -235,12 +234,14 @@ export default {
       return arr.map(item => {
         if (item.level < level) {
           return {
+            icon: 'el-icon-remove-outline',
             label: item.name,
             id: item.id,
             children: this.formatCountry(item.children, level)
           }
         } else {
           return {
+            icon: 'el-icon-remove-outline',
             id: item.id,
             label: item.name
           };

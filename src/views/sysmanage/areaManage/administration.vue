@@ -121,7 +121,7 @@
 
 <script>
 import { renderTime } from '@/utils'
-import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountry, addCountry, getPolice } from '@/api/users'
+import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountryNull, addCountry, getPolice } from '@/api/users'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -286,7 +286,7 @@ export default {
 
     getCountryList() {
       this.addAreaDialogVisible = true
-      getCountry().then((res) => {
+      getCountryNull().then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
           this.options = this.formatCountry(res.body.data, 1)
