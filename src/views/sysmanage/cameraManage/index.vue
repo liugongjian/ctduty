@@ -57,7 +57,7 @@
             </div>
           </div>
         </div>
-        <div class="map">
+        <div class="cameramap">
           <el-col :span="24" class="status">
             <el-col :span="19">
               <div class="mapcontainer">
@@ -624,7 +624,7 @@ export default {
    .serachbox {
      height: 50px;
    }
-   .map {
+   .cameramap {
      width: 100%;
      height: 100%;
      margin-bottom: 20px;
