@@ -30,13 +30,12 @@
     </el-table>
 
     <el-pagination
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[10, 20, 50]"
-      :page-size="queryInfo.pagesize"
+      v-show="total>0"
+      :page.sync="page"
+      :limit.sync="limit"
       :total="totalnum"
-      layout="total, prev, pager, next, sizes, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @pagination="pageChange()"
+    >
     </el-pagination>
 
     <el-dialog
@@ -184,6 +183,12 @@ export default {
       deleteAreaId: 0
     }
   },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
   async created() {
     await this.getareaList()
     this.getTownList()
@@ -193,8 +198,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          index: this.page,
+          size: this.limit
         },
         params: {}
       }
@@ -208,7 +213,13 @@ export default {
         this.totalnum = response.body.total
       })
     },
-
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getList()
+    },
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
       this.getareaList()

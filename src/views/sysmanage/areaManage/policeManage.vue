@@ -23,13 +23,12 @@
     </el-table>
 
     <el-pagination
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[10, 20, 50]"
-      :page-size="queryInfo.pagesize"
+      v-show="total>0"
+      :page.sync="page"
+      :limit.sync="limit"
       :total="totalnum"
-      layout="total, prev, pager, next, sizes, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @pagination="pageChange()"
+    >
     </el-pagination>
 
     <el-dialog
@@ -106,6 +105,9 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       addPoliceDialogVisible: false,
       addPoliceFormRules: {
         username: [
@@ -175,16 +177,29 @@ export default {
       ]
     }
   },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
   created() {
     this.getPoliceList()
   },
   methods: {
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getList()
+    },
     search() {
       const query = {
         cascade: true,
         page: {
-          index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          index: this.page,
+          size: this.limit
         },
         params: {
           name: this.queryName
@@ -203,8 +218,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          index: this.page,
+          size: this.limit
         },
         params: {}
       }
