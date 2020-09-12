@@ -620,7 +620,6 @@ export default {
 
  .mapbox {
    padding: 20px;
-   padding-bottom: 20px !important;
    height: 100%;
    .serachbox {
      height: 50px;
