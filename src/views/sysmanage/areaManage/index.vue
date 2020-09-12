@@ -127,7 +127,7 @@ export default {
       markers: [],
       formInfo: [],
       inputmsg: '',
-      queryName: '',
+      queryName: ''
 
     }
   },
@@ -142,9 +142,9 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
-      console.log(data, 'data');
-      console.log(node, 'node');
-      console.log(obj, 'obj');
+      console.log(data, 'data')
+      console.log(node, 'node')
+      console.log(obj, 'obj')
       // if (node.level === 2 && data.label === '孟塬镇') {
       //   this.local = []
       //   this.local.push('孟塬镇派出所')
@@ -226,7 +226,7 @@ export default {
       getCountry(query).then((res) => {
         if (res.code === 0) {
           console.log('村镇res', res.body.data)
-          this.data = this.formatCountry(res.body.data, 2);
+          this.data = this.formatCountry(res.body.data, 2)
         }
       })
     },
@@ -244,10 +244,10 @@ export default {
             icon: 'el-icon-remove-outline',
             id: item.id,
             label: item.name
-          };
+          }
         }
       })
-    },
+    }
   }
 }
 </script>
