@@ -23,37 +23,19 @@
           </el-tree>
         </div>
         <div class="local">
-          <div v-for="(item, index) in local" :key="index" class="huapolice" >{{ item }}</div>
+          <div class="huapolice" >{{ local }}</div>
         </div>
         <div class="border"></div>
       </div>
-      <div class="address">
+      <div class="address" v-show="addressdata.police">
         <div class="leftborder"></div>
-        <div v-if="addressdata.mengpolice" :model="addressdata" class="addressmsg">
+        <div  class="addressmsg">
           <p class="msg msg1">
             <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            孟塬镇派出所
+            {{ addressdata.police }}
           </p>
           <p class="msg msg2">
-            陕西省渭南市华阴市孟塬镇孟塬大酒店西南150米
-          </p>
-        </div>
-        <div v-else-if="addressdata.huapolice" :model="addressdata" class="addressmsg">
-          <p class="msg msg1">
-            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            华阴公安局
-          </p>
-          <p class="msg msg2">
-            陕西省渭南市华阴市华岳东路岳庙中学向东300米左右
-          </p>
-        </div>
-        <div v-else-if="addressdata.mountainpolice" :model="addressdata" class="addressmsg">
-          <p class="msg msg1">
-            <svg-icon icon-class="address" style="color: #1890FF"></svg-icon>
-            华山镇派出所
-          </p>
-          <p class="msg msg2">
-            玉泉路与金勃路交叉口西北150米
+            {{ addressdata.address }}
           </p>
         </div>
         <div class="addressimg">
@@ -120,9 +102,8 @@ export default {
         }
       },
       addressdata: {
-        huapolice: true,
-        mengpolice: false,
-        mountainpolice: false
+        police: '玉泉派出所',
+        address: '陕西省渭南市华阴市华山镇玉泉路8号',
       },
       markers: [],
       formInfo: [],
@@ -142,9 +123,15 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
-      console.log(data, 'data')
-      console.log(node, 'node')
-      console.log(obj, 'obj')
+      console.log(data, 'data');
+      console.log(node, 'node');
+      console.log(obj, 'obj');
+      if(node.level === 1 ) {
+        this.local = data.policeStation.name
+        this.addressdata.police = data.policeStation.name
+        this.addressdata.address = data.policeStation.address
+        this.markers = [{ position: [data.policeStation.longitude, data.policeStation.latitude], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="${data.policeStation.name}"></path></svg>` }]
+      }
       // if (node.level === 2 && data.label === '孟塬镇') {
       //   this.local = []
       //   this.local.push('孟塬镇派出所')
@@ -237,14 +224,16 @@ export default {
             icon: 'el-icon-remove-outline',
             label: item.name,
             id: item.id,
-            children: this.formatCountry(item.children, level)
+            children: this.formatCountry(item.children, level),
+            policeStation: item.policeStation,
           }
         } else {
           return {
             icon: 'el-icon-remove-outline',
             id: item.id,
-            label: item.name
-          }
+            label: item.name,
+            policeStation: item.policeStation,
+          };
         }
       })
     }
@@ -347,7 +336,8 @@ export default {
         .addressmsg {
           width: 248px;
           height: 60px;
-          margin-left: 20px;
+          margin-left: 20px;  
+          margin-right: 10px;
           .msg {
             margin: 0;
             padding: 0;
