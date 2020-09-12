@@ -210,6 +210,7 @@ export default {
       if (this.queryName.trim() !== '') {
         query.params.name = this.queryName
       }
+
       fetchAreaList(query).then(response => {
         console.log(response, 'area')
         if (response.code !== 0) return
