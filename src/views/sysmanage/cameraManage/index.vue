@@ -604,6 +604,7 @@ export default {
   height: 100%;
 }
 .app-main {
+  min-height: calc(100vh - 50px) !important;
   height: 100%;
 }
 .cameraIndex {

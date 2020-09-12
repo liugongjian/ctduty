@@ -239,6 +239,7 @@ code {
 }
 .app-main {
   padding-top: 50px;
+  min-height: calc(100vh - 50px) !important;
 }
 .video-js {
   width: 100%;
@@ -273,9 +274,6 @@ code {
   }
 }
 .main-container {
-  height: 100% !important;
-}
-.app-main {
   height: 100% !important;
 }
 .el-button--primary {
@@ -325,7 +323,6 @@ code {
       }
   }
 }
-
 .el-cascader__dropdown {
   z-index: 9999999999999999999999999999999999 !important;
 }
