@@ -161,7 +161,7 @@ export const asyncRouterMap = [
             name: 'sysAreaManageAdministration',
             meta: {
               title: '行政管理',
-              icon: 'area'
+              icon: 'form'
             }
           },
           {
@@ -170,7 +170,7 @@ export const asyncRouterMap = [
             name: 'sysAreaManagePoliceManage',
             meta: {
               title: '派出所管理',
-              icon: 'area'
+              icon: 'chart'
             }
           }
 
