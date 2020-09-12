@@ -126,7 +126,8 @@ export default {
       },
       markers: [],
       formInfo: [],
-      inputmsg: ''
+      inputmsg: '',
+      queryName: '',
 
     }
   },
@@ -217,7 +218,11 @@ export default {
 
     getCountryList() {
       const query = {
-        cascade: true
+        cascade: true,
+        params: {}
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
       }
       getCountry(query).then((res) => {
         if (res.code === 0) {
