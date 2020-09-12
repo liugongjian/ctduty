@@ -81,6 +81,14 @@ export function addCountry(ids) {
   })
 }
 
+export function deleteCountry(ids) {
+  return request({
+    url: '/nvsapi/Area/Delete',
+    method: 'post',
+    data: ids
+  })
+}
+
 export function getPolice(ids) {
   return request({
     url: '/nvsapi/PoliceStation/QueryActive',

@@ -21,12 +21,12 @@
           <span>{{ renderTime(scope.row.updateTime) }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="操作">
+      <el-table-column label="操作">
         <template slot-scope="row_data">
-          <el-link type="primary" @click="showEditDialog(row_data.row.id)">编辑</el-link>
+          <!-- <el-link type="primary" @click="showEditDialog(row_data.row)">编辑</el-link> -->
           <el-link type="primary" @click="showDeleteDialog(row_data.row.username,row_data.row.id)">删除</el-link>
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
     <el-pagination
@@ -78,27 +78,52 @@
         </template>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="addAUser">确 定</el-button>
+        <el-button type="warning" @click="addArea">确 定</el-button>
         <el-button @click="addUserDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
 
     <!-- <el-dialog
-      :visible.sync="deleteUserDialogVisible"
-      title="删除用户"
-      width="50%">
-      <span>确认删除用户{{ this.deleteUserName }}？</span>
+      :visible.sync="editPoliceDialogVisible"
+      title="编辑区域"
+      width="50%"
+      @close="editDialogClosed">
+      <el-form ref="editFormRef" :rules="addPoliceFormRules" :model="editPoliceForm" label-width="100px">
+        <el-form-item label="区域名称" prop="name">
+          <el-input v-model="editPoliceForm.name" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="所在经度" prop="longitude">
+          <el-input v-model="editPoliceForm.longitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="所在纬度" prop="latitude">
+          <el-input v-model="editPoliceForm.latitude" type="text"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="editPoliceForm.address" type="text"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="deleteAUser">确 定</el-button>
-        <el-button @click="deleteUserDialogVisible = false">取 消</el-button>
+        <el-button type="warning" @click="editAPolice">确 定</el-button>
+        <el-button @click="editPoliceDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog> -->
+
+    <el-dialog
+      :visible.sync="deleteAreaDialogVisible"
+      title="删除"
+      width="40%">
+      <span>确认删除？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="warning" @click="deleteArea">确 定</el-button>
+        <el-button @click="deleteAreaDialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { renderTime } from '@/utils'
-import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteUser, getCountry, addCountry, getPolice } from '@/api/users'
+import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountry, addCountry, getPolice } from '@/api/users'
 
 export default {
   data() {
@@ -136,7 +161,7 @@ export default {
           value: '',
           label: ''}]
       }],
-      editUserForm: {
+      editAreaForm: {
         id: 0,
         username: '',
         name: '',
@@ -153,10 +178,10 @@ export default {
       },
       queryName: '',
       totalnum: 0,
-      editUserDialogVisible: false,
-      deleteUserName: '',
-      deleteUserDialogVisible: false,
-      deleteUserId: 0,
+      editAreaDialogVisible: false,
+      deleteAreaName: '',
+      deleteAreaDialogVisible: false,
+      deleteAreaId: 0,
     }
   },
   async created() {
@@ -193,14 +218,14 @@ export default {
       this.queryInfo.pagenum = newpage
       this.getareaList()
     },
-    addAUser() {
+    addArea() {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.town }]
         console.log(query)
         addCountry(query).then(response => {
           console.log(response)
-          if (response.code !== 0) return this.$message.error('添加区域失败，请联系系统管理员')
+          if (response.code !== 0) return this.$message.error('添加区域失败')
           this.$message.success('添加区域成功')
           this.addUserDialogVisible = false
           this.getareaList()
@@ -212,34 +237,29 @@ export default {
       this.$refs.addFormRef.resetFields()
     },
     // showEditDialog(id) {
-    //   const { data: res } = getUserInfo(id).then(response => {
-    //     // console.log(response)
-    //     if (response.code !== 0) return this.$message.error('获取用户信息失败')
-    //     this.editUserForm = response.body.data
-    //     this.editUserDialogVisible = true
-    //   })
+    //   this.editAreaForm = response.body.data
+    //   this.editAreaDialogVisible = true
     // },
     // editDialogClosed() {
-    //   this.editUserForm = {}
+    //   this.editAreaForm = {}
     // },
-    // showDeleteDialog(username, id) {
-    //   this.deleteUserDialogVisible = true
-    //   this.deleteUserName = username
-    //   this.deleteUserId = id
-    // },
+    showDeleteDialog(username, id) {
+      this.deleteAreaDialogVisible = true
+      this.deleteAreaName = username
+      this.deleteAreaId = id
+    },
 
-    // deleteAUser() {
-    //   const ids = []
-    //   ids.push(this.deleteUserId)
-    //   deleteUser(ids).then(response => {
-    //     if (response.code !== 0) return this.$message.error('删除用户失败,请稍后再试')
-    //     this.deleteUserDialogVisible = false
-    //     this.deleteUserId = 0
-    //     this.deleteUserName = ''
-    //     this.getareaList()
-    //     this.$message.success('删除用户信息')
-    //   })
-    // },
+    deleteArea() {
+      const ids = []
+      ids.push(this.deleteAreaId)
+      deleteCountry(ids).then(response => {
+        if (response.code !== 0) return this.$message.error('删除失败,请稍后再试')
+        this.deleteAreaDialogVisible = false
+        this.deleteAreaId = 0
+        this.getareaList()
+        this.$message.success('删除成功')
+      })
+    },
 
     resetQuery() {
       this.queryName = ''
