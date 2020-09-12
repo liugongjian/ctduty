@@ -231,14 +231,9 @@ export default {
           return {
             icon: 'el-icon-remove-outline',
             id: item.id,
-<<<<<<< HEAD
             label: item.name,
             policeStation: item.policeStation,
           };
-=======
-            label: item.name
-          }
->>>>>>> 7f957a64a065b2513473f875a544996c66e284b9
         }
       })
     }
