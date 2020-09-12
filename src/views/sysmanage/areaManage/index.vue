@@ -146,7 +146,7 @@ export default {
       console.log(data, 'node');
       console.log(data, 'obj');
       if(node.level === 1) {
-        this.local = data.policeStation.name;
+        // this.local = data.policeStation.name;
       }
       console.log(node)
       // if (node.level === 2 && data.label === '孟塬镇') {
