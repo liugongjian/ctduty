@@ -603,11 +603,8 @@ export default {
 .main-container {
   height: 100%;
 }
-.cameraIndex {
-  min-height: calc(100vh - 50px) !important;
-}
 .camera {
-  height: 100%;
+  min-height: calc(100vh - 50px) !important;
 }
  .title {
    width: 100%;
