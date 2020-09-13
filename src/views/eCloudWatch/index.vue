@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <div class="zuoContent" style="width:100%; height:100%;overflow: auto;padding:20px;">
+            <div class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -291,7 +291,6 @@ export default {
       window.clearInterval(this.timer)
     },
     isPush(v) {
-      console.log(v, 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
       if (v) {
         this.timer = setInterval(() => {
         // that.getalarmList()
@@ -325,9 +324,6 @@ export default {
               this.getalarmList()
               console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
               this.showDialog(response.body.data[0])
-              setTimeout(() => {
-                this.closeDialog()
-              }, 5000)
             }
           })
         }, 5000)
@@ -493,12 +489,16 @@ export default {
       })
     },
     markerClick() {},
-    closeDialog() {
-      this.dialogVisable = false
-    },
     showDialog(item) {
       this.dataDia = item
       this.dialogVisable = true
+      setTimeout(() => {
+        this.closeDialog()
+      }, 5000)
+      console.log(this.dialogVisable, '嘻哈嘻哈')
+    },
+    closeDialog() {
+      this.dialogVisable = false
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -638,7 +638,9 @@ export default {
 
 <style lang="scss" scoped>
 .warn {
+  height:88vh !important;
   margin-bottom: 20px;
+  overflow: hidden;
 }
 .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
     margin-right: 20px;
@@ -669,7 +671,7 @@ export default {
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
-  height: 1000px;
+  height: calc(100vh - 50px);
   width: 100%;
   .map {
     height: 100%;
@@ -808,6 +810,7 @@ export default {
 }
 .youContent {
   margin-bottom: 5px;
+  overflow: hidden;
 }
 .youContent .addressword {
   margin-left: 30px;
