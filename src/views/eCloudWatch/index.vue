@@ -248,6 +248,7 @@ export default {
       allTotal: 0,
       page: 1,
       limit: 10,
+      timer2: '',
       events: {
         click: a => {}
       },
@@ -490,15 +491,17 @@ export default {
     },
     markerClick() {},
     showDialog(item) {
+      window.clearTimeout(this.timer2)
       this.dataDia = item
       this.dialogVisable = true
-      setTimeout(() => {
+      this.timer2 = setTimeout(() => {
         this.closeDialog()
       }, 5000)
-      console.log(this.dialogVisable, '嘻哈嘻哈')
+      console.log(this.dialogVisable, 'showDialog')
     },
     closeDialog() {
       this.dialogVisable = false
+      console.log(this.dialogVisable, 'closeDialog')
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
