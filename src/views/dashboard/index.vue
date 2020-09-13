@@ -242,7 +242,7 @@ export default {
           })
           this.mapShowData.push({
             name: item.address, value: item.alertCount, latitude: item.latitude,
-            longitude: item.longitude
+            longitude: item.longitude, handledCount: item.handledCount, unHandledCount: item.unHandledCount
           })
         })
         this.getMap(this.mapShowData)
