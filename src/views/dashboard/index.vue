@@ -265,10 +265,11 @@ export default {
       var data = []
       var geoCoordMap = {}
       inData.forEach(item => {
+        console.log(item, '嘻嘻哈哈')
         data.push({
           name: item.name, value: item.value
         })
-        geoCoordMap[item.name] = [item.longitude, item.latitude]
+        geoCoordMap[item.name] = [item.longitude, item.latitude, item.handledCount, item.unHandledCount]
       })
       var convertData = function(data) {
         var res = []
@@ -293,11 +294,10 @@ export default {
           triggerOn: 'mousemove',
           position: 'top',
           formatter: function(params) {
-            console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
             if (typeof (params.value)[2] === 'undefined') {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
+              return
             } else {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparamsparamsparamsparamsparams')
+              return
             }
           },
           z: 999
@@ -344,8 +344,10 @@ export default {
             triggerOn: 'mousemove',
             position: 'top',
             formatter: function(params) {
-              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}`
+              console.log(params, '哈哈嘻嘻')
+              return `${params.data.name}<br/> 告警数: ${params.data.value[4]}<br/> 已处理: ${params.data.value[2]};<br/>未处理: ${params.data.value[3]};`
             }
+            // handledCount
           },
           label: {
             show: false,
