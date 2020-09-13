@@ -815,15 +815,15 @@ export default {
   margin-bottom: 5px;
   overflow: hidden;
 }
-.youContent .addressword {
+/* .youContent .addressword {
   margin-left: 30px;
-}
+} */
 .dizhi {
   width: 100%;
   font-size: 15px;
   color: #000000;
   font-weight: 300;
-  margin-left: 10px;
+  // margin-left: 10px;
   margin-bottom: 10px;
 }
 
