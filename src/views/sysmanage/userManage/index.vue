@@ -99,7 +99,7 @@
         </el-form-item>
         <el-form-item label="区域/部门">
           <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
-          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">  
+          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
             <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
@@ -181,11 +181,11 @@ export default {
             max: 11,
             message: '长度为11个字符',
             trigger: 'blur'
-          },
+          }/* ,
           {
             validator: checkMobile,
             trigger: 'blur'
-          }
+          } */
         ],
         permissionId: [
           { required: true, message: '权限不能为空', trigger: 'blur' }
@@ -360,7 +360,7 @@ export default {
       this.queryName = ''
 
       this.getUserList()
-    },
+    }
 
   }
 }

@@ -269,7 +269,7 @@ export default {
         data.push({
           name: item.name, value: item.value
         })
-        geoCoordMap[item.name] = [item.longitude, item.latitude, item.handledCount, item.unHandledCount]
+        geoCoordMap[item.name] = [item.longitude, item.latitude, item.value, item.handledCount, item.unHandledCount]
       })
       var convertData = function(data) {
         var res = []
@@ -308,7 +308,7 @@ export default {
           top: 20,
           selectedMode: false, // 取消图例上的点击事件
           icon: 'circle',
-          data: ['小于50', '小于100', '大于100'],
+          data: ['小于1000', '小于2000', '大于3000'],
           textStyle: {
             color: '#000'
           }
@@ -345,7 +345,7 @@ export default {
             position: 'top',
             formatter: function(params) {
               console.log(params, '哈哈嘻嘻')
-              return `${params.data.name}<br/> 告警数: ${params.data.value[4]}<br/> 已处理: ${params.data.value[2]};<br/>未处理: ${params.data.value[3]};`
+              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
             }
             // handledCount
           },
@@ -423,13 +423,13 @@ export default {
               show: true,
               color: function(params) {
                 if (params.data.value[2]) {
-                  if (params.data.value[2] < 35) {
+                  if (params.data.value[2] < 1000) {
                     return '#17b885'
                   }
-                  if ((params.data.value[2]) >= 35 && (params.data.value[2] <= 60)) {
+                  if ((params.data.value[2]) >= 1000 && (params.data.value[2] <= 2000)) {
                     return '#eec511'
                   }
-                  if (params.data.value[2] > 60) {
+                  if (params.data.value[2] > 3000) {
                     return '#d04132'
                   }
                 }
@@ -444,16 +444,16 @@ export default {
           }
         },
         {
-          name: '小于50',
+          name: '小于1000',
           type: 'bar',
           color: '#17b885'
         },
         {
-          name: '小于100',
+          name: '小于2000',
           type: 'bar',
           color: '#eec511'
         }, {
-          name: '大于100',
+          name: '大于3000',
           type: 'bar',
           color: '#d04132'
         }
