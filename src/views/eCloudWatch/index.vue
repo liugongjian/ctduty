@@ -157,7 +157,7 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-                <el-image :src="dataDia.image" style="width:525px; height:300px;"></el-image>
+                <el-image :src="dataDia.image" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px; height:150px;"></el-image>
@@ -362,6 +362,9 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    openBig(url) {
+      window.open(url)
+    },
     getPush() {
       getPushSet().then(res => {
         this.isPush = JSON.parse(res.body.data.setting).deliveryPush
