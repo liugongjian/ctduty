@@ -627,10 +627,10 @@ export default {
    .cameramap {
      width: 100%;
      height: 100%;
-     margin-bottom: 20px;
-     padding-bottom: 20px;
+     /* margin-bottom: 20px;
+     padding-bottom: 20px; */
      .el-col {
-       height: 98%;
+       height: 99%;
      }
      .mapcontainer {
        height: 100%;
