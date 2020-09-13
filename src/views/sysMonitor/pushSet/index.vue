@@ -116,14 +116,11 @@ export default {
 .main-container {
   height: 100% !important;
 }
-.app-main {
-  height: 100% !important;
-}
   .push{
     padding: 20px;
     background: #F0F2F5;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 50px);
   }
   .title {
    width: 100%;
