@@ -24,15 +24,13 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[10, 20, 50]"
-      :page-size="queryInfo.pagesize"
-      :total="totalnum"
-      layout="total, prev, pager, next, sizes, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="page"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addUserDialogVisible"
@@ -140,8 +138,10 @@
 
 <script>
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
+import Pagination from '@/components/Pagination'
 
 export default {
+  components: { Pagination },
   data() {
     var checkMobile = (rule, value, cb) => {
       const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
@@ -151,6 +151,9 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
@@ -216,7 +219,7 @@ export default {
         pagesize: 10
       },
       queryName: '',
-      totalnum: 0,
+      total: 0,
       editUserDialogVisible: false,
       deleteUserName: '',
       deleteUserDialogVisible: false,
@@ -264,10 +267,23 @@ export default {
       ]
     }
   },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
   created() {
     this.getUserList()
   },
   methods: {
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getgetPoliceList()
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -284,7 +300,7 @@ export default {
         console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
 
