@@ -139,7 +139,6 @@
 <script>
 import Pagination from '@/components/Pagination'
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
-import Pagination from '@/components/Pagination'
 
 export default {
   components: { Pagination },
