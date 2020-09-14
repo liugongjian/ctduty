@@ -1,10 +1,6 @@
 <template>
   <div class="push">
-    <div class="title">
-      天翼值更系统推送服务设置
-    </div>
     <el-form ref="form" :model="form" label-width="120px" label-position="right">
-
       <el-form-item label="开始时间" prop="date1">
         <el-col :span="11">
           <el-time-picker
@@ -118,7 +114,6 @@ export default {
 }
   .push{
     padding: 20px;
-    background: #F0F2F5;
     width: 100%;
     height: calc(100vh - 50px);
   }
