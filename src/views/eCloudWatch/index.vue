@@ -72,9 +72,9 @@
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
                         <div class="addressword">
-                          <svg-icon v-if="item.type === 1" icon-class="people" />
-                          <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                          <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                          <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
+                          <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
+                          <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                           <span
                             style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
                           >{{ renderTime(item.createTime) }}</span>
@@ -274,7 +274,8 @@ export default {
           index
         ) {
           if (index === 0) {
-            item.classList.add('markerClickImg')
+            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            // item.classList.add('markerClickImg')
             that.form = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format(
               'YYYY-MM-DD HH:mm:SS'
@@ -322,8 +323,8 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
-              this.getalarmList()
-              console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
+              this.getCameraList()
+
               this.showDialog(response.body.data[0])
             }
           })
@@ -490,9 +491,19 @@ export default {
       })
     },
     markerClick() {},
-    showDialog(item) {
+    showDialog(cameraInfo) {
       window.clearTimeout(this.timer2)
-      this.dataDia = item
+
+      this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
+      const markers = document.getElementsByClassName('markerImg');
+      [].forEach.call(markers, function(item) {
+        item.classList.remove('markerClickImg')
+        console.log(JSON.parse(item.attributes[1].nodeValue).id, cameraInfo.camera.id, '哈哈哈哈')
+        if (JSON.parse(item.attributes[1].nodeValue).longitude === cameraInfo.camera.longitude) {
+          item.classList.add('markerClickImg')
+        }
+      })
+      this.dataDia = cameraInfo
       this.dialogVisable = true
       this.timer2 = setTimeout(() => {
         this.closeDialog()
@@ -653,7 +664,7 @@ export default {
 .zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
     border-radius: 5px;
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    background: rgba(230,162,60,1);
+    background: #a4b0be;
 }
 .zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
@@ -668,6 +679,12 @@ export default {
 #alarmInfo {
   padding: 0 !important;
 }
+.markerClickImg {
+   fill: #EA2027 !important;
+ }
+ .trafficSvg {
+   fill : #1890ff !important;
+ }
 .dispose {
   border-bottom: 2px solid #000 !important;
 }
