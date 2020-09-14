@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <div class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
+            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -137,6 +137,17 @@
                 </template>
               </div>
             </div>
+            <div v-else class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
+              <div v-if="showTabValue === 'all'">
+                暂无数据
+              </div>
+              <div v-if="showTabValue === 'y'">
+                暂无数据
+              </div>
+              <div v-if="showTabValue === 'w'">
+                暂无数据
+              </div>
+            </div>
           </div>
           <el-dialog
             v-model="temp"
@@ -199,6 +210,7 @@ import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
+import hintMusic from './assets/hint.mp3'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
@@ -226,16 +238,26 @@ export default {
         image: '',
         imageCut: ''
       },
-      yData: [],
+      yData: [
+        { camera: {
+          address: ''
+        }
+        }],
       // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
       formInfo: [],
       active: 0,
       stateData: '',
-      stepsData: [],
+      stepsData: [
+      ],
       values: 3,
-      xData: [],
+      xData: [
+        { camera: {
+          address: ''
+        }
+        }
+      ],
       zoom: 12,
       hasMarker: false,
       showZwMes: true,
@@ -324,8 +346,9 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               this.getCameraList()
-
               this.showDialog(response.body.data[0])
+              const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
+              audio.play()// 播放
             }
           })
         }, 5000)
@@ -493,7 +516,6 @@ export default {
     markerClick() {},
     showDialog(cameraInfo) {
       window.clearTimeout(this.timer2)
-
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -508,11 +530,9 @@ export default {
       this.timer2 = setTimeout(() => {
         this.closeDialog()
       }, 5000)
-      console.log(this.dialogVisable, 'showDialog')
     },
     closeDialog() {
       this.dialogVisable = false
-      console.log(this.dialogVisable, 'closeDialog')
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
