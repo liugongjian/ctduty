@@ -401,4 +401,9 @@ export default {
  .el-select-dropdown {
     z-index: 9999999999999999999999999999999999 !important;
   }
+   label{
+    display:inline-block;
+    width:100px !important;
+    text-align: left !important;
+    }
 </style>
