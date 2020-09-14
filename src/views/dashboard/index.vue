@@ -28,7 +28,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
+      <el-col :span="6" style="{width: '50%'; height: '58vh'; margin-top: 20px;}">
         <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
@@ -974,11 +974,11 @@ export default {
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 60vh;
+    height: 58vh;
     background-color: #fff;
   }
   #trend{
-    height: 28.6vh;
+    height: 27.6vh;
     background-color: #fff;
     .trendTitle {
       padding: 0;
@@ -995,20 +995,20 @@ export default {
     }
   }
   #dispose {
-    height: 28.6vh;
+    height: 27.6vh;
     background-color: #fff;
     margin-top:2.63vh;
   }
   #classify {
-    height: 28.6vh;
+    height: 27.6vh;
     background-color: #fff;
   }
   #hotarea {
-    height: 28.6vh;
+    height: 27.6vh;
     background-color: #fff;
   }
   #net {
-    height: 28.6vh;
+    height: 27.6vh;
     background-color: #fff;
     #camerarate {
       height: 170px;
