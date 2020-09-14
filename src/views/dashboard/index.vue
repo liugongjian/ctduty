@@ -28,7 +28,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '58vh'; margin-top: 20px;}">
+      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
         <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
           <p class="trendTitle">目标评估</p>
@@ -42,7 +42,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="18" style="margin-top:2.63vh;margin-bottom:20px;">
+      <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
           <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
@@ -345,7 +345,7 @@ export default {
             position: 'top',
             formatter: function(params) {
               console.log(params, '哈哈嘻嘻')
-              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]}<br/>未处理: ${params.data.value[4]}`
+              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
             }
             // handledCount
           },
@@ -879,11 +879,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app-main {
+  height: 100%;
+}
 .main-container {
   background-color: #F0F2F5;
   }
   #dashID{
-    height: 100% !important;
+    height: 100%;
   }
 #panel {
   overflow: hidden;
@@ -974,11 +977,11 @@ export default {
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 58vh;
+    height: 440px;
     background-color: #fff;
   }
   #trend{
-    height: 27.6vh;
+    height: 30%;
     background-color: #fff;
     .trendTitle {
       padding: 0;
@@ -995,20 +998,20 @@ export default {
     }
   }
   #dispose {
-    height: 27.6vh;
+    height: 30%;
     background-color: #fff;
-    margin-top:2.63vh;
+    margin-top:20px;
   }
   #classify {
-    height: 27.6vh;
+    height: 30%;
     background-color: #fff;
   }
   #hotarea {
-    height: 27.6vh;
+    height: 30%;
     background-color: #fff;
   }
   #net {
-    height: 27.6vh;
+    height: 30%;
     background-color: #fff;
     #camerarate {
       height: 170px;
@@ -1083,7 +1086,7 @@ export default {
   #mapChart {
     width: 900px;
     height: 330px;
-    margin-top:2.63vh;
+    margin-top:20px;
     display: flex;
     /* div {
       width: 100%;
