@@ -10,7 +10,7 @@
     </el-row>
     <el-table :data="areaList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="区域名称" prop="name"></el-table-column>
-      <el-table-column label="公安局名称" >{{ policeStation ? policeStation.name : '' }}</el-table-column>
+      <el-table-column label="公安局名称" prop="policeStation.name">{{ policeStation ? policeStation.name : '' }}</el-table-column>
       <el-table-column label="创建时间" prop="createTime">
         <template slot-scope="scope">
           <span>{{ renderTime(scope.row.createTime) }}</span>
@@ -175,7 +175,6 @@ export default {
         phone: ''
       },
       areaList: [],
-      policeStation: {},
       queryInfo: {
         pagenum: 1,
         pagesize: 10
@@ -216,7 +215,6 @@ export default {
         console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
-        this.policeStation = response.body.data.policeStation
         this.total = response.body.page.total
       })
     },
