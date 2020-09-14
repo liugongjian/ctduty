@@ -161,7 +161,7 @@ export const asyncRouterMap = [
             name: 'sysAreaManageAdministration',
             meta: {
               title: '行政管理',
-              icon: 'form'
+              icon: 'administrative'
             }
           },
           {
@@ -170,7 +170,7 @@ export const asyncRouterMap = [
             name: 'sysAreaManagePoliceManage',
             meta: {
               title: '派出所管理',
-              icon: 'chart'
+              icon: 'police'
             }
           }
 
@@ -192,7 +192,7 @@ export const asyncRouterMap = [
         name: 'sysCameraManage',
         meta: {
           title: 'cameraManage',
-          icon: 'camera',
+          icon: 'cameraManagement',
           noCache: false
         }
       },
@@ -202,7 +202,7 @@ export const asyncRouterMap = [
         name: 'sysCarManage',
         meta: {
           title: 'carManage',
-          icon: 'car',
+          icon: 'license',
           noCache: false
         }
       },

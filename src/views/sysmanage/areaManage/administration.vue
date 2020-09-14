@@ -28,7 +28,7 @@
       <el-table-column label="操作">
         <template slot-scope="row_data">
           <!-- <el-link type="primary" @click="showEditDialog(row_data.row)">编辑</el-link> -->
-          <el-link type="primary" @click="showDeleteDialog(row_data.row.username,row_data.row.id)">删除</el-link>
+          <el-link type="primary" @click="deleteArea(row_data.row.id)">删除</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -109,17 +109,6 @@
         <el-button @click="editPoliceDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog> -->
-
-    <el-dialog
-      :visible.sync="deleteAreaDialogVisible"
-      title="删除"
-      width="40%">
-      <span>确认删除？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="warning" @click="deleteArea">确 定</el-button>
-        <el-button @click="deleteAreaDialogVisible = false">取 消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -257,28 +246,23 @@ export default {
       this.addUserForm = {}
       this.$refs.addFormRef.resetFields()
     },
-    // showEditDialog(id) {
-    //   this.editAreaForm = response.body.data
-    //   this.editAreaDialogVisible = true
-    // },
-    // editDialogClosed() {
-    //   this.editAreaForm = {}
-    // },
-    showDeleteDialog(username, id) {
-      this.deleteAreaDialogVisible = true
-      this.deleteAreaName = username
-      this.deleteAreaId = id
-    },
-
-    deleteArea() {
-      const ids = []
-      ids.push(this.deleteAreaId)
-      deleteCountry(ids).then(response => {
-        if (response.code !== 0) return this.$message.error('删除失败,请稍后再试')
-        this.deleteAreaDialogVisible = false
-        this.deleteAreaId = 0
-        this.getareaList()
-        this.$message.success('删除成功')
+    deleteArea(id) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = []
+        ids.push(id)
+        deleteCountry(ids).then(response => {
+          if (response.code !== 0) return this.$message.error('删除失败,请稍后再试')
+          this.deleteAreaDialogVisible = false
+          this.deleteAreaId = 0
+          this.getareaList()
+          this.$message.success('删除成功')
+        })
+      }).catch(() => {
+        return
       })
     },
 
