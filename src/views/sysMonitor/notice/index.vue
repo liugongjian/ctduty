@@ -1,7 +1,6 @@
 
 <template>
   <div class="notice">
-    <el-divider></el-divider>
     <el-row>
       <el-input ref="queryTitleRef" v-model="queryInfo.params.title" class="searchinput" placeholder="公告标题"></el-input>
       <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者姓名"></el-input>
@@ -413,8 +412,10 @@ export default {
     width:700px;
     height: 200px;
 }
-
+.el-row {
+  margin-top: 20px;
+}
 .el-select-dropdown {
-    z-index: 9999999999999999999999999999999999 !important;
-  }
+  z-index: 9999999999999999999999999999999999 !important;
+}
 </style>

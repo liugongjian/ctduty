@@ -223,7 +223,6 @@ export default {
         console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
-        this.policeStation = response.body.data.policeStation
         this.total = response.body.page.total
       })
     },

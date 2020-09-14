@@ -3,7 +3,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right">
-          <el-button class="filter-item" style="font-size:12px" size="mini" icon="el-icon-refresh" @click="onClear">重置</el-button>
+          <el-button class="filter-item" style="font-size:12px" icon="el-icon-refresh" @click="onClear">重置</el-button>
         </div>
         <div class="pull-left">
 
