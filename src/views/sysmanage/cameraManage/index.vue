@@ -86,7 +86,7 @@
                   <br>
                   请选择您想查看的摄像头。
                 </div>
-                <el-form v-else :model="form" label-position="right" label-width="85px">
+                <el-form v-else :model="form" label-position="right">
                   <el-form-item label="摄像头ID：">
                     <el-tooltip :content="form.id" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
@@ -102,16 +102,16 @@
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="经度信息：">
+                  <el-form-item label="经纬度信息：">
                     <el-tooltip :content="form.longitude" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2) }}</div>
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2)+ ', ' + form.latitude.toFixed(2) }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="纬度信息：">
+                  <!-- <el-form-item label="纬度信息：">
                     <el-tooltip :content="form.latitude" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
                     </el-tooltip>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="地址：">
                     <el-tooltip :content="form.address" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
@@ -642,13 +642,14 @@ export default {
        border-radius: 5px;
        margin-left:20px;
        .infotitle {
-         height: 30px;
+         height: 50px;
          background-color: #D8D8D8;
-         line-height: 30px;
-         padding: 0 20px;
+         line-height: 50px;
+         padding: 0 30px;
          opacity: 0.85;
          font-family: PingFangSC-Medium;
          font-size: 16px;
+         font-weight: 700;
          color: rgba(0,0,0,0.85);
          letter-spacing: -0.2px;
        }
@@ -676,6 +677,7 @@ export default {
        }
        .el-form-item__content {
          font-size: 12px !important;
+         word-wrap:break-word !important;
        }
      }
    }
@@ -685,18 +687,16 @@ export default {
  }
  .el-form-item__label {
    font-weight: 700 !important;
-    text-align: left !important;
-    padding-left: 20px;
+    text-align: right !important;
  }
  .markerImg {
    fill: #3E94F9;
  }
  .markerClickImg {
-   fill: #E6A23C !important;
+   fill: #EA2027 !important;
  }
  label{
     display:inline-block;
-    width:130px;
-    text-align: left;
+    width:90px;
     }
 </style>
