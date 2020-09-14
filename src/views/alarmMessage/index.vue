@@ -288,6 +288,10 @@ export default {
     },
     getDayAll(start, end) {
       var result = []
+      if(start===end){
+        result.push(start)
+        return result 
+       }
       var beginDay = start.split('-')
       var endDay = end.split('-')
       var diffDay = new Date()
