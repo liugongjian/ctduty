@@ -21,13 +21,13 @@
         ></el-amap-marker>
       </el-amap>
       <div class="warn">
-        <div class="dispose" style="border-bottom:1px solid #000;">
+        <div class="dispose">
           <div class="dash-title">告警处理率</div>
           <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 100%; width:100%"></div>
           </div>
         </div>
-        <div class="bottom" style="margin-top: 13px;border-top:1px solid #000;">
+        <div class="bottom" style="margin-top: 13px;">
           <div class="dash-title">今日告警</div>
           <div class="bottom-left">
             <div style="width:100%; height:35px;padding:0 20px;">
@@ -99,9 +99,9 @@
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
                       <div class="addressword">
-                        <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                        <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
+                        <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                         <span
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
                         >{{ renderTime(item.createTime) }}</span>
@@ -125,9 +125,9 @@
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
                       <div class="addressword">
-                        <svg-icon v-if="item.type === 1" icon-class="people" />
-                        <svg-icon v-else-if="item.type === 2" icon-class="car" />
-                        <svg-icon v-else if="item.type === 3" icon-class="bicycle" />
+                        <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
+                        <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
+                        <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                         <span
                           style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
                         >{{ renderTime(item.createTime) }}</span>
@@ -685,9 +685,6 @@ export default {
  .trafficSvg {
    fill : #1890ff !important;
  }
-.dispose {
-  border-bottom: 2px solid #000 !important;
-}
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
@@ -705,7 +702,7 @@ export default {
       top: 0;
       right: 10px;
       background-color: #ffffff;
-      width: 25%;
+      width: 320px;
       height: 100%;
 
       .top {
@@ -818,6 +815,9 @@ export default {
     }
   }
 }
+.disbox {
+  position: relative;
+}
 .lefticon {
   height: 100%;
   .shu {
@@ -843,7 +843,15 @@ export default {
   // margin-left: 10px;
   margin-bottom: 10px;
 }
-
+#panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  &>div {
+    width: 100%;
+  }
+}
 .dispose {
   height: 210px;
   width: 100%;
