@@ -520,7 +520,6 @@ export default {
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
-        console.log(JSON.parse(item.attributes[1].nodeValue).id, cameraInfo.camera.id, '哈哈哈哈')
         if (JSON.parse(item.attributes[1].nodeValue).longitude === cameraInfo.camera.longitude) {
           item.classList.add('markerClickImg')
         }
