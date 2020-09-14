@@ -49,7 +49,7 @@
               </div>
             </div>
 
-            <div class="zuoContent" style="width:100%; height:100%;overflow: auto;padding:20px;">
+            <div class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -157,7 +157,7 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-                <el-image :src="dataDia.image" style="width:525px; height:300px;"></el-image>
+                <el-image :src="dataDia.image" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px; height:150px;"></el-image>
@@ -248,6 +248,7 @@ export default {
       allTotal: 0,
       page: 1,
       limit: 10,
+      timer2: '',
       events: {
         click: a => {}
       },
@@ -291,7 +292,6 @@ export default {
       window.clearInterval(this.timer)
     },
     isPush(v) {
-      console.log(v, 'vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
       if (v) {
         this.timer = setInterval(() => {
         // that.getalarmList()
@@ -325,9 +325,6 @@ export default {
               this.getalarmList()
               console.log(response.body.data[0], 'response.body.data[0]response.body.data[0]response.body.data[0]')
               this.showDialog(response.body.data[0])
-              setTimeout(() => {
-                this.closeDialog()
-              }, 5000)
             }
           })
         }, 5000)
@@ -362,6 +359,9 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    openBig(url) {
+      window.open(url)
+    },
     getPush() {
       getPushSet().then(res => {
         this.isPush = JSON.parse(res.body.data.setting).deliveryPush
@@ -490,12 +490,18 @@ export default {
       })
     },
     markerClick() {},
-    closeDialog() {
-      this.dialogVisable = false
-    },
     showDialog(item) {
+      window.clearTimeout(this.timer2)
       this.dataDia = item
       this.dialogVisable = true
+      this.timer2 = setTimeout(() => {
+        this.closeDialog()
+      }, 5000)
+      console.log(this.dialogVisable, 'showDialog')
+    },
+    closeDialog() {
+      this.dialogVisable = false
+      console.log(this.dialogVisable, 'closeDialog')
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -635,7 +641,9 @@ export default {
 
 <style lang="scss" scoped>
 .warn {
+  height:88vh !important;
   margin-bottom: 20px;
+  overflow: hidden;
 }
 .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
     margin-right: 20px;
@@ -666,7 +674,7 @@ export default {
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
-  height: 1000px;
+  height: calc(100vh - 50px);
   width: 100%;
   .map {
     height: 100%;
@@ -805,16 +813,17 @@ export default {
 }
 .youContent {
   margin-bottom: 5px;
+  overflow: hidden;
 }
-.youContent .addressword {
+/* .youContent .addressword {
   margin-left: 30px;
-}
+} */
 .dizhi {
   width: 100%;
   font-size: 15px;
   color: #000000;
   font-weight: 300;
-  margin-left: 10px;
+  // margin-left: 10px;
   margin-bottom: 10px;
 }
 

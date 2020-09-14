@@ -79,7 +79,7 @@
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane
-            v-for="(item, index) in tabsArr"
+            v-for="item in tabsArr"
             :key="item"
             :label="item"
             :name="item">
@@ -127,7 +127,7 @@
 
                 </el-form-item>
                 <el-form-item label="原始照片：" prop="image" >
-                  <el-image :src="temp.image" style="width:525px; height:300px"></el-image>
+                  <el-image :src="temp.image" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
                 </el-form-item>
                 <el-form-item label="结构化照片：" prop="imageCut" >
                   <el-image :src="temp.imageCut" style="width:150px; height:150px;" ></el-image>
@@ -262,6 +262,9 @@ export default {
     this.getList(s, e, h)
   },
   methods: {
+    openBig(url) {
+      window.open(url)
+    },
     delAlert(d) {
       this.rowId = d
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {

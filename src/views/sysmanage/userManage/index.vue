@@ -24,15 +24,13 @@
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[10, 20, 50]"
-      :page-size="queryInfo.pagesize"
-      :total="totalnum"
-      layout="total, prev, pager, next, sizes, jumper"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryInfo.pagesize"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addUserDialogVisible"
@@ -99,7 +97,7 @@
         </el-form-item>
         <el-form-item label="区域/部门">
           <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
-          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">  
+          <el-select v-model="editUserForm.departmentId" :value="editUserForm.departmentId" placeholder="请选择区域/部门">
             <el-option v-for="item in this.departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
           </el-select>
         </el-form-item>
@@ -139,9 +137,11 @@
 </template>
 
 <script>
+import Pagination from '@/components/Pagination'
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
 
 export default {
+  components: { Pagination },
   data() {
     var checkMobile = (rule, value, cb) => {
       const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
@@ -151,6 +151,8 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      limit: 10,
+      total: 0,
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
@@ -181,11 +183,11 @@ export default {
             max: 11,
             message: '长度为11个字符',
             trigger: 'blur'
-          },
+          }/* ,
           {
             validator: checkMobile,
             trigger: 'blur'
-          }
+          } */
         ],
         permissionId: [
           { required: true, message: '权限不能为空', trigger: 'blur' }
@@ -216,7 +218,7 @@ export default {
         pagesize: 10
       },
       queryName: '',
-      totalnum: 0,
+      total: 0,
       editUserDialogVisible: false,
       deleteUserName: '',
       deleteUserDialogVisible: false,
@@ -273,7 +275,7 @@ export default {
         cascade: true,
         page: {
           index: this.pagenum,
-          size: this.pagesize
+          size: this.limit
         },
         params: {}
       }
@@ -284,10 +286,16 @@ export default {
         console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
-        this.totalnum = response.body.total
+        this.total = response.body.page.total
       })
     },
-
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getUserList()
+    },
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
       this.getUserList()
@@ -360,9 +368,15 @@ export default {
       this.queryName = ''
 
       this.getUserList()
-    },
+    }
 
-  }
+  },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
 }
 
 </script>

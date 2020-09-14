@@ -5,7 +5,7 @@
     <el-row>
       <el-button class="addbtn" type="warning" @click="getCountryList">+新增区域</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入..."></el-input>
-      <el-button class="searchbtn" type="warning" @click="getareaList">搜索</el-button>
+      <el-button class="searchbtn" type="warning" @click="searchList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
     <el-table :data="areaList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
@@ -121,7 +121,7 @@
 
 <script>
 import { renderTime } from '@/utils'
-import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountryNull, addCountry, getPolice } from '@/api/users'
+import { fetchAreaList, searchCountry, deleteCountry, getCountryNull, addCountry, getPolice } from '@/api/users'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -276,7 +276,6 @@ export default {
 
     resetQuery() {
       this.queryName = ''
-
       this.getareaList()
     },
 
@@ -322,6 +321,12 @@ export default {
           })
           console.log(this.policeList)
         }
+      })
+    },
+
+    searchList() {
+      searchCountry().then((res) => {
+        console.log('行政搜索res', res)
       })
     }
 

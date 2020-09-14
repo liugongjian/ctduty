@@ -137,17 +137,15 @@ export default {
     screenWidth(v) {
       const canvas = document.getElementsByTagName('canvas');
       [].forEach.call(canvas, function(item) {
-        // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `display:inline-block;text-align:center;`
       })
     },
     screenHeight(v) {
       const canvas = document.getElementsByTagName('canvas');
       [].forEach.call(canvas, function(item) {
-        // do whatever
         item.style.width = '100%'
-        item.parentNode.style = `position: absolute; width: 100%;height: 100%;top: 0%;left: 50%;transform: translateX(-50%); padding: 0px; margin: 0px; border-width: 0px; cursor: default;`
+        item.parentNode.style = `display:inline-block;text-align:center;`
       })
       if (v === window.screen.height - 50) {
         this.isFullscreen = true
@@ -244,7 +242,7 @@ export default {
           })
           this.mapShowData.push({
             name: item.address, value: item.alertCount, latitude: item.latitude,
-            longitude: item.longitude
+            longitude: item.longitude, handledCount: item.handledCount, unHandledCount: item.unHandledCount
           })
         })
         this.getMap(this.mapShowData)
@@ -267,10 +265,11 @@ export default {
       var data = []
       var geoCoordMap = {}
       inData.forEach(item => {
+        console.log(item, '嘻嘻哈哈')
         data.push({
           name: item.name, value: item.value
         })
-        geoCoordMap[item.name] = [item.longitude, item.latitude]
+        geoCoordMap[item.name] = [item.longitude, item.latitude, item.value, item.handledCount, item.unHandledCount]
       })
       var convertData = function(data) {
         var res = []
@@ -293,13 +292,15 @@ export default {
         tooltip: {
           trigger: 'item',
           triggerOn: 'mousemove',
+          position: 'top',
           formatter: function(params) {
             if (typeof (params.value)[2] === 'undefined') {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
+              return
             } else {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparamsparamsparamsparamsparams')
+              return
             }
-          }
+          },
+          z: 999
         },
         legend: {
           orient: '',
@@ -307,7 +308,7 @@ export default {
           top: 20,
           selectedMode: false, // 取消图例上的点击事件
           icon: 'circle',
-          data: ['小于50', '小于100', '大于100'],
+          data: ['小于1000', '小于2000', '大于3000'],
           textStyle: {
             color: '#000'
           }
@@ -341,10 +342,15 @@ export default {
           aspectScale: 1,
           tooltip: {
             triggerOn: 'mousemove',
-            formatter: '{a} <br/>{b} : {c}%'
+            position: 'top',
+            formatter: function(params) {
+              console.log(params, '哈哈嘻嘻')
+              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
+            }
+            // handledCount
           },
           label: {
-            show: true,
+            show: false,
             normal: {
               // show: 0,
               show: true,
@@ -363,7 +369,6 @@ export default {
             }
           },
           zoom: 1.2,
-          z: 13,
           itemStyle: {
             show: true,
             normal: {
@@ -385,7 +390,7 @@ export default {
         series: [{
           type: 'effectScatter',
           coordinateSystem: 'geo',
-          z: 12,
+          z: 999,
           symbolSize: 7,
           showEffectOn: 'render',
           rippleEffect: {
@@ -393,7 +398,7 @@ export default {
             scale: 5,
             brushType: 'fill'
           },
-          hoverAnimation: true,
+          // hoverAnimation: true,
           data: convertData(data),
           label: {
             normal: {
@@ -401,13 +406,12 @@ export default {
               textStyle: {
                 color: '#000'
               },
-              padding: [0, 0, -50, 0],
               formatter: function(item) {
                 return item.name + `(${item.data.value[2]}次)`
               }
             },
             emphasis: {
-              show: true,
+              show: false,
               textStyle: {
                 show: true,
                 color: '#000'
@@ -419,13 +423,13 @@ export default {
               show: true,
               color: function(params) {
                 if (params.data.value[2]) {
-                  if (params.data.value[2] < 35) {
+                  if (params.data.value[2] < 1000) {
                     return '#17b885'
                   }
-                  if ((params.data.value[2]) >= 35 && (params.data.value[2] <= 60)) {
+                  if ((params.data.value[2]) >= 1000 && (params.data.value[2] <= 2000)) {
                     return '#eec511'
                   }
-                  if (params.data.value[2] > 60) {
+                  if (params.data.value[2] > 3000) {
                     return '#d04132'
                   }
                 }
@@ -440,46 +444,18 @@ export default {
           }
         },
         {
-          name: '小于50',
+          name: '小于1000',
           type: 'bar',
-          color: '#17b885',
-          legendHoverLink: true,
-          tooltip: {
-            position: [10, 10],
-            backgroundColor: 'rgba(50,50,50,0.7)',
-            triggerOn: 'mousemove',
-            formatter: function(params) {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
-              return params.data.name
-            }
-          }
+          color: '#17b885'
         },
         {
-          name: '小于100',
+          name: '小于2000',
           type: 'bar',
-          color: '#eec511',
-          legendHoverLink: true,
-          tooltip: {
-            position: [10, 10],
-            backgroundColor: 'rgba(50,50,50,0.7)',
-            triggerOn: 'mousemove',
-            formatter: function(params) {
-              console.log(params, 'paramsparamsparamsparamsparamsparamsparams')
-              return params.data.name
-            }
-          }
+          color: '#eec511'
         }, {
-          name: '大于100',
+          name: '大于3000',
           type: 'bar',
-          color: '#d04132',
-          legendHoverLink: true,
-          tooltip: {
-            backgroundColor: 'rgba(50,50,50,0.7)',
-            triggerOn: 'mousemove',
-            formatter: function(params) {
-              return params.data.name
-            }
-          }
+          color: '#d04132'
         }
         ]
       }
@@ -1108,20 +1084,18 @@ export default {
   padding: 0;
   overflow: hidden;
   #mapChart {
-    width: 100%;
+    width: 900px;
     height: 330px;
     margin-top:20px;
     display: flex;
-    // overflow: hidden;
-    position:relative !important;
-    div {
+    /* div {
       width: 100%;
       height: 100%;
-    }
-    canvas {
+    } */
+    /* canvas {
       width: 100%;
       height: 100%;
-    }
+    } */
   }
   .overv {
     width: 100%;

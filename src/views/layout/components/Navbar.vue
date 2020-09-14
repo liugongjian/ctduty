@@ -281,7 +281,6 @@ export default {
       }).catch(err => {
         return err
       })
-
       // Cookies.remove('token')
       // Cookies.remove('username')
       // Cookies.remove('userId')
