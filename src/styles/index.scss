@@ -240,6 +240,7 @@ code {
 .app-main {
   padding-top: 50px;
   min-height: calc(100vh - 90px) !important;
+  // height: 100vh;
 }
 .video-js {
   width: 100%;
@@ -328,4 +329,13 @@ code {
 }
 .el-row {
   height: 100% !important;
+}
+.el-message-box {
+  .el-button--small {
+    border: none;
+  }
+  .el-button--primary {
+    background-color: #FF9832;
+    color: #fff;
+  }
 }
