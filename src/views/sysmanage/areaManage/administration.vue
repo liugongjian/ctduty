@@ -125,7 +125,7 @@
 
 <script>
 import { renderTime } from '@/utils'
-import { fetchAreaList, postAddUser, getUserInfo, updateUser, deleteCountry, getCountryNull, addCountry, getPolice } from '@/api/users'
+import { fetchAreaList, searchCountry, deleteCountry, getCountryNull, addCountry, getPolice } from '@/api/users'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -223,6 +223,7 @@ export default {
         console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
+        this.policeStation = response.body.data.policeStation
         this.total = response.body.page.total
       })
     },
@@ -284,7 +285,6 @@ export default {
 
     resetQuery() {
       this.queryName = ''
-
       this.getareaList()
     },
 
@@ -330,6 +330,31 @@ export default {
           })
           console.log(this.policeList)
         }
+      })
+    },
+
+    searchList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: this.page,
+          size: this.limit
+        },
+        params: [
+          {
+            field: 'name',
+            operator: 'EQUALS',
+            value: this.queryName.trim()
+          }]
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
+      }
+      searchCountry(query).then(response => {
+        if (response.code !== 0) return
+        this.areaList = response.body.data
+        this.total = response.body.page.total
+        this.queryName = ''
       })
     }
 

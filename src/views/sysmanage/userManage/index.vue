@@ -137,8 +137,8 @@
 </template>
 
 <script>
-import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
 import Pagination from '@/components/Pagination'
+import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
 
 export default {
   components: { Pagination },
@@ -289,7 +289,7 @@ export default {
         cascade: true,
         page: {
           index: this.pagenum,
-          size: this.pagesize
+          size: this.limit
         },
         params: {}
       }
@@ -303,7 +303,13 @@ export default {
         this.total = response.body.page.total
       })
     },
-
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getUserList()
+    },
     handleSizeChange(newsize) {
       this.queryInfo.pagesize = newsize
       this.getUserList()
@@ -378,7 +384,13 @@ export default {
       this.getUserList()
     }
 
-  }
+  },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
 }
 
 </script>

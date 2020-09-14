@@ -79,7 +79,7 @@
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane
-            v-for="(item, index) in tabsArr"
+            v-for="item in tabsArr"
             :key="item"
             :label="item"
             :name="item">

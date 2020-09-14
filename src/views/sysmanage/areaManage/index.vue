@@ -124,9 +124,6 @@ export default {
   methods: {
     // 节点点击事件
     handleNodeClick(data, node, obj) {
-      console.log(data, 'data')
-      console.log(node, 'node')
-      console.log(obj, 'obj')
       if (node.level === 1) {
         this.local = []
         this.local.push(data.policeStation.name)

@@ -80,12 +80,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
+      <!-- <pagination
         v-show="total>0"
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
-      />
+        @pagination="pageChange()"
+      /> -->
       <!-- @pagination="pageChange()" -->
     </div>
   </div>
@@ -225,8 +226,7 @@ export default {
           this.code = response.body.data[i].code
           this.tableData.push(Object.assign(response.body.data[i]))
         }
-        // this.tableData = response.data.result
-        // this.total = response.data.pageInfo.totalItems
+        // this.total = response.body.data.pageInfo.totalItems
         // this.listLoading = false
       })
     },
