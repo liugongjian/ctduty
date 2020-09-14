@@ -27,7 +27,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :page.sync="queryInfo.pagesize"
+      :page.sync="page"
       :limit.sync="limit"
       @pagination="pageChange()"
     />
@@ -139,6 +139,7 @@
 <script>
 import Pagination from '@/components/Pagination'
 import { fetchUserList, postAddUser, getUserInfo, updateUser, deleteUser } from '@/api/users'
+import Pagination from '@/components/Pagination'
 
 export default {
   components: { Pagination },
@@ -151,8 +152,9 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      page: 1,
       limit: 10,
-      total: 0,
+      oldSize: 10,
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
@@ -266,10 +268,23 @@ export default {
       ]
     }
   },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
   created() {
     this.getUserList()
   },
   methods: {
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getgetPoliceList()
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -415,4 +430,9 @@ export default {
  .el-select-dropdown {
     z-index: 9999999999999999999999999999999999 !important;
   }
+   label{
+    display:inline-block;
+    width:100px !important;
+    text-align: left !important;
+    }
 </style>

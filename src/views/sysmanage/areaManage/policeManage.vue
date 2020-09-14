@@ -202,9 +202,12 @@ export default {
           index: this.page,
           size: this.limit
         },
-        params: {
-          name: this.queryName
-        }
+        params: [
+          {
+            field: 'name',
+            operator: 'EQUALS',
+            value: this.queryName.trim()
+          }]
       }
       if (this.queryName.trim() !== '') {
         query.params.name = this.queryName
@@ -213,6 +216,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        this.queryName = ''
       })
     },
     getPoliceList() {

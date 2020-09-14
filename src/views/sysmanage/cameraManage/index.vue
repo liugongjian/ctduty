@@ -14,33 +14,33 @@
               <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="110px">
-                  <el-form-item label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人：" prop="inChargeId">
+                  <el-form-item label-width="130px" label="负责人：" prop="inChargeId">
                     <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择负责人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="添加人：" prop="creatorId">
+                  <el-form-item label-width="130px" label="添加人：" prop="creatorId">
                     <el-select v-model="dialogForm.creatorId" :value="dialogForm.creatorId" placeholder="请选择添加人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="设备型号：" prop="model"><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="设备型号：" prop="model"><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="视频流：" prop="url"><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="视频流：" prop="url"><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="手机：" prop="phone"><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="手机：" prop="phone"><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头经度：" prop="longitude"><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="摄像头经度：" prop="longitude"><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度：" prop="latitude"><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="摄像头纬度：" prop="latitude"><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址：" prop="address"><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
+                  <el-form-item label-width="130px" label="地址：" prop="address"><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -140,26 +140,26 @@
                 </el-form>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-                <el-form :model="editForm" label-position="right" label-width="130px">
-                  <el-form-item label="负责人：">
+                <el-form :model="editForm" label-position="right">
+                  <el-form-item label-width="130px" label="负责人：">
                     <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="添加人：">
+                  <el-form-item label-width="130px" label="添加人：">
                     <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label-width="130px" label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label-width="130px" label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label-width="130px" label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label-width="130px" label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -696,7 +696,7 @@ export default {
  }
  label{
     display:inline-block;
-    width:130px !important;
-    text-align: left !important;
+    width:130px;
+    text-align: left;
     }
 </style>
