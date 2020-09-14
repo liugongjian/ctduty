@@ -18,15 +18,14 @@
               :clearable="false"
               :style="{width:250 + 'px'}"
               :picker-options="pickerOptions"
-              :default-time="['00:00:00', '23:59:59']"
               type="daterange"
               range-separator="to"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
               size="mini"
-              @change="timeChange">
-              >
+              @change="timeChange"
+            >
             </el-date-picker>
           </div>
           <div class="block filter-item">
@@ -241,15 +240,14 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
-    },
-    value1(v) {
-      console.log(v[0], v[1], '哈希哈希')
     }
   },
   created() {
     this.userId = Cookies.get('userId')
     // this.getPushSetTime()
-    this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))]
+    console.log(this.userId, 'USERID.............')
+    console.log(this.endTime, 'end.............')
+    this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
@@ -621,4 +619,3 @@ export default {
     margin-block-end: 14px;
   }
     </style>
-
