@@ -5,7 +5,7 @@
     <el-row>
       <el-button class="addbtn" type="warning" @click="getCountryList">+新增区域</el-button>
       <el-input v-model="queryName" class="searchinput" placeholder="请输入区域名称"></el-input>
-      <el-button class="searchbtn" type="warning" @click="getareaList">搜索</el-button>
+      <el-button class="searchbtn" type="warning" @click="searchList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
     <el-table :data="areaList" :header-cell-style="{background:'#ecedee',color:'#717171'}">

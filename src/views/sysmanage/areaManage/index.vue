@@ -2,7 +2,7 @@
   <div class="area" @click="watchClick">
     <div class="floatmsg">
       <div class="floatword">
-        <input v-model="inputmsg" type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
+        <input v-model="queryName" type="text" placeholder="请输入..." class="inputmsg" @keyup.enter.native="onSearch">
         <button class="btnmsg" @click="onSearch">{{ $t('navbar.search') }}</button>
       </div>
       <div class="floatsearch">
@@ -61,7 +61,7 @@
 
 <script>
 import VueAMap from 'vue-amap'
-import { getCountry } from '@/api/users'
+import { getCountry, searchCountry } from '@/api/users'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'AreaManage',
@@ -107,9 +107,7 @@ export default {
       },
       markers: [],
       formInfo: [],
-      inputmsg: '',
       queryName: ''
-
     }
   },
   created() {
@@ -142,26 +140,33 @@ export default {
     },
     // 模糊搜索事件 请求接口
     onSearch() {
-      if (this.inputmsg.includes('华') || this.inputmsg.includes('华阴') || this.inputmsg.includes('公安') || this.inputmsg.includes('公安局') || this.inputmsg.includes('局') || this.inputmsg.includes('公') || this.inputmsg.includes('安') || this.inputmsg.includes('阴') || this.inputmsg.includes('华阴公安局')) {
-        this.openOrNot = false
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 10
+        },
+        params: [
+          {
+            field: 'name',
+            operator: 'EQUALS',
+            value: this.queryName.trim()
+          }]
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
+      }
+      searchCountry(query).then(response => {
+        if (response.code !== 0) return
         this.local = []
-        this.local.push('华阴公安局')
-        this.addressdata.huapolice = true
-        this.addressdata.mengpolice = false
-        this.addressdata.mountainpolice = false
-        this.markers = [{ position: [110.112562, 34.572169], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="华阴公安局"></path></svg>` }]
-        setTimeout(() => {
-          this.openOrNot = true
-        })
-        clearTimeout()
-      } else if (this.inputmsg.includes('孟') || this.inputmsg.includes('孟塬') || this.inputmsg.includes('孟塬镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('塬') || this.inputmsg.includes('派出') || this.inputmsg.includes('孟塬镇派出所') || this.inputmsg.includes('镇')) {
-        this.local = []
-        this.local.push('孟塬镇派出所')
-        this.addressdata.mengpolice = true
-        this.addressdata.mountainpolice = false
-        this.addressdata.huapolice = false
-        this.markers = [{ position: [110.147774, 34.558654], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="孟塬镇派出所"></path></svg>` }]
-      } else if (this.inputmsg.includes('华山') || this.inputmsg.includes('华山镇') || this.inputmsg.includes('镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('山') || this.inputmsg.includes('华山镇派出所')) {
+        this.local.push(response.body.data[0].policeStation.name)
+        this.addressdata.police = response.body.data[0].policeStation.name
+        this.addressdata.address = response.body.data[0].policeStation.address
+        this.center = [response.body.data[0].policeStation.longitude, response.body.data[0].policeStation.latitude]
+        this.markers = [{ position: [response.body.data[0].policeStation.longitude, response.body.data[0].policeStation.latitude], content: `<svg class='markerImg' t="1599031324025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="888" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M113.777778 387.470222C113.777778 601.457778 512 1024 512 1024s398.222222-422.542222 398.222222-636.529778S731.932444 0 512 0 113.777778 173.482667 113.777778 387.470222zM512 580.266667c-105.187556 0-190.464-84.053333-190.464-187.733334 0-103.68 85.276444-187.733333 190.464-187.733333 105.187556 0 190.464 84.053333 190.464 187.733333 0 103.68-85.276444 187.733333-190.464 187.733334z" p-id="889"></path><path d="M512 398.222222m-113.777778 0a113.777778 113.777778 0 1 0 227.555556 0 113.777778 113.777778 0 1 0-227.555556 0Z" p-id="890" title="${response.body.data[0].policeStation.name}"></path></svg>` }]
+        
+      })
+      if (this.inputmsg.includes('华山') || this.inputmsg.includes('华山镇') || this.inputmsg.includes('镇') || this.inputmsg.includes('派出所') || this.inputmsg.includes('山') || this.inputmsg.includes('华山镇派出所')) {
         this.local = []
         this.local.push('华山镇派出所')
         this.addressdata.mountainpolice = true

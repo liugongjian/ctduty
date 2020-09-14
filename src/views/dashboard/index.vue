@@ -880,7 +880,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  height: 100%;
+  height: 100vh;
 }
 .main-container {
   background-color: #F0F2F5;
