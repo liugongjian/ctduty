@@ -642,13 +642,14 @@ export default {
        border-radius: 5px;
        margin-left:20px;
        .infotitle {
-         height: 30px;
+         height: 50px;
          background-color: #D8D8D8;
-         line-height: 30px;
-         padding: 0 20px;
+         line-height: 50px;
+         padding: 0 30px;
          opacity: 0.85;
          font-family: PingFangSC-Medium;
          font-size: 16px;
+         font-weight: 700;
          color: rgba(0,0,0,0.85);
          letter-spacing: -0.2px;
        }
