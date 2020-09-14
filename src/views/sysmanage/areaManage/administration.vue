@@ -4,13 +4,17 @@
     <el-divider></el-divider>
     <el-row>
       <el-button class="addbtn" type="warning" @click="getCountryList">+新增区域</el-button>
-      <el-input v-model="queryName" class="searchinput" placeholder="请输入区域名称..."></el-input>
-      <el-button class="searchbtn" type="warning" @click="searchList">搜索</el-button>
+      <el-input v-model="queryName" class="searchinput" placeholder="请输入区域名称"></el-input>
+      <el-button class="searchbtn" type="warning" @click="getareaList">搜索</el-button>
       <el-button class="searchbtn" @click="resetQuery">重置</el-button>
     </el-row>
     <el-table :data="areaList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
       <el-table-column label="区域名称" prop="name"></el-table-column>
-      <el-table-column label="公安局名称" prop="policeStation.name">{{ policeStation ? policeStation.name : '' }}</el-table-column>
+      <el-table-column label="公安局名称" prop="policeStation.name">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policeStation ? scope.row.policeStation.name : '' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" prop="createTime">
         <template slot-scope="scope">
           <span>{{ renderTime(scope.row.createTime) }}</span>
@@ -174,7 +178,11 @@ export default {
         postId: null,
         phone: ''
       },
-      areaList: [],
+      areaList: [{
+        policeStation: {
+          name: ''
+        }
+      }],
       queryInfo: {
         pagenum: 1,
         pagesize: 10
