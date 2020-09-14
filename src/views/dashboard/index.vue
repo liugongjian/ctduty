@@ -345,7 +345,7 @@ export default {
             position: 'top',
             formatter: function(params) {
               console.log(params, '哈哈嘻嘻')
-              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
+              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]}<br/>未处理: ${params.data.value[4]}`
             }
             // handledCount
           },
@@ -880,7 +880,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  height: 100vh;
+  height: 100%;
 }
 .main-container {
   background-color: #F0F2F5;
