@@ -22,9 +22,23 @@
       </el-amap>
       <div class="warn">
         <div class="dispose">
-          <div class="dash-title">告警处理率</div>
-          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
+          <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="告警处理率" name="alarmRate" lazy>
+              <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
+                <div id="panel" style="height: 100%; width:100%"></div>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
+          </el-tabs> -->
+          <div class="title">
+            <div class="dash-title" @click="alarmRate">告警处理率</div>
+            <div class="dash-title" @click="monitoring">实时监控</div>
+          </div>
+          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;" v-if="showAlarm === 'rate'">
             <div id="panel" style="height: 100%; width:100%"></div>
+          </div>
+          <div class="alarmMonitoring" v-if="showAlarm === 'monitoring'">
+            <div>实时监控</div>
           </div>
         </div>
         <div class="bottom" style="margin-top: 13px;">
@@ -264,6 +278,7 @@ export default {
       center: [110.09, 34.58],
       markersDom: null,
       showTabValue: 'all',
+      showAlarm: 'rate',
       markers: [],
       amapManager,
       total: 0,
@@ -379,6 +394,9 @@ export default {
       })
     }, 2000)
   },
+  updated() {
+    this.getPanelList()
+  },
   beforeDestroy() {
     window.clearInterval(this.timer)
   },
@@ -451,6 +469,13 @@ export default {
     },
     wTab() {
       this.showTabValue = 'w'
+    },
+    alarmRate() {
+      this.showAlarm = 'rate'
+      this.getPanel()
+    },
+    monitoring() {
+      this.showAlarm = 'monitoring'
     },
     getalarmList() {
       const params = {
@@ -647,7 +672,9 @@ export default {
         ]
       })
     },
-    handleClick(tab, event) {},
+    handleClick(tab, event) {
+      console.log('99999999999', tab, event)
+    },
     next() {
       if (this.active++ > 2) this.active = 0
     },
@@ -908,6 +935,12 @@ export default {
 }
 .markerClickImg {
   fill: #ff1a2e !important;
+}
+.title {
+  display: flex;
+  .dash-title {
+    flex: 1;
+  }
 }
 </style>
 
