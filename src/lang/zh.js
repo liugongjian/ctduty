@@ -26,7 +26,7 @@ export default {
     activities: '活动中心',
     activeList: '活动列表',
     prizeList: '奖品列表',
-    nvs: '天翼云值更系统',
+    nvs: '天翼值更系统',
     application: '视频应用',
     database: '数据库管理',
     alarm: '报警管理',
