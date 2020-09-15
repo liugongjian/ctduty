@@ -559,6 +559,7 @@ export default {
       e.path.forEach(item => {
         if (item.className === 'amap-marker-content') {
           // this.blink(item.childNodes[1])
+          this.showAlarm = 'monitoring'
           item.childNodes[1].classList.add('markerClickImg')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
