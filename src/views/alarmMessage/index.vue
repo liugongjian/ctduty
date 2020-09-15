@@ -130,7 +130,7 @@
                   <el-image :src="temp.image" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
                 </el-form-item>
                 <el-form-item label="结构化照片：" prop="imageCut" >
-                  <el-image :src="temp.imageCut" style="width:150px; height:150px;" ></el-image>
+                  <el-image :src="temp.imageCut"></el-image>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">

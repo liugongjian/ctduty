@@ -34,11 +34,13 @@
             <div class="dash-title" @click="alarmRate">告警处理率</div>
             <div class="dash-title" @click="monitoring">实时监控</div>
           </div>
-          <div v-if="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
+          <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 100%; width:100%"></div>
           </div>
-          <div v-if="showAlarm === 'monitoring'" class="alarmMonitoring">
-            <div>实时监控</div>
+          <div v-show="showAlarm === 'monitoring'" class="alarmMonitoring" style="height: 100%; width:100%">
+            <div style="height: 90%; width:100%">
+              <VideoPlayer />
+            </div>
           </div>
         </div>
         <div class="bottom" style="margin-top: 13px;">
@@ -71,7 +73,7 @@
                       v-for="(item, index) in stepsData"
                       :key="index"
                       class="stepword"
-                      @click="showDialog(item)"
+                      @click="showDialogFather(item)"
                     >
                       <div style="height:32px; width:32px; float:left" class="lefticon">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -104,7 +106,7 @@
                     v-for="(item, index) in yData"
                     :key="index"
                     class="stepword"
-                    @click="showDialog(item)"
+                    @click="showDialogFather(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -130,7 +132,7 @@
                     v-for="(item, index) in xData"
                     :key="index"
                     class="stepword"
-                    @click="showDialog(item)"
+                    @click="showDialogFather(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
@@ -208,6 +210,7 @@
 </template>
 
 <script>
+import VideoPlayer from '@/components/VideoPlayer'
 import Cookies from 'js-cookie'
 import echarts from 'echarts'
 // 引入水球
@@ -230,7 +233,7 @@ const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
   // components: { CameraList },
-  components: { Pagination },
+  components: { Pagination, VideoPlayer },
   props: ['data', 'defaultActive'],
   data() {
     return {
@@ -406,7 +409,6 @@ export default {
     }, 10000)
   },
   updated() {
-    this.getPanelList()
     console.log(document.getElementsByClassName('markerImg'), '吼吼吼')
     if (document.getElementsByClassName('markerImg').length) {
       this.hasMarker = true
@@ -418,6 +420,9 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    showDialogFather(item) {
+      this.showDialog(item)
+    },
     openBig(url) {
       window.open(url)
     },
