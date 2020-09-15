@@ -592,7 +592,7 @@ export default {
           )
           play(this.form.id).then(res => {
             console.log(res, '嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻res')
-            this.playUrl = res.body.data[0].flv
+            this.playUrl = res.body.data
             this.videoOptions = {
               autoplay: true,
               controls: true,
@@ -602,8 +602,8 @@ export default {
               // fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: res.body.data[0].flv + '&a.flv',
-                  type: this.video_type(res.body.data[0].flv + '&a.flv')
+                  src: res.body.data + '&a.flv',
+                  type: this.video_type(res.body.data + '&a.flv')
                 }
               ]
             }
