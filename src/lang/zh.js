@@ -52,7 +52,8 @@ export default {
     onlineUser: '在线用户',
     pushSet: '推送设置',
     carManage: '车牌数据管理',
-    faceManage: '人脸数据管理'
+    faceManage: '人脸数据管理',
+    monitorScreen: '监控大屏'
   },
   activeList: {
     name: '名称',

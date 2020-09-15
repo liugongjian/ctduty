@@ -64,6 +64,25 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/monitorScreen',
+    component: Layout,
+    redirect: '/monitorScreen',
+    hidden: false,
+    children: [
+      {
+        path: '/monitorScreen',
+        component: () => import('@/views/monitorScreen/index'),
+        name: 'monitorScreen',
+        meta: {
+          title: 'monitorScreen',
+          icon: 'monitor',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
     path: '/alarmMessage',
     component: Layout,
     redirect: '/alarmMessage',
