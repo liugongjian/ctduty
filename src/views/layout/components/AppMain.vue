@@ -27,7 +27,6 @@ export default {
   /*84 = navbar + tags-view = 50 +34 */
   width: 100%;
   position: relative;
-  overflow: hidden;
 }
 </style>
 
