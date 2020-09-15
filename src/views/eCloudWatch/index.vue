@@ -295,7 +295,8 @@ export default {
       renderTime,
       isPush: null,
       timer3: '',
-      timer4: ''
+      timer4: '',
+      rate: null
     }
   },
   watch: {
@@ -423,6 +424,7 @@ export default {
         this.offCamera = res.body.data.offlineCameras
         this.alarmTime = res.body.data.todayAlerts
         this.processed = res.body.data.todayHandleds
+        this.rate = parseInt(res.body.data.alertHandleRate * 100)
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
       })
     },
@@ -1026,6 +1028,7 @@ export default {
 .title {
   display: flex;
   .dash-title {
+    cursor: pointer;
     flex: 1;
   }
 }
