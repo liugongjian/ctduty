@@ -30,7 +30,7 @@
             </el-tab-pane>
             <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
           </el-tabs> -->
-          <div class="title">
+          <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
@@ -1051,7 +1051,7 @@ export default {
   width: 60px !important;
   height: 60px !important;
 }
-.title {
+.watchtitle {
   display: flex;
   .dash-title {
     cursor: pointer;
