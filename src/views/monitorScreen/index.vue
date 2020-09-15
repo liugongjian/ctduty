@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div class="screen" v-if="deviceList.length <= 9">
+      <div class="screen" v-if="deviceList.length < 9">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
         </div>
@@ -256,6 +256,9 @@ export default {
         font-size: 18px;
         line-height: 40px;
         color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .head-btn {
         display: flex;
