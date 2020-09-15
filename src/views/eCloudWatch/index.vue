@@ -46,7 +46,7 @@
           </div>
           <div v-show="showAlarm === 'monitoring'" class="alarmMonitoring" style="height: 100%; width:100%">
             <div style="height: 90%; width:100%">
-              <VideoPlayer :video-ref="playUrl" />
+              <VideoPlayer :video-ref="playUrl" :options="videoOptions"/>
             </div>
           </div>
         </div>
@@ -312,7 +312,8 @@ export default {
       rate: null,
       showActive: true,
       alarmActive: false,
-      playUrl: ''
+      playUrl: '',
+      videoOptions: {}
     }
   },
   watch: {
@@ -605,7 +606,21 @@ export default {
           )
           play(this.form.id).then(res => {
             console.log(res, '嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻res')
-            this.playUrl = res.body.data[0].flv
+            this.playUrl = res.body.data
+            this.videoOptions = {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: res.body.data + '&a.flv',
+                  type: this.video_type(res.body.data + '&a.flv')
+                }
+              ]
+            }
           })
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
@@ -654,6 +669,20 @@ export default {
     },
     markerClick() {
 
+    },
+    video_type(_url) {
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      }
     },
     blink(dom) {
       window.clearInterval(this.timer4)
