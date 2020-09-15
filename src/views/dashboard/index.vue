@@ -160,6 +160,9 @@ export default {
     registerMap()
   },
   mounted() {
+    [].forEach.call(document.getElementsByClassName('app-main'), function(item) {
+      item.style.height = '100%'
+    })
     const that = this
     that.screenWidth = document.getElementById('dashID').clientWidth
     that.screenHeight = document.getElementById('dashID').clientHeight
@@ -877,7 +880,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
-  height: 100%;
+  height: 100% !important;
 }
 .main-container {
   background-color: #F0F2F5;
