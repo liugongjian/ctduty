@@ -14,6 +14,15 @@ export function fetchAllCameraList(query) {
   })
 }
 
+// 支持模糊查询
+export function searchCameraList(query) {
+  return request({
+    url: '/nvsapi/Camera/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
+
 // 编辑摄像头信息
 export function editCamera(query) {
   return request({

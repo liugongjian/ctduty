@@ -19,6 +19,14 @@ module.exports = {
         },
         secure: false,
       },
+      '/nvsapi2': {
+        target: 'http://host31.880508.xyz:10000',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/nvsapi2': ''
+        },
+        secure: false,
+      },
       '/upload-file-proxy': {
         target: 'https://saastest.ctyun.cn:8100/apps/test/uploadfile',
         changeOrigin: true,
