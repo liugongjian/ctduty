@@ -31,8 +31,8 @@
             <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
           </el-tabs> -->
           <div class="title">
-            <div class="dash-title" @click="alarmRate">告警处理率</div>
-            <div class="dash-title" @click="monitoring">实时监控</div>
+            <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
+            <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 100%; width:100%"></div>
@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="bottom" style="margin-top: 13px;">
-          <div class="dash-title">今日告警</div>
+          <div class="dash-title todayAlarm">今日告警</div>
           <div class="bottom-left">
             <div style="width:100%; height:35px;padding:0 20px;">
               <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
@@ -299,7 +299,10 @@ export default {
       timer3: '',
       timer4: '',
       hasMouse: false,
-      timers: []
+      timers: [],
+      rate: null,
+      showActive: true,
+      alarmActive: false
     }
   },
   watch: {
@@ -416,12 +419,12 @@ export default {
     }, 10000)
   },
   updated() {
-    console.log(document.getElementsByClassName('markerImg'), '吼吼吼')
     if (document.getElementsByClassName('markerImg').length) {
       this.hasMarker = true
     } else {
       this.hasMarker = false
     }
+    this.getPanelList()
   },
   beforeDestroy() {
     window.clearInterval(this.timer)
@@ -453,6 +456,7 @@ export default {
         this.offCamera = res.body.data.offlineCameras
         this.alarmTime = res.body.data.todayAlerts
         this.processed = res.body.data.todayHandleds
+        this.rate = parseInt(res.body.data.alertHandleRate * 100)
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
       })
     },
@@ -498,12 +502,16 @@ export default {
     wTab() {
       this.showTabValue = 'w'
     },
-    alarmRate() {
+    alarmRate(e) {
       this.showAlarm = 'rate'
+      this.showActive = true
+      this.alarmActive = false
       this.getPanel()
     },
-    monitoring() {
+    monitoring(e) {
       this.showAlarm = 'monitoring'
+      this.showActive = false
+      this.alarmActive = true
     },
     getalarmList() {
       const params = {
@@ -1003,15 +1011,12 @@ export default {
   height: 210px;
   width: 100%;
   background-color: #fff;
-  margin-top: 10px;
 }
 .dash-title {
   position: relative;
   margin: 0;
   padding: 0;
-  padding-left: 20px;
   font-size: 14px;
-
   height: 40px;
   line-height: 40px;
   color: #333;
@@ -1022,6 +1027,9 @@ export default {
     font-size: 16px;
     transform: translate(-50%, -50%);
   }
+}
+.todayAlarm {
+  padding-left: 10px;
 }
 .status {
   margin-top: 20px;
@@ -1044,8 +1052,17 @@ export default {
 .title {
   display: flex;
   .dash-title {
+    cursor: pointer;
     flex: 1;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
   }
+}
+.active {
+  color: #FF9832;
+}
+.alarmMonitoring {
+  border-left: 1px solid #ccc;
 }
 </style>
 
