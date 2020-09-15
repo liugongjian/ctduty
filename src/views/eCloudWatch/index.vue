@@ -298,7 +298,8 @@ export default {
       isPush: null,
       timer3: '',
       timer4: '',
-      hasMouse: false
+      hasMouse: false,
+      timers: []
     }
   },
   watch: {
@@ -378,9 +379,15 @@ export default {
       const that = this
       v.forEach(item => {
         setTimeout(() => {
-          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom) {
+          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
             if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
-              that.blink(dom)
+              window.clearInterval(that.timer6)
+              that.timers[i] = setInterval(() => {
+                dom.classList.add('markerClickImg')
+                dom.timer6 = setTimeout(() => {
+                  dom.classList.remove('markerClickImg')
+                }, 500)
+              }, 1000)
             }
           })
         }, 300)
@@ -534,13 +541,6 @@ export default {
               this.yData.push(item)
             } else {
               this.xData.push(item)
-              setTimeout(() => {
-                [].forEach.call(document.getElementsByClassName('markerImg'), function(dom) {
-                  if (dom.id === item.id) {
-                    console.log(dom.id === item.id, '相等吗')
-                  }
-                })
-              }, 300)
             }
           })
         }
@@ -558,13 +558,11 @@ export default {
       })
       e.path.forEach(item => {
         if (item.className === 'amap-marker-content') {
-          // this.blink(item.childNodes[1])
           this.showAlarm = 'monitoring'
           item.childNodes[1].classList.add('markerClickImg')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          console.log('呼呼哈哈嘻嘻')
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
@@ -601,6 +599,11 @@ export default {
                 if (item.state !== null) {
                   this.yData.push(item)
                 } else {
+                  console.log(this.timers, 'this.timers');
+                  [...this.timers].forEach((item, index) => {
+                    window.clearInterval(item)
+                    this.timers.splice(index, 1)
+                  })
                   this.xData.push(item)
                 }
               })

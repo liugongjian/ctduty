@@ -248,11 +248,11 @@ export default {
         this.getMap(this.mapShowData)
         res.body.data.alertStatisByTypeList.forEach(item => {
           if (item.type === '1') {
-            this.drawPie('man', '人员', '#1890FF', parseInt(item.typeRate * 100))
+            this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1))
           } else if (item.type === '2') {
-            this.drawPie('car', '机动车', '#5DDECF', parseInt(item.typeRate * 100))
+            this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
           } else {
-            this.drawPie('bicycle', '非机动车', '#2FC25B', parseInt(item.typeRate * 100))
+            this.drawPie('bicycle', '非机动车', '#2FC25B', (item.typeRate * 100).toFixed(1))
           }
         })
       })
@@ -464,9 +464,6 @@ export default {
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
       this.charts.setOption({
-        tooltip: {
-          formatter: '{a} <br/>{b} : {c}%'
-        },
         toolbox: { // 工具栏小图标
           show: false,
           feature: {
