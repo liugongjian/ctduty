@@ -440,6 +440,20 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    video_type(_url){
+      var url = _url.toLowerCase();
+      if (url.startsWith('rtmp')) {
+        return "rtmp/flv";
+      }else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL';
+      }else if (url.endsWith('webm')) {
+        return 'video/webm';
+      }else if (url.endsWith('mp4')) {
+        return 'video/mp4';
+      }else if (url.endsWith('ogv')) {
+        return 'video/ogg';
+      }
+    },
     showDialogFather(item) {
       this.showDialog(item)
     },
