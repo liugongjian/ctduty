@@ -27,21 +27,21 @@ export function addMonitor(data) {
 export function delMonitor(id) {
   return request({
     url: `/nvsapi/camera/live/delete/${id}`,
-    method: 'delete'
+    method: 'delete',
   })
 }
 
 export function play(cameraId) {
   return request({
     url: `/nvsapi/camera/live/play/${cameraId}`,
-    method: 'post'
+    method: 'post',
   })
 }
 
 export function stop(id) {
   return request({
     url: `/nvsapi/camera/live/stop/${id}`,
-    method: 'delete'
+    method: 'delete',
   })
 }
 
