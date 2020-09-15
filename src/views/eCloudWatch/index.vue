@@ -46,7 +46,7 @@
           </div>
           <div v-show="showAlarm === 'monitoring'" class="alarmMonitoring" style="height: 100%; width:100%">
             <div style="height: 90%; width:100%">
-              <VideoPlayer />
+              <VideoPlayer :video-ref="playUrl" :options="videoOptions"/>
             </div>
           </div>
         </div>
@@ -229,6 +229,7 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
+import { play } from '@/api/monitor'
 import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
@@ -310,7 +311,9 @@ export default {
       timers: [],
       rate: null,
       showActive: true,
-      alarmActive: false
+      alarmActive: false,
+      playUrl: '',
+      videoOptions: {}
     }
   },
   watch: {
@@ -350,7 +353,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 40,
+              size: 99,
               total: 0
             },
             params: [
@@ -475,7 +478,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 20
+          size: 100000
         },
         params: {}
       }
@@ -528,7 +531,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 40,
+          size: 99,
           total: 0
         },
         params: [
@@ -583,16 +586,35 @@ export default {
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
+          console.log(this.form, '西湖西湖')
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
+          play(this.form.id).then(res => {
+            console.log(res, '嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻res')
+            this.playUrl = res.body.data
+            this.videoOptions = {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: res.body.data + '&a.flv',
+                  type: this.video_type(res.body.data + '&a.flv')
+                }
+              ]
+            }
+          })
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
           const params = {
             cascade: true,
             page: {
               index: 1,
-              size: 40,
+              size: 99,
               total: 0
             },
             params: [
@@ -619,7 +641,6 @@ export default {
                 if (item.state !== null) {
                   this.yData.push(item)
                 } else {
-                  console.log(this.timers, 'this.timers');
                   [...this.timers].forEach((item, index) => {
                     window.clearInterval(item)
                     this.timers.splice(index, 1)
@@ -634,6 +655,20 @@ export default {
     },
     markerClick() {
 
+    },
+    video_type(_url) {
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      }
     },
     blink(dom) {
       window.clearInterval(this.timer4)
@@ -1053,7 +1088,6 @@ export default {
 .status {
   margin-top: 20px;
 }
-
 .originImg {
   width: 380px;
   height: 250px;
@@ -1090,6 +1124,7 @@ export default {
   display: flex;
   justify-content:flex-end;
   align-items: center;
+  box-shadow: 0 1px 4px 0;
 }
 </style>
 
