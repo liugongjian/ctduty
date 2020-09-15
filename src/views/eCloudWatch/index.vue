@@ -1090,6 +1090,7 @@ export default {
   display: flex;
   justify-content:flex-end;
   align-items: center;
+  box-shadow: 0 1px 4px 0;
 }
 </style>
 
