@@ -1,5 +1,5 @@
 <template>
-  <div id="alarmInfo" class="alarmInfo">
+  <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
       <el-amap
         :amap-manager="amapManager"
@@ -272,7 +272,7 @@ export default {
         }
         }
       ],
-      zoom: 12,
+      zoom: 15,
       hasMarker: false,
       showZwMes: true,
       center: [110.09, 34.58],
@@ -290,7 +290,9 @@ export default {
         click: a => {}
       },
       renderTime,
-      isPush: null
+      isPush: null,
+      timer3: '',
+      timer4: ''
     }
   },
   watch: {
@@ -306,10 +308,9 @@ export default {
     hasMarker(v) {
       const that = this
       if (v) {
-        [].forEach.call(document.getElementsByClassName('markerImg'), function(
-          item,
-          index
-        ) {
+        console.log('嘻嘻');
+        [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
+          console.log(item, 'pppp')
           if (index === 0) {
             that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
             // item.classList.add('markerClickImg')
@@ -332,12 +333,11 @@ export default {
     isPush(v) {
       if (v) {
         this.timer = setInterval(() => {
-        // that.getalarmList()
           const params = {
             cascade: true,
             page: {
               index: 1,
-              size: 40,
+              size: 99,
               total: 0
             },
             params: [
@@ -364,6 +364,9 @@ export default {
               this.showDialog(response.body.data[0])
               const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
               audio.play()// 播放
+              /*  response.body.data.forEach(item => {
+                console.log(item.state, '哈茨哈茨')
+              }) */
             }
           })
         }, 5000)
@@ -372,9 +375,9 @@ export default {
   },
   async created() {
     this.userId = Cookies.get('userId')
+    await this.getCameraList()
     await this.getPush()
     await this.getalarmList()
-    await this.getCameraList()
     await this.getPanelList()
   },
   mounted() {
@@ -383,16 +386,9 @@ export default {
     document.getElementById('alarmInfo').onclick = function() {
       this.watchClick()
     }
-    setTimeout(() => {
-      this.formInfo = []
-      this.formInfo.forEach(item => {
-        this.markers.push({
-          position: [item.longitude, item.latitude],
-          content: `<img class='markerImg' data=${JSON.stringify(item)}
-          src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`
-        })
-      })
-    }, 2000)
+    setInterval(() => {
+      this.getalarmList()
+    }, 10000)
   },
   updated() {
     this.getPanelList()
@@ -482,7 +478,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 40,
+          size: 99,
           total: 0
         },
         params: [
@@ -516,6 +512,18 @@ export default {
               this.xData.push(item)
             }
           })
+          /*    response.body.data.forEach(item => {
+            if (item.state === null) {
+              const markers = document.getElementsByClassName('markerImg')
+              console.log(markers, '嘀嗒嘀嗒');
+              [].forEach.call(markers, function(dom) {
+                console.log(dom, 'cdcd')
+                if (JSON.parse(dom.attributes[1].nodeValue).id === item.id) {
+                  this.blink(dom)
+                }
+              })
+            }
+          }) */
         }
       })
     },
@@ -526,19 +534,91 @@ export default {
       const marImgs = document.getElementsByClassName('markerImg');
       [].forEach.call(marImgs, function(item) {
         item.classList.remove('markerClickImg')
+        item.setAttribute('width', 40)
+        item.setAttribute('height', 40)
       })
       e.path.forEach(item => {
         if (item.className === 'amap-marker-content') {
+          // this.blink(item.childNodes[1])
           item.childNodes[1].classList.add('markerClickImg')
+          item.childNodes[1].setAttribute('width', 50)
+          item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
+          this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
+          const params = {
+            cascade: true,
+            page: {
+              index: 1,
+              size: 99,
+              total: 0
+            },
+            params: [
+              {
+                field: 'cameraId',
+                operator: 'BETWEEN',
+                value: this.form.id
+              }
+            ],
+            sorts: [
+              {
+                field: 'create_time',
+                type: 'desc'
+              }
+            ]
+
+          }
+          fetchalarmList(params).then(response => {
+            if (response.body.data.length) {
+              console.log(response)
+              this.stepsData = response.body.data
+              this.yData = []
+              this.xData = []
+              response.body.data.forEach(item => {
+                if (item.state !== null) {
+                  this.yData.push(item)
+                } else {
+                  this.xData.push(item)
+                }
+              })
+            }
+          })
         }
       })
     },
-    markerClick() {},
+    markerClick() {
+
+    },
+    blink(dom) {
+      window.clearInterval(this.timer3)
+      window.clearInterval(this.timer4)
+      this.timer3 = setInterval(() => {
+        dom.classList.add('markerClickImg')
+        this.timer4 = setTimeout(() => {
+          dom.classList.remove('markerClickImg')
+        }, 500)
+      }, 1000)
+    },
+    /* showDialog(cameraInfo) {
+      window.clearTimeout(this.timer2)
+      this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
+      const markers = document.getElementsByClassName('markerImg');
+      [].forEach.call(markers, function(item) {
+        item.classList.remove('markerClickImg')
+        if (JSON.parse(item.attributes[1].nodeValue).longitude === cameraInfo.camera.longitude) {
+          // item.classList.add('markerClickImg')
+          this.blink(item)
+        }
+      })
+      this.dataDia = cameraInfo
+      this.dialogVisable = true
+      this.timer2 = setTimeout(() => {
+        this.closeDialog()
+      }, 5000)
+    }, */
     showDialog(cameraInfo) {
       window.clearTimeout(this.timer2)
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
@@ -932,9 +1012,13 @@ export default {
 }
 .markerImg {
   fill: #3e94f9;
+  width: 40px;
+  height: 40px;
 }
 .markerClickImg {
   fill: #ff1a2e !important;
+  width: 60px !important;
+  height: 60px !important;
 }
 .title {
   display: flex;

@@ -101,7 +101,7 @@
               <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" ></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
-                <svg-icon v-else class="untreated" icon-class="untreated" />
+                <svg-icon v-else class="untreated" icon-class="untreated2" />
                 <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
               </template></el-table-column>
               <el-table-column label="操作" width="80">
@@ -245,8 +245,7 @@ export default {
   created() {
     this.userId = Cookies.get('userId')
     // this.getPushSetTime()
-    console.log(this.userId, 'USERID.............')
-    console.log(this.endTime, 'end.............')
+   
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
@@ -314,9 +313,7 @@ export default {
           i = 1
         }
       }
-      console.log(result.length)
-      console.log(result)
-      console.log('llllllllllllllllllll')
+     
       return result
     },
     onClear() {
@@ -363,11 +360,10 @@ export default {
       const s = this.tabsArr[this.tabsArr.length - 1] + 'T' + this.startTime + ':00.000Z'
       const end = this.tabsArr[0] + 'T' + this.endTime + ':00.000Z'
       this.getTimeAllTotal(s, end, h1)
-      console.log(end, '??????????/')
+    
     },
 
     editDialog(v) {
-      console.log(v, 'VVVVVVVVVVVVVVV'),
       this.temp = Object.assign({}, v)
       this.dialogVisable = true
     },
@@ -396,7 +392,6 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      console.log(this.formInline.typeValue, 'type')
       this.$emit('getdata', this.formInline.typeValue)
     },
     // 表头样式
@@ -404,7 +399,7 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      console.log('hhhh')
+     
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
@@ -412,12 +407,10 @@ export default {
       this.getList(s, end, h)
     },
     tabChangeQuery(e) {
-      console.log(e, '---')
       this.currentTab = e.label
       const s = e.label + ' ' + this.startTime + ':00'
       const end = e.label + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
-      console.log(h)
       this.page = 1
       this.getList(s, end, h)
     },
@@ -467,10 +460,8 @@ export default {
         end: e,
         null: oper
       }
-      console.log(params, 'paramsssssssssssss')
 
       getAllTotal(params).then(response => {
-        console.log(response, 'response。。。。。')
         this.allTotal = response.body.data
         this.listLoading = false
       })
@@ -527,14 +518,12 @@ export default {
     dialogQuxiao(val) {
       this.state = 1
       const tempData = Object.assign({}, this.temp)
-      console.log(this.temp)
       const params = [{
         id: tempData.id,
         state: this.state,
         handlerId: this.userId
 
       }]
-      console.log(params, '，，，，，，，，，，，，，，，，，，，')
       // 更新state状态
       notifyState(params).then(response => {
         const s1 = this.currentTab + ' ' + this.startTime + ':00'
@@ -555,13 +544,11 @@ export default {
     dialogConfirm(val) {
       this.state = 0
       const tempData = Object.assign({}, this.temp)
-      console.log(this.temp)
       const params = [{
         id: tempData.id,
         state: this.state,
         handlerId: this.userId
       }]
-      console.log(params, '，，，，，，，，，，，，，，，，，，，')
       // 更新state状态
       notifyState(params).then(response => {
         const s1 = this.currentTab + ' ' + this.startTime + ':00'
