@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchAllMonitor(query) {
   return request({
-    url: '/nvsapi2/Camera/QueryActive',
+    url: '/devapi/camera/live/query',
     method: 'get',
     data: query
   })
@@ -10,25 +10,38 @@ export function fetchAllMonitor(query) {
 
 export function updateMonitor(data) {
   return request({
-    url: '/nvsapi2/Camera/Update',
-    method: 'post',
+    url: `/devapi/camera/live/update/${data.id}/${data.cameraId}`,
+    method: 'put',
     data: data
   })
 }
 
 export function addMonitor(data) {
   return request({
-    url: '/nvsapi2/Camera/Add',
+    url: `/devapi/camera/live/add/${data.cameraId}`,
     method: 'post',
     data: data
   })
 }
 
-export function delMonitor(query) {
+export function delMonitor(id) {
   return request({
-    url: '/nvsapi2/Camera/Delete',
+    url: `/devapi/camera/live/delete/${id}`,
+    method: 'delete',
+  })
+}
+
+export function play(cameraId) {
+  return request({
+    url: `/devapi/camera/live/play/${cameraId}`,
     method: 'post',
-    data: query
+  })
+}
+
+export function stop(id) {
+  return request({
+    url: `/devapi/camera/live/stop/${id}`,
+    method: 'delete',
   })
 }
 

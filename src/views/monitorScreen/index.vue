@@ -4,25 +4,27 @@
       <div class="screen" v-for="item in deviceList" :key="item.id">
         <div class="screen-inner">
           <div class="screen-head">
-            <div class="head-label"><i class="el-icon-location-information"></i> {{item.name}}</div>
+            <div class="head-label"><i class="el-icon-location-information"></i> {{item.address}}</div>
             <div class="head-btn">
-              <div class="btn" @click="updateMonitor(item)"><i class="el-icon-setting"></i></div>
+              <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
               <div class="btn" @click="deleteMonitor(item)"><i class="el-icon-delete"></i></div>
             </div>
           </div>
-          <div class="screen-body"></div>
+          <div class="screen-body">
+            <VideoPlayer :video-ref="item.id" :options="item.videoOptions"/>
+          </div>
         </div>
       </div>
-      <div class="screen" v-if="deviceList.length <= 9">
-        <div class="screen-add" @click="addMonitor">
+      <div class="screen" v-if="this.deviceList.length <= 9">
+        <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
         </div>
       </div>
     </div>
-    <el-dialog :title="this.form.name ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px">
+    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" @closed="onClose" width="540px">
       <el-form :model="form">
         <el-form-item label="摄像头地址">
-          <el-select v-model="form.region" 
+          <el-select v-model="form.cameraId" 
             filterable
             remote
             :remote-method="getCameraList"
@@ -38,34 +40,42 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="warning" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="onClose">取 消</el-button>
+        <el-button type="warning" @click="saveMonitor">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import VideoPlayer from '@/components/VideoPlayer'
 import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor } from '@/api/monitor'
 import { searchCameraList } from '@/api/camera';
 
 export default {
+  components: { VideoPlayer },
   data() {
     return {
       dialogFormVisible: false,
       form: {},
       options: [],
-      deviceList: [
-        { id: 1, name: '陕西华阴华山风景区'},
-        { id: 2, name: '陕西华阴华山风景区'},
-        { id: 3, name: '陕西华阴华山风景区'},
-        { id: 4, name: '陕西华阴华山风景区'}
-      ],
+      deviceList: [],
       loading: false,
+      id: '',
+      videoOptions: {
+        autoplay: true,
+        controls: true,
+        width: 960, // 播放器宽度
+        height: this.size == 'small' ? 310 : 480 // 播放器高度
+        // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+        // fluid: true, // 流体布局，自动充满，并保持播放其比例
+        // sources: this.sources
+      },
     }
   },
   mounted() {
     // this.getCameraList();
+    this.getLiveList();
   },
   methods: {
     getCameraList(keyword) {
@@ -99,25 +109,86 @@ export default {
         this.options = [];
       }
     },
-    updateMonitor(item) {
-      this.form = item;
+    getLiveList() {
+      fetchAllMonitor().then(res => {
+        const data = res.body.data || [];
+        this.deviceList = data.map(item => {
+          return {
+            ...item,
+            videoOptions: {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: item.flv + '&a.flv',
+                  type: this.video_type(item.flv + '&a.flv')
+                }
+              ]
+            }
+          }
+        })
+      })
+    },
+    updateMonitorDialog(item) {
+      this.form.cameraId = item.address;
       this.dialogFormVisible = true;
+      this.id = item.id;
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(() => {
-        // ajax
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
+        delMonitor(item.id).then(res => {
+          this.getLiveList();
+        })
       });
     },
-    addMonitor() {
+    onClose() {
+      this.form = {};
+      this.dialogFormVisible = false;
+      this.id = null;
+    },
+    addMonitorDialog() {
       this.form = {};
       this.dialogFormVisible = true;
+    },
+    saveMonitor() {
+      if (this.id) {
+        updateMonitor({
+          id: this.id,
+          cameraId: '3TPC0342313MCSR' || this.form.cameraId
+        }).then(res => {
+          this.onClose();
+          this.getLiveList();
+        })
+      } else {
+        addMonitor({
+          // cameraId: this.form.cameraId
+          cameraId: '3TPC0342313MCSR'
+        }).then(res => {
+          this.onClose();
+          this.getLiveList();
+        })
+      }
+    },
+    video_type(_url){
+      var url = _url.toLowerCase();
+      if (url.startsWith('rtmp')) {
+        return "rtmp/flv";
+      }else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL';
+      }else if (url.endsWith('webm')) {
+        return 'video/webm';
+      }else if (url.endsWith('mp4')) {
+        return 'video/mp4';
+      }else if (url.endsWith('ogv')) {
+        return 'video/ogg';
+      }
     },
   }
 }

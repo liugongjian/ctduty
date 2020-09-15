@@ -19,11 +19,11 @@ module.exports = {
         },
         secure: false,
       },
-      '/nvsapi2': {
+      '/devapi': {
         target: 'http://host31.880508.xyz:10000',
         changeOrigin: true,
         pathRewrite: {
-          '^/nvsapi2': ''
+          '^/devapi': ''
         },
         secure: false,
       },
