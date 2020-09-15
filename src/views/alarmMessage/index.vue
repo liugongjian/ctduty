@@ -98,7 +98,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" ></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                 <svg-icon v-else class="untreated" icon-class="untreated2" />
@@ -130,7 +130,7 @@
                   <el-image :src="temp.image" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
                 </el-form-item>
                 <el-form-item label="结构化照片：" prop="imageCut" >
-                  <el-image :src="temp.imageCut" style="width:150px; height:150px;" ></el-image>
+                  <el-image :src="temp.imageCut"></el-image>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
