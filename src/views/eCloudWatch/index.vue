@@ -34,11 +34,13 @@
             <div class="dash-title" @click="alarmRate">告警处理率</div>
             <div class="dash-title" @click="monitoring">实时监控</div>
           </div>
-          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;" v-if="showAlarm === 'rate'">
+          <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;" v-show="showAlarm === 'rate'">
             <div id="panel" style="height: 100%; width:100%"></div>
           </div>
-          <div class="alarmMonitoring" v-if="showAlarm === 'monitoring'">
-            <div>实时监控</div>
+          <div class="alarmMonitoring" v-show="showAlarm === 'monitoring'" style="height: 100%; width:100%">
+            <div style="height: 90%; width:100%">
+              <VideoPlayer />
+            </div>
           </div>
         </div>
         <div class="bottom" style="margin-top: 13px;">
@@ -207,6 +209,7 @@
 </template>
 
 <script>
+import VideoPlayer from '@/components/VideoPlayer'
 import Cookies from 'js-cookie'
 import echarts from 'echarts'
 // 引入水球
@@ -229,7 +232,7 @@ const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
   // components: { CameraList },
-  components: { Pagination },
+  components: { Pagination, VideoPlayer },
   props: ['data', 'defaultActive'],
   data() {
     return {
