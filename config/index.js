@@ -19,6 +19,14 @@ module.exports = {
         },
         secure: false,
       },
+      '/devapi': {
+        target: 'http://host31.880508.xyz:10000',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/devapi': ''
+        },
+        secure: false,
+      },
       '/upload-file-proxy': {
         target: 'https://saastest.ctyun.cn:8100/apps/test/uploadfile',
         changeOrigin: true,
