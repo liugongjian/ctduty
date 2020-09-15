@@ -21,11 +21,12 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
-      <el-form :model="form">
-        <el-form-item label="摄像头地址">
-          <el-select
-            v-model="form.cameraId"
+    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" @closed="onClose" width="540px">
+      <el-form :model="form" :rules="rules" ref="ruleForm">
+        <el-form-item label="摄像头地址" prop="cameraId">
+          <el-select v-model="form.cameraId" 
+            filterable
+            remote
             :remote-method="getCameraList"
             :loading="loading"
             filterable
@@ -59,6 +60,11 @@ export default {
     return {
       dialogFormVisible: false,
       form: {},
+      rules: {
+        cameraId: [
+          { required: true, message: '请选择摄像头地址', trigger: 'change' }
+        ]
+      },
       options: [],
       deviceList: [],
       loading: false,
@@ -86,7 +92,7 @@ export default {
           cascade: true,
           page: {
             index: 1,
-            size: 999999
+            size: 20
           },
           params: [
             {
@@ -150,32 +156,39 @@ export default {
       })
     },
     onClose() {
-      this.form = {}
-      this.dialogFormVisible = false
-      this.id = null
+      this.$refs['ruleForm'].resetFields();
+      this.form = {};
+      this.dialogFormVisible = false;
+      this.id = null;
     },
     addMonitorDialog() {
       this.form = {}
       this.dialogFormVisible = true
     },
     saveMonitor() {
-      if (this.id) {
-        updateMonitor({
-          id: this.id,
-          cameraId: this.form.cameraId
-        }).then(res => {
-          this.onClose()
-          this.getLiveList()
-        })
-      } else {
-        addMonitor({
-          cameraId: this.form.cameraId
-          // cameraId: '3TPC0342313MCSR'
-        }).then(res => {
-          this.onClose()
-          this.getLiveList()
-        })
-      }
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          if (this.id) {
+            updateMonitor({
+              id: this.id,
+              cameraId: this.form.cameraId
+            }).then(res => {
+              this.onClose();
+              this.getLiveList();
+            })
+          } else {
+            addMonitor({
+              cameraId: this.form.cameraId
+              // cameraId: '3TPC0342313MCSR'
+            }).then(res => {
+              this.onClose();
+              this.getLiveList();
+            })
+          }
+        } else {
+          return false;
+        }
+      });
     },
     video_type(_url) {
       var url = _url.toLowerCase()
@@ -201,6 +214,9 @@ export default {
   background: #F0F2F5;
   .el-input__inner {
     width: 360px;
+  }
+  .el-form-item__content {
+    margin-left: 90px;
   }
 }
 .monitorScreen {
@@ -242,6 +258,9 @@ export default {
         font-size: 18px;
         line-height: 40px;
         color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .head-btn {
         display: flex;
