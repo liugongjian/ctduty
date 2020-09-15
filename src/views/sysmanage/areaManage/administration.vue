@@ -57,7 +57,7 @@
           <el-form-item label="镇名">
             <el-input v-model="town.name" type="text"></el-input>
           </el-form-item>
-          <el-form-item label="所属派出所">
+          <el-form-item label="所属派出所" label-width="100px">
             <el-select v-model="town.policeStationId" placeholder="请选择所属派出所">
               <el-option v-for="item in this.policeList" :value="item.value" :label="item.label" :key="item.value"></el-option>
             </el-select>
