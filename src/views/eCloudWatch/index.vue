@@ -1,6 +1,13 @@
 <template>
   <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
+      <div class="switch">
+        <el-switch
+          v-model="isHint"
+          inactive-text="告警提示音"
+        >
+        </el-switch>
+      </div>
       <el-amap
         :amap-manager="amapManager"
         :center="center"
@@ -20,8 +27,8 @@
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
-      <div class="warn">
-        <div class="dispose">
+      <div class="warn" style="background:rgba(0,0,0,0)">
+        <div class="dispose" style="opacity:1;background:#fff;margin-bottom:20px;">
           <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="告警处理率" name="alarmRate" lazy>
               <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
@@ -30,7 +37,7 @@
             </el-tab-pane>
             <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
           </el-tabs> -->
-          <div class="title">
+          <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
@@ -43,7 +50,7 @@
             </div>
           </div>
         </div>
-        <div class="bottom" style="margin-top: 13px;">
+        <div class="bottom" style="opacity:1;background:#fff;margin-top: 13px;">
           <div class="dash-title todayAlarm">今日告警</div>
           <div class="bottom-left">
             <div style="width:100%; height:35px;padding:0 20px;">
@@ -65,7 +72,7 @@
               </div>
             </div>
 
-            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
+            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
                   <template>
@@ -153,7 +160,7 @@
                 </template>
               </div>
             </div>
-            <div v-else class="zuoContent" style="width:100%; height:43vh;overflow: auto;padding:20px;">
+            <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 暂无数据
               </div>
@@ -245,6 +252,7 @@ export default {
           address: ''
         }
       },
+      isHint: true,
       // alarmForm: {
       //   address: '',
       //   createTime: ''
@@ -298,8 +306,9 @@ export default {
       isPush: null,
       timer3: '',
       timer4: '',
-      rate: null,
       hasMouse: false,
+      timers: [],
+      rate: null,
       showActive: true,
       alarmActive: false
     }
@@ -367,8 +376,10 @@ export default {
               window.clearTimeout(this.timer2)
               this.getCameraList()
               this.showDialog(response.body.data[0])
-              const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
-              audio.play()// 播放
+              if (this.isHint) {
+                const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
+                audio.play()// 播放
+              }
               this.timer2 = setTimeout(() => {
                 this.closeDialog()
               }, 5000)
@@ -381,9 +392,15 @@ export default {
       const that = this
       v.forEach(item => {
         setTimeout(() => {
-          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom) {
+          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
             if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
-              that.blink(dom)
+              window.clearInterval(that.timer6)
+              that.timers[i] = setInterval(() => {
+                dom.classList.add('markerClickImg')
+                dom.timer6 = setTimeout(() => {
+                  dom.classList.remove('markerClickImg')
+                }, 500)
+              }, 1000)
             }
           })
         }, 300)
@@ -542,13 +559,6 @@ export default {
               this.yData.push(item)
             } else {
               this.xData.push(item)
-              setTimeout(() => {
-                [].forEach.call(document.getElementsByClassName('markerImg'), function(dom) {
-                  if (dom.id === item.id) {
-                    console.log(dom.id === item.id, '相等吗')
-                  }
-                })
-              }, 300)
             }
           })
         }
@@ -566,13 +576,13 @@ export default {
       })
       e.path.forEach(item => {
         if (item.className === 'amap-marker-content') {
-          // this.blink(item.childNodes[1])
           this.showAlarm = 'monitoring'
+          this.showActive = false
+          this.alarmActive = true
           item.childNodes[1].classList.add('markerClickImg')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          console.log('呼呼哈哈嘻嘻')
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
@@ -609,6 +619,11 @@ export default {
                 if (item.state !== null) {
                   this.yData.push(item)
                 } else {
+                  console.log(this.timers, 'this.timers');
+                  [...this.timers].forEach((item, index) => {
+                    window.clearInterval(item)
+                    this.timers.splice(index, 1)
+                  })
                   this.xData.push(item)
                 }
               })
@@ -803,8 +818,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.bottom {
+  background-color: #fff !important;
+  opacity:1 !important;
+}
+.dispose {
+  background-color: #fff !important;
+  opacity:1 !important;
+}
 .warn {
-  height:88vh !important;
+  height:78vh !important;
   margin-bottom: 20px;
   overflow: hidden;
 }
@@ -851,12 +874,11 @@ export default {
     .warn {
       margin-top: 10px;
       position: absolute;
-      top: 0;
+      top: 70px;
       right: 10px;
       background-color: #ffffff;
       width: 320px;
       height: 100%;
-
       .top {
         width: 100%;
         height: 270px;
@@ -1046,7 +1068,7 @@ export default {
   width: 60px !important;
   height: 60px !important;
 }
-.title {
+.watchtitle {
   display: flex;
   .dash-title {
     cursor: pointer;
@@ -1060,6 +1082,14 @@ export default {
 }
 .alarmMonitoring {
   border-left: 1px solid #ccc;
+}
+.switch {
+  height: 50px;
+  padding: 0 30px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content:flex-end;
+  align-items: center;
 }
 </style>
 
