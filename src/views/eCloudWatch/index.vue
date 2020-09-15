@@ -590,8 +590,8 @@ export default {
             'YYYY-MM-DD HH:mm:SS'
           )
           play(this.form.id).then(res => {
-            this.playUrl = res
             console.log(res, '嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻res')
+            this.playUrl = res.body.data[0].flv
           })
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false

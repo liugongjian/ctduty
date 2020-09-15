@@ -27,21 +27,21 @@ export function addMonitor(data) {
 export function delMonitor(id) {
   return request({
     url: `/devapi/camera/live/delete/${id}`,
-    method: 'delete',
+    method: 'delete'
   })
 }
 
 export function play(cameraId) {
   return request({
     url: `/devapi/camera/live/play/${cameraId}`,
-    method: 'post',
+    method: 'post'
   })
 }
 
 export function stop(id) {
   return request({
     url: `/devapi/camera/live/stop/${id}`,
-    method: 'delete',
+    method: 'delete'
   })
 }
 

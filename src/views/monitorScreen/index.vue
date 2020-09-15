@@ -15,7 +15,7 @@
           </div>
         </div>
       </div>
-      <div v-if="this.deviceList.length <= 9" class="screen">
+      <div v-if="deviceList.length < 9" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
         </div>
@@ -162,15 +162,15 @@ export default {
       if (this.id) {
         updateMonitor({
           id: this.id,
-          cameraId: '3TPC0342313MCSR' || this.form.cameraId
+          cameraId: this.form.cameraId
         }).then(res => {
           this.onClose()
           this.getLiveList()
         })
       } else {
         addMonitor({
-          // cameraId: this.form.cameraId
-          cameraId: '3TPC0342313MCSR'
+          cameraId: this.form.cameraId
+          // cameraId: '3TPC0342313MCSR'
         }).then(res => {
           this.onClose()
           this.getLiveList()
