@@ -127,7 +127,7 @@
 
                 </el-form-item>
                 <el-form-item label="原始照片：" prop="image" >
-                  <el-image :src="temp.image" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
+                  <el-image :src="temp.imageCompress" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
                 </el-form-item>
                 <el-form-item label="结构化照片：" prop="imageCut" >
                   <el-image :src="temp.imageCut"></el-image>
@@ -245,7 +245,7 @@ export default {
   created() {
     this.userId = Cookies.get('userId')
     // this.getPushSetTime()
-   
+
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
@@ -313,7 +313,7 @@ export default {
           i = 1
         }
       }
-     
+
       return result
     },
     onClear() {
@@ -360,7 +360,6 @@ export default {
       const s = this.tabsArr[this.tabsArr.length - 1] + 'T' + this.startTime + ':00.000Z'
       const end = this.tabsArr[0] + 'T' + this.endTime + ':00.000Z'
       this.getTimeAllTotal(s, end, h1)
-    
     },
 
     editDialog(v) {
@@ -399,7 +398,6 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-     
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue

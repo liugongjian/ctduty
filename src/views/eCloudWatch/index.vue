@@ -194,7 +194,7 @@
                 </span>
               </el-form-item>
               <el-form-item label="原始照片:" prop="image">
-                <el-image :src="dataDia.image" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
+                <el-image :src="dataDia.imageCompress" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
               </el-form-item>
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
@@ -445,18 +445,18 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
-    video_type(_url){
-      var url = _url.toLowerCase();
+    video_type(_url) {
+      var url = _url.toLowerCase()
       if (url.startsWith('rtmp')) {
-        return "rtmp/flv";
-      }else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
-        return 'application/x-mpegURL';
-      }else if (url.endsWith('webm')) {
-        return 'video/webm';
-      }else if (url.endsWith('mp4')) {
-        return 'video/mp4';
-      }else if (url.endsWith('ogv')) {
-        return 'video/ogg';
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
       }
     },
     showDialogFather(item) {
