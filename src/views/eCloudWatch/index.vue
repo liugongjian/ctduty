@@ -583,7 +583,6 @@ export default {
       })
     },
     watchClick(e) {
-      console.log(e.target.className, '嘻嘻')
       // vjs-icon-placeholder
       // vjs-remaining-time-display
       // vjs-volume-control vjs-control vjs-volume-horizontal
