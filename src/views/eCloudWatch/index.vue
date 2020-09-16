@@ -44,9 +44,12 @@
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 100%; width:100%"></div>
           </div>
-          <div v-show="showAlarm === 'monitoring'" class="alarmMonitoring" style="height: 100%; width:100%">
-            <div style="height: 90%; width:100%">
-              <VideoPlayer :video-ref="playUrl" :options="videoOptions"/>
+          <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
+            <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
+              <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
+              <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                请选择要查看的摄像头
+              </div>
             </div>
           </div>
         </div>
@@ -312,8 +315,9 @@ export default {
       rate: null,
       showActive: true,
       alarmActive: false,
-      playUrl: '',
-      videoOptions: {}
+      videoOptions: {},
+      cameraId: null,
+      hasUrl: null
     }
   },
   watch: {
@@ -424,9 +428,6 @@ export default {
     that.getCameraList()
     that.getPanelList()
     that.getPanel()
-    document.getElementById('alarmInfo').onclick = function() {
-      this.watchClick()
-    }
     setInterval(() => {
       this.getalarmList()
     }, 10000)
@@ -568,6 +569,16 @@ export default {
       })
     },
     watchClick(e) {
+      console.log(e.target.className, '嘻嘻')
+      // vjs-icon-placeholder
+      // vjs-remaining-time-display
+      // vjs-volume-control vjs-control vjs-volume-horizontal
+      // vjs-progress-control vjs-control
+      // onPlayerReady
+      if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control' && e.target.className !== 'onPlayerReady') {
+        this.hasUrl = null
+        this.cameraId = null
+      }
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
       }
@@ -578,7 +589,12 @@ export default {
         item.setAttribute('height', 40)
       })
       e.path.forEach(item => {
+        if (item.className !== 'videoBox') {
+          this.hasUrl = null
+          this.cameraId = null
+        }
         if (item.className === 'amap-marker-content') {
+          this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
           this.alarmActive = true
@@ -586,20 +602,19 @@ export default {
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          console.log(this.form, '西湖西湖')
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
           play(this.form.id).then(res => {
-            console.log(res, '嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻res')
-            this.playUrl = res.body.data
+            this.hasUrl = true
+            this.cameraId = this.form.id
             this.videoOptions = {
               autoplay: true,
               controls: true,
               width: 400, // 播放器宽度
               height: 300, // 播放器高度
               // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              // fluid: true, // 流体布局，自动充满，并保持播放 其比例
               sources: [
                 {
                   src: res.body.data + '&a.flv',
@@ -889,6 +904,13 @@ export default {
 #alarmInfo {
   padding: 0 !important;
 }
+.alarmMonitoring {
+  border-left:1px solid #ccc;
+}
+.videoBox {
+  border: none;
+  background-color: #fff;
+}
 .markerClickImg {
    fill: #EA2027 !important;
  }
@@ -1113,9 +1135,6 @@ export default {
 }
 .active {
   color: #FF9832;
-}
-.alarmMonitoring {
-  border-left: 1px solid #ccc;
 }
 .switch {
   height: 50px;
