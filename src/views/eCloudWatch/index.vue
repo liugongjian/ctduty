@@ -569,12 +569,13 @@ export default {
       })
     },
     watchClick(e) {
-      console.log(e.target.classList)
+      console.log(e.target.className, '嘻嘻')
       // vjs-icon-placeholder
       // vjs-remaining-time-display
       // vjs-volume-control vjs-control vjs-volume-horizontal
       // vjs-progress-control vjs-control
-      if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control') {
+      // onPlayerReady
+      if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control' && e.target.className !== 'onPlayerReady') {
         this.hasUrl = null
         this.cameraId = null
       }
@@ -588,7 +589,6 @@ export default {
         item.setAttribute('height', 40)
       })
       e.path.forEach(item => {
-        console.log(item, '哈哈哈')
         if (item.className !== 'videoBox') {
           this.hasUrl = null
           this.cameraId = null
