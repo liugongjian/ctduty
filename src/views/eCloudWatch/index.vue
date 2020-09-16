@@ -216,6 +216,7 @@
       </div>
     </div>
     <div v-if="markers.length>0"></div>
+
   </div>
 </template>
 
@@ -232,7 +233,7 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
-import { play } from '@/api/monitor'
+import { play, stop } from '@/api/monitor'
 import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
@@ -444,6 +445,20 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    video_type(_url){
+      var url = _url.toLowerCase();
+      if (url.startsWith('rtmp')) {
+        return "rtmp/flv";
+      }else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL';
+      }else if (url.endsWith('webm')) {
+        return 'video/webm';
+      }else if (url.endsWith('mp4')) {
+        return 'video/mp4';
+      }else if (url.endsWith('ogv')) {
+        return 'video/ogg';
+      }
+    },
     showDialogFather(item) {
       this.showDialog(item)
     },
@@ -502,7 +517,20 @@ export default {
               item.latitude
             ] /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */,
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg" data=${JSON.stringify(item)}
-                t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
+                t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
+                <span v-if='${item.state === null}' style=' display: inline-block;
+      width: 20px;
+      height: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+      color: #fff;
+      position: absolute;
+      border-radius: 5px 5px 5px 0;
+      background-color: red;
+      top: -10px;
+      right: 20px;
+      '>${item.dealSum.split('/')[0] > 99 ? '99+' : item.dealSum.split('/')[0]}</span>`
           })
         })
       })
@@ -569,16 +597,15 @@ export default {
       })
     },
     watchClick(e) {
-      console.log(e.target.className, '嘻嘻')
       // vjs-icon-placeholder
       // vjs-remaining-time-display
       // vjs-volume-control vjs-control vjs-volume-horizontal
       // vjs-progress-control vjs-control
       // onPlayerReady
-      if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control' && e.target.className !== 'onPlayerReady') {
+      /*  if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control' && e.target.className !== 'onPlayerReady') {
         this.hasUrl = null
         this.cameraId = null
-      }
+      } */
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
       }
@@ -605,24 +632,33 @@ export default {
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
-          play(this.form.id).then(res => {
-            this.hasUrl = true
-            this.cameraId = this.form.id
-            this.videoOptions = {
-              autoplay: true,
-              controls: true,
-              width: 400, // 播放器宽度
-              height: 300, // 播放器高度
-              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-              // fluid: true, // 流体布局，自动充满，并保持播放 其比例
-              sources: [
-                {
-                  src: res.body.data + '&a.flv',
-                  type: this.video_type(res.body.data + '&a.flv')
-                }
-              ]
-            }
-          })
+          if (this.currentcameraId === this.form.id && this.videoOpen) {
+            this.hasUrl = null
+            this.videoOpen = false
+            stop(this.form.id)
+          } else {
+            play(this.form.id).then(res => {
+              this.hasUrl = true
+              this.cameraId = this.form.id
+              this.currentcameraId = this.form.id
+              this.videoOpen = true
+              this.videoOptions = {
+                autoplay: true,
+                controls: true,
+                width: 400, // 播放器宽度
+                height: 300, // 播放器高度
+                // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+                // fluid: true, // 流体布局，自动充满，并保持播放 其比例
+                sources: [
+                  {
+                    src: res.body.data + '&a.flv',
+                    type: this.video_type(res.body.data + '&a.flv')
+                  }
+                ]
+              }
+            })
+          }
+
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
           const params = {

@@ -5,7 +5,7 @@
         <div class="screen-inner">
           <div class="screen-head">
             <div class="head-label">
-              <i class="el-icon-location-information"></i> 
+              <i class="el-icon-location-information"></i>
               <span :title="item.address">{{ item.address }}</span>
             </div>
             <div class="head-btn">
@@ -24,14 +24,15 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" @closed="onClose" width="540px">
-      <el-form :model="form" :rules="rules" ref="ruleForm">
+    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
+      <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item label="摄像头地址" prop="cameraId">
-          <el-select v-model="form.cameraId" 
-            filterable
-            remote
+          <el-select
+            v-model="form.cameraId"
             :remote-method="getCameraList"
             :loading="loading"
+            filterable
+            remote
             filterable
             remote
             placeholder="请选择">
@@ -46,7 +47,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="onClose">取 消</el-button>
-        <el-button type="warning" @click="saveMonitor" :loading="submiting">确 定</el-button>
+        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -106,9 +107,9 @@ export default {
           ]
         }
         searchCameraList(params).then(res => {
-          let data = res.body.data || [];
+          let data = res.body.data || []
           // 已添加到九宫格的摄像头要过滤掉
-          data = data.filter(i => !this.deviceList.find(r => r.cameraId === i.id));
+          data = data.filter(i => !this.deviceList.find(r => r.cameraId === i.id))
           this.options = data.map(item => {
             return {
               value: item.id,
@@ -144,7 +145,7 @@ export default {
           }
         })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
-        this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value));
+        this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value))
       })
     },
     updateMonitorDialog(item) {
@@ -163,11 +164,11 @@ export default {
       })
     },
     onClose() {
-      this.$refs['ruleForm'].resetFields();
-      this.submiting = false;
-      this.form = {};
-      this.dialogFormVisible = false;
-      this.id = null;
+      this.$refs['ruleForm'].resetFields()
+      this.submiting = false
+      this.form = {}
+      this.dialogFormVisible = false
+      this.id = null
     },
     addMonitorDialog() {
       this.form = {}
@@ -176,29 +177,29 @@ export default {
     saveMonitor() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          this.submiting = true;
+          this.submiting = true
           if (this.id) {
             updateMonitor({
               id: this.id,
               cameraId: this.form.cameraId
             }).then(res => {
-              this.onClose();
-              this.getLiveList();
-              this.submiting = false;
+              this.onClose()
+              this.getLiveList()
+              this.submiting = false
             })
           } else {
             addMonitor({
               cameraId: this.form.cameraId
             }).then(res => {
-              this.onClose();
-              this.getLiveList();
-              this.submiting = false;
+              this.onClose()
+              this.getLiveList()
+              this.submiting = false
             })
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     video_type(_url) {
       var url = _url.toLowerCase()

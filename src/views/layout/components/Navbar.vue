@@ -211,11 +211,9 @@ export default {
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
-        console.log(document.webkitIsFullScreen, 'document.webkitIsFullScreen')
         this.isFullscreen = false
       }
       if (!this.checkFull()) {
-        console.log(document.webkitIsFullScreen, 'document.webkitIsFullScreen')
         // 全屏下按键esc后要执行的动作
         this.isFullscreen = false
       }

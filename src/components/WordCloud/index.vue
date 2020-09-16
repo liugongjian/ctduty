@@ -53,7 +53,6 @@ export default {
   },
   methods: {
     initChart() {
-      console.log(this.data)
       this.chart = echarts.init(document.getElementById(this.id))
       const option = {
         title: {

@@ -27,11 +27,9 @@ export default {
   },
   mounted() {
     this.player = videojs(this.$refs[this.videoRef], this.options, function onPlayerReady() {
-      console.log('onPlayerReady');
     })
   },
   beforeDestroy() {
-    console.log('player beforeDestroy')
     if (this.player) {
       this.player.dispose()
     }

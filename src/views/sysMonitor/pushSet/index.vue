@@ -78,7 +78,6 @@ export default {
             this.$message.error('提交失败！')
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -92,7 +91,6 @@ export default {
         } catch (err) {
           parseSetting = {}
         }
-        console.log(parseSetting)
         this.form.date1 = parseSetting.date1
         this.form.date2 = parseSetting.date2
         this.form.deliveryMessage = parseSetting.deliveryMessage

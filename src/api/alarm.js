@@ -100,7 +100,6 @@ export function alarmStatus() {
 }
 
 export function pushSet(form) {
-  console.log(JSON.stringify(form), 'form')
   return request({
     url: '/nvsapi/Setting/Update',
     method: 'post',

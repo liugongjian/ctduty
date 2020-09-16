@@ -209,7 +209,6 @@ export default {
       }
 
       fetchAreaList(query).then(response => {
-        console.log(response, 'area')
         if (response.code !== 0) return
         this.areaList = response.body.data
         this.total = response.body.page.total
@@ -279,7 +278,6 @@ export default {
       this.addAreaDialogVisible = true
       getCountryNull().then((res) => {
         if (res.code === 0) {
-          console.log('村镇res', res.body.data)
           this.options = this.formatCountry(res.body.data, 1)
         }
       })
@@ -304,14 +302,12 @@ export default {
     getTownList() {
       getPolice({}).then((res) => {
         if (res.code === 0) {
-          console.log('村res', res.body.data)
           this.policeList = res.body.data.map(item => {
             return {
               label: item.name,
               value: item.id
             }
           })
-          console.log(this.policeList)
         }
       })
     },
