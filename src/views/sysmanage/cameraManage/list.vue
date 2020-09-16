@@ -244,7 +244,6 @@ export default {
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
-        console.log(this.userList)
       })
     },
     batchesDel() {
@@ -323,7 +322,6 @@ export default {
       this.dialogVisable = false
     },
     onSearch() {
-      console.log('搜索')
     },
     checkModel() {
       this.$emit('getdata', this.formInline.typeValue, true)

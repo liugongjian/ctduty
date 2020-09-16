@@ -268,7 +268,6 @@ export default {
       var data = []
       var geoCoordMap = {}
       inData.forEach(item => {
-        console.log(item, '嘻嘻哈哈')
         data.push({
           name: item.name, value: item.value
         })
@@ -347,7 +346,6 @@ export default {
             triggerOn: 'mousemove',
             position: 'top',
             formatter: function(params) {
-              console.log(params, '哈哈嘻嘻')
               return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
             }
             // handledCount

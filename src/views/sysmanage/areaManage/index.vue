@@ -98,7 +98,6 @@ export default {
       amapManager,
       events: {
         click: a => {
-          console.log(a)
         }
       },
       addressdata: {
@@ -176,7 +175,6 @@ export default {
       })
     },
     markerClick() {
-      console.log('哈哈哈')
     },
 
     getCountryList() {
@@ -189,7 +187,6 @@ export default {
       }
       getCountry(query).then((res) => {
         if (res.code === 0) {
-          console.log('村镇res', res.body.data)
           this.data = this.formatCountry(res.body.data, 2)
         }
       })

@@ -335,9 +335,7 @@ export default {
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
-        console.log(this.editNoticeForm.signatureId)
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
-          console.log(response)
           if (response.code !== 0) return this.$message.error('更新信息失败,请稍后再试')
           this.editNoticeDialogVisible = false
           this.getNoticeList()

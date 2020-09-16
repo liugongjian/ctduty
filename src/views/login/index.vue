@@ -132,7 +132,6 @@ export default {
               Cookies.set('token', resp.body.data)
               // localStorage.setItem('token', resp.body.data)
               fetchUser().then((res) => {
-                console.log('res level', res.body.data.permissions.level)
                 const level = res.body.data.permissions.level
                 // localStorage.setItem('userId', res.body.data.id)
                 Cookies.set('userId', res.body.data.id)
@@ -144,7 +143,6 @@ export default {
                   this.$router.push('/dashboard')
                 }
               }).catch(err => {
-                console.log(err)
               })
             } else {
               // this.refreshImg()
@@ -160,7 +158,6 @@ export default {
             }
             // eslint-disable-next-line handle-callback-err
           }).catch(error => {
-            console.log(error)
             // this.refreshImg()
           })
         } else {
