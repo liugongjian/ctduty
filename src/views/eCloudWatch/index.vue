@@ -428,9 +428,6 @@ export default {
     that.getCameraList()
     that.getPanelList()
     that.getPanel()
-    document.getElementById('alarmInfo').onclick = function() {
-      this.watchClick()
-    }
     setInterval(() => {
       this.getalarmList()
     }, 10000)
@@ -572,6 +569,15 @@ export default {
       })
     },
     watchClick(e) {
+      console.log(e.target.classList)
+      // vjs-icon-placeholder
+      // vjs-remaining-time-display
+      // vjs-volume-control vjs-control vjs-volume-horizontal
+      // vjs-progress-control vjs-control
+      if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control') {
+        this.hasUrl = null
+        this.cameraId = null
+      }
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
       }
@@ -582,6 +588,11 @@ export default {
         item.setAttribute('height', 40)
       })
       e.path.forEach(item => {
+        console.log(item, '哈哈哈')
+        if (item.className !== 'videoBox') {
+          this.hasUrl = null
+          this.cameraId = null
+        }
         if (item.className === 'amap-marker-content') {
           this.hasUrl = null
           this.showAlarm = 'monitoring'
