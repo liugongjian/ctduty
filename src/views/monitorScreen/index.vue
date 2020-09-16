@@ -4,7 +4,10 @@
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
           <div class="screen-head">
-            <div class="head-label"><i class="el-icon-location-information"></i> {{ item.address }}</div>
+            <div class="head-label">
+              <i class="el-icon-location-information"></i> 
+              <span :title="item.address">{{ item.address }}</span>
+            </div>
             <div class="head-btn">
               <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
               <div class="btn" @click="deleteMonitor(item)"><i class="el-icon-delete"></i></div>
@@ -15,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div v-if="deviceList.length < 9" class="screen">
+      <div v-if="deviceList.length < 6" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
         </div>
@@ -43,7 +46,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="onClose">取 消</el-button>
-        <el-button type="warning" @click="saveMonitor">确 定</el-button>
+        <el-button type="warning" @click="saveMonitor" :loading="submiting">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -68,6 +71,7 @@ export default {
       options: [],
       deviceList: [],
       loading: false,
+      submiting: false,
       id: '',
       videoOptions: {
         autoplay: true,
@@ -81,7 +85,6 @@ export default {
     }
   },
   mounted() {
-    // this.getCameraList();
     this.getLiveList()
   },
   methods: {
@@ -103,7 +106,9 @@ export default {
           ]
         }
         searchCameraList(params).then(res => {
-          const data = res.body.data
+          let data = res.body.data || [];
+          // 已添加到九宫格的摄像头要过滤掉
+          data = data.filter(i => !this.deviceList.find(r => r.cameraId === i.id));
           this.options = data.map(item => {
             return {
               value: item.id,
@@ -138,6 +143,8 @@ export default {
             }
           }
         })
+        // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
+        this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value));
       })
     },
     updateMonitorDialog(item) {
@@ -157,6 +164,7 @@ export default {
     },
     onClose() {
       this.$refs['ruleForm'].resetFields();
+      this.submiting = false;
       this.form = {};
       this.dialogFormVisible = false;
       this.id = null;
@@ -168,6 +176,7 @@ export default {
     saveMonitor() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
+          this.submiting = true;
           if (this.id) {
             updateMonitor({
               id: this.id,
@@ -175,14 +184,15 @@ export default {
             }).then(res => {
               this.onClose();
               this.getLiveList();
+              this.submiting = false;
             })
           } else {
             addMonitor({
               cameraId: this.form.cameraId
-              // cameraId: '3TPC0342313MCSR'
             }).then(res => {
               this.onClose();
               this.getLiveList();
+              this.submiting = false;
             })
           }
         } else {
