@@ -232,7 +232,6 @@ export default {
         query.params.name = this.queryName
       }
       getPoliceList(query).then(response => {
-        console.log(response)
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
@@ -251,9 +250,7 @@ export default {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addPoliceForm }]
-        console.log(query)
         addPolice(query).then(response => {
-          console.log(response)
           if (response.code !== 0) return this.$message.error('添加派出所失败，请联系系统管理员')
           this.$message.success('添加派出所成功')
           this.addPoliceDialogVisible = false

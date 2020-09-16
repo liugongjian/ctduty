@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import {
   constantRouterMap
 } from '@/router/routers'
-import { addOprecord } from '@/api/operation'
 import Cookies from 'js-cookie'
 import store from '@/store'
 import {

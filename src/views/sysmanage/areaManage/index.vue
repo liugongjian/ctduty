@@ -98,7 +98,6 @@ export default {
       amapManager,
       events: {
         click: a => {
-          console.log(a)
         }
       },
       addressdata: {
