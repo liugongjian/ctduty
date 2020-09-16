@@ -614,7 +614,7 @@ export default {
               width: 400, // 播放器宽度
               height: 300, // 播放器高度
               // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              // fluid: true, // 流体布局，自动充满，并保持播放 其比例
               sources: [
                 {
                   src: res.body.data + '&a.flv',
