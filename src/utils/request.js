@@ -24,7 +24,7 @@ const rewriteMessage = options => {
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env['ZEUS_ADMIN_URL'],
-  timeout: 15000 // request timeout
+  timeout: 20000 // request timeout
 })
 
 // request interceptor
@@ -80,7 +80,7 @@ service.interceptors.response.use(
   },
   error => {
     let timeout = null
-    const msg = error.response.data.msg || error.message
+    const msg = (error.response && error.response.data.msg) || error.message
     // console.log(error, msg)
     // Message({
     //   message: msg,
