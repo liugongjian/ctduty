@@ -24,7 +24,7 @@ const rewriteMessage = options => {
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env['ZEUS_ADMIN_URL'],
-  timeout: 20000 // request timeout
+  timeout: 40000 // request timeout
 })
 
 // request interceptor
@@ -66,7 +66,7 @@ service.interceptors.response.use(
           Cookies.remove('userId')
           Cookies.remove('level')
           store.dispatch('FedLogOut').then(() => {
-            window.location.href = "/login";
+            window.location.href = '/login'
           })
         }).catch(err => {
           return Promise.reject(err)
