@@ -1098,6 +1098,7 @@ export default {
 .youContent {
   margin-bottom: 5px;
   overflow: hidden;
+  cursor: pointer;
 }
 /* .youContent .addressword {
   margin-left: 30px;
