@@ -48,7 +48,7 @@
             <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
               <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
               <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                请选择要查看的摄像头
+                {{ cameraState }}
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@
                           class="untreated"
                           icon-class="untreated"
                         />
-                        <div class="shu"></div>
+                        <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
@@ -120,7 +120,7 @@
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                      <div class="shu" style="height:16px;"></div>
+                      <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
@@ -146,7 +146,7 @@
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
-                      <div class="shu"></div>
+                      <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
@@ -250,6 +250,7 @@ export default {
   data() {
     return {
       timer: null,
+      cameraState: '请选择要查看的摄像头',
       HTMLDoms: null,
       dataError: [],
       dataDia: {
@@ -336,9 +337,9 @@ export default {
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0) {
-            that.center = [110.08, 34.57]
+            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            that.zoom = 15
             // item.classList.add('markerClickImg')
-            that.form = item.attributes[1].nodeValue
             that.showZwMes = false
           }
         })
@@ -632,31 +633,36 @@ export default {
           this.form.createTime = moment(this.form.createTime).format(
             'YYYY-MM-DD HH:mm:SS'
           )
-          if (this.currentcameraId === this.form.id && this.videoOpen) {
-            this.hasUrl = null
-            this.videoOpen = false
-            stop(this.form.id)
+          if (this.form.online !== 1) {
+            this.cameraState = '请选择要查看的摄像头'
+            if (this.currentcameraId === this.form.id && this.videoOpen) {
+              this.hasUrl = null
+              this.videoOpen = false
+              stop(this.form.id)
+            } else if (this.form.online !== 1) {
+              play(this.form.id).then(res => {
+                this.hasUrl = true
+                this.cameraId = this.form.id
+                this.currentcameraId = this.form.id
+                this.videoOpen = true
+                this.videoOptions = {
+                  autoplay: true,
+                  controls: true,
+                  width: 400, // 播放器宽度
+                  height: 300, // 播放器高度
+                  // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+                  // fluid: true, // 流体布局，自动充满，并保持播放 其比例
+                  sources: [
+                    {
+                      src: res.body.data + '&a.flv',
+                      type: this.video_type(res.body.data + '&a.flv')
+                    }
+                  ]
+                }
+              })
+            }
           } else {
-            play(this.form.id).then(res => {
-              this.hasUrl = true
-              this.cameraId = this.form.id
-              this.currentcameraId = this.form.id
-              this.videoOpen = true
-              this.videoOptions = {
-                autoplay: true,
-                controls: true,
-                width: 400, // 播放器宽度
-                height: 300, // 播放器高度
-                // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-                // fluid: true, // 流体布局，自动充满，并保持播放 其比例
-                sources: [
-                  {
-                    src: res.body.data + '&a.flv',
-                    type: this.video_type(res.body.data + '&a.flv')
-                  }
-                ]
-              }
-            })
+            this.cameraState = '此摄像头已离线'
           }
 
           this.center = [this.form.longitude, this.form.latitude]
