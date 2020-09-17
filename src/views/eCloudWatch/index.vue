@@ -884,14 +884,12 @@ export default {
       if (this.active++ > 2) this.active = 0
     },
     normal() {
-      clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 0).then((res) => {
         this.getalarmList()
         this.dialogVisable = false
       })
     },
     unnormal() {
-      clearInterval(this.timer)
       fetchNormalStatus(this.dataDia.id, 1).then((res) => {
         this.getalarmList()
         this.dialogVisable = false
