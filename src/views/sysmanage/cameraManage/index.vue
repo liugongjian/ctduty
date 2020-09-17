@@ -308,6 +308,7 @@ export default {
             that.highLightMarkerId = JSON.parse(item.attributes[1].nodeValue).id
             that.form = JSON.parse(item.attributes[1].nodeValue)
             that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            that.zoom = 15
             that.editForm = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             that.showZwMes = false
