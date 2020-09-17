@@ -368,7 +368,7 @@ export default {
 .searchbtn{
   float: left;
   margin-left: 5px;
-
+  cursor: pointer;
 }
 .addbtn{
   float: right;
