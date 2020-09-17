@@ -175,12 +175,12 @@ export default {
       })
     })
     // that.getMap()
-    that.camerarate()
+    /*  that.camerarate()
     that.drawPie('man', '人员', '#1890FF', NaN)
     that.drawPie('car', '机动车', '#5DDECF', NaN)
     that.drawPie('bicycle', '非机动车', '#2FC25B', NaN)
-    that.getPanel(that.cameraOnlineRate)
-    that.drawZhu('alarmLine')
+    that.getPanel(that.cameraOnlineRate) */
+    // that.drawZhu('alarmLine')
   },
   methods: {
     goAlarmList() {

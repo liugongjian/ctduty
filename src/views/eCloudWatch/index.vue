@@ -549,7 +549,7 @@ export default {
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
-      this.getPanel()
+      // this.getPanel()
     },
     monitoring(e) {
       this.showAlarm = 'monitoring'
