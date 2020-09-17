@@ -93,7 +93,7 @@
                           class="untreated"
                           icon-class="untreated"
                         />
-                        <div class="shu"></div>
+                        <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
                         <p class="dizhi">{{ item.camera.address }}</p>
@@ -120,7 +120,7 @@
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                      <div class="shu" style="height:16px;"></div>
+                      <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
@@ -146,7 +146,7 @@
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
-                      <div class="shu"></div>
+                      <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera.address }}</p>
@@ -336,9 +336,9 @@ export default {
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0) {
-            that.center = [110.08, 34.57]
+            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            that.zoom = 15
             // item.classList.add('markerClickImg')
-            that.form = item.attributes[1].nodeValue
             that.showZwMes = false
           }
         })
