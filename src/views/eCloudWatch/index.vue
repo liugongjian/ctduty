@@ -598,15 +598,6 @@ export default {
       })
     },
     watchClick(e) {
-      // vjs-icon-placeholder
-      // vjs-remaining-time-display
-      // vjs-volume-control vjs-control vjs-volume-horizontal
-      // vjs-progress-control vjs-control
-      // onPlayerReady
-      /*  if (e.target.className !== 'vjs-icon-placeholder' && e.target.className !== 'vjs-remaining-time-display' && e.target.className !== 'vjs-volume-control vjs-control vjs-volume-horizontal' && e.target.className !== 'vjs-progress-control vjs-control' && e.target.className !== 'onPlayerReady') {
-        this.hasUrl = null
-        this.cameraId = null
-      } */
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
       }
@@ -640,6 +631,7 @@ export default {
               this.videoOpen = false
               stop(this.form.id)
             } else if (this.form.online !== 1) {
+              this.cameraState = '正在加载直播流...'
               play(this.form.id).then(res => {
                 this.hasUrl = true
                 this.cameraId = this.form.id
