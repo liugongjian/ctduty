@@ -103,6 +103,11 @@ export default {
               field: 'address',
               operator: 'LIKE',
               value: `%${keyword}%`
+            },
+            {
+              field: 'online',
+              operator: 'EQUALS',
+              value: 0
             }
           ]
         }
