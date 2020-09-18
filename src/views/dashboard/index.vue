@@ -138,14 +138,14 @@ export default {
       const canvas = document.getElementsByTagName('canvas');
       [].forEach.call(canvas, function(item) {
         item.style.width = '100%'
-        item.parentNode.style = `display:inline-block;text-align:center;`
+        // item.parentNode.style = `display:inline-block;text-align:center;`
       })
     },
     screenHeight(v) {
       const canvas = document.getElementsByTagName('canvas');
       [].forEach.call(canvas, function(item) {
         item.style.width = '100%'
-        item.parentNode.style = `display:inline-block;text-align:center;`
+        // item.parentNode.style = `display:inline-block;text-align:center;`
       })
       if (v === window.screen.height - 50) {
         this.isFullscreen = true
