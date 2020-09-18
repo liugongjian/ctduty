@@ -88,8 +88,7 @@
                       <div style="height:32px; width:32px; float:left" class="lefticon">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
                         <svg-icon
-                          v-else
-                          if="item.state === 1"
+                          v-else-if="item.state === 1"
                           class="untreated"
                           icon-class="untreated"
                         />
