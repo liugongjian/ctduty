@@ -12,9 +12,10 @@
           <el-button class="filter-item" @click="bulkimport ">{{ '导入车牌数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog
+            class="carDialog"
             :visible="bulkimportVisble"
             title="导入车牌数据"
-            width="90vw"
+            width="50vw"
             height="70vh"
             @close="closebulkimportDialog"
           >
@@ -514,6 +515,9 @@ export default {
   width: 178px;
   height: 178px;
   display: block;
+}
+.carDialog {
+  margin: 0 auto;
 }
 </style>
 

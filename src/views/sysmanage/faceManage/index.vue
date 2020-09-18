@@ -9,7 +9,7 @@
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" type="warning" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <el-dialog :visible="bulkimportVisble" title="导入人脸数据" width="90vw" height="70vh" @close="closebulkimportDialog">
+          <el-dialog :visible="bulkimportVisble" title="导入人脸数据" width="50vw" height="70vh" @close="closebulkimportDialog">
             <el-upload
               class="upload-demo"
               drag
@@ -475,6 +475,10 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .upload-demo {
+    width: 300px;
+    margin: 0 auto;
   }
 </style>
 
