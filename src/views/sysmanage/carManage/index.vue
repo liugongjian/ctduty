@@ -9,49 +9,59 @@
             icon="el-icon-plus"
             @click="create"
           >{{ '新增车牌数据' }}</el-button>
-          <el-button class="filter-item">{{ '导入车牌数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport ">{{ '导入车牌数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="550px" @close="closeDialog">
-            <el-form
-              ref="addForm"
-              :model="dialogForm"
-              :rule="addrules"
-              label-position="right"
-              label-width="130px"
+          <el-dialog
+            :visible="bulkimportVisble"
+            title="导入车牌数据"
+            width="90vw"
+            height="70vh"
+            @close="closebulkimportDialog"
+          >
+            <el-upload
+              class="upload-demo"
+              drag
+              list-type="picture"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              multiple
             >
-              <el-form-item label="车牌号:">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击上传</em>
+              </div>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-dialog>
+          <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
+            <el-form :model="addFaceForm" label-position="right" label-width="130px">
+              <el-form-item label="姓名: ">
                 <el-input
-                  v-model="dialogForm.id"
+                  v-model="addFaceForm.name"
                   placeholder="请输入摄像头ID"
                   class="filter-item"
-                  style="width: 240px;"
+                  style="width: 150px;"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="所属名单：">
-                <el-select
-                  v-model="dialogForm.inChargeId"
-                  :value="dialogForm.inChargeId"
-                  placeholder="请选择岗位"
+              <el-form-item label="上传车牌图像: ">
+                <el-upload
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload"
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
                 >
-                  <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
-                  ></el-option>
-                </el-select>
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
               </el-form-item>
-              <el-form-item label="车辆颜色：">
-                <el-select
-                  v-model="dialogForm.creatorId"
-                  :value="editForm.creatorId"
-                  placeholder="请选择岗位"
-                >
+              <el-form-item label="所属名单: ">
+                <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item">
                   <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
+                    v-for="item in typeOptions"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -63,14 +73,14 @@
           </el-dialog>
         </div>
         <div class="pull-right">
-          <el-select v-model="formInline.typeValue" style="width:180px;" class="filter-item">
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="请输入摄像头地址"
+            class="filter-item"
+            style="width: 260px;"
+            @keyup.enter.native="onSearch"
+          ></el-input>
+          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
         </div>
       </div>
       <el-table
@@ -84,13 +94,13 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌号'" prop="id"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
           <template slot-scope="scope">
-            <span>{{ scope.row.online ? "白名单":"嫌疑车辆黑名单" }}</span>
+            <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'人员图片'" prop="inCharge.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
@@ -100,23 +110,16 @@
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="摄像头ID：">
+          <el-form-item label="车牌号：">
             <el-input
               v-model="editForm.id"
-              placeholder="请输入摄像头ID"
+              placeholder="所属名单"
               class="filter-item"
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="摄像头名称：">
-            <el-input
-              v-model="editForm.name"
-              placeholder="请输入摄像头名称"
-              class="filter-item"
-              style="width: 300px;"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="负责人：">
+
+          <el-form-item label="车辆颜色：">
             <el-select
               v-model="editForm.inChargeId"
               :value="editForm.inChargeId"
@@ -130,7 +133,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="添加人：">
+          <el-form-item label="所属名单：">
             <el-select
               v-model="editForm.creatorId"
               :value="editForm.creatorId"
@@ -160,7 +163,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { Message } from "element-ui";
 import Cookies from "js-cookie";
@@ -178,6 +180,18 @@ export default {
   components: { Pagination },
   data() {
     return {
+      fileList: [
+        {
+          name: "food.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+        },
+        {
+          name: "food2.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+        }
+      ],
       dialogForm: {
         address: "",
         creatorId: "",
@@ -185,24 +199,31 @@ export default {
         name: "",
         latitude: "",
         longitude: "",
-
-        inChargeId: ""
+        url: "",
+        inChargeId: "",
+        manufacturer: "",
+        model: "",
+        phone: ""
       },
+      typeOptions: [
+        { name: "地图模式", _id: "map" },
+        { name: "列表模式", _id: "list" }
+      ],
+      imageUrl: "",
+      addFaceForm: {},
       addrules: {
         creatorId: [
           { required: true, trigger: "blur", message: "创建人ID不能为空" }
         ],
-        name: [
-          { required: true, trigger: "blur", message: "摄像头名称不能为空" }
-        ],
+
         url: [
           { required: true, trigger: "blur", message: "视频流信息不能为空" }
         ],
         phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
-
-        model: [
-          { required: true, trigger: "blur", message: "设备型号不能为空" }
+        manufacturer: [
+          { required: true, trigger: "blur", message: "制造厂商不能为空" }
         ],
+
         id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
         inChargeId: [
           { required: true, trigger: "blur", message: "负责人ID不能为空" }
@@ -212,10 +233,6 @@ export default {
         searchkey: "",
         typeValue: "list"
       },
-      typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
-      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -235,10 +252,10 @@ export default {
         latitude: "",
         address: "",
         url: "",
-        name: "",
         creatorId: ""
       },
-      userList: []
+      userList: [],
+      bulkimportVisble: false
     };
   },
   watch: {
@@ -253,6 +270,27 @@ export default {
     await this.getList();
   },
   methods: {
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    bulkimport() {
+      this.bulkimportVisble = true;
+    },
+    closebulkimportDialog() {
+      this.bulkimportVisble = false;
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -307,7 +345,7 @@ export default {
       this.editForm.longitude = v.longitude;
       this.editForm.latitude = v.latitude;
       this.editForm.address = v.address;
-      this.editForm.name = v.name;
+
       this.editForm.url = v.url;
       this.editVisable = true;
     },
@@ -322,7 +360,7 @@ export default {
           latitude: this.editForm.latitude,
           longitude: this.editForm.longitude,
           url: this.editForm.url,
-          name: this.editForm.name,
+
           creatorId: this.editForm.creatorId
         }
       ];
@@ -347,7 +385,6 @@ export default {
       this.dialogVisable = false;
     },
     onSearch() {},
-
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
@@ -420,6 +457,7 @@ export default {
               longitude: "",
               url: "",
               inChargeId: "",
+              manufacturer: "",
               model: "",
               phone: ""
             };
@@ -454,6 +492,28 @@ export default {
 .app-main {
   padding-top: 50px;
 }
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
-
 
