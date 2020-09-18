@@ -7,7 +7,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增人脸数据' }}</el-button>
-          <el-button class="filter-item" type="warning" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog :visible="bulkimportVisble" title="导入人脸数据" width="50vw" height="70vh" @close="closebulkimportDialog">
             <el-upload
