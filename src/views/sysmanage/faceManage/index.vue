@@ -69,7 +69,7 @@
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'人员图片'" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'图片预览'" prop="inCharge.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
