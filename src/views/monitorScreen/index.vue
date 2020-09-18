@@ -26,7 +26,7 @@
     </div>
     <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头地址" prop="cameraId">
+        <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"

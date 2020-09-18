@@ -92,14 +92,14 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
-    const { status } = error.response
-    if (status === 401) {
-      Cookies.remove('saas_token_id', { domain: '.ctyun.cn' })
-      clearTimeout(timeout)
-      timeout = setTimeout(() => {
-        window.location.href = process.env.SAAS_URL + `?from=zen&redirect_url=${process.env.OPENAPI_URL}`
-      }, 3000)
-    }
+    // const { status } = error.response
+    // if (status === 401) {
+    //   Cookies.remove('saas_token_id', { domain: '.ctyun.cn' })
+    //   clearTimeout(timeout)
+    //   timeout = setTimeout(() => {
+    //     window.location.href = process.env.SAAS_URL + `?from=zen&redirect_url=${process.env.OPENAPI_URL}`
+    //   }, 3000)
+    // }
     return Promise.reject(error)
   }
 )

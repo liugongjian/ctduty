@@ -245,6 +245,7 @@ export default {
           background: #FF9832;
           border-radius: 0 4px 4px 0;
           outline:none;
+          cursor: pointer;
         }
       }
       .floatsearch {
