@@ -35,34 +35,39 @@
             </el-upload>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
-            <el-form :model="addFaceForm" label-position="right" label-width="130px">
-              <el-form-item label="姓名: ">
-                <el-input
-                  v-model="addFaceForm.name"
-                  placeholder="请输入摄像头ID"
-                  class="filter-item"
-                  style="width: 150px;"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="上传车牌图像: ">
-                <el-upload
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload"
-                  class="avatar-uploader"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                >
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-              <el-form-item label="所属名单: ">
-                <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item">
+            <el-form :model="addCarForm" label-position="right" label-width="130px">
+              <el-form-item label="车牌号: ">
+                <el-select v-model="addCarForm.brand" style="width:120px;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
                     :label="item.name"
                     :value="item._id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="所属名单：">
+                <el-select v-model="addCarForm.list" :value="addCarForm.list">
+                  <el-option
+                    v-for="item in userList"
+                    :value="item.id"
+                    :label="item.username"
+                    :key="item.id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="车辆颜色：">
+                <el-select
+                  v-model="addCarForm.color"
+                  :value="addCarForm.color"
+                  placeholder="请选择添加人"
+                >
+                  <el-option
+                    v-for="item in userList"
+                    :value="item.id"
+                    :label="item.username"
+                    :key="item.id"
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -120,7 +125,7 @@
             ></el-input>
           </el-form-item>
 
-          <el-form-item label="车辆颜色：">
+          <el-form-item label="所属名单：">
             <el-select
               v-model="editForm.inChargeId"
               :value="editForm.inChargeId"
@@ -134,7 +139,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="所属名单：">
+          <el-form-item label="车辆颜色：">
             <el-select
               v-model="editForm.creatorId"
               :value="editForm.creatorId"
@@ -211,15 +216,17 @@ export default {
         { name: "列表模式", _id: "list" }
       ],
       imageUrl: "",
+      addCarForm: {
+        brand: "",
+        list: "",
+        color: ""
+      },
       addFaceForm: {},
       addrules: {
         creatorId: [
           { required: true, trigger: "blur", message: "创建人ID不能为空" }
         ],
 
-        url: [
-          { required: true, trigger: "blur", message: "视频流信息不能为空" }
-        ],
         phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
         manufacturer: [
           { required: true, trigger: "blur", message: "制造厂商不能为空" }
@@ -249,10 +256,7 @@ export default {
       editForm: {
         id: "",
         inChargeId: "",
-        longitude: "",
-        latitude: "",
-        address: "",
-        url: "",
+
         creatorId: ""
       },
       userList: [],
