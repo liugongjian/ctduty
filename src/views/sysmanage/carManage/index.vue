@@ -1,26 +1,26 @@
 <template>
-    <div class="carManage">
-     
-      <div class="car">
-          <img src="./images/car.png" alt="">
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-      }
-    },
-    created() {
+  <div class="carManage">
 
-    },
-    methods: {
-      
-     }
+    <div class="car">
+      <img src="./images/car.png" alt="">
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
     }
-  </script>
+  },
+  created() {
+
+  },
+  methods: {
+
+  }
+}
+</script>
 <style lang="scss">
 
  .car{
@@ -32,4 +32,4 @@
         height: 100%;
      }
   </style>
-  
+
