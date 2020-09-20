@@ -21,7 +21,7 @@
           >
             <el-table
               v-if="isBatchSuccess"
-              :data="tableData"
+              :data="importData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
               style="width: 55vw"
@@ -32,12 +32,11 @@
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'">
-                <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope" prop="online"-->
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
                 <template slot-scope="scope">
-                  <el-select v-model="value1" style="width:120px;" class="filter-item">
+                  <el-select v-model="value" placeholder="请选择">
                     <el-option
-                      v-for="item in options"
+                      v-for="item in subordinateList"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -45,7 +44,6 @@
                   </el-select>
                 </template>
               </el-table-column>
-
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'车牌颜色'"
@@ -70,8 +68,11 @@
                 将文件拖到此处，或
                 <em>点击上传</em>
               </div>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" round @click="editDialogConfirm">提 交</el-button>
+            </div>
           </el-dialog>
           <!-- 新增车牌的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
@@ -85,7 +86,7 @@
                     :value="item._id"
                   ></el-option>
                 </el-select>
-                <el-input v-model="input" placeholder="请输入内容"></el-input>
+                <el-input placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
@@ -99,11 +100,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="车辆颜色：">
-                <el-select
-                  v-model="addCarForm.color"
-                  :value="addCarForm.color"
-                  placeholder="请选择添加人"
-                >
+                <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
                     v-for="item in userList"
                     :value="item.id"
@@ -131,7 +128,7 @@
         </div>
       </div>
       <el-table
-        :data="tableData"
+        :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
         style="width: 100%"
@@ -147,7 +144,11 @@
             <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'人员图片'" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'">
+          <template slot-scope="scope">
+            <div>蓝色</div>
+          </template>
+        </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
@@ -228,7 +229,29 @@ export default {
   data() {
     return {
       isBatchSuccess: true,
-      input: "",
+      subordinateList: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      value: "",
       fileList: [
         {
           name: "food.jpeg",
@@ -286,7 +309,7 @@ export default {
       },
       listLoading: false,
       filteredValue: [],
-      tableData: [],
+      importData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -304,29 +327,7 @@ export default {
       },
       userList: [],
       bulkimportVisble: false,
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      value1: ""
+      value: ""
     };
   },
   watch: {
@@ -502,7 +503,7 @@ export default {
         params: {}
       };
       fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data;
+        this.importData = res.body.data;
         this.total = res.body.page.total;
         this.listLoading = false;
       });
@@ -595,6 +596,9 @@ export default {
 }
 .carDialog {
   margin: 0 auto;
+}
+.el-dialog__body {
+  width: 100%;
 }
 .carInput {
   height: 36.8px !important;
