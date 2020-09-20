@@ -10,12 +10,33 @@
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog :visible="bulkimportVisble" title="导入人脸数据" width="50vw" height="70vh" @close="closebulkimportDialog">
+            <el-table v-if="isBatchSuccess" :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
+              <el-table-column
+                type="selection"
+                width="55">
+              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.online ? "离线":"在线" }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'图片预览'" prop="inCharge.username"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
             <el-upload
+              v-else
               class="upload-demo"
               drag
               list-type="picture"
               action="https://jsonplaceholder.typicode.com/posts/"
-              multiple>
+              multiple
+              @on-success = "batchUpSuccess">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -150,6 +171,7 @@ export default {
         model: '',
         phone: ''
       },
+      isBatchSuccess: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       imageUrl: '',
@@ -233,6 +255,10 @@ export default {
     await this.getList()
   },
   methods: {
+    batchUpSuccess() {
+      this.isBatchSuccess = true
+      console.log('批量上传成功')
+    },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
