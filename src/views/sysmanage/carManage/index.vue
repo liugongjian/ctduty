@@ -34,17 +34,13 @@
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'">
                 <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope" prop="online"-->
-                <template>
-                  <el-select
-                    v-model="editForm.inChargeId"
-                    :value="editForm.inChargeId"
-                    placeholder="请选择"
-                  >
+                <template slot-scope="scope">
+                  <el-select v-model="value1" style="width:120px;" class="filter-item">
                     <el-option
-                      v-for="item in userList"
-                      :value="item.id"
-                      :label="item.username"
-                      :key="item.id"
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
                     ></el-option>
                   </el-select>
                 </template>
@@ -77,6 +73,7 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-dialog>
+          <!-- 新增车牌的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
             <el-form :model="addCarForm" label-position="right" label-width="130px">
               <el-form-item label="车牌号: " class="carInput">
@@ -231,6 +228,7 @@ export default {
   data() {
     return {
       isBatchSuccess: true,
+      input: "",
       fileList: [
         {
           name: "food.jpeg",
@@ -328,7 +326,7 @@ export default {
           label: "北京烤鸭"
         }
       ],
-      value: ""
+      value1: ""
     };
   },
   watch: {
