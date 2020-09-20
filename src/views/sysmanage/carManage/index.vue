@@ -62,9 +62,9 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-dialog>
-          <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
+          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
             <el-form :model="addCarForm" label-position="right" label-width="130px">
-              <el-form-item label="车牌号: ">
+              <el-form-item label="车牌号: " class="carInput">
                 <el-select v-model="addCarForm.brand" style="width:120px;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
@@ -73,6 +73,7 @@
                     :value="item._id"
                   ></el-option>
                 </el-select>
+                <el-input v-model="input" placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
@@ -558,6 +559,17 @@ export default {
 }
 .carDialog {
   margin: 0 auto;
+}
+.carInput {
+  height: 36.8px !important;
+}
+.el-form-item__content {
+  display: flex;
+  .el-select--medium {
+    width: 134px !important;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 </style>
 
