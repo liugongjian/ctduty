@@ -33,30 +33,33 @@
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
+                <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope"-->
                 <template>
-                  <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope"-->
-                  <el-select v-model="value" placeholder="请选择">
+                  <el-select
+                    v-model="editForm.inChargeId"
+                    :value="editForm.inChargeId"
+                    placeholder="请选择负责人"
+                  >
                     <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in userList"
+                      :value="item.id"
+                      :label="item.username"
+                      :key="item.id"
                     ></el-option>
                   </el-select>
                 </template>
               </el-table-column>
+
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'人员图片'"
+                :label="'车牌颜色'"
                 prop="inCharge.username"
               ></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'操作'">
-                <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
-                </template>
-              </el-table-column>
+              <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogConfirm('dialogForm')">提 交</el-button>
+              </div>
             </el-table>
+
             <el-upload
               v-else
               class="upload-demo"
@@ -74,9 +77,9 @@
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-dialog>
-          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="520px" @close="closeDialog">
+          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
             <el-form :model="addCarForm" label-position="right" label-width="130px">
-              <el-form-item label="车牌号: ">
+              <el-form-item label="车牌号: " class="carInput">
                 <el-select v-model="addCarForm.brand" style="width:120px;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
@@ -85,6 +88,7 @@
                     :value="item._id"
                   ></el-option>
                 </el-select>
+                <el-input v-model="input" placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
@@ -593,6 +597,17 @@ export default {
 }
 .carDialog {
   margin: 0 auto;
+}
+.carInput {
+  height: 36.8px !important;
+}
+.el-form-item__content {
+  display: flex;
+  .el-select--medium {
+    width: 134px !important;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
 }
 </style>
 

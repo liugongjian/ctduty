@@ -44,7 +44,7 @@
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
             <el-form :model="addFaceForm" label-position="right" label-width="130px">
-              <el-form-item label="姓名: "><el-input v-model="addFaceForm.name" placeholder="请输入摄像头ID" class="filter-item" style="width: 150px;"></el-input>
+              <el-form-item label="姓名: "><el-input v-model="addFaceForm.name" placeholder="请输入姓名" class="filter-item" style="width: 150px;"></el-input>
               </el-form-item>
               <el-form-item label="上传人脸图像: ">
                 <el-upload
@@ -73,7 +73,7 @@
           </el-dialog>
         </div>
         <div class="pull-right">
-          <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 260px;" @keyup.enter.native="onSearch"></el-input>
+          <el-input v-model="formInline.searchkey" placeholder="请输入" class="filter-item" style="width: 260px;" @keyup.enter.native="onSearch"></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">
             {{ '搜索' }}
           </el-button>
@@ -100,29 +100,55 @@
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="姓名："><el-input v-model="editForm.name" placeholder="请输入姓名" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="摄像头名称："><el-input v-model="editForm.name" placeholder="请输入摄像头名称" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="上传人脸图像: ">
+            <template>
+              <div class="editPictrue">
+                <el-upload
+                  action="#"
+                  list-type="picture-card"
+                  :auto-upload="false">
+                    <i slot="default" class="el-icon-plus"></i>
+                    <div slot="file" slot-scope="{file}">
+                      <img
+                        class="el-upload-list__item-thumbnail"
+                        :src="file.url" alt=""
+                      >
+                      <span class="el-upload-list__item-actions">
+                        <span
+                          class="el-upload-list__item-preview"
+                          @click="handlePictureCardPreview(file)"
+                        >
+                          <i class="el-icon-zoom-in"></i>
+                        </span>
+                        <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleDownload(file)"
+                        >
+                          <i class="el-icon-download"></i>
+                        </span>
+                        <span
+                          v-if="!disabled"
+                          class="el-upload-list__item-delete"
+                          @click="handleRemove(file)"
+                        >
+                          <i class="el-icon-delete"></i>
+                        </span>
+                      </span>
+                    </div>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                  <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+              </div>
+            </template>
           </el-form-item>
-          <el-form-item label="负责人：">
-            <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
-              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-              </el-option>
+          <el-form-item label="所属名单: ">
+            <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
+              <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="添加人：">
-            <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
-              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
-          </el-form-item>
-          <el-form-item label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
-          </el-form-item>
-          <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
-          </el-form-item>
-          <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -340,6 +366,7 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
+
       const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inChargeId,
