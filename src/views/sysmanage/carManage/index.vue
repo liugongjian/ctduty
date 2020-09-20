@@ -24,7 +24,7 @@
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
-              style="width: 100%"
+              style="width: 55vw"
               tooltip-effect="dark"
               fit
               @filter-change="filerStatus"
@@ -32,13 +32,13 @@
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
-                <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope"-->
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'">
+                <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope" prop="online"-->
                 <template>
                   <el-select
                     v-model="editForm.inChargeId"
                     :value="editForm.inChargeId"
-                    placeholder="请选择负责人"
+                    placeholder="请选择"
                   >
                     <el-option
                       v-for="item in userList"
