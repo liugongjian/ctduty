@@ -39,8 +39,8 @@
                       v-for="item in subordinateList"
                       :key="item.value"
                       :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                      :value="item.value"
+                    ></el-option>
                   </el-select>
                 </template>
               </el-table-column>
@@ -70,7 +70,11 @@
               </div>
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" round @click="editDialogConfirm">提 交</el-button>
+            </div>
           </el-dialog>
+          <!-- 新增车牌的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
             <el-form :model="addCarForm" label-position="right" label-width="130px">
               <el-form-item label="车牌号: " class="carInput">
@@ -96,11 +100,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="车辆颜色：">
-                <el-select
-                  v-model="addCarForm.color"
-                  :value="addCarForm.color"
-                  placeholder="请选择颜色"
-                >
+                <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
                     v-for="item in userList"
                     :value="item.id"
@@ -229,22 +229,28 @@ export default {
   data() {
     return {
       isBatchSuccess: true,
-      subordinateList: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      subordinateList: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '龙须面'
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
       value: '',
       fileList: [
         {
@@ -321,28 +327,6 @@ export default {
       },
       userList: [],
       bulkimportVisble: false,
-      options: [
-        {
-          value: '选项1',
-          label: '黄金糕'
-        },
-        {
-          value: '选项2',
-          label: '双皮奶'
-        },
-        {
-          value: '选项3',
-          label: '蚵仔煎'
-        },
-        {
-          value: '选项4',
-          label: '龙须面'
-        },
-        {
-          value: '选项5',
-          label: '北京烤鸭'
-        }
-      ],
       value: ''
     }
   },

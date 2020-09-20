@@ -2,19 +2,37 @@
   <div class="list">
     <!--  <div class="title">
       摄像头管理
-    </div> -->
+    </div>-->
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增人脸数据' }}</el-button>
+          <el-button
+            class="filter-item"
+            type="warning"
+            icon="el-icon-plus"
+            @click="create"
+          >{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <el-dialog :visible="bulkimportVisble" title="导入人脸数据" width="50vw" height="70vh" @close="closebulkimportDialog">
-            <el-table v-if="isBatchSuccess" :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-              <el-table-column
-                type="selection"
-                width="55">
-              </el-table-column>
+          <el-dialog
+            :visible="bulkimportVisble"
+            title="导入人脸数据"
+            width="50vw"
+            height="70vh"
+            @close="closebulkimportDialog"
+          >
+            <el-table
+              v-if="isBatchSuccess"
+              :data="tableData"
+              :header-cell-class-name="tableRowClassHeader"
+              class="amountdetailTable"
+              style="width: 100%"
+              tooltip-effect="dark"
+              fit
+              @filter-change="filerStatus"
+              @selection-change="handleSelectionChange"
+            >
+              <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
                 <template slot-scope="scope">
@@ -23,12 +41,9 @@
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
                 <template slot-scope="scope">
-                  <el-popover
-                    placement="left-end"
-                    width="424"
-                    trigger="hover">
-                    <img src="../../../assets/images/police.jpg" alt="" width="400" class="hoverImg">
-                    <img slot="reference" src="../../../assets/images/police.jpg" alt="">
+                  <el-popover placement="left-end" width="424" trigger="hover">
+                    <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
+                    <img slot="reference" src="../../../assets/images/police.jpg" alt >
                   </el-popover>
                 </template>
               </el-table-column>
@@ -46,16 +61,28 @@
               list-type="picture"
               action="https://jsonplaceholder.typicode.com/posts/"
               multiple
-              @on-success = "batchUpSuccess">
+              @on-success="batchUpSuccess"
+            >
               <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：图片仅支持120*108像素.jpg格式<br>
-                图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg</div>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击上传</em>
+              </div>
+              <div slot="tip" class="el-upload__tip" style="width: 400px">
+                支持的格式：图片仅支持120*108像素.jpg格式
+                <br >图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg
+              </div>
             </el-upload>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
             <el-form :model="addFaceForm" label-position="right" label-width="130px">
-              <el-form-item label="姓名: "><el-input v-model="addFaceForm.name" placeholder="请输入姓名" class="filter-item" style="width: 150px;"></el-input>
+              <el-form-item label="姓名: ">
+                <el-input
+                  v-model="addFaceForm.name"
+                  placeholder="请输入姓名"
+                  class="filter-item"
+                  style="width: 150px;"
+                ></el-input>
               </el-form-item>
               <el-form-item label="上传人脸图像: ">
                 <el-upload
@@ -63,38 +90,56 @@
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
                   class="avatar-uploader"
-                  action="https://jsonplaceholder.typicode.com/posts/">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                >
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" >
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
               <el-form-item label="所属名单: ">
-                <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
-                  <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+                <el-select
+                  v-model="formInline.typeValue"
+                  style="width:120px;"
+                  class="filter-item"
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in typeOptions"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button
-                type="primary"
-                @click="dialogConfirm('dialogForm')"
-              >确 定</el-button>
+              <el-button type="primary" @click="dialogConfirm('dialogForm')">确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
           </el-dialog>
         </div>
         <div class="pull-right">
-          <el-input v-model="formInline.searchkey" placeholder="请输入" class="filter-item" style="width: 260px;" @keyup.enter.native="onSearch"></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">
-            {{ '搜索' }}
-          </el-button>
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="请输入"
+            class="filter-item"
+            style="width: 260px;"
+            @keyup.enter.native="onSearch"
+          ></el-input>
+          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
         </div>
       </div>
-      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
+      <el-table
+        :data="tableData"
+        :header-cell-class-name="tableRowClassHeader"
+        class="amountdetailTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        fit
+        @filter-change="filerStatus"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
           <template slot-scope="scope">
@@ -103,12 +148,9 @@
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
           <template slot-scope="scope">
-            <el-popover
-              placement="left-end"
-              width="424"
-              trigger="hover">
-              <img src="../../../assets/images/police.jpg" alt="" width="400" class="hoverImg">
-              <img slot="reference" src="../../../assets/images/police.jpg" alt="">
+            <el-popover placement="left-end" width="424" trigger="hover">
+              <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
+              <img slot="reference" src="../../../assets/images/police.jpg" alt >
             </el-popover>
           </template>
         </el-table-column>
@@ -121,22 +163,21 @@
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="姓名："><el-input v-model="editForm.name" placeholder="请输入姓名" class="filter-item" style="width: 300px;"></el-input>
+          <el-form-item label="姓名：">
+            <el-input
+              v-model="editForm.name"
+              placeholder="请输入姓名"
+              class="filter-item"
+              style="width: 300px;"
+            ></el-input>
           </el-form-item>
           <el-form-item label="上传人脸图像: ">
             <template>
               <div class="editPictrue">
-                <el-upload
-                  :auto-upload="false"
-                  action="#"
-                  list-type="picture-card">
+                <el-upload :auto-upload="false" action="#" list-type="picture-card">
                   <i slot="default" class="el-icon-plus"></i>
                   <div slot="file" slot-scope="{file}">
-                    <img
-                      :src="file.url"
-                      class="el-upload-list__item-thumbnail"
-                      alt=""
-                    >
+                    <img :src="file.url" class="el-upload-list__item-thumbnail" alt >
                     <span class="el-upload-list__item-actions">
                       <span
                         class="el-upload-list__item-preview"
@@ -162,22 +203,29 @@
                   </div>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
-                  <img :src="dialogImageUrl" width="100%" alt="">
+                  <img :src="dialogImageUrl" width="100%" alt >
                 </el-dialog>
               </div>
             </template>
           </el-form-item>
           <el-form-item label="所属名单: ">
-            <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
-              <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+            <el-select
+              v-model="formInline.typeValue"
+              style="width:120px;"
+              class="filter-item"
+              @change="checkModel"
+            >
+              <el-option
+                v-for="item in typeOptions"
+                :key="item._id"
+                :label="item.name"
+                :value="item._id"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button
-            type="primary"
-            @click="editDialogConfirm"
-          >确 定</el-button>
+          <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
       </el-dialog>
@@ -198,14 +246,28 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList, editCamera, addCamera, delCamera
+  fetchAllCameraList,
+  editCamera,
+  addCamera,
+  delCamera
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
   data() {
     return {
-      fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }],
+      fileList: [
+        {
+          name: 'food.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        },
+        {
+          name: 'food2.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        }
+      ],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -220,12 +282,12 @@ export default {
         phone: ''
       },
       isBatchSuccess: true,
-      typeOptions: [{ name: '地图模式', _id: 'map' },
-        { name: '列表模式', _id: 'list' }],
+      typeOptions: [
+        { name: '地图模式', _id: 'map' },
+        { name: '列表模式', _id: 'list' }
+      ],
       imageUrl: '',
-      addFaceForm: {
-
-      },
+      addFaceForm: {},
       addrules: {
         creatorId: [
           { required: true, trigger: 'blur', message: '创建人ID不能为空' }
@@ -236,18 +298,14 @@ export default {
         url: [
           { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        phone: [
-          { required: true, trigger: 'blur', message: '手机号不能为空' }
-        ],
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
         manufacturer: [
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
           { required: true, trigger: 'blur', message: '设备型号不能为空' }
         ],
-        id: [
-          { required: true, trigger: 'blur', message: '摄像头ID不能为空' }
-        ],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
           { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
@@ -257,9 +315,7 @@ export default {
         latitude: [
           { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [
-          { required: true, trigger: 'blur', message: '地址不能为空' }
-        ]
+        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
         searchkey: '',
@@ -349,12 +405,14 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [...this.delIDArr]
-        delCamera(params).then(response => {
-          this.getList()
-          this.delIDArr = []
-        }).catch(() => {
-          this.delIDArr = []
-        })
+        delCamera(params)
+          .then(response => {
+            this.getList()
+            this.delIDArr = []
+          })
+          .catch(() => {
+            this.delIDArr = []
+          })
       })
     },
     delAlert(d) {
@@ -388,15 +446,17 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
-      const params = [{
-        id: this.editForm.id,
-        inChargeId: this.editForm.inChargeId,
-        latitude: this.editForm.latitude,
-        longitude: this.editForm.longitude,
-        url: this.editForm.url,
-        name: this.editForm.name,
-        creatorId: this.editForm.creatorId
-      }]
+      const params = [
+        {
+          id: this.editForm.id,
+          inChargeId: this.editForm.inChargeId,
+          latitude: this.editForm.latitude,
+          longitude: this.editForm.longitude,
+          url: this.editForm.url,
+          name: this.editForm.name,
+          creatorId: this.editForm.creatorId
+        }
+      ]
       editCamera(params).then(response => {
         this.$notify({
           title: '成功',
@@ -417,8 +477,7 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
-    onSearch() {
-    },
+    onSearch() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
@@ -458,8 +517,7 @@ export default {
           index: this.page,
           size: this.limit
         },
-        params: {
-        }
+        params: {}
       }
       fetchAllCameraList(params).then(res => {
         this.tableData = res.body.data
@@ -480,46 +538,46 @@ export default {
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
         if (!valid) return
-        const params = [
-          this.dialogForm
-        ]
-        addCamera(params).then(res => {
-          this.dialogForm = {
-            address: '',
-            creatorId: '',
-            id: '',
-            name: '',
-            latitude: '',
-            longitude: '',
-            url: '',
-            inChargeId: '',
-            manufacturer: '',
-            model: '',
-            phone: ''
-          }
-          this.$notify({
-            title: '成功',
-            message: '增加成功',
-            type: 'success',
-            duration: 2000
+        const params = [this.dialogForm]
+        addCamera(params)
+          .then(res => {
+            this.dialogForm = {
+              address: '',
+              creatorId: '',
+              id: '',
+              name: '',
+              latitude: '',
+              longitude: '',
+              url: '',
+              inChargeId: '',
+              manufacturer: '',
+              model: '',
+              phone: ''
+            }
+            this.$notify({
+              title: '成功',
+              message: '增加成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+            this.dialogVisable = false
           })
-          this.getList()
-          this.dialogVisable = false
-        }).catch(() => {
-          this.$notify({
-            title: '失败',
-            message: '增加失败',
-            type: 'error',
-            duration: 2000
+          .catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '增加失败',
+              type: 'error',
+              duration: 2000
+            })
           })
-        })
       })
     }
   }
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .list {
   overflow: auto !important;
   min-height: calc(100vh - 90px) !important;
@@ -535,7 +593,7 @@ export default {
   overflow: hidden;
 }
 .avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 .avatar-uploader-icon {
   font-size: 28px;
