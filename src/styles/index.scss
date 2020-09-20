@@ -352,7 +352,7 @@ html {
   fill: #95afc0 !important;
   // cursor: no-drop;
 }
-.el-popover.el-popover--plain {
-  z-index: 9999999999999999999999 !important;
+.el-popover {
+  z-index: 99999999999 !important;
 }
 

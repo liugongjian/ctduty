@@ -28,7 +28,7 @@
                     width="424"
                     trigger="hover">
                     <img src="../../../assets/images/police.jpg" alt="" width="400" class="hoverImg">
-                    <img slot="reference" src="../../../assets/images/police.jpg" alt="">
+                    <img slot="reference" src="../../../assets/images/police.jpg" alt="" style="width: 120px; height:100px">
                   </el-popover>
                 </template>
               </el-table-column>
@@ -127,43 +127,14 @@
             <template>
               <div class="editPictrue">
                 <el-upload
-                  :auto-upload="false"
-                  action="#"
-                  list-type="picture-card">
-                  <i slot="default" class="el-icon-plus"></i>
-                  <div slot="file" slot-scope="{file}">
-                    <img
-                      :src="file.url"
-                      class="el-upload-list__item-thumbnail"
-                      alt=""
-                    >
-                    <span class="el-upload-list__item-actions">
-                      <span
-                        class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview(file)"
-                      >
-                        <i class="el-icon-zoom-in"></i>
-                      </span>
-                      <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleDownload(file)"
-                      >
-                        <i class="el-icon-download"></i>
-                      </span>
-                      <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleRemove(file)"
-                      >
-                        <i class="el-icon-delete"></i>
-                      </span>
-                    </span>
-                  </div>
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                  <img :src="dialogImageUrl" width="100%" alt="">
-                </el-dialog>
               </div>
             </template>
           </el-form-item>
