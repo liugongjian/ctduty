@@ -519,7 +519,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .list {
   overflow: auto !important;
   min-height: calc(100vh - 90px) !important;

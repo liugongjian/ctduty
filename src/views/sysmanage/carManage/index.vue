@@ -519,10 +519,10 @@ export default {
         params: {}
       }
       fetchAllCameraList(params).then(res => {
-        this.importData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.importData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
     },
     handleSelectionChange(val) {
       val.forEach(item => {
@@ -576,7 +576,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .el-dialog__body {
   margin: 0 auto;
 }
