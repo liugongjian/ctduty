@@ -40,7 +40,7 @@
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：图片仅支持120*108像素.jpg格式<br>
-图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg</div>
+                图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg</div>
             </el-upload>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
@@ -107,41 +107,42 @@
             <template>
               <div class="editPictrue">
                 <el-upload
+                  :auto-upload="false"
                   action="#"
-                  list-type="picture-card"
-                  :auto-upload="false">
-                    <i slot="default" class="el-icon-plus"></i>
-                    <div slot="file" slot-scope="{file}">
-                      <img
-                        class="el-upload-list__item-thumbnail"
-                        :src="file.url" alt=""
+                  list-type="picture-card">
+                  <i slot="default" class="el-icon-plus"></i>
+                  <div slot="file" slot-scope="{file}">
+                    <img
+                      :src="file.url"
+                      class="el-upload-list__item-thumbnail"
+                      alt=""
+                    >
+                    <span class="el-upload-list__item-actions">
+                      <span
+                        class="el-upload-list__item-preview"
+                        @click="handlePictureCardPreview(file)"
                       >
-                      <span class="el-upload-list__item-actions">
-                        <span
-                          class="el-upload-list__item-preview"
-                          @click="handlePictureCardPreview(file)"
-                        >
-                          <i class="el-icon-zoom-in"></i>
-                        </span>
-                        <span
-                          v-if="!disabled"
-                          class="el-upload-list__item-delete"
-                          @click="handleDownload(file)"
-                        >
-                          <i class="el-icon-download"></i>
-                        </span>
-                        <span
-                          v-if="!disabled"
-                          class="el-upload-list__item-delete"
-                          @click="handleRemove(file)"
-                        >
-                          <i class="el-icon-delete"></i>
-                        </span>
+                        <i class="el-icon-zoom-in"></i>
                       </span>
-                    </div>
+                      <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleDownload(file)"
+                      >
+                        <i class="el-icon-download"></i>
+                      </span>
+                      <span
+                        v-if="!disabled"
+                        class="el-upload-list__item-delete"
+                        @click="handleRemove(file)"
+                      >
+                        <i class="el-icon-delete"></i>
+                      </span>
+                    </span>
+                  </div>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
-                  <img width="100%" :src="dialogImageUrl" alt="">
+                  <img :src="dialogImageUrl" width="100%" alt="">
                 </el-dialog>
               </div>
             </template>
@@ -198,7 +199,7 @@ export default {
         model: '',
         phone: ''
       },
-      isBatchSuccess: true,
+      isBatchSuccess: false,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       imageUrl: '',
@@ -367,7 +368,6 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
-
       const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inChargeId,
