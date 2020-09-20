@@ -431,6 +431,7 @@ export default {
     that.getPanel()
     setInterval(() => {
       this.getalarmList()
+      this.getCameraList()
     }, 10000)
   },
   updated() {
