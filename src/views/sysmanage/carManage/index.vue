@@ -21,7 +21,7 @@
           >
             <el-table
               v-if="isBatchSuccess"
-              :data="tableData"
+              :data="importData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
               style="width: 55vw"
@@ -32,19 +32,19 @@
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'">
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" slot-scope="scope">
                 <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope" prop="online"-->
                 <template>
                   <el-select
-                    v-model="editForm.inChargeId"
-                    :value="editForm.inChargeId"
+                    v-model="subordinateList.label"
+                    :value="subordinateList.value"
                     placeholder="请选择"
                   >
                     <el-option
-                      v-for="item in userList"
-                      :value="item.id"
-                      :label="item.username"
-                      :key="item.id"
+                      v-for="item in subordinateList"
+                      :value="item.value"
+                      :label="item.label"
+                      :key="item.value"
                     ></el-option>
                   </el-select>
                 </template>
@@ -88,7 +88,7 @@
                     :value="item._id"
                   ></el-option>
                 </el-select>
-                <el-input v-model="input" placeholder="请输入内容"></el-input>
+                <el-input placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
@@ -134,7 +134,7 @@
         </div>
       </div>
       <el-table
-        :data="tableData"
+        :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
         style="width: 100%"
@@ -230,6 +230,11 @@ export default {
   components: { Pagination },
   data() {
     return {
+      subordinateList: [{
+          value: '选项1',
+          label: '黄金糕'
+        }
+      ],
       isBatchSuccess: true,
       fileList: [
         {
@@ -288,7 +293,7 @@ export default {
       },
       listLoading: false,
       filteredValue: [],
-      tableData: [],
+      importData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -504,7 +509,7 @@ export default {
         params: {}
       };
       fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data;
+        this.importData = res.body.data;
         this.total = res.body.page.total;
         this.listLoading = false;
       });
