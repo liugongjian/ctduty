@@ -59,7 +59,7 @@
                 将文件拖到此处，或
                 <em>点击上传</em>
               </div>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
@@ -90,7 +90,7 @@
                 <el-select
                   v-model="addCarForm.color"
                   :value="addCarForm.color"
-                  placeholder="请选择添加人"
+                  placeholder="请选择颜色"
                 >
                   <el-option
                     v-for="item in userList"
@@ -559,6 +559,9 @@ export default {
 }
 .carDialog {
   margin: 0 auto;
+}
+.el-dialog__body {
+  width: 100%;
 }
 .carInput {
   height: 36.8px !important;
