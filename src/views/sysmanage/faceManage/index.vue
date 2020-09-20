@@ -27,7 +27,7 @@
                     placement="left-end"
                     width="424"
                     trigger="hover">
-                    <img src="../../../assets/images/police.jpg" alt="" width="400">
+                    <img src="../../../assets/images/police.jpg" alt="" width="400" class="hoverImg">
                     <img slot="reference" src="../../../assets/images/police.jpg" alt="">
                   </el-popover>
                 </template>
@@ -107,7 +107,7 @@
               placement="left-end"
               width="424"
               trigger="hover">
-              <img src="../../../assets/images/police.jpg" alt="" width="400">
+              <img src="../../../assets/images/police.jpg" alt="" width="400" class="hoverImg">
               <img slot="reference" src="../../../assets/images/police.jpg" alt="">
             </el-popover>
           </template>
@@ -219,7 +219,7 @@ export default {
         model: '',
         phone: ''
       },
-      isBatchSuccess: false,
+      isBatchSuccess: true,
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       imageUrl: '',
@@ -556,6 +556,9 @@ export default {
 }
 .el-dialog__body {
   width: 100%;
+}
+.el-popover.el-popover--plain {
+  z-index: 9999999999999999999999 !important;
 }
 </style>
 
