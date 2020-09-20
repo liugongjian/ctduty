@@ -32,7 +32,7 @@
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" slot-scope="scope">
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'">
                 <!-- <span>{{ scope.row.online ? "白名单":"嫌疑犯车辆" }}</span> slot-scope="scope" prop="online"-->
                 <template>
                   <el-select
