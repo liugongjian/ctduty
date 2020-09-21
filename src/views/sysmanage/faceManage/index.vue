@@ -10,7 +10,7 @@
             class="filter-item"
             type="warning"
             icon="el-icon-plus"
-            @click="create"
+            @click="addFace"
           >{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
@@ -77,7 +77,7 @@
             </div>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
-            <el-form :model="addFaceForm" label-position="right" label-width="130px">
+            <el-form ref="addForm" :model="addFaceForm" label-position="right" label-width="130px">
               <el-form-item label="姓名: ">
                 <el-input
                   v-model="addFaceForm.name"
@@ -94,7 +94,7 @@
                   :action="upSingleUrl"
                   class="avatar-uploader"
                 >
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" >
+                  <img v-if="imageUrl" :src="addFaceForm.imageUrl" class="avatar" >
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
@@ -115,8 +115,8 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="dialogConfirm('dialogForm')">确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
+              <el-button type="primary" @click="addFaceConfirm('dialogForm')">确 定</el-button>
+              <el-button @click="closeDialog">取 消</el-button>
             </div>
           </el-dialog>
         </div>
@@ -143,10 +143,12 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
+        <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="nameList">
           <template slot-scope="scope">
-            <span>{{ scope.row.online ? "离线":"在线" }}</span>
+            <span v-if="scope.row.nameList === 1"> 居民白名单 </span>
+            <span v-else-if="scope.row.nameList === 2">员工白名单</span>
+            <span v-else-if="scope.row.nameList === 3">嫌疑人员</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
@@ -229,7 +231,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
-          <el-button @click="editDialogQuxiao">取 消</el-button>
+          <el-button @click="editCloseDialog">取 消</el-button>
         </div>
       </el-dialog>
       <pagination
@@ -259,6 +261,12 @@ import {
   uploadImage,
   uploadMultiImage
 } from '@/api/dm'
+  fetchFaceList,
+  fetchAddFace,
+  fetchDeleteFace,
+  fetchUpdateFace,
+  fetchCheckFace
+} from '@/api/face'
 import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
@@ -278,25 +286,21 @@ export default {
         }
       ],
       dialogForm: {
-        address: '',
-        creatorId: '',
-        id: '',
         name: '',
-        latitude: '',
-        longitude: '',
-        url: '',
-        inChargeId: '',
-        manufacturer: '',
-        model: '',
-        phone: ''
+        image: '',
+        nameList: '',
+        id: ''
       },
       isBatchSuccess: true,
       typeOptions: [
-        { name: '地图模式', _id: 'map' },
-        { name: '列表模式', _id: 'list' }
+        { name: '居民白名单', _id: 1 },
+        { name: '员工白名单', _id: 2 },
+        { name: '嫌疑人员', _id: 3 }
       ],
-      imageUrl: '',
-      addFaceForm: {},
+      addFaceForm: {
+        name: '',
+        imageUrl: '',
+      },
       addrules: {
         creatorId: [
           { required: true, trigger: 'blur', message: '创建人ID不能为空' }
@@ -328,7 +332,7 @@ export default {
       },
       formInline: {
         searchkey: '',
-        typeValue: 'list'
+        typeValue: 1
       },
       listLoading: false,
       filteredValue: [],
@@ -352,7 +356,7 @@ export default {
         name: '',
         creatorId: ''
       },
-      userList: [],
+      faceList: [],
       bulkimportVisble: false
     }
   },
@@ -364,7 +368,7 @@ export default {
   },
   async created() {
     await Message.closeAll()
-    await this.getUserList()
+    await this.getfaceList()
     await this.getList()
   },
   methods: {
@@ -393,18 +397,20 @@ export default {
     closebulkimportDialog() {
       this.bulkimportVisble = false
     },
-    getUserList() {
+    getfaceList() {
       const query = {
-        cascade: true,
         page: {
           index: 1,
           size: 9999999
         },
         params: {}
       }
-      fetchUserList(query).then(response => {
+      fetchFaceList(query).then(response => {
         if (response.code !== 0) return
-        this.userList = response.body.data
+        this.faceList = response.body.data
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
       })
     },
     batchesDel() {
@@ -436,9 +442,6 @@ export default {
           this.delIDArr = []
         })
       })
-    },
-    formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     editDialog(v) {
       this.editForm.id = v.id
@@ -477,17 +480,13 @@ export default {
         this.editVisable = false
       })
     },
-    editDialogQuxiao() {
-      this.editVisable = false
-    },
-    create() {
+    addFace() {
       this.dialogVisable = true
     },
     closeDialog() {
       this.dialogVisable = false
     },
     onSearch() {},
-    reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
@@ -520,21 +519,21 @@ export default {
       }
     },
     // 获取列表数据
-    getList() {
-      const params = {
-        cascade: true,
-        page: {
-          index: this.page,
-          size: this.limit
-        },
-        params: {}
-      }
-      fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data
-        this.total = res.body.page.total
-        this.listLoading = false
-      })
-    },
+    // getList() {
+    //   const params = {
+    //     cascade: true,
+    //     page: {
+    //       index: this.page,
+    //       size: this.limit
+    //     },
+    //     params: {}
+    //   }
+    //   fetchFaceList(params).then(res => {
+    //     this.tableData = res.body.data
+    //     this.total = res.body.page.total
+    //     this.listLoading = false
+    //   })
+    // },
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
@@ -542,8 +541,41 @@ export default {
         }
       })
     },
-    dialogQuxiao() {
-      this.dialogVisable = false
+    addFaceConfirm() {
+      this.$refs.addForm.validate(valid => {
+        if (!valid) return
+        const params = {
+          name: this.addFaceForm.name,
+          image: this.addFaceForm.imageUrl,
+          nameList: this.formInline.typeValue,
+          id: ''
+        }
+        fetchAddFace(params)
+          .then(res => {
+            this.dialogForm = {
+              name: '',
+              image: '',
+              nameList: '',
+              id: ''
+            }
+            this.$notify({
+              title: '成功',
+              message: '增加成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.getfaceList()
+            this.dialogVisable = false
+          })
+          .catch(() => {
+            this.$notify({
+              title: '失败',
+              message: '增加失败',
+              type: 'error',
+              duration: 2000
+            });
+          });
+      });
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
