@@ -80,8 +80,8 @@
                 <em>点击上传</em>
               </div>
               <div slot="tip" class="el-upload__tip" style="width: 400px">
-                支持的格式：图片仅支持120*108像素.jpg格式
-                <br >图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg
+                支持的格式：图片仅支持.png格式
+                <br >图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.png
               </div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
