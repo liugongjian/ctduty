@@ -379,9 +379,9 @@ export default {
         image: res.body.data[file.name.split('.')[0]],
         nameList: 1,
         typeOptions: [
-          { name: '居民白名单', _id: '居民白名单' },
-          { name: '员工白名单', _id: '员工白名单' },
-          { name: '嫌疑人员', _id: '嫌疑人员' }
+          { name: '居民白名单', _id: 1 },
+          { name: '员工白名单', _id: 2 },
+          { name: '嫌疑人员', _id: 3 }
         ],
         id: new Date().getTime()
       })

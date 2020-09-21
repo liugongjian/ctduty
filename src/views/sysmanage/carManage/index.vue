@@ -483,7 +483,7 @@ export default {
           {
             field: 'license_no',
             operator: 'LIKE',
-            value: `${this.formInline.searchkey}%`
+            value: `%${this.formInline.searchkey}%`
           }
         ]
       }
