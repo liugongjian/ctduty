@@ -41,8 +41,8 @@
               <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
-                    <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" />
-                    <img slot="reference" src="../../../assets/images/police.jpg" alt style="width: 120px; height: 100px"/>
+                    <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
+                    <img slot="reference" src="../../../assets/images/police.jpg" alt style="width: 120px; height: 100px">
                   </el-popover>
                 </template>
               </el-table-column>
@@ -69,7 +69,7 @@
               </div>
               <div slot="tip" class="el-upload__tip" style="width: 400px">
                 支持的格式：图片仅支持120*108像素.jpg格式
-                <br />图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg
+                <br >图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg
               </div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
@@ -94,7 +94,7 @@
                   class="avatar-uploader"
                   action="https://jsonplaceholder.typicode.com/posts/"
                 >
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar" >
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
@@ -152,8 +152,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
-              <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" />
-              <img slot="reference" src="../../../assets/images/police.jpg" alt />
+              <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
+              <img slot="reference" src="../../../assets/images/police.jpg" alt >
             </el-popover>
           </template>
         </el-table-column>
@@ -180,7 +180,7 @@
                 <el-upload :auto-upload="false" action="#" list-type="picture-card">
                   <i slot="default" class="el-icon-plus"></i>
                   <div slot="file" slot-scope="{file}">
-                    <img :src="file.url" class="el-upload-list__item-thumbnail" alt />
+                    <img :src="file.url" class="el-upload-list__item-thumbnail" alt >
                     <span class="el-upload-list__item-actions">
                       <span
                         class="el-upload-list__item-preview"
@@ -206,7 +206,7 @@
                   </div>
                 </el-upload>
                 <el-dialog :visible.sync="dialogVisible">
-                  <img :src="dialogImageUrl" width="100%" alt />
+                  <img :src="dialogImageUrl" width="100%" alt >
                 </el-dialog>
               </div>
             </template>
@@ -243,86 +243,86 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchAllCameraList,
   editCamera,
   addCamera,
   delCamera
-} from "@/api/camera";
-import { fetchUserList } from "@/api/users";
+} from '@/api/camera'
+import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
   data() {
     return {
       fileList: [
         {
-          name: "food.jpeg",
+          name: 'food.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         },
         {
-          name: "food2.jpeg",
+          name: 'food2.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ],
       dialogForm: {
-        address: "",
-        creatorId: "",
-        id: "",
-        name: "",
-        latitude: "",
-        longitude: "",
-        url: "",
-        inChargeId: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        address: '',
+        creatorId: '',
+        id: '',
+        name: '',
+        latitude: '',
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
       isBatchSuccess: true,
       typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
+        { name: '地图模式', _id: 'map' },
+        { name: '列表模式', _id: 'list' }
       ],
-      imageUrl: "",
+      imageUrl: '',
       addFaceForm: {},
       addrules: {
         creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
         ],
         name: [
-          { required: true, trigger: "blur", message: "摄像头名称不能为空" }
+          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
         ],
         url: [
-          { required: true, trigger: "blur", message: "视频流信息不能为空" }
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
         manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: "blur", message: "设备型号不能为空" }
+          { required: true, trigger: 'blur', message: '设备型号不能为空' }
         ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
         longitude: [
-          { required: true, trigger: "blur", message: "经度不能为空" }
+          { required: true, trigger: 'blur', message: '经度不能为空' }
         ],
         latitude: [
-          { required: true, trigger: "blur", message: "纬度不能为空" }
+          { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [{ required: true, trigger: "blur", message: "地址不能为空" }]
+        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
-        searchkey: "",
-        typeValue: "list"
+        searchkey: '',
+        typeValue: 'list'
       },
       listLoading: false,
       filteredValue: [],
@@ -331,61 +331,61 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        inChargeId: "",
-        longitude: "",
-        latitude: "",
-        address: "",
-        url: "",
-        name: "",
-        creatorId: ""
+        id: '',
+        inChargeId: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: '',
+        name: '',
+        creatorId: ''
       },
       userList: [],
       bulkimportVisble: false
-    };
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getUserList();
-    await this.getList();
+    await Message.closeAll()
+    await this.getUserList()
+    await this.getList()
   },
   methods: {
     batchUpSuccess() {
-      this.isBatchSuccess = true;
-      console.log("批量上传成功");
+      this.isBatchSuccess = true
+      console.log('批量上传成功')
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     bulkimport() {
-      this.bulkimportVisble = true;
+      this.bulkimportVisble = true
     },
     closebulkimportDialog() {
-      this.bulkimportVisble = false;
+      this.bulkimportVisble = false
     },
     getUserList() {
       const query = {
@@ -395,58 +395,58 @@ export default {
           size: 9999999
         },
         params: {}
-      };
+      }
       fetchUserList(query).then(response => {
-        if (response.code !== 0) return;
-        this.userList = response.body.data;
-      });
+        if (response.code !== 0) return
+        this.userList = response.body.data
+      })
     },
     batchesDel() {
-      this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [...this.delIDArr];
+        const params = [...this.delIDArr]
         delCamera(params)
           .then(response => {
-            this.getList();
-            this.delIDArr = [];
+            this.getList()
+            this.delIDArr = []
           })
           .catch(() => {
-            this.delIDArr = [];
-          });
-      });
+            this.delIDArr = []
+          })
+      })
     },
     delAlert(d) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [d];
+        const params = [d]
         delCamera(params).then(response => {
-          this.getList();
-          this.delIDArr = [];
-        });
-      });
+          this.getList()
+          this.delIDArr = []
+        })
+      })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     editDialog(v) {
-      this.editForm.id = v.id;
-      this.editForm.creatorId = v.creatorId;
-      this.editForm.inChargeId = v.inChargeId;
-      this.editForm.longitude = v.longitude;
-      this.editForm.latitude = v.latitude;
-      this.editForm.address = v.address;
-      this.editForm.name = v.name;
-      this.editForm.url = v.url;
-      this.editVisable = true;
+      this.editForm.id = v.id
+      this.editForm.creatorId = v.creatorId
+      this.editForm.inChargeId = v.inChargeId
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.name = v.name
+      this.editForm.url = v.url
+      this.editVisable = true
     },
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     editDialogConfirm() {
       const params = [
@@ -459,57 +459,58 @@ export default {
           name: this.editForm.name,
           creatorId: this.editForm.creatorId
         }
-      ];
+      ]
       editCamera(params).then(response => {
         this.$notify({
-          title: "成功",
-          message: "编辑成功",
-          type: "success",
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
           duration: 2000
-        });
-        this.getList();
-        this.editVisable = false;
-      });
+        })
+        this.getList()
+        this.editVisable = false
+      })
     },
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     onSearch() {},
+    reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
     // 获取列表数据
@@ -521,56 +522,56 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
     },
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id);
+          this.delIDArr.push(item.id)
         }
-      });
+      })
     },
     dialogQuxiao() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
-        if (!valid) return;
-        const params = [this.dialogForm];
+        if (!valid) return
+        const params = [this.dialogForm]
         addCamera(params)
           .then(res => {
             this.dialogForm = {
-              address: "",
-              creatorId: "",
-              id: "",
-              name: "",
-              latitude: "",
-              longitude: "",
-              url: "",
-              inChargeId: "",
-              manufacturer: "",
-              model: "",
-              phone: ""
-            };
+              address: '',
+              creatorId: '',
+              id: '',
+              name: '',
+              latitude: '',
+              longitude: '',
+              url: '',
+              inChargeId: '',
+              manufacturer: '',
+              model: '',
+              phone: ''
+            }
             this.$notify({
-              title: "成功",
-              message: "增加成功",
-              type: "success",
+              title: '成功',
+              message: '增加成功',
+              type: 'success',
               duration: 2000
-            });
-            this.getList();
-            this.dialogVisable = false;
+            })
+            this.getList()
+            this.dialogVisable = false
           })
           .catch(() => {
             this.$notify({
-              title: "失败",
-              message: "增加失败",
-              type: "error",
+              title: '失败',
+              message: '增加失败',
+              type: 'error',
               duration: 2000
             });
           });
@@ -584,7 +585,7 @@ export default {
       this.getList()
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>
