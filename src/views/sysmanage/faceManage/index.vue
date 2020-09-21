@@ -25,16 +25,28 @@
               v-if="isBatchSuccess"
               :data="mulTableData"
               :header-cell-class-name="tableRowClassHeader"
+              :on-success="batchUpSuccess"
               class="amountdetailTable"
               style="width: 100%"
               tooltip-effect="dark"
               fit
-              @on-success="batchUpSuccess"
             >
-              <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
+              <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="name"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="select">
                 <template slot-scope="scope">
-                  <span>{{ scope.row.online ? "离线":"在线" }}</span>
+                  <el-select
+                    v-model="scope.row.typeValue"
+                    style="width:120px;"
+                    class="filter-item"
+                    @change="checkModel"
+                  >
+                    <el-option
+                      v-for="item in scope.row.typeOptions"
+                      :key="item._id"
+                      :label="item.name"
+                      :value="item._id"
+                    ></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
@@ -59,11 +71,11 @@
               :data="mulUpData"
               :before-upload="beforeMulUpload"
               :limit="99999999999"
+              :on-success="batchUpSuccess"
               class="upload-demo"
               drag
               list-type="picture"
               multiple
-              @on-success="batchUpSuccess"
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -393,13 +405,22 @@ export default {
     checkModel() {
 
     },
-    batchUpSuccess() {
+    batchUpSuccess(res, file) {
       this.isBatchSuccess = true
-      console.log('批量上传成功')
+      this.mulTableData.push({
+        name: file.name.split('.')[0],
+        image: 'http://36.41.71.26:8920/' + res.body.data[0] + '.png',
+        typeValue: 1,
+        typeOptions: [
+          { name: '居民白名单', _id: 1 },
+          { name: '员工白名单', _id: 2 },
+          { name: '嫌疑人员', _id: 3 }
+        ]
+      })
     },
     handleAvatarSuccess(res, file) {
-      console.log(res.body.data[0], '嘻嘻')
-      this.addFaceForm.imageUrl = 'http://36.41.71.26:8920/' + res.body.data[0]
+      console.log(res.body.data[file.name], file.name, '嘻嘻')
+      this.addFaceForm.imageUrl = 'http://36.41.71.26:8920/' + res.body.data[file.name] + '.png'
       console.log(this.addFaceForm.imageUrl)
     },
     handleAvatarError(res, file) {
@@ -407,10 +428,10 @@ export default {
     },
     beforeAvatarUpload(file) {
       this.upSingleData.name = file.name.split('.')[0]
-      const isJPG = file.type === 'image/jpeg'
+      const isJPG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 PNG 格式!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')

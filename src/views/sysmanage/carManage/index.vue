@@ -47,7 +47,7 @@
                 <template slot-scope="scope">
                   <el-select v-model="value" placeholder="请选择">
                     <el-option
-                      v-for="item in subordinateList"
+                      v-for="item in colorList"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -79,42 +79,42 @@
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
-            <el-form :model="addCarForm" label-position="right" label-width="130px">
+            <el-form ref="addCarForm" :model="addCarForm" label-position="right" label-width="130px">
               <el-form-item label="车牌号: " class="carInput">
-                <el-select v-model="addCarForm.brand" style="width:30vw;" class="filter-item">
+                <el-select v-model="addCarForm.province" style="width:30vw;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
                     :label="item.name"
-                    :value="item._id"
+                    :value="item.id"
                   ></el-option>
                 </el-select>
-                <el-input placeholder="请输入内容"></el-input>
+                <el-input v-model="addCarForm.carWord" placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
-                <el-select v-model="addCarForm.list" :value="addCarForm.list" style="width:50vw;">
+                <el-select v-model="addCarForm.carlist" :value="addCarForm.carlist" style="width:50vw;">
                   <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
+                    v-for="item in subordinateList"
+                    :value="item.value"
+                    :label="item.label"
+                    :key="item.value"
                   ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="车辆颜色：">
                 <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
+                    v-for="item in colorList"
+                    :value="item.value"
+                    :label="item.label"
+                    :key="item.value"
                   ></el-option>
                 </el-select>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="addCar('dialogForm')">确 定</el-button>
+              <el-button type="primary" @click="addCar()">确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
           </el-dialog>
@@ -171,13 +171,13 @@
             <el-select
               v-model="editForm.inChargeId"
               :value="editForm.inChargeId"
-              placeholder="请选择负责人"
+              placeholder="请选择所属名单"
             >
               <el-option
-                v-for="item in userList"
-                :value="item.id"
-                :label="item.username"
-                :key="item.id"
+                v-for="item in subordinateList"
+                :value="item.value"
+                :label="item.label"
+                :key="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -185,13 +185,13 @@
             <el-select
               v-model="editForm.creatorId"
               :value="editForm.creatorId"
-              placeholder="请选择添加人"
+              placeholder="请选择颜色"
             >
               <el-option
-                v-for="item in userList"
-                :value="item.id"
-                :label="item.username"
-                :key="item.id"
+                v-for="item in colorList"
+                :value="item.value"
+                :label="item.label"
+                :key="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -212,99 +212,104 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchCarList,
   fetchSingleCarData,
   addCarData,
   importCarData,
   deleteCarData
-} from "@/api/dm";
+} from '@/api/dm'
 export default {
   components: { Pagination },
   data() {
     return {
+      colorList: [
+        {
+          value: '黑色',
+          label: '黑色'
+        },
+        {
+          value: '白色',
+          label: '白色'
+        }
+      ],
       isBatchSuccess: false,
       subordinateList: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: '白名单',
+          label: '白名单'
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: '嫌疑车辆黑名单',
+          label: '嫌疑车辆黑名单'
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: '疑似套牌车辆',
+          label: '疑似套牌车辆'
         }
       ],
-      value: "",
+      value: '',
       fileList: [
         {
-          name: "food.jpeg",
+          name: 'food.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         },
         {
-          name: "food2.jpeg",
+          name: 'food2.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ],
       dialogForm: {
-        address: "",
-        creatorId: "",
-        id: "",
-        name: "",
-        latitude: "",
-        longitude: "",
-        url: "",
-        inChargeId: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        address: '',
+        creatorId: '',
+        id: '',
+        name: '',
+        latitude: '',
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
       typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
+        { name: '浙', id: '浙' },
+        { name: '京', id: '京' },
+        { name: '沪', id: '沪' },
+        { name: '粤', id: '粤' }
       ],
-      imageUrl: "",
+      imageUrl: '',
       addCarForm: {
-        brand: "",
-        list: "",
-        color: ""
+        carWord: '',
+        province: '',
+        carlist: '',
+        color: ''
       },
       addFaceForm: {},
       addrules: {
         creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
         ],
 
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
         manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ]
       },
       formInline: {
-        searchkey: "",
-        typeValue: "list"
+        searchkey: '',
+        typeValue: 'list'
       },
       listLoading: false,
       filteredValue: [],
@@ -313,31 +318,30 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        inChargeId: "",
+        id: '',
+        inChargeId: '',
 
-        creatorId: ""
+        creatorId: ''
       },
-      userList: [],
       bulkimportVisble: false,
-      value: ""
-    };
+      value: ''
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getList();
+    await Message.closeAll()
+    await this.getList()
   },
   methods: {
     // 获取列表数据
@@ -348,85 +352,85 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchCarList(params).then(res => {
-        this.importData = res.body.data;
-        console.log(res.body.data);
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.importData = res.body.data
+        console.log(res.body.data)
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
     },
     batchUpSuccess() {
-      this.isBatchSuccess = true;
-      console.log("批量上传成功");
+      this.isBatchSuccess = true
+      console.log('批量上传成功')
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error('上传头像图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     bulkimport() {
-      this.bulkimportVisble = true;
+      this.bulkimportVisble = true
     },
     closebulkimportDialog() {
-      this.bulkimportVisble = false;
+      this.bulkimportVisble = false
     },
     batchesDel() {
-      this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [...this.delIDArr];
+        const params = [...this.delIDArr]
         delCamera(params)
           .then(response => {
-            this.getList();
-            this.delIDArr = [];
+            this.getList()
+            this.delIDArr = []
           })
           .catch(() => {
-            this.delIDArr = [];
-          });
-      });
+            this.delIDArr = []
+          })
+      })
     },
     delAlert(d) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [d];
+        const params = [d]
         delCamera(params).then(response => {
-          this.getList();
-          this.delIDArr = [];
-        });
-      });
+          this.getList()
+          this.delIDArr = []
+        })
+      })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     editDialog(v) {
-      this.editForm.id = v.id;
-      this.editForm.creatorId = v.creatorId;
-      this.editForm.inChargeId = v.inChargeId;
-      this.editForm.longitude = v.longitude;
-      this.editForm.latitude = v.latitude;
-      this.editForm.address = v.address;
+      this.editForm.id = v.id
+      this.editForm.creatorId = v.creatorId
+      this.editForm.inChargeId = v.inChargeId
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
 
-      this.editForm.url = v.url;
-      this.editVisable = true;
+      this.editForm.url = v.url
+      this.editVisable = true
     },
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     editDialogConfirm() {
       const params = [
@@ -439,118 +443,107 @@ export default {
 
           creatorId: this.editForm.creatorId
         }
-      ];
+      ]
       editCamera(params).then(response => {
         this.$notify({
-          title: "成功",
-          message: "编辑成功",
-          type: "success",
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
           duration: 2000
-        });
-        this.getList();
-        this.editVisable = false;
-      });
+        })
+        this.getList()
+        this.editVisable = false
+      })
     },
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     onSearch() {},
     reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
 
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id);
+          this.delIDArr.push(item.id)
         }
-      });
+      })
     },
     dialogQuxiao() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     addCar() {
-      this.$refs.addForm.validate(valid => {
-        if (!valid) return;
-        const params = [this.dialogForm];
-        addCamera(params)
-          .then(res => {
-            this.dialogForm = {
-              address: "",
-              creatorId: "",
-              id: "",
-              name: "",
-              latitude: "",
-              longitude: "",
-              url: "",
-              inChargeId: "",
-              manufacturer: "",
-              model: "",
-              phone: ""
-            };
-            this.$notify({
-              title: "成功",
-              message: "增加成功",
-              type: "success",
-              duration: 2000
-            });
-            this.getList();
-            this.dialogVisable = false;
+      this.$refs.addCarForm.validate(valid => {
+        if (!valid) return
+        const params = [{
+          licenseNo: this.addCarForm.province + this.addCarForm.carWord,
+          type: this.addCarForm.carlist,
+          color: this.addCarForm.color
+        }]
+        addCarData(params).then(res => {
+          console.log('添加车辆res', res)
+          this.getList()
+          this.dialogVisable = false
+          this.$message({
+            message: '添加成功',
+            type: 'success'
           })
-          .catch(() => {
-            this.$notify({
-              title: "失败",
-              message: "增加失败",
-              type: "error",
-              duration: 2000
-            })
-          })
+          this.addCarForm = {
+            carWord: '',
+            province: '',
+            carlist: '',
+            color: ''
+          }
+        }).catch((err) => {
+          console.log('失败', err)
+        })
       })
     },
     // 重置
     resetQuery() {
-      this.formInline.searchkey = "";
-      this.page = 1;
-      this.limit = 10;
-      this.getList();
+      this.formInline.searchkey = ''
+      this.page = 1
+      this.limit = 10
+      this.getList()
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>
