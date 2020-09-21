@@ -64,6 +64,7 @@
               list-type="picture"
               action="https://jsonplaceholder.typicode.com/posts/"
               multiple
+              :before-upload="beforeExcelUpload"
               @on-success="batchUpSuccess"
             >
               <i class="el-icon-upload"></i>
@@ -74,7 +75,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="editDialogConfirm">提 交</el-button>
+              <el-button type="primary" @click="excelCommit">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
@@ -156,7 +157,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
+      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
             <el-input
@@ -198,7 +199,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
-          <el-button @click="editDialogQuxiao">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
         </div>
       </el-dialog>
       <pagination
@@ -285,7 +286,6 @@ export default {
         {name: '沪', id: '沪'},
         {name: '粤', id: '粤'},
       ],
-      imageUrl: "",
       addCarForm: {
         carWord: "",
         province: "",
@@ -360,13 +360,6 @@ export default {
         this.listLoading = false;
       });
     },
-    batchUpSuccess() {
-      this.isBatchSuccess = true;
-      console.log("批量上传成功");
-    },
-    handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
-    },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -378,6 +371,17 @@ export default {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
       return isJPG && isLt2M;
+    },
+    beforeExcelUpload(file) {
+      console.log('车辆文件', file)
+    },
+    excelCommit() {
+
+    },
+    batchUpSuccess(file) {
+      console.log('车辆上传成功文件', file)
+      this.isBatchSuccess = true;
+      console.log("批量上传成功");
     },
     bulkimport() {
       this.bulkimportVisble = true;
@@ -429,9 +433,6 @@ export default {
       this.editForm.url = v.url;
       this.editVisable = true;
     },
-    editCloseDialog() {
-      this.editVisable = false;
-    },
     editDialogConfirm() {
       const params = [
         {
@@ -454,9 +455,6 @@ export default {
         this.getList();
         this.editVisable = false;
       });
-    },
-    editDialogQuxiao() {
-      this.editVisable = false;
     },
     create() {
       this.dialogVisable = true;
@@ -517,7 +515,6 @@ export default {
           color: this.addCarForm.color
         }];
         addCarData(params).then(res => {
-            console.log('添加车辆res', res)
             this.getList();
             this.dialogVisable = false;
             this.$message({

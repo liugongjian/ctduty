@@ -455,13 +455,10 @@ export default {
     editDialogConfirm() {
       const params = [
         {
-          id: this.editForm.id,
-          inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.latitude,
-          longitude: this.editForm.longitude,
-          url: this.editForm.url,
-          name: this.editForm.name,
-          creatorId: this.editForm.creatorId
+          name: this.addFaceForm.name,
+          image: this.addFaceForm.imageUrl,
+          nameList: this.formInline.typeValue,
+          id: ''
         }
       ]
       editCamera(params).then(response => {
