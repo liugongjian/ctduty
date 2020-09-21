@@ -491,7 +491,8 @@ export default {
         {
           name: this.editForm.name,
           image: this.editForm.image,
-          nameList: this.editForm.nameList
+          nameList: this.editForm.nameList,
+          id: this.editForm.id
         }
       ]
       fetchUpdateFace(params).then(response => {
