@@ -43,7 +43,7 @@
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
                     <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" />
-                    <img slot="reference" src="../../../assets/images/police.jpg" alt />
+                    <img slot="reference" src="../../../assets/images/police.jpg" alt style="width: 120px; height: 100px"/>
                   </el-popover>
                 </template>
               </el-table-column>
@@ -73,6 +73,9 @@
                 <br />图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.jpg
               </div>
             </el-upload>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="dialogConfirm('dialogForm')">提 交</el-button>
+            </div>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
             <el-form :model="addFaceForm" label-position="right" label-width="130px">

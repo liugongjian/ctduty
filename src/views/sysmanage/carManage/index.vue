@@ -49,9 +49,6 @@
                 :label="'车牌颜色'"
                 prop="inCharge.username"
               ></el-table-column>
-              <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogConfirm('dialogForm')">提 交</el-button>
-              </div>
             </el-table>
 
             <el-upload
@@ -71,7 +68,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" round @click="editDialogConfirm">提 交</el-button>
+              <el-button type="primary" @click="editDialogConfirm">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌的显示框 -->
