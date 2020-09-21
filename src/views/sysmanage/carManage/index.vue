@@ -230,7 +230,8 @@ import {
   addCarData,
   importCarData,
   deleteCarData,
-  carEditConfirm
+  carEditConfirm,
+  searchList
 } from "@/api/dm";
 export default {
   components: { Pagination },
@@ -474,7 +475,29 @@ export default {
     closeDialog() {
       this.dialogVisable = false;
     },
-    onSearch() {},
+    onSearch() {
+      const query = {
+        page: {
+          index: 1,
+          size: 10,
+          total: 0
+        },
+        params: [
+          {
+            field: "license_no",
+            operator: "LIKE",
+            value: `${this.formInline.searchkey}%`
+          }
+        ]
+      };
+      searchList(query).then(response => {
+        if (response.data !== 0) return;
+        this.getList();
+        this.importData = response.body.data;
+        this.total = response.body.page.total;
+        this.page = 1;
+      });
+    },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
@@ -529,7 +552,7 @@ export default {
         ];
         addCarData(params)
           .then(res => {
-            console.log("添加车辆res", res);
+            // console.log("添加车辆res", res);
             this.getList();
             this.dialogVisable = false;
             this.$message({
@@ -544,7 +567,7 @@ export default {
             };
           })
           .catch(err => {
-            console.log("失败", err);
+            // console.log("失败", err);
           });
       });
     },

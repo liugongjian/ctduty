@@ -65,3 +65,11 @@ export function carEditConfirm(query) {
     data: query
   });
 }
+
+export function searchList(query) {
+  return request({
+    url: `/nvsapi/CarLicense/QueryFilter`,
+    method: "post",
+    data: query
+  });
+}
