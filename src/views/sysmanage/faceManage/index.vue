@@ -91,8 +91,8 @@
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
+                  :action="upSingleUrl"
                   class="avatar-uploader"
-                  action="https://jsonplaceholder.typicode.com/posts/"
                 >
                   <img v-if="imageUrl" :src="imageUrl" class="avatar" >
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -245,6 +245,7 @@
 <script>
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
+import config from '../../../config'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
@@ -254,11 +255,16 @@ import {
   addCamera,
   delCamera
 } from '@/api/camera'
+import {
+  uploadImage,
+  uploadMultiImage
+} from '@/api/dm'
 import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
   data() {
     return {
+      upSingleUrl: process.env.LOT_ROOT + '/Userface/UploadImage',
       fileList: [
         {
           name: 'food.jpeg',
@@ -573,9 +579,9 @@ export default {
               message: '增加失败',
               type: 'error',
               duration: 2000
-            });
-          });
-      });
+            })
+          })
+      })
     },
     // 重置
     resetQuery() {

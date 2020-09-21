@@ -34,3 +34,19 @@ export function deleteCarData(query) {
     data: query
   })
 }
+// UploadImage
+export function uploadImage(query) {
+  return request({
+    url: `/nvsapi/Userface/UploadImage`,
+    method: 'post',
+    data: query
+  })
+}
+// UploadMultiImage
+export function uploadMultiImage(query) {
+  return request({
+    url: `/nvsapi/Userface/UploadMultiImage`,
+    method: 'post',
+    data: query
+  })
+}

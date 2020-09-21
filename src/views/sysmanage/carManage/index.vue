@@ -237,7 +237,7 @@ export default {
   components: { Pagination },
   data() {
     return {
-      isBatchSuccess: true,
+      isBatchSuccess: false,
       subordinateList: [
         {
           value: '选项1',
@@ -547,9 +547,9 @@ export default {
               message: '增加失败',
               type: 'error',
               duration: 2000
-            });
-          });
-      });
+            })
+          })
+      })
     },
     // 重置
     resetQuery() {
