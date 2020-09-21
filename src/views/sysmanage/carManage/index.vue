@@ -383,7 +383,6 @@ export default {
       const isxlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
       if (!isxlsx) {
         this.$message.error('导入数据只能是 xlsx 格式!')
       }
