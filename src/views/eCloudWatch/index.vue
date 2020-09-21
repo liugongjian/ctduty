@@ -616,7 +616,6 @@ export default {
         }
       }
       fetchNowInfo(params).then(res => {
-        console.log('res', res)
         this.todayAlerts = res.body.data.todayAlerts
         this.todayHandleds = res.body.data.todayHandleds
         this.todayUndeal = parseInt(res.body.data.todayAlerts - res.body.data.todayHandleds)

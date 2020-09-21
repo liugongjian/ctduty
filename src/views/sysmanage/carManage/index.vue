@@ -147,8 +147,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- 编辑的模态框 -->
-      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
+      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
             <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
@@ -184,7 +183,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
-          <el-button @click="editDialogQuxiao">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
         </div>
       </el-dialog>
       <pagination
@@ -382,6 +381,17 @@ export default {
       }
       return isxlsx
     },
+    beforeExcelUpload(file) {
+      console.log('车辆文件', file)
+    },
+    excelCommit() {
+
+    },
+    batchUpSuccess(file) {
+      console.log('车辆上传成功文件', file)
+      this.isBatchSuccess = true;
+      console.log("批量上传成功");
+    },
     bulkimport() {
       this.bulkimportVisble = true
     },
@@ -509,19 +519,15 @@ export default {
     },
     addCar() {
       this.$refs.addCarForm.validate(valid => {
-        if (!valid) return
-        const params = [
-          {
-            licenseNo: this.addCarForm.province + this.addCarForm.carWord,
-            type: this.addCarForm.carlist,
-            color: this.addCarForm.color
-          }
-        ]
-        addCarData(params)
-          .then(res => {
-            console.log('添加车辆res', res)
-            this.getList()
-            this.dialogVisable = false
+        if (!valid) return;
+        const params = [{
+          licenseNo: this.addCarForm.province + this.addCarForm.carWord,
+          type: this.addCarForm.carlist,
+          color: this.addCarForm.color
+        }];
+        addCarData(params).then(res => {
+            this.getList();
+            this.dialogVisable = false;
             this.$message({
               message: '添加成功',
               type: 'success'
