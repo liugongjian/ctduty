@@ -2,35 +2,35 @@ import request from '@/utils/request'
 import qs from 'qs'
 export function fetchCarList(query) {
   return request({
-    url: `/xplocal/CarLicense/QueryActive`,
+    url: `/nvsapi/CarLicense/QueryActive`,
     method: 'post',
-    params: query
+    data: query
   })
 }
 export function fetchSingleCarData(id) {
   return request({
-    url: `/xplocal/CarLicense/Get/${id}`,
+    url: `/nvsapi/CarLicense/Get/${id}`,
     method: 'get'
   })
 }
 export function addCarData(query) {
   return request({
-    url: `/xplocal/CarLicense/Add`,
+    url: `/nvsapi/CarLicense/Add`,
     method: 'post',
-    params: query
+    data: query
   })
 }
 export function importCarData(query) {
   return request({
-    url: `/xplocal/CarLicense/Import`,
+    url: `/nvsapi/CarLicense/Import`,
     method: 'post',
-    params: query
+    data: query
   })
 }
 export function deleteCarData(query) {
   return request({
-    url: `/xplocal/CarLicense/Delete`,
+    url: `/nvsapi/CarLicense/Delete`,
     method: 'post',
-    params: query
+    data: query
   })
 }

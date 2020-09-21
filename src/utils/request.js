@@ -80,7 +80,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    let timeout = null
+    const timeout = null
     const msg = (error.response && error.response.data.msg) || error.message
     // console.log(error, msg)
     // Message({
