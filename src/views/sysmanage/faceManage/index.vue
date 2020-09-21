@@ -526,7 +526,8 @@ export default {
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
-        // this.getfaceList()
+        this.page = 1
+        this.total = 10
         this.formInline.searchkey = ''
       })
     },
