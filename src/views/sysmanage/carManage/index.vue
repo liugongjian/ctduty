@@ -42,6 +42,8 @@
               :on-success="batchUpSuccess"
               :headers="importHeader"
               class="upload-demo"
+              name="file"
+              multiple
               drag
               list-type="picture"
               multiple
@@ -59,7 +61,12 @@
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
-            <el-form ref="addCarForm" :model="addCarForm" label-position="right" label-width="130px">
+            <el-form
+              ref="addCarForm"
+              :model="addCarForm"
+              label-position="right"
+              label-width="130px"
+            >
               <el-form-item label="车牌号: " class="carInput">
                 <el-select v-model="addCarForm.province" style="width:30vw;" class="filter-item">
                   <el-option
@@ -73,7 +80,11 @@
               </el-form-item>
 
               <el-form-item label="所属名单：">
-                <el-select v-model="addCarForm.carlist" :value="addCarForm.carlist" style="width:50vw;">
+                <el-select
+                  v-model="addCarForm.carlist"
+                  :value="addCarForm.carlist"
+                  style="width:50vw;"
+                >
                   <el-option
                     v-for="item in subordinateList"
                     :value="item.value"
@@ -136,23 +147,22 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 编辑的模态框 -->
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <el-input
-              v-model="editForm.id"
-              placeholder="所属名单"
-              class="filter-item"
-              style="width: 300px;"
-            ></el-input>
+            <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
+              <el-option
+                v-for="item in typeOptions"
+                :key="item._id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>-->
+            <el-input v-model="editForm.carNumber"></el-input>
           </el-form-item>
-
           <el-form-item label="所属名单：">
-            <el-select
-              v-model="editForm.inChargeId"
-              :value="editForm.inChargeId"
-              placeholder="请选择所属名单"
-            >
+            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -162,11 +172,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色：">
-            <el-select
-              v-model="editForm.creatorId"
-              :value="editForm.creatorId"
-              placeholder="请选择颜色"
-            >
+            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -200,6 +206,7 @@ import moment from 'moment'
 import {
   fetchCarList,
   fetchSingleCarData,
+  downloadModel,
   addCarData,
   importCarData,
   deleteCarData
@@ -221,6 +228,14 @@ export default {
         {
           value: '白色',
           label: '白色'
+        },
+        {
+          value: '蓝色',
+          label: '蓝色'
+        },
+        {
+          value: '绿色',
+          label: '绿色'
         }
       ],
       isBatchSuccess: false,
@@ -252,14 +267,8 @@ export default {
         }
       ],
       dialogForm: {
-        address: '',
         creatorId: '',
-        id: '',
         name: '',
-        latitude: '',
-        longitude: '',
-        url: '',
-        inChargeId: '',
         manufacturer: '',
         model: '',
         phone: ''
@@ -310,10 +319,9 @@ export default {
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: '',
-        inChargeId: '',
-
-        creatorId: ''
+        carNumber: '',
+        carList: '',
+        carColor: ''
       },
       bulkimportVisble: false,
       value: ''
@@ -341,8 +349,8 @@ export default {
       }
       fetchCarList(params).then(res => {
         this.importData = res.body.data
-        console.log(res.body.data)
-        this.total = res.body.page.total
+        this.total = res.body.data.total
+        console.log(this.total)
         this.listLoading = false
       })
     },
@@ -419,14 +427,9 @@ export default {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     editDialog(v) {
-      this.editForm.id = v.id
-      this.editForm.creatorId = v.creatorId
-      this.editForm.inChargeId = v.inChargeId
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-
-      this.editForm.url = v.url
+      this.editForm.carNumber = v.licenseNo
+      this.editForm.carList = v.type
+      this.editForm.carColor = v.color
       this.editVisable = true
     },
     editCloseDialog() {
@@ -435,16 +438,15 @@ export default {
     editDialogConfirm() {
       const params = [
         {
-          id: this.editForm.id,
-          inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.latitude,
-          longitude: this.editForm.longitude,
-          url: this.editForm.url,
-
-          creatorId: this.editForm.creatorId
+          licenseNo: this.editForm.carNumber,
+          type: this.editForm.carList,
+          color: this.editForm.carColor
+          // carNumber: this.editForm.carNumber,
+          // carList: this.editForm.carList,
+          // carColor: this.editForm.carColor
         }
       ]
-      editCamera(params).then(response => {
+      carEditConfirm(params).then(response => {
         this.$notify({
           title: '成功',
           message: '编辑成功',
@@ -511,28 +513,32 @@ export default {
     addCar() {
       this.$refs.addCarForm.validate(valid => {
         if (!valid) return
-        const params = [{
-          licenseNo: this.addCarForm.province + this.addCarForm.carWord,
-          type: this.addCarForm.carlist,
-          color: this.addCarForm.color
-        }]
-        addCarData(params).then(res => {
-          console.log('添加车辆res', res)
-          this.getList()
-          this.dialogVisable = false
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
-          this.addCarForm = {
-            carWord: '',
-            province: '',
-            carlist: '',
-            color: ''
+        const params = [
+          {
+            licenseNo: this.addCarForm.province + this.addCarForm.carWord,
+            type: this.addCarForm.carlist,
+            color: this.addCarForm.color
           }
-        }).catch((err) => {
-          console.log('失败', err)
-        })
+        ]
+        addCarData(params)
+          .then(res => {
+            console.log('添加车辆res', res)
+            this.getList()
+            this.dialogVisable = false
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.addCarForm = {
+              carWord: '',
+              province: '',
+              carlist: '',
+              color: ''
+            }
+          })
+          .catch(err => {
+            console.log('失败', err)
+          })
       })
     },
     // 重置
@@ -595,6 +601,10 @@ export default {
     width: 134px !important;
     margin-left: 10px;
     margin-right: 10px;
+  }
+
+  .xuanze {
+    width: 20vw !important;
   }
 }
 </style>
