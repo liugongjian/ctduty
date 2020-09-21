@@ -74,11 +74,11 @@
               <el-button type="primary" round @click="editDialogConfirm">提 交</el-button>
             </div>
           </el-dialog>
-          <!-- 新增车牌的显示框 -->
+          <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
             <el-form :model="addCarForm" label-position="right" label-width="130px">
               <el-form-item label="车牌号: " class="carInput">
-                <el-select v-model="addCarForm.brand" style="width:120px;" class="filter-item">
+                <el-select v-model="addCarForm.brand" style="width:30vw;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
@@ -90,7 +90,7 @@
               </el-form-item>
 
               <el-form-item label="所属名单：">
-                <el-select v-model="addCarForm.list" :value="addCarForm.list">
+                <el-select v-model="addCarForm.list" :value="addCarForm.list" style="width:50vw;">
                   <el-option
                     v-for="item in userList"
                     :value="item.id"
@@ -125,6 +125,7 @@
             @keyup.enter.native="onSearch"
           ></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
+          <el-button v-waves class="filter-item" type="primary" @click="reset">{{ '重置' }}</el-button>
         </div>
       </div>
       <el-table
@@ -461,6 +462,7 @@ export default {
       this.dialogVisable = false;
     },
     onSearch() {},
+    reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
@@ -560,7 +562,7 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang='scss' scope>
 .el-dialog__body {
   margin: 0 auto;
 }

@@ -127,6 +127,7 @@
             @keyup.enter.native="onSearch"
           ></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
+          <el-button v-waves class="filter-item" type="primary" @click="reset">{{ '重置' }}</el-button>
         </div>
       </div>
       <el-table
@@ -478,6 +479,7 @@ export default {
       this.dialogVisable = false;
     },
     onSearch() {},
+    reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
