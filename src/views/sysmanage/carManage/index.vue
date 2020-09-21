@@ -142,7 +142,7 @@
         <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="editDialog(scope.row, scope.row.id)">{{ '编辑' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -200,7 +200,8 @@ import {
   downloadModel,
   addCarData,
   importCarData,
-  deleteCarData
+  deleteCarData,
+  carEditConfirm
 } from '@/api/dm'
 const token = Cookies.get('token')
 export default {
@@ -310,6 +311,7 @@ export default {
       delIDArr: [],
       editVisable: false,
       editForm: {
+        id: '',
         carNumber: '',
         carList: '',
         carColor: ''
@@ -340,8 +342,7 @@ export default {
       }
       fetchCarList(params).then(res => {
         this.importData = res.body.data
-        this.total = res.body.page.total
-        console.log(this.total)
+        this.total = res.body.data.total
         this.listLoading = false
       })
     },
@@ -373,7 +374,6 @@ export default {
       return isxlsx
     },
     beforeExcelUpload(file) {
-      console.log('车辆文件', file)
     },
     excelCommit() {
 
@@ -419,7 +419,8 @@ export default {
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
-    editDialog(v) {
+    editDialog(v, w) {
+      this.editForm.id = w
       this.editForm.carNumber = v.licenseNo
       this.editForm.carList = v.type
       this.editForm.carColor = v.color
@@ -431,6 +432,7 @@ export default {
     editDialogConfirm() {
       const params = [
         {
+          id: this.editForm.id,
           licenseNo: this.editForm.carNumber,
           type: this.editForm.carList,
           color: this.editForm.carColor
@@ -439,6 +441,7 @@ export default {
           // carColor: this.editForm.carColor
         }
       ]
+
       carEditConfirm(params).then(response => {
         this.$notify({
           title: '成功',
@@ -526,7 +529,6 @@ export default {
           }
         })
           .catch(err => {
-            console.log('失败', err)
           })
       })
     },
@@ -595,6 +597,10 @@ export default {
   .xuanze {
     width: 20vw !important;
   }
+}
+.upload-demo {
+  width: 300px;
+  margin: 0 auto;
 }
 </style>
 
