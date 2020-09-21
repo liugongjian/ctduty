@@ -71,7 +71,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" round @click="editDialogConfirm">提 交</el-button>
+              <el-button v-waves type="primary" round @click="editDialogConfirm">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌的显示框 -->
@@ -218,12 +218,12 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList,
-  editCamera,
-  addCamera,
-  delCamera
-} from '@/api/camera'
-import { fetchUserList } from '@/api/users'
+  fetchCarList,
+  fetchSingleCarData,
+  addCarData,
+  importCarData,
+  deleteCarData
+} from '@/api/dm'
 export default {
   components: { Pagination },
   data() {
@@ -376,7 +376,7 @@ export default {
         },
         params: {}
       }
-      fetchUserList(query).then(response => {
+      fetchCarList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
       })
@@ -495,14 +495,13 @@ export default {
     // 获取列表数据
     getList() {
       const params = {
-        cascade: true,
         page: {
           index: this.page,
           size: this.limit
         },
         params: {}
       }
-      fetchAllCameraList(params).then(res => {
+      fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false

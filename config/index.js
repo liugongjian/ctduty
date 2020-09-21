@@ -19,6 +19,15 @@ module.exports = {
         },
         secure: false,
       },
+      '/xplocal': {
+        // target: 'http://host31.880508.xyz:10000',
+        target: 'http://192.168.30.130:10001',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/xplocal': ''
+        },
+        secure: false,
+      },
       '/devapi': {
         target: 'http://host31.880508.xyz:10000',
         changeOrigin: true,
