@@ -25,7 +25,6 @@
               v-if="isBatchSuccess"
               :data="mulTableData"
               :header-cell-class-name="tableRowClassHeader"
-              :on-success="batchUpSuccess"
               class="amountdetailTable"
               style="width: 100%"
               tooltip-effect="dark"
@@ -69,7 +68,6 @@
               :headers="upSingleHeaders"
               :data="mulUpData"
               :before-upload="beforeMulUpload"
-              :limit="99999999999"
               :on-success="batchUpSuccess"
               class="upload-demo"
               drag
@@ -103,11 +101,9 @@
               <el-form-item label="上传人脸图像: ">
                 <el-upload
                   :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :on-error="handleAvatarError"
                   :before-upload="beforeAvatarUpload"
+                  :on-success="handleAvatarSuccess"
                   :action="upSingleUrl"
-                  :on-progress="handleAvatarProgress"
                   :headers="upSingleHeaders"
                   :data="upSingleData"
                   class="avatar-uploader"
@@ -173,7 +169,7 @@
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
               <img :src="scope.row.image" alt width="400" class="hoverImg" >
-              <img slot="reference" :src="scope.row.image" alt >
+              <img slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px">
             </el-popover>
           </template>
         </el-table-column>
@@ -420,8 +416,7 @@ export default {
       })
     },
     handleAvatarSuccess(res, file) {
-      console.log(res.body.data[file.name.spilt('.')[0]], file, '嘻嘻哈')
-      this.addFaceForm.imageUrl = res.body.data[file.name.spilt('.')[0]]
+      this.addFaceForm.imageUrl = res.body.data[file.name.split('.')[0]]
     },
     handleAvatarError(res, file) {
       console.log(res, file, '哈哈')
@@ -440,7 +435,21 @@ export default {
     },
     beforeMulUpload(file) {
       this.mulUpData.name = file.name.split('.')[0]
-      this.isBatchSuccess = true
+      const isJPG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 PNG 格式!')
+        return
+      } else {
+        this.isBatchSuccess = true
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+        return
+      } else {
+        this.isBatchSuccess = true
+      }
+      return isJPG && isLt2M
     },
     bulkimport() {
       this.bulkimportVisble = true
@@ -462,9 +471,6 @@ export default {
         if (response.code !== 0) return
         this.faceList = response.body.data
         this.tableData = response.body.data
-        this.tableData.map(item => {
-          item.image = item.image + '.png'
-        })
         this.total = response.body.page.total
         this.listLoading = false
       })

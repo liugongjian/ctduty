@@ -41,12 +41,12 @@
               :action="importUrl"
               :on-success="batchUpSuccess"
               :headers="importHeader"
+              :before-upload="beforeAvatarUpload"
               class="upload-demo"
               name="file"
               multiple
               drag
               list-type="picture"
-              multiple
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -375,15 +375,12 @@ export default {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+      console.log(file.type, file, 'file.typefile.type')
+      const isxlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      if (!isxlsx) {
+        this.$message.error('上传头像图片只能是 xlsx 格式!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+      return isxlsx
     },
     bulkimport() {
       this.bulkimportVisble = true
