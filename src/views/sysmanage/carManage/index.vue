@@ -150,14 +150,6 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
-              <el-option
-                v-for="item in typeOptions"
-                :key="item._id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>-->
             <el-input v-model="editForm.carNumber"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">

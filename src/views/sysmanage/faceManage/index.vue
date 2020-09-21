@@ -181,10 +181,10 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="addFaceForm" label-position="right" label-width="130px">
+        <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="姓名：">
             <el-input
-              v-model="addFaceForm.name"
+              v-model="editForm.name"
               placeholder="请输入姓名"
               class="filter-item"
               style="width: 300px;"
@@ -194,51 +194,23 @@
             <template>
               <div class="editPictrue">
                 <el-upload
-                  :auto-upload="false"
                   :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :on-error="handleAvatarError"
                   :before-upload="beforeAvatarUpload"
+                  :on-success="handleAvatarSuccess"
                   :action="upSingleUrl"
-                  :on-progress="handleAvatarProgress"
                   :headers="upSingleHeaders"
                   :data="upSingleData"
-                  list-type="picture-card"
                   class="avatar-uploader"
                 >
-                  <i slot="default" class="el-icon-plus"></i>
-                  <div slot="file" slot-scope="{file}">
-                    <img v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="el-upload-list__item-thumbnail" alt >
-                    <span class="el-upload-list__item-actions">
-                      <span
-                        class="el-upload-list__item-preview"
-                        @click="handlePictureCardPreview(file)"
-                      >
-                        <i class="el-icon-zoom-in"></i>
-                      </span>
-                      <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleDownload(file)"
-                      >
-                        <i class="el-icon-download"></i>
-                      </span>
-                      <span
-                        v-if="!disabled"
-                        class="el-upload-list__item-delete"
-                        @click="handleRemove(file)"
-                      >
-                        <i class="el-icon-delete"></i>
-                      </span>
-                    </span>
-                  </div>
+                  <img v-if="editForm.image" :src="editForm.image" class="avatar" >
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </div>
             </template>
           </el-form-item>
           <el-form-item label="所属名单: ">
             <el-select
-              v-model="formInline.typeValue"
+              v-model="editForm.nameList"
               placeholder="请选择名单"
               style="width:120px;"
               class="filter-item"
@@ -322,11 +294,14 @@ export default {
         nameList: '',
         id: ''
       },
+      editForm: {
+
+      },
       isBatchSuccess: false,
       typeOptions: [
-        { name: '居民白名单', _id: '居民白名单' },
-        { name: '员工白名单', _id: '员工白名单' },
-        { name: '嫌疑人员', _id: '嫌疑人员' }
+        { name: '居民白名单', _id: 1 },
+        { name: '员工白名单', _id: 2 },
+        { name: '嫌疑人员', _id: 3 }
       ],
       addFaceForm: {
         name: '',
@@ -509,9 +484,7 @@ export default {
       })
     },
     editDialog(v) {
-      this.addFaceForm.nameList = v.typeValue
-      this.addFaceForm.image = v.imageUrl
-      this.addFaceForm.name = v.name
+      this.editForm = v
       this.editVisable = true
     },
     editCloseDialog() {
@@ -520,9 +493,9 @@ export default {
     editFaceConfirm() {
       const params = [
         {
-          name: this.addFaceForm.name,
-          image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue
+          name: this.editForm.name,
+          image: this.editForm.image,
+          nameList: this.editForm.nameList
         }
       ]
       fetchUpdateFace(params).then(response => {
