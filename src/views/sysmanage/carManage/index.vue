@@ -238,7 +238,7 @@ export default {
           label: "白色"
         },
       ],
-      isBatchSuccess: true,
+      isBatchSuccess: false,
       subordinateList: [
         {
           value: "白名单",
