@@ -149,7 +149,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
+      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
             <el-input v-model="editForm.carNumber"></el-input>
@@ -177,7 +177,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
-          <el-button @click="closeDialog">取 消</el-button>
+          <el-button @click="editCloseDialog">取 消</el-button>
         </div>
       </el-dialog>
       <pagination
@@ -338,6 +338,9 @@ export default {
   },
   methods: {
     // 获取列表数据
+    editCloseDialog() {
+      this.editVisable = false;
+    },
     getList() {
       const params = {
         page: {
@@ -348,7 +351,7 @@ export default {
       };
       fetchCarList(params).then(res => {
         this.importData = res.body.data;
-        this.total = res.body.data.total;
+        this.total = res.body.page.total;
         this.listLoading = false;
       });
     },
@@ -435,9 +438,6 @@ export default {
       this.editForm.carColor = v.color;
       this.editVisable = true;
     },
-    editCloseDialog() {
-      this.editVisable = false;
-    },
     editDialogConfirm() {
       const params = [
         {
@@ -450,7 +450,6 @@ export default {
           // carColor: this.editForm.carColor
         }
       ];
-
       carEditConfirm(params).then(response => {
         this.$notify({
           title: "成功",

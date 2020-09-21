@@ -196,7 +196,7 @@
                 <el-upload
                   :show-file-list="false"
                   :before-upload="beforeAvatarUpload"
-                  :on-success="handleAvatarSuccess"
+                  :on-success="editAvatarSuccess"
                   :action="upSingleUrl"
                   :headers="upSingleHeaders"
                   :data="upSingleData"
@@ -243,23 +243,15 @@
 <script>
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
-import config from '../../../config'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
-import moment from 'moment'
-import {
-  uploadImage,
-  uploadMultiImage
-} from '@/api/dm'
 import {
   fetchFaceList,
   fetchAddFace,
   fetchDeleteFace,
   fetchUpdateFace,
-  fetchCheckFace,
   fetchSearchFace
 } from '@/api/face'
-import { fetchUserList } from '@/api/users'
 const token = Cookies.get('token')
 export default {
   components: { Pagination },
@@ -397,6 +389,9 @@ export default {
     handleAvatarSuccess(res, file) {
       this.addFaceForm.imageUrl = res.body.data[file.name.split('.')[0]]
     },
+    editAvatarSuccess(res, file) {
+      this.editForm.image = res.body.data[file.name.split('.')[0]]
+    },
     handleAvatarError(res, file) {
       console.log(res, file, '哈哈')
     },
@@ -485,7 +480,7 @@ export default {
       })
     },
     editDialog(v) {
-      this.editForm = v
+      this.editForm = JSON.parse(JSON.stringify(v))
       this.editVisable = true
     },
     editCloseDialog() {
@@ -517,16 +512,17 @@ export default {
       this.dialogVisable = false
     },
     onSearch() {
-    const params = {
-      params: [{
-        field: 'name',
-        operator: 'LIKE',
-        value: `${this.formInline.searchkey}%`
-      }]}
+      const params = {
+        params: [{
+          field: 'name',
+          operator: 'LIKE',
+          value: `${this.formInline.searchkey}%`
+        }] }
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
-        // this.getfaceList()
+        this.page = 1
+        this.total = 10
         this.formInline.searchkey = ''
       })
     },
