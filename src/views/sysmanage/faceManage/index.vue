@@ -408,19 +408,14 @@ export default {
       return isJPG && isLt2M
     },
     beforeMulUpload(file) {
-      this.mulUpData.name = file.name.split('.')[0]
       const isJPG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 PNG 格式!')
-        return
-      } else {
-        this.isBatchSuccess = true
-      }
-      if (!isLt2M) {
+      } else if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
-        return
       } else {
+        this.mulUpData.name = file.name.split('.')[0]
         this.isBatchSuccess = true
       }
       return isJPG && isLt2M
@@ -491,7 +486,8 @@ export default {
         {
           name: this.editForm.name,
           image: this.editForm.image,
-          nameList: this.editForm.nameList
+          nameList: this.editForm.nameList,
+          id: this.editForm.id
         }
       ]
       fetchUpdateFace(params).then(response => {
