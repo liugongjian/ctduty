@@ -141,7 +141,7 @@
         <div class="pull-right">
           <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入"
+            placeholder="请输入姓名"
             class="filter-item"
             style="width: 260px;"
             @keyup.enter.native="onSearch"
@@ -288,7 +288,8 @@ import {
   fetchAddFace,
   fetchDeleteFace,
   fetchUpdateFace,
-  fetchCheckFace
+  fetchCheckFace,
+  fetchSearchFace
 } from '@/api/face'
 import { fetchUserList } from '@/api/users'
 const token = Cookies.get('token')
@@ -536,7 +537,20 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
-    onSearch() {},
+    onSearch() {
+    const params = {
+      params: [{
+        field: 'name',
+        operator: 'LIKE',
+        value: `${this.formInline.searchkey}%`
+      }]}
+      fetchSearchFace(params).then((res) => {
+        this.faceList = res.body.data
+        this.tableData = res.body.data
+        // this.getfaceList()
+        this.formInline.searchkey = ''
+      })
+    },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'

@@ -48,3 +48,12 @@ export function fetchCheckFace(query) {
     data: query
   })
 }
+
+// 搜索
+export function fetchSearchFace(query) {
+  return request({
+    url: '/nvsapi/Userface/QueryFilter',
+    method: 'post',
+    data: query
+  })
+}
