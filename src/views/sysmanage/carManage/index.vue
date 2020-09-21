@@ -41,12 +41,12 @@
               :action="importUrl"
               :on-success="batchUpSuccess"
               :headers="importHeader"
+              :before-upload="beforeAvatarUpload"
               class="upload-demo"
               name="file"
               multiple
               drag
               list-type="picture"
-              multiple
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -150,14 +150,6 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
-              <el-option
-                v-for="item in typeOptions"
-                :key="item._id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>-->
             <el-input v-model="editForm.carNumber"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
@@ -374,23 +366,17 @@ export default {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+      console.log(file.type, file, 'file.typefile.type')
+      const isxlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      if (!isxlsx) {
+        this.$message.error('上传头像图片只能是 xlsx 格式!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+      return isxlsx
     },
     beforeExcelUpload(file) {
     },
     excelCommit() {
 
-    },
-    batchUpSuccess(file) {
-      this.isBatchSuccess = true;
     },
     bulkimport() {
       this.bulkimportVisble = true
@@ -522,26 +508,26 @@ export default {
     },
     addCar() {
       this.$refs.addCarForm.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         const params = [{
           licenseNo: this.addCarForm.province + this.addCarForm.carWord,
           type: this.addCarForm.carlist,
           color: this.addCarForm.color
-        }];
+        }]
         addCarData(params).then(res => {
-            this.getList();
-            this.dialogVisable = false;
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
-            this.addCarForm = {
-              carWord: '',
-              province: '',
-              carlist: '',
-              color: ''
-            }
+          this.getList()
+          this.dialogVisable = false
+          this.$message({
+            message: '添加成功',
+            type: 'success'
           })
+          this.addCarForm = {
+            carWord: '',
+            province: '',
+            carlist: '',
+            color: ''
+          }
+        })
           .catch(err => {
           })
       })
