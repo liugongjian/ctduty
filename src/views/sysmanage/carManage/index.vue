@@ -114,7 +114,7 @@
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="dialogConfirm('dialogForm')">确 定</el-button>
+              <el-button type="primary" @click="addCar('dialogForm')">确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
           </el-dialog>
@@ -504,7 +504,7 @@ export default {
     dialogQuxiao() {
       this.dialogVisable = false;
     },
-    dialogConfirm() {
+    addCar() {
       this.$refs.addForm.validate(valid => {
         if (!valid) return;
         const params = [this.dialogForm];
@@ -553,7 +553,7 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .el-dialog__body {
   margin: 0 auto;
 }
