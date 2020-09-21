@@ -32,7 +32,6 @@
               @filter-change="filerStatus"
               @selection-change="handleSelectionChange"
             >
-              <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
                 <template slot-scope="scope">
@@ -130,7 +129,7 @@
             @keyup.enter.native="onSearch"
           ></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button v-waves class="filter-item" type="primary" @click="reset">{{ '重置' }}</el-button>
+          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
         </div>
       </div>
       <el-table
@@ -574,9 +573,16 @@ export default {
               message: '增加失败',
               type: 'error',
               duration: 2000
-            })
-          })
-      })
+            });
+          });
+      });
+    },
+    // 重置
+    resetQuery() {
+      this.formInline.searchkey = ''
+      this.page = 1
+      this.limit = 10
+      this.getList()
     }
   }
 }
