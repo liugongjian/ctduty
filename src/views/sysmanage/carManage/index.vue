@@ -91,7 +91,7 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="车辆颜色：">
+              <el-form-item label="车牌颜色：">
                 <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
                     v-for="item in colorList"
@@ -164,7 +164,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="车辆颜色：">
+          <el-form-item label="车牌颜色：">
             <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
               <el-option
                 v-for="item in colorList"
@@ -383,8 +383,11 @@ export default {
       const isxlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      if (!isxlsx) {
-        this.$message.error('上传头像图片只能是 xlsx 格式!')
+      const isExcel =
+       file.type ===
+        'application/vnd.ms-excel'
+      if (!isxlsx || !isExcel) {
+        this.$message.error('导入车牌数据只支持 xlsx 格式!')
       }
       return isxlsx
     },
