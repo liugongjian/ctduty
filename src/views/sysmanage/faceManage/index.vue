@@ -195,7 +195,6 @@
               <div class="editPictrue">
                 <el-upload
                   :auto-upload="false"
-                  list-type="picture-card"
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
                   :on-error="handleAvatarError"
@@ -204,8 +203,9 @@
                   :on-progress="handleAvatarProgress"
                   :headers="upSingleHeaders"
                   :data="upSingleData"
+                  list-type="picture-card"
                   class="avatar-uploader"
-                >    
+                >
                   <i slot="default" class="el-icon-plus"></i>
                   <div slot="file" slot-scope="{file}">
                     <img v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="el-upload-list__item-thumbnail" alt >
@@ -465,8 +465,8 @@ export default {
     getfaceList() {
       const query = {
         page: {
-          index: 1,
-          size: 9999999
+          index: this.page,
+          size: this.limit
         },
         params: {}
       }

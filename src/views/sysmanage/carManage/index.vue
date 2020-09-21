@@ -348,7 +348,7 @@ export default {
       }
       fetchCarList(params).then(res => {
         this.importData = res.body.data
-        this.total = res.body.data.total
+        this.total = res.body.page.total
         console.log(this.total)
         this.listLoading = false
       })
@@ -368,7 +368,6 @@ export default {
     batchUpSuccess(res) {
       this.imSuccessData = res.body.data
       this.isBatchSuccess = true
-      console.log('批量上传成功')
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -386,11 +385,6 @@ export default {
     },
     excelCommit() {
 
-    },
-    batchUpSuccess(file) {
-      console.log('车辆上传成功文件', file)
-      this.isBatchSuccess = true;
-      console.log("批量上传成功");
     },
     bulkimport() {
       this.bulkimportVisble = true
@@ -519,26 +513,26 @@ export default {
     },
     addCar() {
       this.$refs.addCarForm.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         const params = [{
           licenseNo: this.addCarForm.province + this.addCarForm.carWord,
           type: this.addCarForm.carlist,
           color: this.addCarForm.color
-        }];
+        }]
         addCarData(params).then(res => {
-            this.getList();
-            this.dialogVisable = false;
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
-            this.addCarForm = {
-              carWord: '',
-              province: '',
-              carlist: '',
-              color: ''
-            }
+          this.getList()
+          this.dialogVisable = false
+          this.$message({
+            message: '添加成功',
+            type: 'success'
           })
+          this.addCarForm = {
+            carWord: '',
+            province: '',
+            carlist: '',
+            color: ''
+          }
+        })
           .catch(err => {
             console.log('失败', err)
           })
