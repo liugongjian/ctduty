@@ -76,7 +76,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="editDialogConfirm">提 交</el-button>
+              <el-button type="primary" @click="submit">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
@@ -254,6 +254,9 @@ export default {
           label: "绿色"
         }
       ],
+      headers: {
+        Authorization: localStorage.getItem("token")
+      },
       isBatchSuccess: false,
       subordinateList: [
         {
@@ -365,13 +368,17 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data;
         this.total = res.body.data.total;
-        console.log(this.total);
+        // console.log(this.total);
         this.listLoading = false;
       });
     },
-    batchUpSuccess() {
+    batchUpSuccess(res, file, fileList) {
       this.isBatchSuccess = true;
-      console.log("批量上传成功");
+      this.form.pics.push({
+        pic: res.data.tmp_path
+      });
+      this.fileList = fileList;
+      // console.log("批量上传成功");
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
@@ -457,6 +464,7 @@ export default {
         this.editVisable = false;
       });
     },
+    submit() {},
     editDialogQuxiao() {
       this.editVisable = false;
     },
@@ -467,7 +475,6 @@ export default {
       this.dialogVisable = false;
     },
     onSearch() {},
-    reset() {},
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
