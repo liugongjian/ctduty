@@ -159,34 +159,28 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <el-input
-              v-model="editForm.id"
-              placeholder="所属名单"
-              class="filter-item"
-              style="width: 300px;"
-            ></el-input>
-          </el-form-item>
-
-          <el-form-item label="所属名单：">
-            <el-select
-              v-model="editForm.inChargeId"
-              :value="editForm.inChargeId"
-              placeholder="请选择负责人"
-            >
+            <!-- <select v-model="editForm.carNumber" style="xuanze">
               <el-option
-                v-for="item in userList"
+                v-for="item in typeOptions"
+                :key="item._id"
+                :label="item.name"
+                :value="item._id"
+              ></el-option>
+            </select>-->
+            <el-input placeholder="请输入内容" v-model="editForm.carNumber" style="width: 60%;"></el-input>
+          </el-form-item>
+          <el-form-item label="所属名单：">
+            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择负责人">
+              <el-option
+                v-for="item in type"
                 :value="item.id"
-                :label="item.username"
+                :label="item.importData.type"
                 :key="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色：">
-            <el-select
-              v-model="editForm.creatorId"
-              :value="editForm.creatorId"
-              placeholder="请选择添加人"
-            >
+            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择添加人">
               <el-option
                 v-for="item in userList"
                 :value="item.id"
@@ -233,22 +227,6 @@ export default {
         {
           value: "选项1",
           label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
         }
       ],
       value: "",
@@ -267,12 +245,11 @@ export default {
       dialogForm: {
         address: "",
         creatorId: "",
-        id: "",
+        carNumber: "",
+        carList: "",
+        carColor: "",
         name: "",
-        latitude: "",
-        longitude: "",
-        url: "",
-        inChargeId: "",
+
         manufacturer: "",
         model: "",
         phone: ""
@@ -319,10 +296,9 @@ export default {
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        inChargeId: "",
-
-        creatorId: ""
+        carNumber: "",
+        carList: "",
+        carColor: ""
       },
       userList: [],
       bulkimportVisble: false,
@@ -351,7 +327,7 @@ export default {
       };
       fetchCarList(params).then(res => {
         this.importData = res.body.data;
-        console.log(res.body.data);
+        // console.log(res.body.data);
         this.total = res.body.page.total;
         this.listLoading = false;
       });
@@ -415,14 +391,14 @@ export default {
       return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
     },
     editDialog(v) {
-      this.editForm.id = v.id;
-      this.editForm.creatorId = v.creatorId;
-      this.editForm.inChargeId = v.inChargeId;
-      this.editForm.longitude = v.longitude;
-      this.editForm.latitude = v.latitude;
-      this.editForm.address = v.address;
+      this.editForm.carNumber = v.licenseNo;
+      this.editForm.carList = v.type;
+      this.editForm.carColor = v.color;
+      // this.editForm.longitude = v.longitude;
+      // this.editForm.latitude = v.latitude;
+      // this.editForm.address = v.address;
 
-      this.editForm.url = v.url;
+      // this.editForm.url = v.url;
       this.editVisable = true;
     },
     editCloseDialog() {
@@ -431,13 +407,9 @@ export default {
     editDialogConfirm() {
       const params = [
         {
-          id: this.editForm.id,
-          inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.latitude,
-          longitude: this.editForm.longitude,
-          url: this.editForm.url,
-
-          creatorId: this.editForm.creatorId
+          carNumber: this.editForm.carNumber,
+          carList: this.editForm.carList,
+          carColor: this.editForm.carColor
         }
       ];
       editCamera(params).then(response => {
@@ -553,7 +525,7 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss' >
 .el-dialog__body {
   margin: 0 auto;
 }
@@ -602,6 +574,10 @@ export default {
     width: 134px !important;
     margin-left: 10px;
     margin-right: 10px;
+  }
+
+  .xuanze {
+    width: 20vw !important;
   }
 }
 </style>
