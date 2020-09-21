@@ -509,16 +509,20 @@ export default {
     },
     onSearch() {
       const params = {
+        page: {
+          index: this.page,
+          size: this.limit
+        },
         params: [{
           field: 'name',
           operator: 'LIKE',
-          value: `${this.formInline.searchkey}%`
+          value: `%${this.formInline.searchkey}%`
         }] }
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
         this.page = 1
-        this.total = 10
+        this.total = res.body.page.total
         this.formInline.searchkey = ''
       })
     },

@@ -474,9 +474,8 @@ export default {
     onSearch() {
       const query = {
         page: {
-          index: 1,
-          size: 10,
-          total: 0
+          index: this.page,
+          size: this.limit
         },
         params: [
           {
