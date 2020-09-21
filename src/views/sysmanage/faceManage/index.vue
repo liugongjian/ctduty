@@ -570,11 +570,7 @@ export default {
         }]
         fetchAddFace(params)
           .then(res => {
-            this.dialogForm = {
-              name: '',
-              image: '',
-              nameList: '',
-              id: ''
+            this.addFaceForm = {
             }
             this.$notify({
               title: '成功',
