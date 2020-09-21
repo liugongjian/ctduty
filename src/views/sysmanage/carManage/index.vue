@@ -9,7 +9,7 @@
             icon="el-icon-plus"
             @click="create"
           >{{ '新增车牌数据' }}</el-button>
-          <el-button class="filter-item" @click="bulkimport ">{{ '导入车牌数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport">{{ '导入车牌数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
@@ -21,7 +21,7 @@
           >
             <el-table
               v-if="isBatchSuccess"
-              :data="importData"
+              :data="imSuccessData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
               style="width: 55vw"
@@ -30,43 +30,21 @@
               @filter-change="filerStatus"
               @selection-change="handleSelectionChange"
             >
-              <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
-                <template slot-scope="scope">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in subordinateList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color">
-                <!-- <template slot-scope="scope">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in colorList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </template>-->
-              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
             </el-table>
-
             <el-upload
               v-else
+              :action="importUrl"
+              :on-success="batchUpSuccess"
+              :headers="importHeader"
+              :before-upload="beforeAvatarUpload"
               class="upload-demo"
               name="file"
               multiple
               drag
-              list-type="picture-card"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              @on-success="batchUpSuccess"
-              :headers="headers"
+              list-type="picture"
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -76,7 +54,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="submit">提 交</el-button>
+              <el-button type="primary" @click="importConfirm">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
@@ -162,23 +140,18 @@
         <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="editDialog(scope.row, scope.row.id)"
+            >{{ '编辑' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- 编辑的模态框 -->
-      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
+      <el-dialog :visible="editVisable" title="编辑" width="520px" @close="closeDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
-              <el-option
-                v-for="item in typeOptions"
-                :key="item._id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>-->
             <el-input v-model="editForm.carNumber"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
@@ -204,7 +177,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
-          <el-button @click="editDialogQuxiao">取 消</el-button>
+          <el-button @click="closeDialog">取 消</el-button>
         </div>
       </el-dialog>
       <pagination
@@ -233,10 +206,15 @@ import {
   carEditConfirm,
   searchList
 } from "@/api/dm";
+const token = Cookies.get("token");
 export default {
   components: { Pagination },
   data() {
     return {
+      importHeader: {
+        Authorization: token
+      },
+      importUrl: process.env.LOT_ROOT + "/CarLicense/Import",
       colorList: [
         {
           value: "黑色",
@@ -328,6 +306,7 @@ export default {
       listLoading: false,
       filteredValue: [],
       importData: [],
+      imSuccessData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -338,6 +317,7 @@ export default {
       delIDArr: [],
       editVisable: false,
       editForm: {
+        id: "",
         carNumber: "",
         carList: "",
         carColor: ""
@@ -369,37 +349,51 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data;
         this.total = res.body.data.total;
-        // console.log(this.total);
         this.listLoading = false;
       });
     },
-    batchUpSuccess(res, file, fileList) {
-      this.isBatchSuccess = true;
-      this.form.pics.push({
-        pic: res.data.tmp_path
+    importConfirm() {
+      this.imSuccessData.forEach(item => {
+        const { color, licenseNo, type } = item;
+        const params = [
+          {
+            color,
+            licenseNo,
+            type
+          }
+        ];
+        addCarData(params).then(res => {
+          this.getList();
+          this.bulkimportVisble = false;
+        });
       });
-      this.fileList = fileList;
-      // console.log("批量上传成功");
+    },
+    batchUpSuccess(res) {
+      this.imSuccessData = res.body.data;
+      this.isBatchSuccess = true;
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
     },
     beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+      console.log(file.type, file, "file.typefile.type");
+      const isxlsx =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      if (!isxlsx) {
+        this.$message.error("上传头像图片只能是 xlsx 格式!");
       }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
+      return isxlsx;
     },
+    beforeExcelUpload(file) {},
+    excelCommit() {},
     bulkimport() {
       this.bulkimportVisble = true;
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false;
+      this.isBatchSuccess = false;
+      this.imSuccessData = [];
     },
     batchesDel() {
       this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
@@ -408,7 +402,7 @@ export default {
         type: "warning"
       }).then(() => {
         const params = [...this.delIDArr];
-        delCamera(params)
+        deleteCarData(params)
           .then(response => {
             this.getList();
             this.delIDArr = [];
@@ -434,7 +428,8 @@ export default {
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
     },
-    editDialog(v) {
+    editDialog(v, w) {
+      this.editForm.id = w;
       this.editForm.carNumber = v.licenseNo;
       this.editForm.carList = v.type;
       this.editForm.carColor = v.color;
@@ -446,6 +441,7 @@ export default {
     editDialogConfirm() {
       const params = [
         {
+          id: this.editForm.id,
           licenseNo: this.editForm.carNumber,
           type: this.editForm.carList,
           color: this.editForm.carColor
@@ -454,6 +450,7 @@ export default {
           // carColor: this.editForm.carColor
         }
       ];
+
       carEditConfirm(params).then(response => {
         this.$notify({
           title: "成功",
@@ -491,11 +488,12 @@ export default {
         ]
       };
       searchList(query).then(response => {
-        if (response.data !== 0) return;
-        this.getList();
+        // if (response.data !== 0) return;
+        // this.getList();
         this.importData = response.body.data;
-        this.total = response.body.page.total;
+        this.total = response.body.data.total;
         this.page = 1;
+        this.formInline.searchkey = "";
       });
     },
     // 表头样式
@@ -552,7 +550,6 @@ export default {
         ];
         addCarData(params)
           .then(res => {
-            // console.log("添加车辆res", res);
             this.getList();
             this.dialogVisable = false;
             this.$message({
@@ -566,9 +563,7 @@ export default {
               color: ""
             };
           })
-          .catch(err => {
-            // console.log("失败", err);
-          });
+          .catch(err => {});
       });
     },
     // 重置
@@ -636,6 +631,10 @@ export default {
   .xuanze {
     width: 20vw !important;
   }
+}
+.upload-demo {
+  width: 300px;
+  margin: 0 auto;
 }
 </style>
 
