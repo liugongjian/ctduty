@@ -185,10 +185,10 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
+        <el-form :model="addFaceForm" label-position="right" label-width="130px">
           <el-form-item label="姓名：">
             <el-input
-              v-model="editForm.name"
+              v-model="addFaceForm.name"
               placeholder="请输入姓名"
               class="filter-item"
               style="width: 300px;"
@@ -197,10 +197,22 @@
           <el-form-item label="上传人脸图像: ">
             <template>
               <div class="editPictrue">
-                <el-upload :auto-upload="false" action="#" list-type="picture-card">
+                <el-upload
+                  :auto-upload="false"
+                  list-type="picture-card"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :on-error="handleAvatarError"
+                  :before-upload="beforeAvatarUpload"
+                  :action="upSingleUrl"
+                  :on-progress="handleAvatarProgress"
+                  :headers="upSingleHeaders"
+                  :data="upSingleData"
+                  class="avatar-uploader"
+                >    
                   <i slot="default" class="el-icon-plus"></i>
                   <div slot="file" slot-scope="{file}">
-                    <img :src="file.url" class="el-upload-list__item-thumbnail" alt >
+                    <img v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="el-upload-list__item-thumbnail" alt >
                     <span class="el-upload-list__item-actions">
                       <span
                         class="el-upload-list__item-preview"
@@ -231,6 +243,7 @@
           <el-form-item label="所属名单: ">
             <el-select
               v-model="formInline.typeValue"
+              placeholder="请选择名单"
               style="width:120px;"
               class="filter-item"
               @change="checkModel"
@@ -245,7 +258,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
+          <el-button type="primary" @click="editFaceConfirm">确 定</el-button>
           <el-button @click="editCloseDialog">取 消</el-button>
         </div>
       </el-dialog>
@@ -315,9 +328,9 @@ export default {
       },
       isBatchSuccess: false,
       typeOptions: [
-        { name: '居民白名单', _id: 1 },
-        { name: '员工白名单', _id: 2 },
-        { name: '嫌疑人员', _id: 3 }
+        { name: '居民白名单', _id: '居民白名单' },
+        { name: '员工白名单', _id: '员工白名单' },
+        { name: '嫌疑人员', _id: '嫌疑人员' }
       ],
       addFaceForm: {
         name: '',
@@ -354,7 +367,7 @@ export default {
       },
       formInline: {
         searchkey: '',
-        typeValue: 1
+        typeValue: '居民白名单'
       },
       listLoading: false,
       filteredValue: [],
@@ -368,16 +381,6 @@ export default {
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
-      editForm: {
-        id: '',
-        inChargeId: '',
-        longitude: '',
-        latitude: '',
-        address: '',
-        url: '',
-        name: '',
-        creatorId: ''
-      },
       faceList: [],
       bulkimportVisble: false,
       imageUrl: ''
@@ -412,9 +415,9 @@ export default {
         image: res.body.data[file.name.split('.')[0]],
         nameList: 1,
         typeOptions: [
-          { name: '居民白名单', _id: 1 },
-          { name: '员工白名单', _id: 2 },
-          { name: '嫌疑人员', _id: 3 }
+          { name: '居民白名单', _id: '居民白名单' },
+          { name: '员工白名单', _id: '员工白名单' },
+          { name: '嫌疑人员', _id: '嫌疑人员' }
         ],
         id: new Date().getTime()
       })
@@ -461,10 +464,9 @@ export default {
       fetchFaceList(query).then(response => {
         if (response.code !== 0) return
         this.faceList = response.body.data
-        this.tableData = response.body.data.map(item => {
-          item.image = item.image(res => {
-            return res
-          })
+        this.tableData = response.body.data
+        this.tableData.map(item => {
+          item.image = item.image + '.png'
         })
         this.total = response.body.page.total
         this.listLoading = false
@@ -501,29 +503,23 @@ export default {
       })
     },
     editDialog(v) {
-      this.editForm.id = v.id
-      this.editForm.creatorId = v.creatorId
-      this.editForm.inChargeId = v.inChargeId
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.name = v.name
-      this.editForm.url = v.url
+      this.addFaceForm.nameList = v.typeValue
+      this.addFaceForm.image = v.imageUrl
+      this.addFaceForm.name = v.name
       this.editVisable = true
     },
     editCloseDialog() {
       this.editVisable = false
     },
-    editDialogConfirm() {
+    editFaceConfirm() {
       const params = [
         {
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue,
-          id: ''
+          nameList: this.formInline.typeValue
         }
       ]
-      editCamera(params).then(response => {
+      fetchUpdateFace(params).then(response => {
         this.$notify({
           title: '成功',
           message: '编辑成功',
