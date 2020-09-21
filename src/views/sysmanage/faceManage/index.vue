@@ -261,6 +261,7 @@ import {
   uploadImage,
   uploadMultiImage
 } from '@/api/dm'
+import {
   fetchFaceList,
   fetchAddFace,
   fetchDeleteFace,
@@ -299,7 +300,7 @@ export default {
       ],
       addFaceForm: {
         name: '',
-        imageUrl: '',
+        imageUrl: ''
       },
       addrules: {
         creatorId: [
@@ -573,9 +574,9 @@ export default {
               message: '增加失败',
               type: 'error',
               duration: 2000
-            });
-          });
-      });
+            })
+          })
+      })
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
