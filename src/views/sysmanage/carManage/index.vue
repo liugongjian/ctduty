@@ -91,7 +91,7 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="车辆颜色：">
+              <el-form-item label="车牌颜色：">
                 <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
                     v-for="item in colorList"
@@ -164,7 +164,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="车辆颜色：">
+          <el-form-item label="车牌颜色：">
             <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
               <el-option
                 v-for="item in colorList"
