@@ -566,11 +566,13 @@ export default {
         const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue
+          nameList: this.formInline.nameList
         }]
         fetchAddFace(params)
           .then(res => {
             this.addFaceForm = {
+              name: '',
+              imageUrl: ''
             }
             this.$notify({
               title: '成功',
