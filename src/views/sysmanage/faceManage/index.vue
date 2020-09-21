@@ -35,7 +35,7 @@
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="select">
                 <template slot-scope="scope">
                   <el-select
-                    v-model="scope.row.typeValue"
+                    v-model="scope.row.nameList"
                     style="width:120px;"
                     class="filter-item"
                     @change="checkModel"
@@ -59,8 +59,7 @@
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'操作'">
                 <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+                  <el-button type="text" size="small" @click="()=>{delmulTableInfo(scope.row.id)}">{{ '删除' }}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -173,8 +172,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
-              <img :src="scope.row.image + '.png'" alt width="400" class="hoverImg" >
-              <img slot="reference" :src="scope.row.image + '.png'" alt >
+              <img :src="scope.row.image" alt width="400" class="hoverImg" >
+              <img slot="reference" :src="scope.row.image" alt >
             </el-popover>
           </template>
         </el-table-column>
@@ -226,9 +225,6 @@
                     </span>
                   </div>
                 </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                  <img :src="dialogImageUrl" width="100%" alt >
-                </el-dialog>
               </div>
             </template>
           </el-form-item>
@@ -399,8 +395,12 @@ export default {
     await this.getfaceList()
   },
   methods: {
+    delmulTableInfo(id) {
+      this.mulTableData = this.mulTableData.filter(item => {
+        return item.id !== id
+      })
+    },
     handleAvatarProgress(e, file) {
-      console.log(e, file, '呼呼')
     },
     checkModel() {
 
@@ -409,19 +409,19 @@ export default {
       this.isBatchSuccess = true
       this.mulTableData.push({
         name: file.name.split('.')[0],
-        image: 'http://36.41.71.26:8920/' + res.body.data[0] + '.png',
-        typeValue: 1,
+        image: res.body.data[file.name.split('.')[0]],
+        nameList: 1,
         typeOptions: [
           { name: '居民白名单', _id: 1 },
           { name: '员工白名单', _id: 2 },
           { name: '嫌疑人员', _id: 3 }
-        ]
+        ],
+        id: new Date().getTime()
       })
     },
     handleAvatarSuccess(res, file) {
-      console.log(res.body.data[file.name], file.name, '嘻嘻')
-      this.addFaceForm.imageUrl = 'http://36.41.71.26:8920/' + res.body.data[file.name] + '.png'
-      console.log(this.addFaceForm.imageUrl)
+      console.log(res.body.data[file.name.spilt('.')[0]], file, '嘻嘻哈')
+      this.addFaceForm.imageUrl = res.body.data[file.name.spilt('.')[0]]
     },
     handleAvatarError(res, file) {
       console.log(res, file, '哈哈')
@@ -448,6 +448,7 @@ export default {
     closebulkimportDialog() {
       this.bulkimportVisble = false
       this.isBatchSuccess = false
+      this.mulTableData = []
     },
     getfaceList() {
       const query = {
@@ -460,7 +461,11 @@ export default {
       fetchFaceList(query).then(response => {
         if (response.code !== 0) return
         this.faceList = response.body.data
-        this.tableData = response.body.data
+        this.tableData = response.body.data.map(item => {
+          item.image = item.image(res => {
+            return res
+          })
+        })
         this.total = response.body.page.total
         this.listLoading = false
       })
@@ -472,7 +477,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [...this.delIDArr]
-        delCamera(params)
+        fetchDeleteFace(params)
           .then(response => {
             this.getfaceList()
             this.delIDArr = []
@@ -570,22 +575,6 @@ export default {
         this.getfaceList()
       }
     },
-    // 获取列表数据
-    // getfaceList() {
-    //   const params = {
-    //     cascade: true,
-    //     page: {
-    //       index: this.page,
-    //       size: this.limit
-    //     },
-    //     params: {}
-    //   }
-    //   fetchFaceList(params).then(res => {
-    //     this.tableData = res.body.data
-    //     this.total = res.body.page.total
-    //     this.listLoading = false
-    //   })
-    // },
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
@@ -629,7 +618,24 @@ export default {
       })
     },
     dialogConfirm() {
-
+      this.mulTableData.forEach(item => {
+        const { name, image, nameList } = item
+        const params = [{
+          name,
+          image,
+          nameList
+        }]
+        fetchAddFace(params)
+          .then(res => {
+            this.dialogForm = {
+              name: '',
+              image: '',
+              nameList: ''
+            }
+            this.getfaceList()
+            this.bulkimportVisble = false
+          })
+      })
     },
     // 重置
     resetQuery() {
