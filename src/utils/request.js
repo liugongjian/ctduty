@@ -38,6 +38,7 @@ service.interceptors.request.use(
     if (token) {
       // 让每个请求携带token 把头部的'Bearer '去掉
       config.headers['Authorization'] = token
+      config.headers['Content-Type'] = 'application/json'
     }
     return config
   },
