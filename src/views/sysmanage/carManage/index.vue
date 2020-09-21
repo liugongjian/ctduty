@@ -51,7 +51,7 @@
                 将文件拖到此处，或
                 <em>点击上传</em>
               </div>
-              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
+              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="importConfirm">提 交</el-button>
@@ -383,11 +383,9 @@ export default {
       const isxlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      const isExcel =
-       file.type ===
-        'application/vnd.ms-excel'
-      if (!isxlsx || !isExcel) {
-        this.$message.error('导入车牌数据只支持 xlsx 格式!')
+
+      if (!isxlsx) {
+        this.$message.error('导入数据只能是 xlsx 格式!')
       }
       return isxlsx
     },
@@ -485,7 +483,7 @@ export default {
           {
             field: 'license_no',
             operator: 'LIKE',
-            value: `${this.formInline.searchkey}%`
+            value: `%${this.formInline.searchkey}%`
           }
         ]
       }
