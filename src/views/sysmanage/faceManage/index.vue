@@ -243,23 +243,15 @@
 <script>
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
-import config from '../../../config'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
-import moment from 'moment'
-import {
-  uploadImage,
-  uploadMultiImage
-} from '@/api/dm'
 import {
   fetchFaceList,
   fetchAddFace,
   fetchDeleteFace,
   fetchUpdateFace,
-  fetchCheckFace,
   fetchSearchFace
 } from '@/api/face'
-import { fetchUserList } from '@/api/users'
 const token = Cookies.get('token')
 export default {
   components: { Pagination },
@@ -521,12 +513,12 @@ export default {
       this.dialogVisable = false
     },
     onSearch() {
-    const params = {
-      params: [{
-        field: 'name',
-        operator: 'LIKE',
-        value: `${this.formInline.searchkey}%`
-      }]}
+      const params = {
+        params: [{
+          field: 'name',
+          operator: 'LIKE',
+          value: `${this.formInline.searchkey}%`
+        }] }
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
