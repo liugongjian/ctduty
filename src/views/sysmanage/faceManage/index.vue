@@ -196,7 +196,7 @@
                 <el-upload
                   :show-file-list="false"
                   :before-upload="beforeAvatarUpload"
-                  :on-success="handleAvatarSuccess"
+                  :on-success="editAvatarSuccess"
                   :action="upSingleUrl"
                   :headers="upSingleHeaders"
                   :data="upSingleData"
@@ -396,6 +396,9 @@ export default {
     handleAvatarSuccess(res, file) {
       this.addFaceForm.imageUrl = res.body.data[file.name.split('.')[0]]
     },
+    editAvatarSuccess(res, file) {
+      this.editForm.image = res.body.data[file.name.split('.')[0]]
+    },
     handleAvatarError(res, file) {
       console.log(res, file, '哈哈')
     },
@@ -484,7 +487,8 @@ export default {
       })
     },
     editDialog(v) {
-      this.editForm = v
+      const info = v
+      this.editForm = info
       this.editVisable = true
     },
     editCloseDialog() {
