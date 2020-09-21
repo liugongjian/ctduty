@@ -191,11 +191,11 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchCarList,
   fetchSingleCarData,
@@ -205,8 +205,8 @@ import {
   deleteCarData,
   carEditConfirm,
   searchList
-} from "@/api/dm";
-const token = Cookies.get("token");
+} from '@/api/dm'
+const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
@@ -214,94 +214,94 @@ export default {
       importHeader: {
         Authorization: token
       },
-      importUrl: process.env.LOT_ROOT + "/CarLicense/Import",
+      importUrl: process.env.LOT_ROOT + '/CarLicense/Import',
       colorList: [
         {
-          value: "黑色",
-          label: "黑色"
+          value: '黑色',
+          label: '黑色'
         },
         {
-          value: "白色",
-          label: "白色"
+          value: '白色',
+          label: '白色'
         },
         {
-          value: "蓝色",
-          label: "蓝色"
+          value: '蓝色',
+          label: '蓝色'
         },
         {
-          value: "绿色",
-          label: "绿色"
+          value: '绿色',
+          label: '绿色'
         }
       ],
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: localStorage.getItem('token')
       },
       isBatchSuccess: false,
       subordinateList: [
         {
-          value: "白名单",
-          label: "白名单"
+          value: '白名单',
+          label: '白名单'
         },
         {
-          value: "嫌疑车辆黑名单",
-          label: "嫌疑车辆黑名单"
+          value: '嫌疑车辆黑名单',
+          label: '嫌疑车辆黑名单'
         },
         {
-          value: "疑似套牌车辆",
-          label: "疑似套牌车辆"
+          value: '疑似套牌车辆',
+          label: '疑似套牌车辆'
         }
       ],
-      value: "",
+      value: '',
       fileList: [
         {
-          name: "food.jpeg",
+          name: 'food.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         },
         {
-          name: "food2.jpeg",
+          name: 'food2.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ],
       dialogForm: {
-        creatorId: "",
-        name: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        creatorId: '',
+        name: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
       typeOptions: [
-        { name: "浙", id: "浙" },
-        { name: "京", id: "京" },
-        { name: "沪", id: "沪" },
-        { name: "粤", id: "粤" }
+        { name: '浙', id: '浙' },
+        { name: '京', id: '京' },
+        { name: '沪', id: '沪' },
+        { name: '粤', id: '粤' }
       ],
-      imageUrl: "",
+      imageUrl: '',
       addCarForm: {
-        carWord: "",
-        province: "",
-        carlist: "",
-        color: ""
+        carWord: '',
+        province: '',
+        carlist: '',
+        color: ''
       },
       addFaceForm: {},
       addrules: {
         creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
         ],
 
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
         manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ]
       },
       formInline: {
-        searchkey: "",
-        typeValue: "list"
+        searchkey: '',
+        typeValue: 'list'
       },
       listLoading: false,
       filteredValue: [],
@@ -311,35 +311,35 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        carNumber: "",
-        carList: "",
-        carColor: ""
+        id: '',
+        carNumber: '',
+        carList: '',
+        carColor: ''
       },
       bulkimportVisble: false,
-      value: ""
-    };
+      value: ''
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getList();
+    await Message.closeAll()
+    await this.getList()
   },
   methods: {
     // 获取列表数据
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     getList() {
       const params = {
@@ -348,95 +348,95 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchCarList(params).then(res => {
-        this.importData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.importData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
     },
     importConfirm() {
       this.imSuccessData.forEach(item => {
-        const { color, licenseNo, type } = item;
+        const { color, licenseNo, type } = item
         const params = [
           {
             color,
             licenseNo,
             type
           }
-        ];
+        ]
         addCarData(params).then(res => {
-          this.getList();
-          this.bulkimportVisble = false;
-        });
-      });
+          this.getList()
+          this.bulkimportVisble = false
+        })
+      })
     },
     batchUpSuccess(res) {
-      this.imSuccessData = res.body.data;
-      this.isBatchSuccess = true;
+      this.imSuccessData = res.body.data
+      this.isBatchSuccess = true
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      console.log(file.type, file, "file.typefile.type");
+      console.log(file.type, file, 'file.typefile.type')
       const isxlsx =
         file.type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isxlsx) {
-        this.$message.error("上传头像图片只能是 xlsx 格式!");
+        this.$message.error('上传头像图片只能是 xlsx 格式!')
       }
-      return isxlsx;
+      return isxlsx
     },
     beforeExcelUpload(file) {},
     excelCommit() {},
     bulkimport() {
-      this.bulkimportVisble = true;
+      this.bulkimportVisble = true
     },
     closebulkimportDialog() {
-      this.bulkimportVisble = false;
-      this.isBatchSuccess = false;
-      this.imSuccessData = [];
+      this.bulkimportVisble = false
+      this.isBatchSuccess = false
+      this.imSuccessData = []
     },
     batchesDel() {
-      this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [...this.delIDArr];
+        const params = [...this.delIDArr]
         deleteCarData(params)
           .then(response => {
-            this.getList();
-            this.delIDArr = [];
+            this.getList()
+            this.delIDArr = []
           })
           .catch(() => {
-            this.delIDArr = [];
-          });
-      });
+            this.delIDArr = []
+          })
+      })
     },
     delAlert(d) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [d];
+        const params = [d]
         deleteCarData(params).then(response => {
-          this.getList();
-          this.delIDArr = [];
-        });
-      });
+          this.getList()
+          this.delIDArr = []
+        })
+      })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     editDialog(v, w) {
-      this.editForm.id = w;
-      this.editForm.carNumber = v.licenseNo;
-      this.editForm.carList = v.type;
-      this.editForm.carColor = v.color;
-      this.editVisable = true;
+      this.editForm.id = w
+      this.editForm.carNumber = v.licenseNo
+      this.editForm.carList = v.type
+      this.editForm.carColor = v.color
+      this.editVisable = true
     },
     editDialogConfirm() {
       const params = [
@@ -449,27 +449,27 @@ export default {
           // carList: this.editForm.carList,
           // carColor: this.editForm.carColor
         }
-      ];
+      ]
       carEditConfirm(params).then(response => {
         this.$notify({
-          title: "成功",
-          message: "编辑成功",
-          type: "success",
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
           duration: 2000
-        });
-        this.getList();
-        this.editVisable = false;
-      });
+        })
+        this.getList()
+        this.editVisable = false
+      })
     },
     submit() {},
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     onSearch() {
       const query = {
@@ -480,100 +480,100 @@ export default {
         },
         params: [
           {
-            field: "license_no",
-            operator: "LIKE",
+            field: 'license_no',
+            operator: 'LIKE',
             value: `${this.formInline.searchkey}%`
           }
         ]
-      };
+      }
       searchList(query).then(response => {
         // if (response.data !== 0) return;
         // this.getList();
-        this.importData = response.body.data;
-        this.total = response.body.data.total;
-        this.page = 1;
-        this.formInline.searchkey = "";
-      });
+        this.importData = response.body.data
+        this.total = response.body.page.total
+        this.page = 1
+        this.formInline.searchkey = ''
+      })
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
 
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id);
+          this.delIDArr.push(item.id)
         }
-      });
+      })
     },
     dialogQuxiao() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     addCar() {
       this.$refs.addCarForm.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         const params = [
           {
             licenseNo: this.addCarForm.province + this.addCarForm.carWord,
             type: this.addCarForm.carlist,
             color: this.addCarForm.color
           }
-        ];
+        ]
         addCarData(params)
           .then(res => {
-            this.getList();
-            this.dialogVisable = false;
+            this.getList()
+            this.dialogVisable = false
             this.$message({
-              message: "添加成功",
-              type: "success"
-            });
+              message: '添加成功',
+              type: 'success'
+            })
             this.addCarForm = {
-              carWord: "",
-              province: "",
-              carlist: "",
-              color: ""
-            };
+              carWord: '',
+              province: '',
+              carlist: '',
+              color: ''
+            }
           })
-          .catch(err => {});
-      });
+          .catch(err => {})
+      })
     },
     // 重置
     resetQuery() {
-      this.formInline.searchkey = "";
-      this.page = 1;
-      this.limit = 10;
-      this.getList();
+      this.formInline.searchkey = ''
+      this.page = 1
+      this.limit = 10
+      this.getList()
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>
