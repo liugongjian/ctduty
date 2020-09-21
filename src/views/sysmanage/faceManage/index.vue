@@ -461,10 +461,9 @@ export default {
       fetchFaceList(query).then(response => {
         if (response.code !== 0) return
         this.faceList = response.body.data
-        this.tableData = response.body.data.map(item => {
-          item.image = item.image(res => {
-            return res
-          })
+        this.tableData = response.body.data
+        this.tableData.map(item => {
+          item.image = item.image + '.png'
         })
         this.total = response.body.page.total
         this.listLoading = false

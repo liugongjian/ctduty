@@ -9,7 +9,7 @@
             icon="el-icon-plus"
             @click="create"
           >{{ '新增车牌数据' }}</el-button>
-          <el-button class="filter-item" @click="bulkimport ">{{ '导入车牌数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport">{{ '导入车牌数据' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
@@ -21,7 +21,7 @@
           >
             <el-table
               v-if="isBatchSuccess"
-              :data="importData"
+              :data="imSuccessData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
               style="width: 55vw"
@@ -30,41 +30,21 @@
               @filter-change="filerStatus"
               @selection-change="handleSelectionChange"
             >
-              <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
-                <template slot-scope="scope">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in subordinateList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </template>
+              <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type">
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop>
-                <template slot-scope="scope">
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in colorList"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </template>
+              <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color">
               </el-table-column>
             </el-table>
-
             <el-upload
               v-else
+              :action="importUrl"
+              :on-success="batchUpSuccess"
+              :headers="importHeader"
               class="upload-demo"
               drag
               list-type="picture"
-              action="https://jsonplaceholder.typicode.com/posts/"
               multiple
-              @on-success="batchUpSuccess"
             >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">
@@ -74,7 +54,7 @@
               <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持csv、xlsx、xls格式文件</div>
             </el-upload>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="editDialogConfirm">提 交</el-button>
+              <el-button type="primary" @click="importConfirm">提 交</el-button>
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
@@ -224,10 +204,15 @@ import {
   importCarData,
   deleteCarData
 } from '@/api/dm'
+const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
     return {
+      importHeader: {
+        Authorization: token
+      },
+      importUrl: process.env.LOT_ROOT + '/CarLicense/Import',
       colorList: [
         {
           value: '黑色',
@@ -314,6 +299,7 @@ export default {
       listLoading: false,
       filteredValue: [],
       importData: [],
+      imSuccessData: [],
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
@@ -360,7 +346,20 @@ export default {
         this.listLoading = false
       })
     },
-    batchUpSuccess() {
+    importConfirm() {
+      this.imSuccessData.forEach(item => {
+        const { color, licenseNo, type } = item
+        const params = [{
+          color, licenseNo, type
+        }]
+        addCarData(params).then(res => {
+          this.getList()
+          this.bulkimportVisble = false
+        })
+      })
+    },
+    batchUpSuccess(res) {
+      this.imSuccessData = res.body.data
       this.isBatchSuccess = true
       console.log('批量上传成功')
     },
@@ -370,7 +369,6 @@ export default {
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
-
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
       }
@@ -384,6 +382,8 @@ export default {
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
+      this.isBatchSuccess = false
+      this.imSuccessData = []
     },
     batchesDel() {
       this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
@@ -392,7 +392,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [...this.delIDArr]
-        delCamera(params)
+        deleteCarData(params)
           .then(response => {
             this.getList()
             this.delIDArr = []
@@ -409,7 +409,7 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [d]
-        delCamera(params).then(response => {
+        deleteCarData(params).then(response => {
           this.getList()
           this.delIDArr = []
         })
