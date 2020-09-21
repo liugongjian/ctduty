@@ -377,7 +377,6 @@ export default {
 
     resetQuery() {
       this.queryName = ''
-
       this.getUserList()
     }
 
