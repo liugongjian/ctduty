@@ -23,14 +23,13 @@
           >
             <el-table
               v-if="isBatchSuccess"
-              :data="tableData"
+              :data="mulTableData"
               :header-cell-class-name="tableRowClassHeader"
               class="amountdetailTable"
               style="width: 100%"
               tooltip-effect="dark"
               fit
-              @filter-change="filerStatus"
-              @selection-change="handleSelectionChange"
+              @on-success="batchUpSuccess"
             >
               <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="id"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="online">
@@ -41,8 +40,8 @@
               <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
-                    <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
-                    <img slot="reference" src="../../../assets/images/police.jpg" alt style="width: 120px; height: 100px">
+                    <img :src="scope.row.image" alt width="400" class="hoverImg" >
+                    <img slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px">
                   </el-popover>
                 </template>
               </el-table-column>
@@ -55,10 +54,14 @@
             </el-table>
             <el-upload
               v-else
+              :action="upMulUrl"
+              :headers="upSingleHeaders"
+              :data="mulUpData"
+              :before-upload="beforeMulUpload"
+              :limit="99999999999"
               class="upload-demo"
               drag
               list-type="picture"
-              action="https://jsonplaceholder.typicode.com/posts/"
               multiple
               @on-success="batchUpSuccess"
             >
@@ -90,11 +93,15 @@
                 <el-upload
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
+                  :on-error="handleAvatarError"
                   :before-upload="beforeAvatarUpload"
                   :action="upSingleUrl"
+                  :on-progress="handleAvatarProgress"
+                  :headers="upSingleHeaders"
+                  :data="upSingleData"
                   class="avatar-uploader"
                 >
-                  <img v-if="imageUrl" :src="addFaceForm.imageUrl" class="avatar" >
+                  <img v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="avatar" >
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
@@ -154,8 +161,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
-              <img src="../../../assets/images/police.jpg" alt width="400" class="hoverImg" >
-              <img slot="reference" src="../../../assets/images/police.jpg" alt >
+              <img :src="scope.row.image + '.png'" alt width="400" class="hoverImg" >
+              <img slot="reference" :src="scope.row.image + '.png'" alt >
             </el-popover>
           </template>
         </el-table-column>
@@ -252,12 +259,6 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList,
-  editCamera,
-  addCamera,
-  delCamera
-} from '@/api/camera'
-import {
   uploadImage,
   uploadMultiImage
 } from '@/api/dm'
@@ -269,11 +270,23 @@ import {
   fetchCheckFace
 } from '@/api/face'
 import { fetchUserList } from '@/api/users'
+const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
     return {
+      upSingleHeaders: {
+        Authorization: token
+      },
+      upSingleData: {
+        name: ''
+      },
+      mulUpData: {
+        name: ''
+      },
+      mulTableData: [],
       upSingleUrl: process.env.LOT_ROOT + '/Userface/UploadImage',
+      upMulUrl: process.env.LOT_ROOT + '/Userface/UploadMultiImage',
       fileList: [
         {
           name: 'food.jpeg',
@@ -292,7 +305,7 @@ export default {
         nameList: '',
         id: ''
       },
-      isBatchSuccess: true,
+      isBatchSuccess: false,
       typeOptions: [
         { name: '居民白名单', _id: 1 },
         { name: '员工白名单', _id: 2 },
@@ -358,7 +371,8 @@ export default {
         creatorId: ''
       },
       faceList: [],
-      bulkimportVisble: false
+      bulkimportVisble: false,
+      imageUrl: ''
     }
   },
   watch: {
@@ -370,20 +384,31 @@ export default {
   async created() {
     await Message.closeAll()
     await this.getfaceList()
-    await this.getList()
+    await this.getfaceList()
   },
   methods: {
+    handleAvatarProgress(e, file) {
+      console.log(e, file, '呼呼')
+    },
+    checkModel() {
+
+    },
     batchUpSuccess() {
       this.isBatchSuccess = true
       console.log('批量上传成功')
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res.body.data[0], '嘻嘻')
+      this.addFaceForm.imageUrl = 'http://36.41.71.26:8920/' + res.body.data[0]
+      console.log(this.addFaceForm.imageUrl)
+    },
+    handleAvatarError(res, file) {
+      console.log(res, file, '哈哈')
     },
     beforeAvatarUpload(file) {
+      this.upSingleData.name = file.name.split('.')[0]
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
-
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
       }
@@ -392,11 +417,16 @@ export default {
       }
       return isJPG && isLt2M
     },
+    beforeMulUpload(file) {
+      this.mulUpData.name = file.name.split('.')[0]
+      this.isBatchSuccess = true
+    },
     bulkimport() {
       this.bulkimportVisble = true
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
+      this.isBatchSuccess = false
     },
     getfaceList() {
       const query = {
@@ -423,7 +453,7 @@ export default {
         const params = [...this.delIDArr]
         delCamera(params)
           .then(response => {
-            this.getList()
+            this.getfaceList()
             this.delIDArr = []
           })
           .catch(() => {
@@ -438,8 +468,8 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [d]
-        delCamera(params).then(response => {
-          this.getList()
+        fetchDeleteFace(params).then(response => {
+          this.getfaceList()
           this.delIDArr = []
         })
       })
@@ -477,7 +507,7 @@ export default {
           type: 'success',
           duration: 2000
         })
-        this.getList()
+        this.getfaceList()
         this.editVisable = false
       })
     },
@@ -497,7 +527,7 @@ export default {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getList()
+      this.getfaceList()
     },
     goBack() {
       this.$router.go(-1)
@@ -513,14 +543,14 @@ export default {
       }
       if (columnObj[columnObjKey].length === 0) {
         this.filteredValue = []
-        this.getList()
+        this.getfaceList()
       } else {
         this.filteredValue = columnObj[columnObjKey]
-        this.getList()
+        this.getfaceList()
       }
     },
     // 获取列表数据
-    // getList() {
+    // getfaceList() {
     //   const params = {
     //     cascade: true,
     //     page: {
@@ -545,12 +575,11 @@ export default {
     addFaceConfirm() {
       this.$refs.addForm.validate(valid => {
         if (!valid) return
-        const params = {
+        const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue,
-          id: ''
-        }
+          nameList: this.formInline.typeValue
+        }]
         fetchAddFace(params)
           .then(res => {
             this.dialogForm = {
@@ -579,49 +608,14 @@ export default {
       })
     },
     dialogConfirm() {
-      this.$refs.addForm.validate(valid => {
-        if (!valid) return
-        const params = [this.dialogForm]
-        addCamera(params)
-          .then(res => {
-            this.dialogForm = {
-              address: '',
-              creatorId: '',
-              id: '',
-              name: '',
-              latitude: '',
-              longitude: '',
-              url: '',
-              inChargeId: '',
-              manufacturer: '',
-              model: '',
-              phone: ''
-            }
-            this.$notify({
-              title: '成功',
-              message: '增加成功',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
-            this.dialogVisable = false
-          })
-          .catch(() => {
-            this.$notify({
-              title: '失败',
-              message: '增加失败',
-              type: 'error',
-              duration: 2000
-            })
-          })
-      })
+
     },
     // 重置
     resetQuery() {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
-      this.getList()
+      this.getfaceList()
     }
   }
 }
