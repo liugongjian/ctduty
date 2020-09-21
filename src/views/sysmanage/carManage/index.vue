@@ -336,10 +336,24 @@ export default {
   },
   async created() {
     await Message.closeAll()
-    await this.getUserList()
     await this.getList()
   },
   methods: {
+    // 获取列表数据
+    getList() {
+      const params = {
+        page: {
+          index: this.page,
+          size: this.limit
+        },
+        params: {}
+      }
+      fetchCarList(params).then(res => {
+        this.importData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
+    },
     batchUpSuccess() {
       this.isBatchSuccess = true
       console.log('批量上传成功')
@@ -364,20 +378,6 @@ export default {
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
-    },
-    getUserList() {
-      const query = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 9999999
-        },
-        params: {}
-      }
-      fetchCarList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
-      })
     },
     batchesDel() {
       this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
@@ -491,21 +491,7 @@ export default {
         this.getList()
       }
     },
-    // 获取列表数据
-    getList() {
-      const params = {
-        page: {
-          index: this.page,
-          size: this.limit
-        },
-        params: {}
-      }
-      fetchCarList(params).then(res => {
-        this.importData = res.body.data
-        this.total = res.body.page.total
-        this.listLoading = false
-      })
-    },
+
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
