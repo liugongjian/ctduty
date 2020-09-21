@@ -47,7 +47,7 @@
                 <template slot-scope="scope">
                   <el-select v-model="value" placeholder="请选择">
                     <el-option
-                      v-for="item in subordinateList"
+                      v-for="item in colorList"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -79,42 +79,42 @@
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
-            <el-form :model="addCarForm" label-position="right" label-width="130px">
+            <el-form ref="addCarForm" :model="addCarForm" label-position="right" label-width="130px">
               <el-form-item label="车牌号: " class="carInput">
-                <el-select v-model="addCarForm.brand" style="width:30vw;" class="filter-item">
+                <el-select v-model="addCarForm.province" style="width:30vw;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
                     :label="item.name"
-                    :value="item._id"
+                    :value="item.id"
                   ></el-option>
                 </el-select>
-                <el-input placeholder="请输入内容"></el-input>
+                <el-input placeholder="请输入内容" v-model="addCarForm.carWord"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
-                <el-select v-model="addCarForm.list" :value="addCarForm.list" style="width:50vw;">
+                <el-select v-model="addCarForm.carlist" :value="addCarForm.carlist" style="width:50vw;">
                   <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
+                    v-for="item in subordinateList"
+                    :value="item.value"
+                    :label="item.label"
+                    :key="item.value"
                   ></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="车辆颜色：">
                 <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
                   <el-option
-                    v-for="item in userList"
-                    :value="item.id"
-                    :label="item.username"
-                    :key="item.id"
+                    v-for="item in colorList"
+                    :value="item.value"
+                    :label="item.label"
+                    :key="item.value"
                   ></el-option>
                 </el-select>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="addCar('dialogForm')">确 定</el-button>
+              <el-button type="primary" @click="addCar()">确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
           </el-dialog>
@@ -171,13 +171,13 @@
             <el-select
               v-model="editForm.inChargeId"
               :value="editForm.inChargeId"
-              placeholder="请选择负责人"
+              placeholder="请选择所属名单"
             >
               <el-option
-                v-for="item in userList"
-                :value="item.id"
-                :label="item.username"
-                :key="item.id"
+                v-for="item in subordinateList"
+                :value="item.value"
+                :label="item.label"
+                :key="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -185,13 +185,13 @@
             <el-select
               v-model="editForm.creatorId"
               :value="editForm.creatorId"
-              placeholder="请选择添加人"
+              placeholder="请选择颜色"
             >
               <el-option
-                v-for="item in userList"
-                :value="item.id"
-                :label="item.username"
-                :key="item.id"
+                v-for="item in colorList"
+                :value="item.value"
+                :label="item.label"
+                :key="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -228,27 +228,29 @@ export default {
   components: { Pagination },
   data() {
     return {
+      colorList: [
+        {
+          value: "黑色",
+          label: "黑色"
+        },
+        {
+          value: "白色",
+          label: "白色"
+        },
+      ],
       isBatchSuccess: true,
       subordinateList: [
         {
-          value: "选项1",
-          label: "黄金糕"
+          value: "白名单",
+          label: "白名单"
         },
         {
-          value: "选项2",
-          label: "双皮奶"
+          value: "嫌疑车辆黑名单",
+          label: "嫌疑车辆黑名单"
         },
         {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
+          value: "疑似套牌车辆",
+          label: "疑似套牌车辆"
         }
       ],
       value: "",
@@ -278,13 +280,16 @@ export default {
         phone: ""
       },
       typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
+        {name: '浙', id: '浙'},
+        {name: '京', id: '京'},
+        {name: '沪', id: '沪'},
+        {name: '粤', id: '粤'},
       ],
       imageUrl: "",
       addCarForm: {
-        brand: "",
-        list: "",
+        carWord: "",
+        province: "",
+        carlist: "",
         color: ""
       },
       addFaceForm: {},
@@ -324,7 +329,6 @@ export default {
 
         creatorId: ""
       },
-      userList: [],
       bulkimportVisble: false,
       value: ""
     };
@@ -505,40 +509,29 @@ export default {
       this.dialogVisable = false;
     },
     addCar() {
-      this.$refs.addForm.validate(valid => {
+      this.$refs.addCarForm.validate(valid => {
         if (!valid) return;
-        const params = [this.dialogForm];
-        addCamera(params)
-          .then(res => {
-            this.dialogForm = {
-              address: "",
-              creatorId: "",
-              id: "",
-              name: "",
-              latitude: "",
-              longitude: "",
-              url: "",
-              inChargeId: "",
-              manufacturer: "",
-              model: "",
-              phone: ""
-            };
-            this.$notify({
-              title: "成功",
-              message: "增加成功",
-              type: "success",
-              duration: 2000
-            });
+        const params = [{
+          licenseNo: this.addCarForm.province + this.addCarForm.carWord,
+          type: this.addCarForm.carlist,
+          color: this.addCarForm.color
+        }];
+        addCarData(params).then(res => {
+            console.log('添加车辆res', res)
             this.getList();
             this.dialogVisable = false;
-          })
-          .catch(() => {
-            this.$notify({
-              title: "失败",
-              message: "增加失败",
-              type: "error",
-              duration: 2000
+            this.$message({
+              message: '添加成功',
+              type: 'success',
             });
+            this.addCarForm = {
+              carWord: "",
+              province: "",
+              carlist: "",
+              color: ""
+            }
+          }).catch((err) => {
+            console.log('失败', err)
           });
       });
     },
