@@ -54,17 +54,19 @@
           </div>
         </div>
         <div class="bottom" style="opacity:1;background:#fff;margin-top: 13px;">
-          <div class="dash-title todayAlarm">今日告警</div>
+          <div class="dash-title todayAlarm">
+            今日告警
+          </div>
           <div class="bottom-left">
-            <div style="width:100%; height:35px;padding:0 20px;">
+            <div style="width:100%; height:35px;">
               <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理({{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }})</p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理({{todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }})</p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -233,7 +235,7 @@ require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { play, stop } from '@/api/monitor'
-import { fetchSinMan } from '@/api/dashboard'
+import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
@@ -318,7 +320,12 @@ export default {
       alarmActive: false,
       videoOptions: {},
       cameraId: null,
-      hasUrl: null
+      hasUrl: null,
+      todayAlerts: null,
+      // 当天已处理
+      todayHandleds: null,
+      // 当天未处理
+      todayUndeal: null,
     }
   },
   watch: {
@@ -421,6 +428,7 @@ export default {
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
+    this.getUndeal()
   },
   mounted() {
     const that = this
@@ -595,6 +603,29 @@ export default {
             }
           })
         }
+      })
+    },
+    getUndeal() {
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchNowInfo(params).then(res => {
+        console.log('res', res)
+        this.todayAlerts = res.body.data.todayAlerts
+        this.todayHandleds = res.body.data.todayHandleds
+        this.todayUndeal = parseInt(res.body.data.todayAlerts - res.body.data.todayHandleds)
+        // this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
+        // this.offCamera = res.body.data.offlineCameras
+        // this.alarmTime = res.body.data.todayAlerts
+        // this.processed = res.body.data.todayHandleds
+        // this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
+        // this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
       })
     },
     watchClick(e) {
@@ -1099,7 +1130,7 @@ export default {
   position: relative;
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 16px;
   height: 40px;
   line-height: 40px;
   color: #333;

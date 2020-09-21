@@ -8,6 +8,6 @@ module.exports = {
   'LOGOUT_URL': '"http://127.0.0.1:9528/login/logout"', 
   'BUSINESS_URL': '"http://127.0.0.1:9528"',
   'BUSAPI_ROOT': '"/nvsapi"',
-  'LOT_ROOT': '"/lottery-proxy"',
+  'LOT_ROOT': '"/nvsapi"',
   'UPLOAD_FILE_ROOT': '"/upload-file-proxy"'
 }

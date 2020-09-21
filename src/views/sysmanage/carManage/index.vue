@@ -96,7 +96,7 @@
                     :value="item.id"
                   ></el-option>
                 </el-select>
-                <el-input placeholder="请输入内容" v-model="addCarForm.carWord"></el-input>
+                <el-input v-model="addCarForm.carWord" placeholder="请输入内容"></el-input>
               </el-form-item>
 
               <el-form-item label="所属名单：">
@@ -171,23 +171,18 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <el-select v-model="addCarForm.province" style="width:30vw;" class="filter-item">
+            <!-- <el-select v-model="editForm.licenseNo" style="width:30vw;" class="filter-item">
               <el-option
                 v-for="item in typeOptions"
                 :key="item._id"
                 :label="item.name"
                 :value="item.id"
               ></el-option>
-            </el-select>
-            <el-input placeholder="请输入内容" v-model="editForm.carNumber"></el-input>
-            <!-- <el-input placeholder="请输入内容" v-model="editForm.carNumber" style="width: 60%;"></el-input> -->
+            </el-select>-->
+            <el-input v-model="editForm.carNumber"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
-            <el-select
-              v-model="editForm.inChargeId"
-              :value="editForm.inChargeId"
-              placeholder="请选择所属名单"
-            >
+            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -197,7 +192,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车辆颜色：">
-            <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择颜色">
+            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -234,7 +229,8 @@ import {
   downloadModel,
   addCarData,
   importCarData,
-  deleteCarData
+  deleteCarData,
+  carEditConfirm
 } from "@/api/dm";
 export default {
   components: { Pagination },
@@ -258,7 +254,7 @@ export default {
           label: "绿色"
         }
       ],
-      isBatchSuccess: true,
+      isBatchSuccess: false,
       subordinateList: [
         {
           value: "白名单",
@@ -287,13 +283,8 @@ export default {
         }
       ],
       dialogForm: {
-        address: "",
         creatorId: "",
-        carNumber: "",
-        carList: "",
-        carColor: "",
         name: "",
-
         manufacturer: "",
         model: "",
         phone: ""
@@ -373,7 +364,8 @@ export default {
       };
       fetchCarList(params).then(res => {
         this.importData = res.body.data;
-        this.total = res.body.page.total;
+        this.total = res.body.data.total;
+        console.log(this.total);
         this.listLoading = false;
       });
     },
@@ -387,7 +379,6 @@ export default {
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
-
       if (!isJPG) {
         this.$message.error("上传头像图片只能是 JPG 格式!");
       }
@@ -439,11 +430,6 @@ export default {
       this.editForm.carNumber = v.licenseNo;
       this.editForm.carList = v.type;
       this.editForm.carColor = v.color;
-      // this.editForm.longitude = v.longitude;
-      // this.editForm.latitude = v.latitude;
-      // this.editForm.address = v.address;
-
-      // this.editForm.url = v.url;
       this.editVisable = true;
     },
     editCloseDialog() {
@@ -452,12 +438,15 @@ export default {
     editDialogConfirm() {
       const params = [
         {
-          carNumber: this.editForm.carNumber,
-          carList: this.editForm.carList,
-          carColor: this.editForm.carColor
+          licenseNo: this.editForm.carNumber,
+          type: this.editForm.carList,
+          color: this.editForm.carColor
+          // carNumber: this.editForm.carNumber,
+          // carList: this.editForm.carList,
+          // carColor: this.editForm.carColor
         }
       ];
-      editCamera(params).then(response => {
+      carEditConfirm(params).then(response => {
         this.$notify({
           title: "成功",
           message: "编辑成功",

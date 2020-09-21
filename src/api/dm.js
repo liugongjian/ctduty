@@ -41,3 +41,27 @@ export function downloadModel(query) {
     data: query
   });
 }
+// UploadImage
+export function uploadImage(query) {
+  return request({
+    url: `/nvsapi/Userface/UploadImage`,
+    method: "post",
+    data: query
+  });
+}
+// UploadMultiImage
+export function uploadMultiImage(query) {
+  return request({
+    url: `/nvsapi/Userface/UploadMultiImage`,
+    method: "post",
+    data: query
+  });
+}
+// 车辆的编辑确定接口
+export function carEditConfirm(query) {
+  return request({
+    url: `/nvsapi/CarLicense/Update`,
+    method: "post",
+    data: query
+  });
+}
