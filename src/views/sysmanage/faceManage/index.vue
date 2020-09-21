@@ -480,8 +480,7 @@ export default {
       })
     },
     editDialog(v) {
-      const info = v
-      this.editForm = info
+      this.editForm = JSON.parse(JSON.stringify(v))
       this.editVisable = true
     },
     editCloseDialog() {

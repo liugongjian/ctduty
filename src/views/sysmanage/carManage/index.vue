@@ -342,7 +342,7 @@ export default {
       }
       fetchCarList(params).then(res => {
         this.importData = res.body.data
-        this.total = res.body.data.total
+        this.total = res.body.page.total
         this.listLoading = false
       })
     },
