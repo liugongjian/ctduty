@@ -512,13 +512,13 @@ export default {
         params: [{
           field: 'name',
           operator: 'LIKE',
-          value: `${this.formInline.searchkey}%`
+          value: `%${this.formInline.searchkey}%`
         }] }
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
         this.page = 1
-        this.total = 10
+        this.total = res.body.page.total
         this.formInline.searchkey = ''
       })
     },
@@ -608,7 +608,8 @@ export default {
             this.dialogForm = {
               name: '',
               image: '',
-              nameList: ''
+              nameList: '',
+              id: ''
             }
             this.getfaceList()
             this.bulkimportVisble = false
