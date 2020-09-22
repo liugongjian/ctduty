@@ -331,7 +331,7 @@ export default {
       },
       formInline: {
         searchkey: '',
-        typeValue: '居民白名单'
+        typeValue: 1
       },
       listLoading: false,
       filteredValue: [],
@@ -570,7 +570,7 @@ export default {
         const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.nameList
+          nameList: this.formInline.typeValue
         }]
         fetchAddFace(params)
           .then(res => {
