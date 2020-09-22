@@ -347,7 +347,8 @@ export default {
       editVisable: false,
       faceList: [],
       bulkimportVisble: false,
-      imageUrl: ''
+      imageUrl: '',
+      delMulId: null
     }
   },
   watch: {
@@ -363,8 +364,17 @@ export default {
   },
   methods: {
     delmulTableInfo(id) {
-      this.mulTableData = this.mulTableData.filter(item => {
-        return item.id !== id
+      this.delMulId = id
+      this.$confirm('你确定要删除此条数据吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.mulTableData = this.mulTableData.filter(item => {
+          return item.id !== this.delMulId
+        })
+      }).catch(() => {
+        return null
       })
     },
     handleAvatarProgress(e, file) {
