@@ -143,6 +143,7 @@ export default {
                   this.$router.push('/dashboard')
                 }
               }).catch(err => {
+                return err
               })
             } else {
               // this.refreshImg()
