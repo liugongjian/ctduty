@@ -48,7 +48,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
+              <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
                     <img :src="scope.row.image" alt width="400" class="hoverImg" >
@@ -165,7 +165,7 @@
             <span v-else-if="scope.row.nameList === 3">嫌疑人员</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
+        <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
               <img :src="scope.row.image" alt width="400" class="hoverImg" >

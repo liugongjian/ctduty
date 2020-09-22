@@ -131,7 +131,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="licenseNo"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type">
           <template slot-scope="scope">
             <span>{{ scope.row.type }}</span>
