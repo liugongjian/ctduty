@@ -383,7 +383,6 @@ export default {
       const isxlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
       if (!isxlsx) {
         this.$message.error('导入数据只能是 xlsx 格式!')
       }
@@ -475,9 +474,8 @@ export default {
     onSearch() {
       const query = {
         page: {
-          index: 1,
-          size: 10,
-          total: 0
+          index: this.page,
+          size: this.limit
         },
         params: [
           {

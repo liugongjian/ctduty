@@ -509,6 +509,10 @@ export default {
     },
     onSearch() {
       const params = {
+        page: {
+          index: this.page,
+          size: this.limit
+        },
         params: [{
           field: 'name',
           operator: 'LIKE',
@@ -566,15 +570,13 @@ export default {
         const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue
+          nameList: this.formInline.nameList
         }]
         fetchAddFace(params)
           .then(res => {
-            this.dialogForm = {
+            this.addFaceForm = {
               name: '',
-              image: '',
-              nameList: '',
-              id: ''
+              imageUrl: ''
             }
             this.$notify({
               title: '成功',
