@@ -53,9 +53,8 @@
                 </div>
                 <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
               </el-upload>
-              <p class="dlTem" style="text-align:center;width:100%;height:50px;margin-top:20px;" @click="dlTem">
-                <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />
-                <a :href="`${path}`" :download="`${path}`">下载模板文件</a>
+              <p class="dlTem" style="text-align:center;width:100%;height:50px;margin-top:20px;" >
+                <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
               </p>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -591,11 +590,10 @@ export default {
 </script>
 
 <style lang='scss'>
-.dlTem {
-  cursor: pointer;
-}
 .dlTem:hover {
- color:#409eff;
+  a{
+   color:#409eff;
+  }
 }
 .el-dialog__body {
   margin: 0 auto;
