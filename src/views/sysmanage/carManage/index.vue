@@ -15,7 +15,7 @@
             :visible="bulkimportVisble"
             class="carDialog"
             title="导入车牌数据"
-            width="65vw"
+            width="50vw"
             height="80vh"
             @close="closebulkimportDialog"
           >
@@ -53,7 +53,7 @@
                 </div>
                 <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
               </el-upload>
-              <p class="dlTem" style="text-align:center;width:100%;height:50px;margin-top:20px;" >
+              <p class="dlTem" style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;" >
                 <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
               </p>
             </div>
