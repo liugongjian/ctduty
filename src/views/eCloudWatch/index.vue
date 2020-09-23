@@ -77,7 +77,7 @@
             <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
-                  <template>
+                  <template v-if="stepsData.length">
                     <div
                       v-for="(item, index) in stepsData"
                       :key="index"
