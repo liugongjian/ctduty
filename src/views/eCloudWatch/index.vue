@@ -37,7 +37,7 @@
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 80%; width:100%"></div>
             <div class="num">
-              <div class="processed">已处理: {{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }}</div>
+              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }}</span></div>
               <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }}</span></div>
             </div>
           </div>
