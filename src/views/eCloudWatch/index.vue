@@ -66,7 +66,7 @@
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理({{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }})</p>
               </div>
               <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理({{todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }})</p>
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理({{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }})</p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -325,7 +325,7 @@ export default {
       // 当天已处理
       todayHandleds: null,
       // 当天未处理
-      todayUndeal: null,
+      todayUndeal: null
     }
   },
   watch: {
@@ -428,7 +428,6 @@ export default {
     await this.getalarmList()
     await this.getCameraList()
     await this.getPanelList()
-    this.getUndeal()
   },
   mounted() {
     const that = this
@@ -496,6 +495,9 @@ export default {
         this.processed = res.body.data.todayHandleds
         this.rate = parseInt(res.body.data.alertHandleRate * 100)
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
+        this.todayAlerts = res.body.data.todayAlerts
+        this.todayHandleds = res.body.data.todayHandleds
+        this.todayUndeal = parseInt(res.body.data.todayAlerts - res.body.data.todayHandleds)
       })
     },
     getCameraList() {
@@ -603,28 +605,6 @@ export default {
             }
           })
         }
-      })
-    },
-    getUndeal() {
-      const params = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 20
-        },
-        params: {
-        }
-      }
-      fetchNowInfo(params).then(res => {
-        this.todayAlerts = res.body.data.todayAlerts
-        this.todayHandleds = res.body.data.todayHandleds
-        this.todayUndeal = parseInt(res.body.data.todayAlerts - res.body.data.todayHandleds)
-        // this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
-        // this.offCamera = res.body.data.offlineCameras
-        // this.alarmTime = res.body.data.todayAlerts
-        // this.processed = res.body.data.todayHandleds
-        // this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
-        // this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
       })
     },
     watchClick(e) {

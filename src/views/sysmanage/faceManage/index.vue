@@ -48,7 +48,7 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
+              <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
                     <img :src="scope.row.image" alt width="400" class="hoverImg" >
@@ -165,7 +165,7 @@
             <span v-else-if="scope.row.nameList === 3">嫌疑人员</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'人员图片'">
+        <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
               <img :src="scope.row.image" alt width="400" class="hoverImg" >
@@ -331,7 +331,7 @@ export default {
       },
       formInline: {
         searchkey: '',
-        typeValue: '居民白名单'
+        typeValue: 1
       },
       listLoading: false,
       filteredValue: [],
@@ -347,7 +347,8 @@ export default {
       editVisable: false,
       faceList: [],
       bulkimportVisble: false,
-      imageUrl: ''
+      imageUrl: '',
+      delMulId: null
     }
   },
   watch: {
@@ -363,8 +364,17 @@ export default {
   },
   methods: {
     delmulTableInfo(id) {
-      this.mulTableData = this.mulTableData.filter(item => {
-        return item.id !== id
+      this.delMulId = id
+      this.$confirm('你确定要删除此条数据吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.mulTableData = this.mulTableData.filter(item => {
+          return item.id !== this.delMulId
+        })
+      }).catch(() => {
+        return null
       })
     },
     handleAvatarProgress(e, file) {
@@ -570,7 +580,7 @@ export default {
         const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.nameList
+          nameList: this.formInline.typeValue
         }]
         fetchAddFace(params)
           .then(res => {

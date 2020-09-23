@@ -34,25 +34,29 @@
               <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
             </el-table>
-            <el-upload
-              v-else
-              :action="importUrl"
-              :on-success="batchUpSuccess"
-              :headers="importHeader"
-              :before-upload="beforeAvatarUpload"
-              class="upload-demo"
-              name="file"
-              multiple
-              drag
-              list-type="picture"
-            >
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">
-                将文件拖到此处，或
-                <em>点击上传</em>
-              </div>
-              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
-            </el-upload>
+            <div v-else>
+              <el-upload
+                :action="importUrl"
+                :on-success="batchUpSuccess"
+                :headers="importHeader"
+                :before-upload="beforeAvatarUpload"
+                class="upload-demo"
+                name="file"
+                multiple
+                drag
+                list-type="picture"
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">
+                  将文件拖到此处，或
+                  <em>点击上传</em>
+                </div>
+                <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
+              </el-upload>
+              <p class="dlTem" style="text-align:center;width:100%;height:50px;margin-top:20px;" >
+                <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+              </p>
+            </div>
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="importConfirm">提 交</el-button>
             </div>
@@ -131,7 +135,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="licenseNo"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type">
           <template slot-scope="scope">
             <span>{{ scope.row.type }}</span>
@@ -204,13 +208,15 @@ import {
   importCarData,
   deleteCarData,
   carEditConfirm,
-  searchList
+  searchList,
+  dlTemplate
 } from '@/api/dm'
 const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
     return {
+      path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
       },
@@ -337,10 +343,18 @@ export default {
     await this.getList()
   },
   methods: {
-    // 获取列表数据
+    dlTem() {
+      dlTemplate().then(res => {
+        this.$message({
+          message: '模板文件下载成功',
+          type: 'success'
+        })
+      })
+    },
     editCloseDialog() {
       this.editVisable = false
     },
+    // 获取列表数据
     getList() {
       const params = {
         page: {
@@ -576,6 +590,11 @@ export default {
 </script>
 
 <style lang='scss'>
+.dlTem:hover {
+  a{
+   color:#409eff;
+  }
+}
 .el-dialog__body {
   margin: 0 auto;
 }
