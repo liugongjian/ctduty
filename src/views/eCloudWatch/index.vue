@@ -556,10 +556,20 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
+      console.log('哈哈哈')
+      this.stepsData = {
+        camera: {
+          address: ''
+        }
+      }
+      setTimeout(() => {
+        this.stepsData = {
+
+        }
+      }, 100)
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
-      // this.getPanel()
     },
     monitoring(e) {
       this.showAlarm = 'monitoring'
