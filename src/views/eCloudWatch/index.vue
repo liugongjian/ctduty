@@ -13,6 +13,7 @@
         :center="center"
         :events="events"
         :zoom="zoom"
+        map-style="amap://styles/normal"
         class="amap-demo"
         vid="amapDemo"
       >
@@ -29,20 +30,16 @@
       </el-amap>
       <div class="warn" style="background:rgba(0,0,0,0)">
         <div class="dispose" style="opacity:1;background:#fff;margin-bottom:20px;">
-          <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="告警处理率" name="alarmRate" lazy>
-              <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-                <div id="panel" style="height: 100%; width:100%"></div>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
-          </el-tabs> -->
           <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-            <div id="panel" style="height: 100%; width:100%"></div>
+            <div id="panel" style="height: 80%; width:100%"></div>
+            <div class="num">
+              <div class="processed">已处理: {{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }}</div>
+              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }}</span></div>
+            </div>
           </div>
           <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
             <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
@@ -63,10 +60,10 @@
                 <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
               </div>
               <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理({{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }})</p>
+                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
               </div>
               <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理({{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }})</p>
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -245,8 +242,9 @@ import hintMusic from './assets/hint.mp3'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
-  // components: { CameraList },
   components: { Pagination, VideoPlayer },
+  // components: { CameraList },
+  // eslint-disable-next-line vue/require-prop-types
   props: ['data', 'defaultActive'],
   data() {
     return {
@@ -563,10 +561,8 @@ export default {
         }
       }
       setTimeout(() => {
-        this.stepsData = {
-
-        }
-      }, 100)
+        this.stepsData = {}
+      }, 0)
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
@@ -894,6 +890,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.num {
+  width: 60%;
+  height: 30px;
+  margin: 0 auto;
+  display: flex;
+  margin-top: 5px;
+  position: absolute;
+  bottom:10px;
+  left: 50%;
+  transform: translateX(-50%);
+  div{
+    width: 50%;
+    padding: 0 10px;
+  }
+}
 .bottom {
   background-color: #fff !important;
   opacity:1 !important;
