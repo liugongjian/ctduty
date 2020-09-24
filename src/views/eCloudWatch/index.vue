@@ -650,7 +650,6 @@ export default {
             if (this.currentcameraId === this.form.id && this.videoOpen) {
               this.hasUrl = null
               this.videoOpen = false
-              stop(this.form.id)
             } else if (this.form.online !== 1) {
               this.cameraState = '正在加载直播流...'
               play(this.form.id).then(res => {
@@ -665,10 +664,11 @@ export default {
                   height: 300, // 播放器高度
                   // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
                   // fluid: true, // 流体布局，自动充满，并保持播放 其比例
+                  // m3u8uri
                   sources: [
                     {
-                      src: res.body.data + '&a.flv',
-                      type: this.video_type(res.body.data + '&a.flv')
+                      src: res.body.data.rtmpuri,
+                      type: this.video_type(res.body.data.rtmpuri)
                     }
                   ]
                 }
@@ -736,6 +736,8 @@ export default {
       }, 1000)
     },
     showDialog(cameraInfo) {
+      this.dataDia = cameraInfo
+      this.dialogVisable = true
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -748,8 +750,6 @@ export default {
           item.classList.add('markerClickImg')
         }
       })
-      this.dataDia = cameraInfo
-      this.dialogVisable = true
     },
     closeDialog() {
       this.dialogVisable = false
