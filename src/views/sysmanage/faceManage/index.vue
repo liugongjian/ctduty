@@ -51,8 +51,8 @@
               <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
                 <template slot-scope="scope">
                   <el-popover placement="left-end" width="424" trigger="hover">
-                    <img :src="scope.row.image" alt width="400" class="hoverImg" >
-                    <img slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px">
+                    <el-image :src="scope.row.image" alt width="400" class="hoverImg" />
+                    <el-image slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px" />
                   </el-popover>
                 </template>
               </el-table-column>
@@ -108,7 +108,7 @@
                   :data="upSingleData"
                   class="avatar-uploader"
                 >
-                  <img v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="avatar" >
+                  <el-image v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
@@ -168,8 +168,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
           <template slot-scope="scope">
             <el-popover placement="left-end" width="424" trigger="hover">
-              <img :src="scope.row.image" alt width="400" class="hoverImg" >
-              <img slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px">
+              <el-image :src="scope.row.image" alt width="400" class="hoverImg" />
+              <el-image slot="reference" :src="scope.row.image" alt style="width: 120px; height: 100px" />
             </el-popover>
           </template>
         </el-table-column>
@@ -202,7 +202,7 @@
                   :data="upSingleData"
                   class="avatar-uploader"
                 >
-                  <img v-if="editForm.image" :src="editForm.image" class="avatar" >
+                  <el-image v-if="editForm.image" :src="editForm.image" class="avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </div>
@@ -388,10 +388,10 @@ export default {
       const isJPG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 PNG 格式!')
+        this.$message.error('上传人脸图片只能是 PNG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传人脸图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
     },
@@ -399,9 +399,9 @@ export default {
       const isJPG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 PNG 格式!')
+        this.$message.error('上传人脸图片只能是 PNG 格式!')
       } else if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传人脸图片大小不能超过 2MB!')
       } else {
         this.mulUpData.name = file.name.split('.')[0]
         this.isBatchSuccess = true

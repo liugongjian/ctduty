@@ -26,7 +26,7 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import store from '@/store'
-import minLogo from '@/assets/images/logo-min.png'
+import minLogo from '@/assets/images/logo-minnew.png'
 import maxLogo from '@/assets/images/logo-max.png'
 
 export default {
@@ -63,19 +63,19 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   .logo-con{
-    height: 60px;
-    padding:20px 10px 10px;
+    height: 60px !important;
+    padding:15px 10px;
     .max-logo {
-      width: 180px;
-      height: 24px;
+      width: 94px;
+      height: 30.4px;
       display: block;
       margin: 0 auto;
     }
-    .min{
-      height: 24px;
-      width: auto;
+    .min-logo {
+      width: 30px;
+      height: 32px !important;
       display: block;
-      margin: 0 auto;
+      margin: auto;
     }
   }
   .header-con{
