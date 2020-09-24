@@ -91,10 +91,15 @@
                           class="untreated"
                           icon-class="untreated"
                         />
+                        <svg-icon
+                          v-else-if="item.state === undefined"
+                          class="untreated"
+                          icon-class="untreated"
+                        />
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
-                        <p class="dizhi">{{ item.camera.address }}</p>
+                        <p class="dizhi">{{ item.camera.address || null }}</p>
                         <div class="addressword">
                           <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                           <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -118,10 +123,20 @@
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+                      <svg-icon
+                        v-else-if="item.state === 1"
+                        class="untreated"
+                        icon-class="untreated"
+                      />
+                      <svg-icon
+                        v-else-if="item.state === undefined"
+                        class="untreated"
+                        icon-class="untreated"
+                      />
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address }}</p>
+                      <p class="dizhi">{{ item.camera.address || null }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -143,11 +158,21 @@
                     @click="showDialogFather(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
-                      <svg-icon v-if="item.state !== 0" class="untreated" icon-class="untreated" />
+                      <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+                      <svg-icon
+                        v-else-if="item.state === 1"
+                        class="untreated"
+                        icon-class="untreated"
+                      />
+                      <svg-icon
+                        v-else-if="item.state === undefined"
+                        class="untreated"
+                        icon-class="untreated"
+                      />
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address }}</p>
+                      <p class="dizhi">{{ item.camera.address || null }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -182,7 +207,7 @@
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
               <el-form-item label="流量状态:">
-                <span style="width: 300px;">{{ dataDia.camera.address }}</span>
+                <span style="width: 300px;">{{ dataDia.camera.address || null }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
@@ -254,7 +279,6 @@ export default {
       dataError: [],
       dataDia: {
         camera: {
-          address: ''
         }
       },
       isHint: true,
@@ -264,17 +288,13 @@ export default {
       // },
       temp: {
         camera: {
-          address: ''
         },
         createTime: '',
         image: '',
         imageCut: ''
       },
       yData: [
-        { camera: {
-          address: ''
-        }
-        }],
+      ],
       // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
@@ -286,7 +306,6 @@ export default {
       values: 3,
       xData: [
         { camera: {
-          address: ''
         }
         }
       ],
@@ -553,7 +572,6 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
-      console.log('哈哈哈')
       this.stepsData = {
         camera: {
           address: ''
