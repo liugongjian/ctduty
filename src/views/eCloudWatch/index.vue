@@ -902,7 +902,7 @@ export default {
   transform: translateX(-50%);
   div{
     width: 50%;
-    padding: 0 10px;
+    padding:0 5px;
   }
 }
 .bottom {
