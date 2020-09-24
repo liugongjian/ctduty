@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="screen-body">
-            <VideoPlayer :video-ref="item.id" :options="item.videoOptions"/>
+            <VideoPlayer :videoRef="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
-        this.deviceList = data.map(item => {
+        this.deviceList = data.filter(i => i.rtmpuri).map(item => {
           return {
             ...item,
             videoOptions: {
@@ -142,8 +142,8 @@ export default {
               // fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.flv + '&a.flv',
-                  type: this.video_type(item.flv + '&a.flv')
+                  src: item.rtmpuri,
+                  type: this.video_type(item.rtmpuri)
                 }
               ]
             }
