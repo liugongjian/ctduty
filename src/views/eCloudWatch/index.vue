@@ -92,9 +92,9 @@
                           icon-class="untreated"
                         />
                         <svg-icon
-                          v-else-if="item.state === undefined"
+                          v-else-if="item.state === null"
                           class="untreated"
-                          icon-class="untreated"
+                          icon-class="untreated2"
                         />
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
@@ -129,9 +129,9 @@
                         icon-class="untreated"
                       />
                       <svg-icon
-                        v-else-if="item.state === undefined"
+                        v-else-if="item.state === null"
                         class="untreated"
-                        icon-class="untreated"
+                        icon-class="untreated2"
                       />
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
@@ -165,9 +165,9 @@
                         icon-class="untreated"
                       />
                       <svg-icon
-                        v-else-if="item.state === undefined"
+                        v-else-if="item.state === null"
                         class="untreated"
-                        icon-class="untreated"
+                        icon-class="untreated2"
                       />
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
@@ -362,7 +362,6 @@ export default {
           if (index === 0) {
             that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
             that.zoom = 15
-            // item.classList.add('markerClickImg')
             that.showZwMes = false
           }
         })
@@ -382,7 +381,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 99
             },
             params: [
               {
@@ -405,15 +404,7 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
-              this.getCameraList()
-              this.showDialog(response.body.data[0])
-              if (this.isHint) {
-                const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
-                audio.play()// 播放
-              }
-              this.timer2 = setTimeout(() => {
-                this.closeDialog()
-              }, 5000)
+              this.showDialog(response.body.data[0], true)
             }
           })
         }, 5000)
@@ -542,7 +533,7 @@ export default {
             position: [
               item.longitude,
               item.latitude
-            ] /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */,
+            ],
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
                 <span v-if='${item.state === null}' style='display: ${item.dealSum.split('/')[0] === '0' ? 'none' : 'inline-block'};
@@ -594,7 +585,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99999
+          size: 99
         },
         params: [
           {
@@ -700,7 +691,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 99
             },
             params: [
               {
@@ -719,7 +710,7 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
-              this.stepsData = response.body.data
+              this.stepsData = response.body.data || []
               this.yData = []
               this.xData = []
               response.body.data.forEach(item => {
@@ -750,16 +741,25 @@ export default {
         }, 500)
       }, 1000)
     },
-    showDialog(cameraInfo) {
+    showDialog(cameraInfo, isAlert) {
       this.dataDia = cameraInfo
       this.dialogVisable = true
+      if (isAlert) {
+        if (this.isHint) {
+          const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
+          audio.play()// 播放
+        }
+        this.timer2 = setTimeout(() => {
+          this.closeDialog()
+        }, 5000)
+      }
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
-        if (JSON.parse(item.attributes[1].nodeValue).longitude === cameraInfo.camera.longitude) {
+        if (JSON.parse(item.attributes[1].nodeValue).id === cameraInfo.camera.id) {
           item.setAttribute('width', 50)
           item.setAttribute('height', 50)
           item.classList.add('markerClickImg')
