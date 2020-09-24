@@ -87,8 +87,6 @@
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="摄像头名称："><el-input v-model="editForm.name" placeholder="请输入摄像头名称" class="filter-item" style="width: 300px;"></el-input>
-          </el-form-item>
           <el-form-item label="负责人：">
             <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
               <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
