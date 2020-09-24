@@ -89,12 +89,12 @@
                         <svg-icon
                           v-else-if="item.state === 1"
                           class="untreated"
-                          icon-class="untreated"
+                          icon-class="untreated2"
                         />
                         <svg-icon
                           v-else-if="item.state === null"
                           class="untreated"
-                          icon-class="untreated2"
+                          icon-class="untreated"
                         />
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
@@ -126,12 +126,12 @@
                       <svg-icon
                         v-else-if="item.state === 1"
                         class="untreated"
-                        icon-class="untreated"
+                        icon-class="untreated2"
                       />
                       <svg-icon
                         v-else-if="item.state === null"
                         class="untreated"
-                        icon-class="untreated2"
+                        icon-class="untreated"
                       />
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
@@ -162,12 +162,12 @@
                       <svg-icon
                         v-else-if="item.state === 1"
                         class="untreated"
-                        icon-class="untreated"
+                        icon-class="untreated2"
                       />
                       <svg-icon
                         v-else-if="item.state === null"
                         class="untreated"
-                        icon-class="untreated2"
+                        icon-class="untreated"
                       />
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
