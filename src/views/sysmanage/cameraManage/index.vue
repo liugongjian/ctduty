@@ -18,15 +18,12 @@
                   </el-form-item>
                   <el-form-item label-width="130px" label="负责人：" prop="inChargeId">
                     <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择负责人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label-width="130px" label="添加人：" prop="creatorId">
-                    <el-select v-model="dialogForm.creatorId" :value="dialogForm.creatorId" placeholder="请选择添加人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-                      </el-option>
-                    </el-select>
+                  <el-form-item label-width="130px" label="添加人：">
+                    {{ creatorName }}
                   </el-form-item>
                   <el-form-item label-width="130px" label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
@@ -143,13 +140,13 @@
                 <el-form :model="editForm" label-position="right">
                   <el-form-item label-width="130px" label="负责人：">
                     <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label-width="130px" label="添加人：">
                     <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                      <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -184,6 +181,7 @@
 
 <script>
 import VueAMap from 'vue-amap'
+import Cookies from 'js-cookie'
 import CameraList from './list.vue'
 import moment from 'moment'
 import EllipsisTooltip from '@/components/EllipsisTooltip'
@@ -271,6 +269,8 @@ export default {
         name: '',
         createTime: ''
       },
+      userId: Cookies.get('userId'),
+      creatorName: '',
       formInfo: [],
       highLightMarkerId: NaN,
       hasMarker: false,
@@ -350,6 +350,11 @@ export default {
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
+        this.userList.forEach(item => {
+          if (item.id === +this.userId) {
+            this.creatorName = item.name
+          }
+        })
       })
     },
     submitForm(formName) {
@@ -531,7 +536,8 @@ export default {
       this.$refs.addForm.validate(valid => {
         if (!valid) return
         const params = [
-          this.dialogForm
+          { ...this.dialogForm,
+            creatorId: this.userId }
         ]
         addCamera(params).then(res => {
           this.dialogForm = {

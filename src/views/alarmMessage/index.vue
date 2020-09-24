@@ -245,7 +245,6 @@ export default {
   created() {
     this.userId = Cookies.get('userId')
     // this.getPushSetTime()
-
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
