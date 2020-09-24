@@ -244,7 +244,7 @@ export default {
   },
   created() {
     this.userId = Cookies.get('userId')
-    // this.getPushSetTime()
+    this.getPushSetTime()
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
@@ -323,7 +323,7 @@ export default {
       this.page = 1,
       this.startTime = '02:00'
       this.endTime = '05:00'
-      // this.getPushSetTime()
+      this.getPushSetTime()
       this.formInline.typeValue = 'all'
       // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
       // this.defaultTab=this.endDate
@@ -423,24 +423,24 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
-    // getPushSetTime() {
-    //   getPushSet().then(response => {
-    //     const setting = response.body.data.setting
-    //     let parseSetting
-    //     try {
-    //       parseSetting = JSON.parse(setting)
-    //     } catch (err) {
-    //       parseSetting ={}
-    //     }
-    //     console.log(parseSetting,'xxx')
-    //     this.startTime = parseSetting.date1
-    //     this.endTime = parseSetting.date2
-    //     const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    //     const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    //     const h = this.formInline.typeValue
-    //     this.getList(s, e, h)
-    //   })
-    // },
+    getPushSetTime() {
+      getPushSet().then(response => {
+        const setting = response.body.data.setting
+        let parseSetting
+        try {
+          parseSetting = JSON.parse(setting)
+        } catch (err) {
+          parseSetting ={}
+        }
+        console.log(parseSetting,'xxx')
+        this.startTime = parseSetting.date1
+        this.endTime = parseSetting.date2
+        const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+        const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        this.getList(s, e, h)
+      })
+    },
 
     // 获取多天告警总数
     getTimeAllTotal(s, e, h) {
