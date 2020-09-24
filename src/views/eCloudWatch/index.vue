@@ -363,8 +363,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999,
-              total: 0
+              size: 99999
             },
             params: [
               {
@@ -577,8 +576,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99999,
-          total: 0
+          size: 99999
         },
         params: [
           {
@@ -684,8 +682,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999,
-              total: 0
+              size: 99999
             },
             params: [
               {
