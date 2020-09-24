@@ -78,7 +78,7 @@ export default {
         autoplay: true,
         controls: true,
         width: 960, // 播放器宽度
-        height: this.size == 'small' ? 310 : 480 // 播放器高度
+        height: 480 // 播放器高度
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
         // fluid: true, // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
