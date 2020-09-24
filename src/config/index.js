@@ -31,8 +31,6 @@ export default {
   },
   // 路由转发前缀
   prefix: {
-    commonPrefix: process.env.BUSAPI_ROOT,
-    userPrefix: process.env.USERLISTAPI_ROOT,
     lotteryPrefix: process.env.LOT_ROOT
   }
 }

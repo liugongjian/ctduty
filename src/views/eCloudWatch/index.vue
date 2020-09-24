@@ -13,6 +13,7 @@
         :center="center"
         :events="events"
         :zoom="zoom"
+        map-style="amap://styles/normal"
         class="amap-demo"
         vid="amapDemo"
       >
@@ -29,20 +30,16 @@
       </el-amap>
       <div class="warn" style="background:rgba(0,0,0,0)">
         <div class="dispose" style="opacity:1;background:#fff;margin-bottom:20px;">
-          <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="告警处理率" name="alarmRate" lazy>
-              <div class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-                <div id="panel" style="height: 100%; width:100%"></div>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane label="实时监控" name="monitoring" >实时监控</el-tab-pane>
-          </el-tabs> -->
           <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-            <div id="panel" style="height: 100%; width:100%"></div>
+            <div id="panel" style="height: 80%; width:100%"></div>
+            <div class="num">
+              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }}</span></div>
+              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }}</span></div>
+            </div>
           </div>
           <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
             <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
@@ -54,16 +51,18 @@
           </div>
         </div>
         <div class="bottom" style="opacity:1;background:#fff;margin-top: 13px;">
-          <div class="dash-title todayAlarm">今日告警</div>
+          <div class="dash-title todayAlarm">
+            今日告警
+          </div>
           <div class="bottom-left">
-            <div style="width:100%; height:35px;padding:0 20px;">
+            <div style="width:100%; height:35px;">
               <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
               </div>
               <div class="bottom-right">
@@ -78,7 +77,7 @@
             <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
               <div v-if="showTabValue === 'all'">
                 <div :data="stepsData">
-                  <template>
+                  <template v-if="stepsData.length">
                     <div
                       v-for="(item, index) in stepsData"
                       :key="index"
@@ -88,8 +87,7 @@
                       <div style="height:32px; width:32px; float:left" class="lefticon">
                         <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
                         <svg-icon
-                          v-else
-                          if="item.state === 1"
+                          v-else-if="item.state === 1"
                           class="untreated"
                           icon-class="untreated"
                         />
@@ -234,7 +232,7 @@ require('echarts/lib/component/title')
 import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { play, stop } from '@/api/monitor'
-import { fetchSinMan } from '@/api/dashboard'
+import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
@@ -244,8 +242,9 @@ import hintMusic from './assets/hint.mp3'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
-  // components: { CameraList },
   components: { Pagination, VideoPlayer },
+  // components: { CameraList },
+  // eslint-disable-next-line vue/require-prop-types
   props: ['data', 'defaultActive'],
   data() {
     return {
@@ -319,7 +318,12 @@ export default {
       alarmActive: false,
       videoOptions: {},
       cameraId: null,
-      hasUrl: null
+      hasUrl: null,
+      todayAlerts: null,
+      // 当天已处理
+      todayHandleds: null,
+      // 当天未处理
+      todayUndeal: null
     }
   },
   watch: {
@@ -359,7 +363,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99,
+              size: 99999,
               total: 0
             },
             params: [
@@ -432,6 +436,7 @@ export default {
     that.getPanel()
     setInterval(() => {
       this.getalarmList()
+      this.getCameraList()
     }, 10000)
   },
   updated() {
@@ -488,6 +493,9 @@ export default {
         this.processed = res.body.data.todayHandleds
         this.rate = parseInt(res.body.data.alertHandleRate * 100)
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
+        this.todayAlerts = res.body.data.todayAlerts
+        this.todayHandleds = res.body.data.todayHandleds
+        this.todayUndeal = parseInt(res.body.data.todayAlerts - res.body.data.todayHandleds)
       })
     },
     getCameraList() {
@@ -517,7 +525,7 @@ export default {
               item.longitude,
               item.latitude
             ] /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */,
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg" data=${JSON.stringify(item)}
+            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
                 <span v-if='${item.state === null}' style='display: ${item.dealSum.split('/')[0] === '0' ? 'none' : 'inline-block'};
       width: 20px;
@@ -546,10 +554,18 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
+      console.log('哈哈哈')
+      this.stepsData = {
+        camera: {
+          address: ''
+        }
+      }
+      setTimeout(() => {
+        this.stepsData = {}
+      }, 0)
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
-      // this.getPanel()
     },
     monitoring(e) {
       this.showAlarm = 'monitoring'
@@ -561,7 +577,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99,
+          size: 99999,
           total: 0
         },
         params: [
@@ -613,11 +629,16 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
+          /* if (item.childNodes[1].classList.contains('offline')) {
+            return
+          } */
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
           this.alarmActive = true
-          item.childNodes[1].classList.add('markerClickImg')
+          if (!item.childNodes[1].classList.contains('offline')) {
+            item.childNodes[1].classList.add('markerClickImg')
+          }
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
@@ -625,7 +646,7 @@ export default {
             'YYYY-MM-DD HH:mm:SS'
           )
           if (this.form.online !== 1) {
-            this.cameraState = '请选择要查看的摄像头'
+            // this.cameraState = '请选择要查看的摄像头'
             if (this.currentcameraId === this.form.id && this.videoOpen) {
               this.hasUrl = null
               this.videoOpen = false
@@ -663,7 +684,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99,
+              size: 99999,
               total: 0
             },
             params: [
@@ -705,20 +726,6 @@ export default {
     markerClick() {
 
     },
-    video_type(_url) {
-      var url = _url.toLowerCase()
-      if (url.startsWith('rtmp')) {
-        return 'rtmp/flv'
-      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
-        return 'application/x-mpegURL'
-      } else if (url.endsWith('webm')) {
-        return 'video/webm'
-      } else if (url.endsWith('mp4')) {
-        return 'video/mp4'
-      } else if (url.endsWith('ogv')) {
-        return 'video/ogg'
-      }
-    },
     blink(dom) {
       window.clearInterval(this.timer4)
       this.timer3 = setInterval(() => {
@@ -728,23 +735,6 @@ export default {
         }, 500)
       }, 1000)
     },
-    /* showDialog(cameraInfo) {
-      window.clearTimeout(this.timer2)
-      this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
-      const markers = document.getElementsByClassName('markerImg');
-      [].forEach.call(markers, function(item) {
-        item.classList.remove('markerClickImg')
-        if (JSON.parse(item.attributes[1].nodeValue).longitude === cameraInfo.camera.longitude) {
-          // item.classList.add('markerClickImg')
-          this.blink(item)
-        }
-      })
-      this.dataDia = cameraInfo
-      this.dialogVisable = true
-      this.timer2 = setTimeout(() => {
-        this.closeDialog()
-      }, 5000)
-    }, */
     showDialog(cameraInfo) {
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
       const markers = document.getElementsByClassName('markerImg');
@@ -900,6 +890,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.num {
+  width: 60%;
+  height: 30px;
+  margin: 0 auto;
+  display: flex;
+  margin-top: 5px;
+  position: absolute;
+  bottom:10px;
+  left: 50%;
+  transform: translateX(-50%);
+  div{
+    width: 50%;
+    padding: 0 10px;
+  }
+}
 .bottom {
   background-color: #fff !important;
   opacity:1 !important;
@@ -1125,7 +1130,7 @@ export default {
   position: relative;
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 16px;
   height: 40px;
   line-height: 40px;
   color: #333;
@@ -1177,6 +1182,10 @@ export default {
   justify-content:flex-end;
   align-items: center;
   box-shadow: 0 1px 4px 0;
+}
+.offline {
+  fill: #95afc0 !important;
+  // cursor: no-drop;
 }
 </style>
 

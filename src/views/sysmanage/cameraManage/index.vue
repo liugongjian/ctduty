@@ -398,11 +398,15 @@ export default {
       if (this.formInline.typeValue === 'map') {
         [].forEach.call(marImgs, function(item) {
           item.classList.remove('markerClickImg')
+          item.setAttribute('width', 40)
+          item.setAttribute('height', 40)
         })
       }
       e.path.forEach((item, index) => {
         if (item.className === 'amap-marker-content') {
           item.childNodes[1].classList.add('markerClickImg')
+          item.childNodes[1].setAttribute('width', 50)
+          item.childNodes[1].setAttribute('height', 50)
           this.highLightMarkerId = JSON.parse(item.childNodes[1].attributes[1].nodeValue).id
           this.center = [JSON.parse(item.childNodes[1].attributes[1].nodeValue).longitude, JSON.parse(item.childNodes[1].attributes[1].nodeValue).latitude]
           this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)

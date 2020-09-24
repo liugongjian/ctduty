@@ -348,4 +348,14 @@ code {
 html {
   font-size: 16px;
 }
+.offline {
+  fill: #95afc0 !important;
+  // cursor: no-drop;
+}
+.el-popover {
+  z-index: 999999999999999999999999999999999 !important;
+}
+.el-message-box__wrapper {
+  z-index: 999999999999999999999999999999999999 !important;
+}
 
