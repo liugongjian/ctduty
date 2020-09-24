@@ -95,12 +95,6 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="添加人：">
-            <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
-              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
           <el-form-item label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
