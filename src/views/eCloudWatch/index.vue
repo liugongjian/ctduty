@@ -74,9 +74,10 @@
               </div>
             </div>
 
-            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
+            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
               <div v-if="showTabValue === 'all'">
-                <div :data="stepsData">
+                <el-button v-if="isOnlyCameraData" type="text" @click="allAlarm">全部数据</el-button>
+                <div :data="stepsData" style="margin-top:10px;">
                   <template v-if="stepsData.length">
                     <div
                       v-for="(item, index) in stepsData"
@@ -323,6 +324,7 @@ export default {
       page: 1,
       limit: 10,
       timer2: '',
+      isOnlyCameraData: false,
       events: {
         click: a => {}
       },
@@ -405,6 +407,7 @@ export default {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
               this.showDialog(response.body.data[0], true)
+              this.getalarmList()
             }
           })
         }, 5000)
@@ -446,7 +449,8 @@ export default {
     setInterval(() => {
       this.getalarmList()
       this.getCameraList()
-    }, 10000)
+      this.isOnlyCameraData = false
+    }, 120000)
   },
   updated() {
     if (document.getElementsByClassName('markerImg').length) {
@@ -460,6 +464,10 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    allAlarm() {
+      this.isOnlyCameraData = false
+      this.getalarmList()
+    },
     video_type(_url) {
       var url = _url.toLowerCase()
       if (url.startsWith('rtmp')) {
@@ -636,13 +644,11 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
-          /* if (item.childNodes[1].classList.contains('offline')) {
-            return
-          } */
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
           this.alarmActive = true
+          this.isOnlyCameraData = true
           if (!item.childNodes[1].classList.contains('offline')) {
             item.childNodes[1].classList.add('markerClickImg')
           }
