@@ -411,6 +411,11 @@ export default {
             }
           })
         }, 5000)
+      } else {
+        setTimeout(() => {
+          this.getalarmList()
+          this.isOnlyCameraData = false
+        }, 300000)
       }
     },
     xData(v) {
@@ -446,11 +451,6 @@ export default {
     that.getCameraList()
     that.getPanelList()
     that.getPanel()
-    setInterval(() => {
-      this.getalarmList()
-      this.getCameraList()
-      this.isOnlyCameraData = false
-    }, 120000)
   },
   updated() {
     if (document.getElementsByClassName('markerImg').length) {
@@ -571,6 +571,8 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
+      this.isOnlyCameraData = false
+      this.getalarmList()
       this.stepsData = {
         camera: {
           address: ''
@@ -648,7 +650,6 @@ export default {
           this.showAlarm = 'monitoring'
           this.showActive = false
           this.alarmActive = true
-          this.isOnlyCameraData = true
           if (!item.childNodes[1].classList.contains('offline')) {
             item.childNodes[1].classList.add('markerClickImg')
           }
@@ -690,7 +691,6 @@ export default {
           } else {
             this.cameraState = '此摄像头已离线'
           }
-
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
           const params = {
@@ -735,6 +735,12 @@ export default {
                   this.xData.push(item)
                 }
               })
+              // 两分钟后自动恢复默认全部列表
+              this.isOnlyCameraData = true
+              setTimeout(() => {
+                this.getalarmList()
+                this.isOnlyCameraData = false
+              }, 120000)
             }
           })
         }

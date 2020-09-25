@@ -17,7 +17,7 @@
                   <el-form-item label-width="130px" label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
                   </el-form-item>
                   <el-form-item label-width="130px" label="负责人：" prop="inChargeId">
-                    <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择负责人">
+                    <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width: 240px;" placeholder="请选择负责人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                       </el-option>
                     </el-select>
@@ -139,7 +139,7 @@
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
                 <el-form :model="editForm" label-position="right">
                   <el-form-item label-width="130px" label="负责人：">
-                    <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
+                    <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" style="width:300px;" placeholder="请选择负责人">
                       <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                       </el-option>
                     </el-select>
@@ -303,6 +303,8 @@ export default {
             that.form = JSON.parse(item.attributes[1].nodeValue)
             that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
             that.zoom = 15
+            item.setAttribute('width', 50)
+            item.setAttribute('height', 50)
             that.editForm = JSON.parse(item.attributes[1].nodeValue)
             that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             that.showZwMes = false

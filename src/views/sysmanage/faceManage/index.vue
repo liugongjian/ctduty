@@ -95,7 +95,7 @@
                   v-model="addFaceForm.name"
                   placeholder="请输入姓名"
                   class="filter-item"
-                  style="width: 150px;"
+                  style="width: 178px;"
                 ></el-input>
               </el-form-item>
               <el-form-item label="上传人脸图像: ">
@@ -115,7 +115,7 @@
               <el-form-item label="所属名单: ">
                 <el-select
                   v-model="formInline.typeValue"
-                  style="width:120px;"
+                  style="width:178px;"
                   class="filter-item"
                   @change="checkModel"
                 >
@@ -187,7 +187,7 @@
               v-model="editForm.name"
               placeholder="请输入姓名"
               class="filter-item"
-              style="width: 300px;"
+              style="width: 178px;"
             ></el-input>
           </el-form-item>
           <el-form-item label="上传人脸图像: ">
@@ -212,7 +212,7 @@
             <el-select
               v-model="editForm.nameList"
               placeholder="请选择名单"
-              style="width:120px;"
+              style="width:178px;"
               class="filter-item"
               @change="checkModel"
             >
@@ -670,7 +670,7 @@ export default {
   display: block;
 }
 .upload-demo {
-  width: 300px;
+  width: 360px;
   margin: 0 auto;
 }
 .el-dialog__body {
