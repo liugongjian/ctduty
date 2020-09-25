@@ -13,7 +13,7 @@
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
               <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择岗位">
+                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width:240px;" placeholder="请选择岗位">
                   <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                   </el-option>
                 </el-select>
@@ -88,7 +88,7 @@
           <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
           <el-form-item label="负责人：">
-            <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
+            <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" style="width:300px;" placeholder="请选择负责人">
               <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
               </el-option>
             </el-select>

@@ -74,9 +74,10 @@
               </div>
             </div>
 
-            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
+            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
               <div v-if="showTabValue === 'all'">
-                <div :data="stepsData">
+                <el-button v-if="isOnlyCameraData" type="text" @click="allAlarm">全部数据</el-button>
+                <div :data="stepsData" style="margin-top:10px;">
                   <template v-if="stepsData.length">
                     <div
                       v-for="(item, index) in stepsData"
@@ -99,7 +100,7 @@
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
-                        <p class="dizhi">{{ item.camera.address || null }}</p>
+                        <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                         <div class="addressword">
                           <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                           <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -136,7 +137,7 @@
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -172,7 +173,7 @@
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -207,7 +208,7 @@
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
               <el-form-item label="流量状态:">
-                <span style="width: 300px;">{{ dataDia.camera.address || null }}</span>
+                <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
@@ -323,6 +324,7 @@ export default {
       page: 1,
       limit: 10,
       timer2: '',
+      isOnlyCameraData: false,
       events: {
         click: a => {}
       },
@@ -405,9 +407,15 @@ export default {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
               this.showDialog(response.body.data[0], true)
+              this.getalarmList()
             }
           })
         }, 5000)
+      } else {
+        setTimeout(() => {
+          this.getalarmList()
+          this.isOnlyCameraData = false
+        }, 300000)
       }
     },
     xData(v) {
@@ -443,10 +451,6 @@ export default {
     that.getCameraList()
     that.getPanelList()
     that.getPanel()
-    setInterval(() => {
-      this.getalarmList()
-      this.getCameraList()
-    }, 10000)
   },
   updated() {
     if (document.getElementsByClassName('markerImg').length) {
@@ -460,6 +464,10 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    allAlarm() {
+      this.isOnlyCameraData = false
+      this.getalarmList()
+    },
     video_type(_url) {
       var url = _url.toLowerCase()
       if (url.startsWith('rtmp')) {
@@ -563,6 +571,8 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
+      this.isOnlyCameraData = false
+      this.getalarmList()
       this.stepsData = {
         camera: {
           address: ''
@@ -636,9 +646,6 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
-          /* if (item.childNodes[1].classList.contains('offline')) {
-            return
-          } */
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
@@ -684,7 +691,6 @@ export default {
           } else {
             this.cameraState = '此摄像头已离线'
           }
-
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
           const params = {
@@ -696,7 +702,7 @@ export default {
             params: [
               {
                 field: 'cameraId',
-                operator: 'BETWEEN',
+                operator: 'EQUALS',
                 value: this.form.id
               }
             ],
@@ -710,6 +716,11 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
+              this.stepsData = {
+                camera: {
+                  address: ''
+                }
+              }
               this.stepsData = response.body.data || []
               this.yData = []
               this.xData = []
@@ -724,6 +735,12 @@ export default {
                   this.xData.push(item)
                 }
               })
+              // 两分钟后自动恢复默认全部列表
+              this.isOnlyCameraData = true
+              setTimeout(() => {
+                this.getalarmList()
+                this.isOnlyCameraData = false
+              }, 120000)
             }
           })
         }
@@ -1116,9 +1133,6 @@ export default {
   overflow: hidden;
   cursor: pointer;
 }
-/* .youContent .addressword {
-  margin-left: 30px;
-} */
 .dizhi {
   width: 100%;
   font-size: 15px;
