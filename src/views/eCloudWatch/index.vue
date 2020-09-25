@@ -255,7 +255,7 @@ require('echarts/lib/chart/bar')
 // 引入提示框和title组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
-import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
+import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { play, stop } from '@/api/monitor'
 import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
@@ -383,7 +383,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 300
             },
             params: [
               {
@@ -406,8 +406,9 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
-              this.showDialog(response.body.data[0], true)
               this.getalarmList()
+              this.isOnlyCameraData = false
+              this.showDialog(response.body.data[0], true)
             }
           })
         }, 5000)
@@ -420,6 +421,9 @@ export default {
     },
     xData(v) {
       const that = this
+      that.timers.forEach(item => {
+        window.clearInterval(item)
+      })
       v.forEach(item => {
         setTimeout(() => {
           [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
@@ -494,7 +498,6 @@ export default {
       })
     },
     getPanelList() {
-      // fetchAllData
       const params = {
         cascade: true,
         page: {
@@ -571,19 +574,11 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
-      this.isOnlyCameraData = false
-      this.getalarmList()
-      this.stepsData = {
-        camera: {
-          address: ''
-        }
-      }
-      setTimeout(() => {
-        this.stepsData = {}
-      }, 0)
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
+      this.isOnlyCameraData = false
+      this.getalarmList()
     },
     monitoring(e) {
       this.showAlarm = 'monitoring'
@@ -595,7 +590,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99999
+          size: 300
         },
         params: [
           {
@@ -617,11 +612,12 @@ export default {
       }
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
+          this.getPanelList()
           this.stepsData = response.body.data
           this.yData = []
           this.xData = []
           response.body.data.forEach(item => {
-            if (item.state !== null) {
+            if (item.handlerId !== null) {
               this.yData.push(item)
             } else {
               this.xData.push(item)
@@ -697,7 +693,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 300
             },
             params: [
               {
@@ -716,16 +712,12 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
-              this.stepsData = {
-                camera: {
-                  address: ''
-                }
-              }
+              this.getPanelList()
               this.stepsData = response.body.data || []
               this.yData = []
               this.xData = []
               response.body.data.forEach(item => {
-                if (item.state !== null) {
+                if (item.handlerId !== null) {
                   this.yData.push(item)
                 } else {
                   [...this.timers].forEach((item, index) => {
@@ -906,15 +898,31 @@ export default {
       if (this.active++ > 2) this.active = 0
     },
     normal() {
-      fetchNormalStatus(this.dataDia.id, 0).then((res) => {
+      const params = [{
+        id: this.dataDia.id,
+        state: 0,
+        handlerId: this.userId
+
+      }]
+      notifyState(params, 0).then((res) => {
         this.getalarmList()
+        this.getPanelList()
         this.dialogVisable = false
+        this.isOnlyCameraData = false
       })
     },
     unnormal() {
-      fetchNormalStatus(this.dataDia.id, 1).then((res) => {
+      const params = [{
+        id: this.dataDia.id,
+        state: 1,
+        handlerId: this.userId
+
+      }]
+      notifyState(params, 1).then((res) => {
         this.getalarmList()
+        this.getPanelList()
         this.dialogVisable = false
+        this.isOnlyCameraData = false
       })
     }
   }

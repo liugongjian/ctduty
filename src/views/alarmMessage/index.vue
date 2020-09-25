@@ -175,7 +175,6 @@ export default {
       return val.address
     }
   },
-
   data() {
     return {
       renderTime,
@@ -430,9 +429,9 @@ export default {
         try {
           parseSetting = JSON.parse(setting)
         } catch (err) {
-          parseSetting ={}
+          parseSetting = {}
         }
-        console.log(parseSetting,'xxx')
+        console.log(parseSetting, 'xxx')
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
         const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
