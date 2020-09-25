@@ -1,5 +1,5 @@
 <template>
-  <div class="monitorScreen-wrap">
+  <div class="monitorScreen-wrap" v-loading="pageLoading" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
@@ -14,11 +14,11 @@
             </div>
           </div>
           <div class="screen-body">
-            <VideoPlayer :video-ref="item.id" :options="item.videoOptions"/>
+            <VideoPlayer :videoRef="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
         </div>
       </div>
-      <div v-if="deviceList.length < 6" class="screen">
+      <div v-if="deviceList.length < 6 && !pageLoading" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
         </div>
@@ -62,6 +62,7 @@ export default {
   components: { VideoPlayer },
   data() {
     return {
+      pageLoading: true,
       dialogFormVisible: false,
       form: {},
       rules: {
@@ -78,7 +79,7 @@ export default {
         autoplay: true,
         controls: true,
         width: 960, // 播放器宽度
-        height: this.size == 'small' ? 310 : 480 // 播放器高度
+        height: 480 // 播放器高度
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
         // fluid: true, // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
@@ -130,7 +131,7 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
-        this.deviceList = data.map(item => {
+        this.deviceList = data.filter(i => i.rtmpuri).map(item => {
           return {
             ...item,
             videoOptions: {
@@ -142,8 +143,8 @@ export default {
               // fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.flv + '&a.flv',
-                  type: this.video_type(item.flv + '&a.flv')
+                  src: item.rtmpuri,
+                  type: this.video_type(item.rtmpuri)
                 }
               ]
             }
@@ -151,6 +152,7 @@ export default {
         })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value))
+        this.pageLoading = false;
       })
     },
     updateMonitorDialog(item) {
@@ -164,6 +166,7 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         delMonitor(item.id).then(res => {
+          this.deviceList = this.deviceList.filter(i => i.id !== item.id); // list接口响应慢，这里先过滤掉
           this.getLiveList()
         })
       })
@@ -188,6 +191,8 @@ export default {
               id: this.id,
               cameraId: this.form.cameraId
             }).then(res => {
+              // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
+              this.options = this.options.filter(i => i.value !== this.form.cameraId)
               this.onClose()
               this.getLiveList()
               this.submiting = false
@@ -196,6 +201,8 @@ export default {
             addMonitor({
               cameraId: this.form.cameraId
             }).then(res => {
+              // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
+              this.options = this.options.filter(i => i.value !== this.form.cameraId)
               this.onClose()
               this.getLiveList()
               this.submiting = false

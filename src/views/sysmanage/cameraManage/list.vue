@@ -14,15 +14,12 @@
               </el-form-item>
               <el-form-item label="负责人：">
                 <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+                  <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="添加人：">
-                <el-select v-model="dialogForm.creatorId" :value="editForm.creatorId" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-                  </el-option>
-                </el-select>
+                {{ creatorName }}
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -90,16 +87,8 @@
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="摄像头ID："><el-input v-model="editForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="摄像头名称："><el-input v-model="editForm.name" placeholder="请输入摄像头名称" class="filter-item" style="width: 300px;"></el-input>
-          </el-form-item>
           <el-form-item label="负责人：">
             <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" placeholder="请选择负责人">
-              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="添加人：">
-            <el-select v-model="editForm.creatorId" :value="editForm.creatorId" placeholder="请选择添加人">
               <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
               </el-option>
             </el-select>
@@ -222,7 +211,8 @@ export default {
         name: '',
         creatorId: ''
       },
-      userList: []
+      userList: [],
+      creatorName: ''
     }
   },
   watch: {
@@ -249,6 +239,11 @@ export default {
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
+        this.userList.forEach(item => {
+          if (item.id === +this.userId) {
+            this.creatorName = item.name
+          }
+        })
       })
     },
     batchesDel() {
@@ -393,7 +388,8 @@ export default {
       this.$refs.addForm.validate(valid => {
         if (!valid) return
         const params = [
-          this.dialogForm
+          { ...this.dialogForm,
+            creatorId: this.userId }
         ]
         addCamera(params).then(res => {
           this.dialogForm = {
