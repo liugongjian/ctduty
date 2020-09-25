@@ -696,7 +696,7 @@ export default {
             params: [
               {
                 field: 'cameraId',
-                operator: 'BETWEEN',
+                operator: 'EQUALS',
                 value: this.form.id
               }
             ],
