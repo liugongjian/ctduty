@@ -99,7 +99,7 @@
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
-                        <p class="dizhi">{{ item.camera.address || null }}</p>
+                        <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                         <div class="addressword">
                           <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                           <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -136,7 +136,7 @@
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -172,7 +172,7 @@
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -207,7 +207,7 @@
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
               <el-form-item label="流量状态:">
-                <span style="width: 300px;">{{ dataDia.camera.address || null }}</span>
+                <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
@@ -710,6 +710,11 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
+              this.stepsData = {
+                camera: {
+                  address: ''
+                }
+              }
               this.stepsData = response.body.data || []
               this.yData = []
               this.xData = []
@@ -1116,9 +1121,6 @@ export default {
   overflow: hidden;
   cursor: pointer;
 }
-/* .youContent .addressword {
-  margin-left: 30px;
-} */
 .dizhi {
   width: 100%;
   font-size: 15px;
