@@ -106,7 +106,7 @@
               </template></el-table-column>
               <el-table-column label="操作" width="80">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
+                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
                   <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
                 </template>
               </el-table-column>
