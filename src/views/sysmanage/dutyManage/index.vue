@@ -24,7 +24,7 @@
             >
               <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
                 <template slot-scope="scope">
-                  <span>{{ renderTime(scope.row.scheduleDate) }}</span>
+                  <span>{{ renderTime(scope.row.scheduleDate).split('00:00:00')[0] }}</span>
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
@@ -77,7 +77,7 @@
       >
         <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
           <template slot-scope="scope">
-            <span>{{ renderTime(scope.row.scheduleDate) }}</span>
+            <span>{{ renderTime(scope.row.scheduleDate).split('00:00:00')[0] }}</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">

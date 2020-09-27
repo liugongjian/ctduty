@@ -195,6 +195,7 @@ export default {
     filerStatus(columnObj) {
       for (const key in columnObj) {
         if (!columnObj[key][0]) {
+          this.filterName = ''
           this.getPoliceList()
           return
         }
@@ -228,31 +229,32 @@ export default {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getgetPoliceList()
-    },
-    search() {
-      const query = {
-        cascade: true,
-        page: {
-          index: this.page,
-          size: this.limit
-        },
-        params: [
-          {
-            field: 'name',
-            operator: 'EQUALS',
-            value: this.queryName.trim()
-          }]
+      if (this.filterName) {
+        const query = {
+          cascade: true,
+          page: {
+            index: this.page,
+            size: this.limit
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'EQUALS',
+              value: this.filterName
+            }]
+        }
+        if (this.queryName.trim() !== '') {
+          query.params.name = this.queryName
+        }
+        filterPoliceList(query).then(response => {
+          if (response.code !== 0) return
+          this.userList = response.body.data
+          this.total = response.body.page.total
+          this.queryName = ''
+        })
+      } else {
+        this.getPoliceList()
       }
-      if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
-      }
-      filterPoliceList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
-        this.total = response.body.page.total
-        this.queryName = ''
-      })
     },
     getPoliceList() {
       const query = {
@@ -271,15 +273,6 @@ export default {
         this.userList = response.body.data
         this.total = response.body.page.total
       })
-    },
-
-    handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize
-      this.getPoliceList()
-    },
-    handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage
-      this.getPoliceList()
     },
     addAPolice() {
       this.$refs.addFormRef.validate(valid => {
