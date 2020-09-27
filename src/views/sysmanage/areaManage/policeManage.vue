@@ -194,6 +194,10 @@ export default {
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
+        if (!columnObj[key][0]) {
+          this.getPoliceList()
+          return
+        }
         this.filterName = columnObj[key][0]
       }
       const query = {
