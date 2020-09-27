@@ -33,7 +33,7 @@
           </el-form-item> -->
         </el-form>
         <div>
-          <el-button class="btn" type="warning" @click="login">登录</el-button>
+          <el-button class="btn" type="warning" @click="login" @keyup.enter="login">登录</el-button>
         </div>
       </div>
     </div>
@@ -79,6 +79,18 @@ export default {
   },
   created() {
     this.setCookerTian()
+    var t = this;
+    document.onkeydown = function(e){
+      if(window.event == undefined){
+        var key = e.keyCode;
+      }else{
+        var key = window.event.keyCode;
+      }
+      //enter的ASCII码是13
+      if(key == 13){
+        t.login();
+      }
+    }
   },
   methods: {
     // 刷新验证码
