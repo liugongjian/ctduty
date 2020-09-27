@@ -1,14 +1,10 @@
 <template>
   <div class="dutyManage">
-    <div class="app-container">
+    <!-- <el-divider></el-divider> -->
+    <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-<<<<<<< HEAD
-          <el-button class="filter-item" @click="bulkimport" type="primary">{{ '导入值班表' }}</el-button>
-          <!-- 导入值班表 -->
-=======
           <el-button class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -39,49 +35,10 @@
               class="dlTem"
               style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
             >
-<<<<<<< HEAD
-              <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="color"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'值班民警'" prop="color"></el-table-column>
-            </el-table>
-            <div v-else>
-              <el-upload
-                :action="importUrl"
-                :on-success="batchUpSuccess"
-                :headers="importHeader"
-                :before-upload="beforeAvatarUpload"
-                class="upload-demo"
-                name="file"
-                multiple
-                drag
-                list-type="picture"
-              >
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">
-                  将文件拖到此处，或
-                  <em>点击上传</em>
-                </div>
-                <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
-              </el-upload>
-              <p
-                class="dlTem"
-                style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
-              >
-                <a :href="`${path}`" :download="`${path}`" @click="dlTem">
-                  <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
-                </a>
-              </p>
-            </div>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="importConfirm">提 交</el-button>
-            </div>
-=======
               <a :href="`${path}`" :download="`${path}`" @click="dlTem">
                 <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
               </a>
             </p>
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
           </el-dialog>
         </div>
       </div>
@@ -95,10 +52,6 @@
         @filter-change="filerStatus"
         @selection-change="handleSelectionChange"
       >
-<<<<<<< HEAD
-        <el-table-column width="55"></el-table-column>
-=======
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
         <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
           <template slot-scope="scope">
@@ -132,18 +85,11 @@ import {
   addCarData,
   importCarData,
   deleteCarData,
-<<<<<<< HEAD
-  dlTemplate,
-  dutyImportList
-} from "@/api/dm";
-const token = Cookies.get("token");
-=======
   carEditConfirm,
   searchList,
   dlTemplate
 } from '@/api/dm'
 const token = Cookies.get('token')
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
 export default {
   components: { Pagination },
   data() {
@@ -152,10 +98,6 @@ export default {
       importHeader: {
         Authorization: token
       },
-<<<<<<< HEAD
-      importUrl: process.env.LOT_ROOT + "/CarLicense/Import",
-
-=======
       importUrl: process.env.LOT_ROOT + '/CarLicense/Import',
       colorList: [
         {
@@ -175,15 +117,10 @@ export default {
           label: '绿色'
         }
       ],
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       headers: {
         Authorization: localStorage.getItem('token')
       },
       isBatchSuccess: false,
-<<<<<<< HEAD
-
-      value: "",
-=======
       subordinateList: [
         {
           value: '白名单',
@@ -199,7 +136,6 @@ export default {
         }
       ],
       value: '',
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       fileList: [
         {
           name: 'food.jpeg',
@@ -219,10 +155,6 @@ export default {
         model: '',
         phone: ''
       },
-<<<<<<< HEAD
-
-      imageUrl: "",
-=======
       typeOptions: [
         { name: '浙', id: '浙' },
         { name: '京', id: '京' },
@@ -230,15 +162,12 @@ export default {
         { name: '粤', id: '粤' }
       ],
       imageUrl: '',
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       addCarForm: {
         carWord: '',
         province: '',
         carlist: '',
         color: ''
       },
-<<<<<<< HEAD
-=======
       addFaceForm: {},
       addrules: {
         creatorId: [
@@ -258,7 +187,6 @@ export default {
         searchkey: '',
         typeValue: 'list'
       },
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       listLoading: false,
       filteredValue: [],
       importData: [],
@@ -375,13 +303,9 @@ export default {
       this.oldSize = this.limit
       this.getList()
     },
-<<<<<<< HEAD
-
-=======
     goBack() {
       this.$router.go(-1)
     },
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
     filerStatus(columnObj) {
       for (const key in columnObj) {
         this.originCode = columnObj[key][0]
@@ -405,9 +329,6 @@ export default {
         if (this.delIDArr.indexOf(item.id) === -1) {
           this.delIDArr.push(item.id)
         }
-<<<<<<< HEAD
-      });
-=======
       })
     },
     dialogQuxiao() {
@@ -440,7 +361,6 @@ export default {
           })
           .catch(err => {})
       })
->>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
     }
   }
 }
