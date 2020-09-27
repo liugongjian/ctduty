@@ -89,8 +89,8 @@
             </div>
           </el-dialog>
           <el-dialog :visible="dialogVisable" title="新增人脸数据" width="520px" @close="closeDialog">
-            <el-form ref="addForm" :model="addFaceForm" label-position="right" label-width="130px">
-              <el-form-item label="姓名: ">
+            <el-form ref="addForm" :rules="addrules" :model="addFaceForm" label-position="right" label-width="130px">
+              <el-form-item label="姓名: " prop="name">
                 <el-input
                   v-model="addFaceForm.name"
                   placeholder="请输入姓名"
@@ -98,7 +98,7 @@
                   style="width: 178px;"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="上传人脸图像: ">
+              <el-form-item label="上传人脸图像: " prop="imageUrl">
                 <el-upload
                   :show-file-list="false"
                   :before-upload="beforeAvatarUpload"
@@ -112,9 +112,9 @@
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="所属名单: ">
+              <el-form-item label="所属名单: " prop="typeValue">
                 <el-select
-                  v-model="formInline.typeValue"
+                  v-model="addFaceForm.typeValue"
                   style="width:178px;"
                   class="filter-item"
                   @change="checkModel"
@@ -136,7 +136,7 @@
         </div>
         <div class="pull-right">
           <el-input
-            v-model="formInline.searchkey"
+            v-model="addFaceForm.searchkey"
             placeholder="请输入姓名"
             class="filter-item"
             style="width: 260px;"
@@ -297,19 +297,20 @@ export default {
       ],
       addFaceForm: {
         name: '',
-        imageUrl: ''
+        imageUrl: '',
+        searchkey: '',
+        typeValue: 1
       },
       addrules: {
         name: [
           { required: true, trigger: 'blur', message: '名称不能为空' }
         ],
-        url: [
-          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
+        imageUrl: [
+          { required: true, trigger: 'blur', message: '图片不能为空' }
+        ],
+        typeValue: [
+          { required: true, trigger: 'blur', message: '所属名单不能为空' }
         ]
-      },
-      formInline: {
-        searchkey: '',
-        typeValue: 1
       },
       listLoading: false,
       filteredValue: [],
@@ -493,7 +494,17 @@ export default {
       this.dialogVisable = true
     },
     closeDialog() {
+      this.addFaceForm = {
+        name: '',
+        imageUrl: '',
+        typeValue: '',
+        searchkey: ''
+      },
       this.dialogVisable = false
+      this.clearValidate('addForm')
+    },
+    clearValidate(formName) {
+      this.$refs[formName].clearValidate();
     },
     onSearch() {
       const params = {
@@ -504,14 +515,14 @@ export default {
         params: [{
           field: 'name',
           operator: 'LIKE',
-          value: `%${this.formInline.searchkey}%`
+          value: `%${this.addFaceForm.searchkey}%`
         }] }
       fetchSearchFace(params).then((res) => {
         this.faceList = res.body.data
         this.tableData = res.body.data
         this.page = 1
         this.total = res.body.page.total
-        this.formInline.searchkey = ''
+        this.addFaceForm.searchkey = ''
       })
     },
     // 表头样式
@@ -558,7 +569,7 @@ export default {
         const params = [{
           name: this.addFaceForm.name,
           image: this.addFaceForm.imageUrl,
-          nameList: this.formInline.typeValue
+          nameList: this.addFaceForm.typeValue
         }]
         fetchAddFace(params)
           .then(res => {
@@ -608,7 +619,7 @@ export default {
     },
     // 重置
     resetQuery() {
-      this.formInline.searchkey = ''
+      this.addFaceForm.searchkey = ''
       this.page = 1
       this.limit = 10
       this.getfaceList()

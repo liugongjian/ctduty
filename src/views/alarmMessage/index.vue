@@ -204,7 +204,8 @@ export default {
         searchkey: '',
         typeValue: 'all'
       },
-      typeOptions: [{ name: '所有警告', _id: 'all' },
+      typeOptions: [
+        { name: '所有警告', _id: 'all' },
         { name: '已处理', _id: 'settled' }, { name: '未处理', _id: 'unsettled' }
       ],
 
@@ -248,7 +249,6 @@ export default {
   },
   created() {
     this.userId = Cookies.get('userId')
-
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
