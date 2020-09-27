@@ -37,8 +37,8 @@
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 80%; width:100%"></div>
             <div class="num">
-              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 99 ? `${99 + '+'}` : todayHandleds }}</span></div>
-              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 99 ? `${99 + '+'}` : todayUndeal }}</span></div>
+              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span></div>
+              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span></div>
             </div>
           </div>
           <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
@@ -57,13 +57,19 @@
           <div class="bottom-left">
             <div style="width:100%; height:35px;">
               <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">全部</p>
+                <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">
+                  全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
+                </p>
               </div>
               <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">已处理</p>
+                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
+                  已处理(<span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>)
+                </p>
               </div>
               <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">未处理</p>
+                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
+                  未处理(<span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>)
+                </p>
               </div>
               <div class="bottom-right">
                 <ul>
@@ -106,7 +112,7 @@
                           <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
                           <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                           <span
-                            style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                            style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
                           >{{ renderTime(item.createTime) }}</span>
                         </div>
                       </div>
@@ -143,7 +149,7 @@
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
                         <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                         <span
-                          style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                          style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
                         >{{ renderTime(item.createTime) }}</span>
                       </div>
                     </div>
@@ -179,7 +185,7 @@
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
                         <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
                         <span
-                          style="width:100%; font-size: 13px; color:#7e7e7e; margin-top: 4px;"
+                          style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
                         >{{ renderTime(item.createTime) }}</span>
                       </div>
                     </div>
@@ -931,7 +937,7 @@ export default {
 
 <style lang="scss" scoped>
 .num {
-  width: 60%;
+  width: 80%;
   height: 30px;
   margin: 0 auto;
   display: flex;
@@ -1034,7 +1040,7 @@ export default {
 
         .todyW {
           color: #000000;
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 700;
         }
 
@@ -1053,7 +1059,7 @@ export default {
             background-color: #ffffff;
             p {
               color: #676767;
-              font-size: 13px;
+              font-size: 12px;
             }
             .zuoContent {
               background-color: pink;
@@ -1088,7 +1094,7 @@ export default {
             background-color: #ffffff;
             p {
               color: #676767;
-              font-size: 13px;
+              font-size: 12px;
             }
           }
           .you {
@@ -1099,7 +1105,7 @@ export default {
             background-color: #ffffff;
             p {
               color: #676767;
-              font-size: 13px;
+              font-size: 12px;
             }
           }
         }
