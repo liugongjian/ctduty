@@ -42,4 +42,11 @@ export function deletePolice(query) {
     data: query
   })
 }
-
+// /PoliceStation/GetPoliceList/
+// /PoliceStation/QueryFilter/
+export function getAllPolice() {
+  return request({
+    url: '/nvsapi/PoliceStation/GetPoliceList',
+    method: 'get'
+  })
+}

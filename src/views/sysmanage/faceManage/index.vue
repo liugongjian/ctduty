@@ -288,7 +288,6 @@ export default {
         id: ''
       },
       editForm: {
-
       },
       isBatchSuccess: false,
       typeOptions: [
@@ -301,33 +300,12 @@ export default {
         imageUrl: ''
       },
       addrules: {
-        creatorId: [
-          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
-        ],
         name: [
-          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
+          { required: true, trigger: 'blur', message: '名称不能为空' }
         ],
         url: [
           { required: true, trigger: 'blur', message: '视频流信息不能为空' }
-        ],
-        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
-        manufacturer: [
-          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
-        ],
-        model: [
-          { required: true, trigger: 'blur', message: '设备型号不能为空' }
-        ],
-        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
-        inChargeId: [
-          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
-        ],
-        longitude: [
-          { required: true, trigger: 'blur', message: '经度不能为空' }
-        ],
-        latitude: [
-          { required: true, trigger: 'blur', message: '纬度不能为空' }
-        ],
-        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
+        ]
       },
       formInline: {
         searchkey: '',
@@ -620,7 +598,8 @@ export default {
             this.dialogForm = {
               name: '',
               image: '',
-              nameList: ''
+              nameList: '',
+              id: ''
             }
             this.getfaceList()
             this.bulkimportVisble = false

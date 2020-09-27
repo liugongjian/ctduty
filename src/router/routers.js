@@ -156,46 +156,46 @@ export const asyncRouterMap = [
       roles: "admin"
     },
     children: [
-      {
-        path: "/areaManage",
+      /* {
+        path: '/areaManage',
         component: MainLayout,
         alwaysShow: true,
         meta: {
-          title: "areaManage",
-          icon: "area"
+          title: 'areaManage',
+          icon: 'area'
         },
         children: [
           {
-            path: "area",
-            component: () => import("@/views/sysmanage/areaManage/index"),
-            name: "sysAreaManageArea",
+            path: 'area',
+            component: () => import('@/views/sysmanage/areaManage/index'),
+            name: 'sysAreaManageArea',
             meta: {
-              title: "区域管理",
-              icon: "area"
+              title: '区域管理',
+              icon: 'area'
             }
           },
           {
-            path: "administration",
+            path: 'administration',
             component: () =>
-              import("@/views/sysmanage/areaManage/administration"),
-            name: "sysAreaManageAdministration",
+              import('@/views/sysmanage/areaManage/administration'),
+            name: 'sysAreaManageAdministration',
             meta: {
-              title: "行政管理",
-              icon: "administrative"
+              title: '行政管理',
+              icon: 'administrative'
             }
           },
           {
-            path: "policeManage",
+            path: 'policeManage',
             component: () =>
-              import("@/views/sysmanage/areaManage/policeManage"),
-            name: "sysAreaManagePoliceManage",
+              import('@/views/sysmanage/areaManage/policeManage'),
+            name: 'sysAreaManagePoliceManage',
             meta: {
-              title: "派出所管理",
-              icon: "police"
+              title: '派出所管理',
+              icon: 'police'
             }
           }
         ]
-      },
+      }, */
       {
         path: "policeManage",
         component: () => import("@/views/sysmanage/areaManage/policeManage"),

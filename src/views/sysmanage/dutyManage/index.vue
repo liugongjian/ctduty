@@ -3,8 +3,12 @@
     <div class="app-container">
       <div class="filter-container clearfix">
         <div class="pull-left">
+<<<<<<< HEAD
           <el-button class="filter-item" @click="bulkimport" type="primary">{{ '导入值班表' }}</el-button>
           <!-- 导入值班表 -->
+=======
+          <el-button class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -13,17 +17,29 @@
             height="80vh"
             @close="closebulkimportDialog"
           >
-            <el-table
-              v-if="isBatchSuccess"
-              :data="imSuccessData"
-              :header-cell-class-name="tableRowClassHeader"
-              class="amountdetailTable"
-              style="width: 55vw"
-              tooltip-effect="dark"
-              fit
-              @filter-change="filerStatus"
-              @selection-change="handleSelectionChange"
+            <el-upload
+              :action="importUrl"
+              :on-success="batchUpSuccess"
+              :headers="importHeader"
+              :before-upload="beforeAvatarUpload"
+              class="upload-demo"
+              name="file"
+              multiple
+              drag
+              list-type="picture"
             >
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">
+                将文件拖到此处，或
+                <em>点击上传</em>
+              </div>
+              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
+            </el-upload>
+            <p
+              class="dlTem"
+              style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
+            >
+<<<<<<< HEAD
               <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="color"></el-table-column>
@@ -60,6 +76,12 @@
             <div slot="footer" class="dialog-footer">
               <el-button type="primary" @click="importConfirm">提 交</el-button>
             </div>
+=======
+              <a :href="`${path}`" :download="`${path}`" @click="dlTem">
+                <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
+              </a>
+            </p>
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
           </el-dialog>
         </div>
       </div>
@@ -73,7 +95,10 @@
         @filter-change="filerStatus"
         @selection-change="handleSelectionChange"
       >
+<<<<<<< HEAD
         <el-table-column width="55"></el-table-column>
+=======
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
         <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
           <template slot-scope="scope">
@@ -95,11 +120,11 @@
 </template>
 
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchCarList,
   fetchSingleCarData,
@@ -107,53 +132,133 @@ import {
   addCarData,
   importCarData,
   deleteCarData,
+<<<<<<< HEAD
   dlTemplate,
   dutyImportList
 } from "@/api/dm";
 const token = Cookies.get("token");
+=======
+  carEditConfirm,
+  searchList,
+  dlTemplate
+} from '@/api/dm'
+const token = Cookies.get('token')
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
 export default {
   components: { Pagination },
   data() {
     return {
-      path: "http://host31.880508.xyz:10000/CarLicense/Template",
+      path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
       },
+<<<<<<< HEAD
       importUrl: process.env.LOT_ROOT + "/CarLicense/Import",
 
-      headers: {
-        Authorization: localStorage.getItem("token")
-      },
-      isBatchSuccess: false,
-
-      value: "",
-      fileList: [
+=======
+      importUrl: process.env.LOT_ROOT + '/CarLicense/Import',
+      colorList: [
         {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+          value: '黑色',
+          label: '黑色'
         },
         {
-          name: "food2.jpeg",
+          value: '白色',
+          label: '白色'
+        },
+        {
+          value: '蓝色',
+          label: '蓝色'
+        },
+        {
+          value: '绿色',
+          label: '绿色'
+        }
+      ],
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
+      headers: {
+        Authorization: localStorage.getItem('token')
+      },
+      isBatchSuccess: false,
+<<<<<<< HEAD
+
+      value: "",
+=======
+      subordinateList: [
+        {
+          value: '白名单',
+          label: '白名单'
+        },
+        {
+          value: '嫌疑车辆黑名单',
+          label: '嫌疑车辆黑名单'
+        },
+        {
+          value: '疑似套牌车辆',
+          label: '疑似套牌车辆'
+        }
+      ],
+      value: '',
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
+      fileList: [
+        {
+          name: 'food.jpeg',
           url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+        },
+        {
+          name: 'food2.jpeg',
+          url:
+            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ],
       dialogForm: {
-        creatorId: "",
-        name: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        creatorId: '',
+        name: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
+<<<<<<< HEAD
 
       imageUrl: "",
+=======
+      typeOptions: [
+        { name: '浙', id: '浙' },
+        { name: '京', id: '京' },
+        { name: '沪', id: '沪' },
+        { name: '粤', id: '粤' }
+      ],
+      imageUrl: '',
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       addCarForm: {
-        carWord: "",
-        province: "",
-        carlist: "",
-        color: ""
+        carWord: '',
+        province: '',
+        carlist: '',
+        color: ''
       },
+<<<<<<< HEAD
+=======
+      addFaceForm: {},
+      addrules: {
+        creatorId: [
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
+        ],
+
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
+        manufacturer: [
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
+        ],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
+        inChargeId: [
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
+        ]
+      },
+      formInline: {
+        searchkey: '',
+        typeValue: 'list'
+      },
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
       listLoading: false,
       filteredValue: [],
       importData: [],
@@ -162,39 +267,39 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        carNumber: "",
-        carList: "",
-        carColor: ""
+        id: '',
+        carNumber: '',
+        carList: '',
+        carColor: ''
       },
       bulkimportVisble: false,
-      value: ""
-    };
+      value: ''
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getList();
+    await Message.closeAll()
+    await this.getList()
   },
   methods: {
     dlTem() {
       dlTemplate().then(res => {
         this.$message({
-          message: "模板文件下载成功",
-          type: "success"
-        });
-      });
+          message: '模板文件下载成功',
+          type: 'success'
+        })
+      })
     },
 
     // 获取列表数据
@@ -205,99 +310,140 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchCarList(params).then(res => {
-        this.importData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.importData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+      })
     },
     importConfirm() {
       this.imSuccessData.forEach(item => {
-        const { color, licenseNo, type } = item;
+        const { color, licenseNo, type } = item
         const params = [
           {
             color,
             licenseNo,
             type
           }
-        ];
+        ]
         addCarData(params).then(res => {
-          this.getList();
-          this.bulkimportVisble = false;
-        });
-      });
+          this.getList()
+          this.bulkimportVisble = false
+        })
+      })
     },
     batchUpSuccess(res) {
-      this.imSuccessData = res.body.data;
-      this.isBatchSuccess = true;
+      this.imSuccessData = res.body.data
+      this.isBatchSuccess = true
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      console.log(file.type, file, "file.typefile.type");
+      console.log(file.type, file, 'file.typefile.type')
       const isxlsx =
         file.type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       if (!isxlsx) {
-        this.$message.error("导入数据只能是 xlsx 格式!");
+        this.$message.error('导入数据只能是 xlsx 格式!')
       }
-      return isxlsx;
+      return isxlsx
     },
     beforeExcelUpload(file) {},
     excelCommit() {},
     bulkimport() {
-      this.bulkimportVisble = true;
+      this.bulkimportVisble = true
     },
     closebulkimportDialog() {
-      this.bulkimportVisble = false;
-      this.isBatchSuccess = false;
-      this.imSuccessData = [];
+      this.bulkimportVisble = false
+      this.isBatchSuccess = false
+      this.imSuccessData = []
     },
 
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
+<<<<<<< HEAD
 
+=======
+    goBack() {
+      this.$router.go(-1)
+    },
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
 
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id);
+          this.delIDArr.push(item.id)
         }
+<<<<<<< HEAD
       });
+=======
+      })
+    },
+    dialogQuxiao() {
+      this.dialogVisable = false
+    },
+    addCar() {
+      this.$refs.addCarForm.validate(valid => {
+        if (!valid) return
+        const params = [
+          {
+            licenseNo: this.addCarForm.province + this.addCarForm.carWord,
+            type: this.addCarForm.carlist,
+            color: this.addCarForm.color
+          }
+        ]
+        addCarData(params)
+          .then(res => {
+            this.getList()
+            this.dialogVisable = false
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.addCarForm = {
+              carWord: '',
+              province: '',
+              carlist: '',
+              color: ''
+            }
+          })
+          .catch(err => {})
+      })
+>>>>>>> 5525293b74806dd5503a924b08b6f9a161bf0863
     }
   }
-};
+}
 </script>
 
 <style scoped>
