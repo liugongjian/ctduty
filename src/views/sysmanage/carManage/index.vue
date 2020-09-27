@@ -249,12 +249,12 @@ export default {
           label: '白名单'
         },
         {
-          value: '嫌疑车辆黑名单',
-          label: '嫌疑车辆黑名单'
+          value: '黑名单',
+          label: '黑名单'
         },
         {
-          value: '疑似套牌车辆',
-          label: '疑似套牌车辆'
+          value: '其他',
+          label: '其他'
         }
       ],
       value: '',

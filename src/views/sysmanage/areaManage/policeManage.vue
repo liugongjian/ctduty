@@ -1,27 +1,24 @@
 <template>
   <div class="userManage">
-    <el-divider></el-divider>
-    <el-row>
+    <div class="pull-left" style="margin:20px 0;">
       <el-button class="addbtn" type="warning" @click="addPoliceDialogVisible=true">+新增派出所</el-button>
-      <el-input v-model="queryName" class="searchinput" placeholder="请输入派出所名称" @keyup.enter.native="search"></el-input>
-      <el-button class="searchbtn" type="warning" @click="search">搜索</el-button>
-      <el-button class="searchbtn" @click="resetQuery">重置</el-button>
-    </el-row>
-
+    </div>
     <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
-      <el-table-column label="ID" prop="id"></el-table-column>
-      <el-table-column label="派出所名称" prop="name"></el-table-column>
-      <el-table-column label="所在经度" prop="longitude"></el-table-column>
-      <el-table-column label="所在纬度" prop="latitude"></el-table-column>
-      <el-table-column label="地址" prop="address"></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="row_data">
-          <el-link type="primary" @click="showEditDialog(row_data.row)">编辑</el-link>
-          <el-link type="primary" @click="deleatePolice(row_data.row.id)">删除</el-link>
+      <el-table-column
+        :filter-multiple="false"
+        :v-model="filteredValue"
+        :filters="[{ text: '正常', value: 1 }, { text: '已暂停', value: 0 }, { text: '已关闭', value: -2}]"
+        label="县 (市、区) 公安局"
+        filter-placement="bottom"
+        prop="status">
+        <template slot-scope="scope" class="status">
+          <div v-if="scope.row.status === 1" class="nomalStatus">正常</div>
+          <div v-else-if="scope.row.status === 0" class="stopStatus">已暂停</div>
+          <div v-else-if="scope.row.status === -2" class="closeStatus">已关闭</div>
         </template>
       </el-table-column>
+      <el-table-column label="派出所名称" prop="name"></el-table-column>
     </el-table>
-
     <pagination
       v-show="total>0"
       :total="total"
@@ -36,17 +33,11 @@
       width="50%"
       @close="addDialogClosed">
       <el-form ref="addFormRef" :model="addPoliceForm" :rules="addPoliceFormRules" label-width="100px">
-        <el-form-item label="派出所名称" prop="name">
+        <el-form-item label="公安局名称" prop="name">
           <el-input v-model="addPoliceForm.name" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="所在经度" prop="longitude">
-          <el-input v-model="addPoliceForm.longitude" type="text"></el-input>
-        </el-form-item>
-        <el-form-item label="所在纬度" prop="latitude">
-          <el-input v-model="addPoliceForm.latitude" type="text"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input v-model="addPoliceForm.address" type="text"></el-input>
+        <el-form-item label="派出所名称" prop="name">
+          <el-input v-model="addPoliceForm.name" type="text"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

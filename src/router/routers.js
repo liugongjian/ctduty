@@ -156,7 +156,7 @@ export const asyncRouterMap = [
       roles: 'admin'
     },
     children: [
-      {
+      /*  {
         path: '/areaManage',
         component: MainLayout,
         alwaysShow: true,
@@ -192,8 +192,17 @@ export const asyncRouterMap = [
               icon: 'police'
             }
           }
-
         ]
+      }, */
+      {
+        path: 'policeManage',
+        component: () => import('@/views/sysmanage/areaManage/policeManage'),
+        name: 'policeManage',
+        meta: {
+          title: '派出所管理',
+          icon: 'police',
+          noCache: false
+        }
       },
       {
         path: 'userManage',
