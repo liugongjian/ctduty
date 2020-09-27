@@ -4,14 +4,8 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <!-- <el-button
-            class="filter-item"
-            type="warning"
-            icon="el-icon-plus"
-            @click="create"
-          >{{ '新增车牌数据' }}</el-button>-->
           <el-button class="filter-item" @click="bulkimport" type="primary">{{ '导入车牌数据' }}</el-button>
-          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
+
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -68,65 +62,6 @@
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
-          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="520px" @close="closeDialog">
-            <el-form
-              ref="addCarForm"
-              :model="addCarForm"
-              label-position="right"
-              label-width="130px"
-            >
-              <el-form-item label="车牌号: " class="carInput">
-                <el-select
-                  v-model="addCarForm.province"
-                  placeholder="省市区"
-                  style="width:70px;margin-right:10px;"
-                  class="filter-item"
-                >
-                  <el-option
-                    v-for="item in typeOptions"
-                    :key="item._id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
-                <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
-              </el-form-item>
-              <el-form-item label="所属名单：">
-                <el-select
-                  v-model="addCarForm.carlist"
-                  :value="addCarForm.carlist"
-                  style="width:210px;"
-                  placeholder="请选择所属名单"
-                >
-                  <el-option
-                    v-for="item in subordinateList"
-                    :value="item.value"
-                    :label="item.label"
-                    :key="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="车牌颜色：">
-                <el-select
-                  v-model="addCarForm.color"
-                  :value="addCarForm.color"
-                  style="width:210px;"
-                  placeholder="请选择颜色"
-                >
-                  <el-option
-                    v-for="item in colorList"
-                    :value="item.value"
-                    :label="item.label"
-                    :key="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="addCar()">确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
-            </div>
-          </el-dialog>
         </div>
         <div class="pull-right"></div>
       </div>
@@ -458,12 +393,6 @@ export default {
 <style scoped>
 .dutyManage {
   padding: 0px 20px;
-}
-
-.dlTem:hover {
-  a {
-    color: #409eff;
-  }
 }
 .el-dialog__body {
   margin: 0 auto;

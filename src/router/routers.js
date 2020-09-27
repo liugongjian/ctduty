@@ -197,6 +197,16 @@ export const asyncRouterMap = [
         ]
       },
       {
+        path: "policeManage",
+        component: () => import("@/views/sysmanage/areaManage/policeManage"),
+        name: "policeManage",
+        meta: {
+          title: "派出所管理",
+          icon: "police",
+          noCache: false
+        }
+      },
+      {
         path: "userManage",
         component: () => import("@/views/sysmanage/userManage/index"),
         name: "sysUser",
