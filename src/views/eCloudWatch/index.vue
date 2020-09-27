@@ -79,8 +79,7 @@
                 </ul>
               </div>
             </div>
-
-            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
+            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
               <div v-if="showTabValue === 'all'">
                 <el-button v-if="isOnlyCameraData" type="text" @click="allAlarm">全部数据</el-button>
                 <div :data="stepsData" style="margin-top:10px;">
@@ -308,13 +307,9 @@ export default {
       formInfo: [],
       active: 0,
       stateData: '',
-      stepsData: [
-      ],
+      stepsData: [],
       values: 3,
       xData: [
-        { camera: {
-        }
-        }
       ],
       zoom: 12,
       hasMarker: false,

@@ -13,32 +13,53 @@
             height="80vh"
             @close="closebulkimportDialog"
           >
-            <el-upload
-              :action="importUrl"
-              :on-success="batchUpSuccess"
-              :headers="importHeader"
-              :before-upload="beforeAvatarUpload"
-              class="upload-demo"
-              name="file"
-              multiple
-              drag
-              list-type="picture"
+            <el-table
+              v-if="isUpSuccess"
+              :data="upSuccessData"
+              :header-cell-class-name="tableRowClassHeader"
+              class="amountdetailTable"
+              style="width: 100%"
+              tooltip-effect="dark"
+              fit
             >
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">
-                将文件拖到此处，或
-                <em>点击上传</em>
-              </div>
-              <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
-            </el-upload>
-            <p
-              class="dlTem"
-              style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
-            >
-              <a :href="`${path}`" :download="`${path}`" @click="dlTem">
-                <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
-              </a>
-            </p>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.startTime }} - {{ scope.row.endTime }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="leader"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班民警'" prop="police"></el-table-column>
+            </el-table>
+            <div v-else>
+              <el-upload
+                :action="importUrl"
+                :on-success="batchUpSuccess"
+                :headers="importHeader"
+                :before-upload="beforeAvatarUpload"
+                class="upload-demo"
+                name="file"
+                multiple
+                drag
+                list-type="picture"
+              >
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">
+                  将文件拖到此处，或
+                  <em>点击上传</em>
+                </div>
+                <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
+              </el-upload>
+              <p
+                class="dlTem"
+                style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
+              >
+                <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+              </p>
+            </div>
+            <div v-if="isUpSuccess" slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="importConfirm">提 交</el-button>
+            </div>
           </el-dialog>
         </div>
       </div>
@@ -49,17 +70,15 @@
         style="width: 100%"
         tooltip-effect="dark"
         fit
-        @filter-change="filerStatus"
-        @selection-change="handleSelectionChange"
       >
-        <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
           <template slot-scope="scope">
-            <span>{{ scope.row.type }}</span>
+            <span>{{ scope.row.startTime }} - {{ scope.row.endTime }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="color"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'值班民警'" prop="color"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="leader"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'值班民警'" prop="police"></el-table-column>
       </el-table>
       <pagination
         v-show="total>0"
@@ -71,7 +90,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
@@ -80,25 +98,22 @@ import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
   fetchCarList,
-  fetchSingleCarData,
-  downloadModel,
   addCarData,
-  importCarData,
-  deleteCarData,
-  carEditConfirm,
-  searchList,
-  dlTemplate
+  fetchDutyTemplate,
+  dutyImportList,
+  fetchDutyList,
+  addDuty
 } from '@/api/dm'
 const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
     return {
-      path: 'http://host31.880508.xyz:10000/CarLicense/Template',
+      path: 'http://host31.880508.xyz:10000/Schedule/Template',
       importHeader: {
         Authorization: token
       },
-      importUrl: process.env.LOT_ROOT + '/CarLicense/Import',
+      importUrl: process.env.LOT_ROOT + '/Schedule/Import',
       colorList: [
         {
           value: '黑色',
@@ -207,7 +222,8 @@ export default {
         carColor: ''
       },
       bulkimportVisble: false,
-      value: ''
+      value: '',
+      isUpSuccess: false
     }
   },
   watch: {
@@ -222,14 +238,13 @@ export default {
   },
   methods: {
     dlTem() {
-      dlTemplate().then(res => {
+      fetchDutyTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',
           type: 'success'
         })
       })
     },
-
     // 获取列表数据
     getList() {
       const params = {
@@ -239,31 +254,33 @@ export default {
         },
         params: {}
       }
-      fetchCarList(params).then(res => {
+      fetchDutyList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
       })
     },
     importConfirm() {
-      this.imSuccessData.forEach(item => {
-        const { color, licenseNo, type } = item
+      this.upSuccessData.forEach(item => {
+        const { police, leader, startTime, endTime, scheduleDate } = item
         const params = [
           {
-            color,
-            licenseNo,
-            type
+            police,
+            leader,
+            startTime,
+            endTime,
+            scheduleDate
           }
         ]
-        addCarData(params).then(res => {
+        addDuty(params).then(res => {
           this.getList()
           this.bulkimportVisble = false
         })
       })
     },
     batchUpSuccess(res) {
-      this.imSuccessData = res.body.data
-      this.isBatchSuccess = true
+      this.upSuccessData = res.body.data
+      this.isUpSuccess = true
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -285,8 +302,8 @@ export default {
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
-      this.isBatchSuccess = false
-      this.imSuccessData = []
+      this.isUpSuccess = false
+      this.upSuccessData = []
     },
 
     formatTime: function(row, column, cellValue) {

@@ -93,7 +93,11 @@
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" width="100"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" width="100">
                 <template slot-scope="scope">
-                  <span>{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</span>
+                  <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
+                  <!-- <el-tag type="success">标签二</el-tag>
+                  <el-tag type="info">标签三</el-tag>
+                  <el-tag type="warning">标签四</el-tag>
+                  <el-tag type="danger">标签五</el-tag> -->
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
