@@ -22,7 +22,11 @@
               tooltip-effect="dark"
               fit
             >
-              <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
+                <template slot-scope="scope">
+                  <span>{{ renderTime(scope.row.scheduleDate) }}</span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
                 <template slot-scope="scope">
                   <span>{{ scope.row.startTime }} - {{ scope.row.endTime }}</span>
@@ -71,7 +75,11 @@
         tooltip-effect="dark"
         fit
       >
-        <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
+          <template slot-scope="scope">
+            <span>{{ renderTime(scope.row.scheduleDate) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
           <template slot-scope="scope">
             <span>{{ scope.row.startTime }} - {{ scope.row.endTime }}</span>
@@ -91,6 +99,7 @@
   </div>
 </template>
 <script>
+import { renderTime } from '@/utils'
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
@@ -109,6 +118,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      renderTime,
       path: 'http://host31.880508.xyz:10000/Schedule/Template',
       importHeader: {
         Authorization: token
