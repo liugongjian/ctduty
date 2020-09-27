@@ -160,9 +160,9 @@
         <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="nameList">
           <template slot-scope="scope">
-            <span v-if="scope.row.nameList === 1"> 居民白名单 </span>
-            <span v-else-if="scope.row.nameList === 2">员工白名单</span>
-            <span v-else-if="scope.row.nameList === 3">嫌疑人员</span>
+            <span v-if="scope.row.nameList === 1"> 白名单 </span>
+            <span v-else-if="scope.row.nameList === 2">黑名单</span>
+            <span v-else-if="scope.row.nameList === 3">其他</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
@@ -291,9 +291,9 @@ export default {
       },
       isBatchSuccess: false,
       typeOptions: [
-        { name: '居民白名单', _id: 1 },
-        { name: '员工白名单', _id: 2 },
-        { name: '嫌疑人员', _id: 3 }
+        { name: '白名单', _id: 1 },
+        { name: '黑名单', _id: 2 },
+        { name: '其他', _id: 3 }
       ],
       addFaceForm: {
         name: '',
@@ -367,9 +367,9 @@ export default {
         image: res.body.data[file.name.split('.')[0]],
         nameList: 1,
         typeOptions: [
-          { name: '居民白名单', _id: 1 },
-          { name: '员工白名单', _id: 2 },
-          { name: '嫌疑人员', _id: 3 }
+          { name: '白名单', _id: 1 },
+          { name: '黑名单', _id: 2 },
+          { name: '其他', _id: 3 }
         ],
         id: new Date().getTime()
       })

@@ -111,7 +111,6 @@
                 </template>
               </el-table-column>
             </el-table>
-
             <el-dialog
               :visible.sync="dialogVisable"
               title="报警显示"

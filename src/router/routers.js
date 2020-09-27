@@ -156,7 +156,7 @@ export const asyncRouterMap = [
       roles: 'admin'
     },
     children: [
-      {
+      /* {
         path: '/areaManage',
         component: MainLayout,
         alwaysShow: true,
@@ -176,7 +176,8 @@ export const asyncRouterMap = [
           },
           {
             path: 'administration',
-            component: () => import('@/views/sysmanage/areaManage/administration'),
+            component: () =>
+              import('@/views/sysmanage/areaManage/administration'),
             name: 'sysAreaManageAdministration',
             meta: {
               title: '行政管理',
@@ -185,15 +186,25 @@ export const asyncRouterMap = [
           },
           {
             path: 'policeManage',
-            component: () => import('@/views/sysmanage/areaManage/policeManage'),
+            component: () =>
+              import('@/views/sysmanage/areaManage/policeManage'),
             name: 'sysAreaManagePoliceManage',
             meta: {
               title: '派出所管理',
               icon: 'police'
             }
           }
-
         ]
+      }, */
+      {
+        path: 'policeManage',
+        component: () => import('@/views/sysmanage/areaManage/policeManage'),
+        name: 'policeManage',
+        meta: {
+          title: '派出所管理',
+          icon: 'police',
+          noCache: false
+        }
       },
       {
         path: 'userManage',
@@ -201,6 +212,16 @@ export const asyncRouterMap = [
         name: 'sysUser',
         meta: {
           title: 'userManage',
+          icon: 'userManage',
+          noCache: false
+        }
+      },
+      {
+        path: 'dutyManage',
+        component: () => import('@/views/sysmanage/dutyManage/index'),
+        name: 'sysUser',
+        meta: {
+          title: 'dutyManage',
           icon: 'userManage',
           noCache: false
         }
@@ -284,4 +305,3 @@ export const constantRouterMap = [
     hidden: true
   }
 ]
-
