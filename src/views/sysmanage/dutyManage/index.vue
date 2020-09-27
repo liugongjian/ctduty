@@ -99,7 +99,6 @@
   </div>
 </template>
 <script>
-import { renderTime } from '@/utils'
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import { renderTime } from '@/utils'
