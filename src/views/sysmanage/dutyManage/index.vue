@@ -102,6 +102,7 @@
 import { renderTime } from '@/utils'
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
+import { renderTime } from '@/utils'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
