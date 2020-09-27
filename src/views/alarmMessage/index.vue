@@ -91,6 +91,11 @@
               <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" width="100"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" width="100">
+                <template slot-scope="scope">
+                  <span>{{ '其他' }}</span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image">
                 <template slot-scope="scope">
@@ -177,6 +182,7 @@ export default {
   data() {
     return {
       renderTime,
+      else: '其他',
       temp: {
         camera: {},
         createTime: '',
