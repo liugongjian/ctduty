@@ -42,6 +42,7 @@
                 :on-error="batchUpError"
                 :headers="importHeader"
                 :before-upload="beforeAvatarUpload"
+                :show-file-list="false"
                 class="upload-demo"
                 name="file"
                 multiple
