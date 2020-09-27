@@ -64,13 +64,14 @@
           <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="520px" @close="closeDialog">
             <el-form
+              :rules="addrules"
               ref="addCarForm"
               :model="addCarForm"
               label-position="right"
               label-width="130px"
             >
-              <el-form-item label="车牌号: " class="carInput">
-                <el-select v-model="addCarForm.province" placeholder="省市区" style="width:70px;margin-right:10px;" class="filter-item">
+              <el-form-item label="车牌号: " class="carInput" prop="province">
+                <el-select v-model="addCarForm.province" placeholder="省市区" style="width:90px;margin-right:10px;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
@@ -80,11 +81,11 @@
                 </el-select>
                 <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
               </el-form-item>
-              <el-form-item label="所属名单：">
+              <el-form-item label="所属名单：" prop="carlist">
                 <el-select
                   v-model="addCarForm.carlist"
                   :value="addCarForm.carlist"
-                  style="width:210px;"
+                  style="width:230px;"
                   placeholder="请选择所属名单"
                 >
                   <el-option
@@ -95,8 +96,8 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="车牌颜色：">
-                <el-select v-model="addCarForm.color" :value="addCarForm.color" style="width:210px;" placeholder="请选择颜色">
+              <el-form-item label="车牌颜色：" prop="color">
+                <el-select v-model="addCarForm.color" :value="addCarForm.color" style="width:230px;" placeholder="请选择颜色">
                   <el-option
                     v-for="item in colorList"
                     :value="item.value"
@@ -270,13 +271,6 @@ export default {
             'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         }
       ],
-      dialogForm: {
-        creatorId: '',
-        name: '',
-        manufacturer: '',
-        model: '',
-        phone: ''
-      },
       typeOptions: [
         { name: '浙', id: '浙' },
         { name: '京', id: '京' },
@@ -290,19 +284,15 @@ export default {
         carlist: '',
         color: ''
       },
-      addFaceForm: {},
       addrules: {
-        creatorId: [
-          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
+        province: [
+          { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ],
-
-        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
-        manufacturer: [
-          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
+        carlist: [
+          { required: true, trigger: 'blur', message: '所属名单不能为空' }
         ],
-        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
-        inChargeId: [
-          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
+        color: [
+          { required: true, trigger: 'blur', message: '车牌颜色不能为空' }
         ]
       },
       formInline: {
@@ -483,7 +473,17 @@ export default {
       this.dialogVisable = true
     },
     closeDialog() {
+      this.addCarForm = {
+        carWord: '',
+        province: '',
+        carlist: '',
+        color: ''
+      }
       this.dialogVisable = false
+      this.clearValidate('addCarForm')
+    },
+    clearValidate(formName) {
+      this.$refs[formName].clearValidate();
     },
     onSearch() {
       const query = {
@@ -652,6 +652,9 @@ export default {
 .upload-demo {
   width: 360px;
   margin: 0 auto;
+}
+.el-form-item {
+  margin-bottom: 30px !important;
 }
 </style>
 

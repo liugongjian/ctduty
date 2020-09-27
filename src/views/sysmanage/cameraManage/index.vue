@@ -84,22 +84,22 @@
                   请选择您想查看的摄像头。 -->
                 </div>
                 <el-form v-else :model="form" label-position="right">
-                  <el-form-item label="摄像头ID：">
+                  <el-form-item class="formMargin" label="摄像头ID：">
                     <el-tooltip :content="form.id" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="负责人：">
+                  <el-form-item class="formMargin" label="负责人：">
                     <el-tooltip :content="form.inCharge.username" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.username }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="添加人：">
+                  <el-form-item class="formMargin" label="添加人：">
                     <el-tooltip :content="form.creator.username " placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="经纬度信息：">
+                  <el-form-item class="formMargin" label="经纬度信息：">
                     <el-tooltip :content="form.longitude" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2)+ ', ' + form.latitude.toFixed(2) }}</div>
                     </el-tooltip>
@@ -109,23 +109,23 @@
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
                     </el-tooltip>
                   </el-form-item> -->
-                  <el-form-item label="地址：">
+                  <el-form-item class="formMargin" label="地址：">
                     <el-tooltip :content="form.address" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="添加时间：">
+                  <el-form-item class="formMargin" label="添加时间：">
                     <el-tooltip :content="form.createTime" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item label="视频流信息：">
+                  <el-form-item class="formMargin" label="视频流信息：">
                     <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
                       <svg-icon v-if="form.isDeal" class="deal" icon-class="deal" />
                       <svg-icon v-else class="untreated" icon-class="untreated" />
                       {{ form.isDeal ? '已处理':'未处理' }}</div>
                   </el-form-item>
-                  <el-form-item label="告警信息：">
+                  <el-form-item class="formMargin" label="告警信息：">
                     <el-tooltip :content="form.dealSum" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
                     </el-tooltip>
@@ -689,21 +689,24 @@ export default {
      }
    }
  }
- label {
-   font-weight: 700 !important;
- }
- .el-form-item__label {
-   font-weight: 700 !important;
-    text-align: right !important;
- }
- .markerImg {
-   fill: #3E94F9;
- }
- .markerClickImg {
-   fill: #EA2027 !important;
- }
- label{
+  label {
+    font-weight: 700 !important;
+  }
+  .el-form-item__label {
+    font-weight: 700 !important;
+      text-align: right !important;
+  }
+  .markerImg {
+    fill: #3E94F9;
+  }
+  .markerClickImg {
+    fill: #EA2027 !important;
+  }
+  label{
     display:inline-block;
     width:90px;
-    }
+  }
+  .formMargin {
+    margin-bottom: 26px !important;
+  }
 </style>
