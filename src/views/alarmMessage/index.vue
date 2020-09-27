@@ -106,7 +106,7 @@
               </template></el-table-column>
               <el-table-column label="操作" width="80">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">编辑</el-link>
+                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
                   <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
                 </template>
               </el-table-column>
@@ -175,7 +175,6 @@ export default {
       return val.address
     }
   },
-
   data() {
     return {
       renderTime,
@@ -189,8 +188,8 @@ export default {
       defaultTab: '',
       state: '',
       value1: [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
-      startTime: '02:00',
-      endTime: '05:00',
+      startTime: '',
+      endTime: '',
       startDate: '',
       endDate: '',
       tabsArr: [],
@@ -244,20 +243,21 @@ export default {
   },
   created() {
     this.userId = Cookies.get('userId')
-    this.getPushSetTime()
+
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
     this.value1 = ''
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
-    const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    const h = this.formInline.typeValue
-    const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-    const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-    this.getTimeAllTotal(s1, e1, h)
-    this.getList(s, e, h)
+    this.getPushSetTime()
+    // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+    // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+    // const h = this.formInline.typeValue
+    // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+    // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+    // this.getTimeAllTotal(s1, e1, h)
+    // this.getList(s, e, h)
   },
   methods: {
     openBig(url) {
@@ -321,25 +321,24 @@ export default {
       this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
       this.value1 = '',
       this.page = 1,
-      this.startTime = '02:00'
-      this.endTime = '05:00'
-      this.getPushSetTime()
+      // this.startTime = '02:00'
+      // this.endTime = '05:00'
       this.formInline.typeValue = 'all'
       // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
       // this.defaultTab=this.endDate
       // this.getList(s1, end1, h1)
-
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
       this.defaultTab = this.tabsArr[0]
       this.currentTab = this.defaultTab
-      const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-      const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
-      this.getList(s, e, h)
+      this.getPushSetTime()
+      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+      // const h = this.formInline.typeValue
+      // this.getList(s, e, h)
 
-      const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-      const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-      this.getTimeAllTotal(s1, e1, h)
+      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      // this.getTimeAllTotal(s1, e1, h)
     },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
@@ -430,14 +429,16 @@ export default {
         try {
           parseSetting = JSON.parse(setting)
         } catch (err) {
-          parseSetting ={}
+          parseSetting = {}
         }
-        console.log(parseSetting,'xxx')
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
         const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
         const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
         const h = this.formInline.typeValue
+        const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+        const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+        this.getTimeAllTotal(s1, e1, h)
         this.getList(s, e, h)
       })
     },

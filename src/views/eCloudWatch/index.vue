@@ -74,9 +74,10 @@
               </div>
             </div>
 
-            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
+            <div v-if="stepsData.length > 0" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
               <div v-if="showTabValue === 'all'">
-                <div :data="stepsData">
+                <el-button v-if="isOnlyCameraData" type="text" @click="allAlarm">全部数据</el-button>
+                <div :data="stepsData" style="margin-top:10px;">
                   <template v-if="stepsData.length">
                     <div
                       v-for="(item, index) in stepsData"
@@ -99,7 +100,7 @@
                         <div v-if="index !== stepsData.length -1" class="shu"></div>
                       </div>
                       <div class="youContent" style="float:right width:100%;">
-                        <p class="dizhi">{{ item.camera.address || null }}</p>
+                        <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                         <div class="addressword">
                           <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                           <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -136,7 +137,7 @@
                       <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -172,7 +173,7 @@
                       <div v-if="index !== xData.length -1" class="shu"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
-                      <p class="dizhi">{{ item.camera.address || null }}</p>
+                      <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
@@ -207,7 +208,7 @@
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
               <el-form-item label="流量状态:">
-                <span style="width: 300px;">{{ dataDia.camera.address || null }}</span>
+                <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">
                 <span style="width: 300px;">
@@ -254,7 +255,7 @@ require('echarts/lib/chart/bar')
 // 引入提示框和title组件
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
-import { fetchalarmList, fetchNormalStatus } from '@/api/alarm'
+import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import { play, stop } from '@/api/monitor'
 import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
@@ -323,6 +324,7 @@ export default {
       page: 1,
       limit: 10,
       timer2: '',
+      isOnlyCameraData: false,
       events: {
         click: a => {}
       },
@@ -381,7 +383,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 300
             },
             params: [
               {
@@ -404,14 +406,24 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
+              this.getalarmList()
+              this.isOnlyCameraData = false
               this.showDialog(response.body.data[0], true)
             }
           })
         }, 5000)
+      } else {
+        setTimeout(() => {
+          this.getalarmList()
+          this.isOnlyCameraData = false
+        }, 300000)
       }
     },
     xData(v) {
       const that = this
+      that.timers.forEach(item => {
+        window.clearInterval(item)
+      })
       v.forEach(item => {
         setTimeout(() => {
           [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
@@ -443,10 +455,6 @@ export default {
     that.getCameraList()
     that.getPanelList()
     that.getPanel()
-    setInterval(() => {
-      this.getalarmList()
-      this.getCameraList()
-    }, 10000)
   },
   updated() {
     if (document.getElementsByClassName('markerImg').length) {
@@ -460,6 +468,10 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+    allAlarm() {
+      this.isOnlyCameraData = false
+      this.getalarmList()
+    },
     video_type(_url) {
       var url = _url.toLowerCase()
       if (url.startsWith('rtmp')) {
@@ -486,7 +498,6 @@ export default {
       })
     },
     getPanelList() {
-      // fetchAllData
       const params = {
         cascade: true,
         page: {
@@ -563,17 +574,11 @@ export default {
       this.showTabValue = 'w'
     },
     alarmRate(e) {
-      this.stepsData = {
-        camera: {
-          address: ''
-        }
-      }
-      setTimeout(() => {
-        this.stepsData = {}
-      }, 0)
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
+      this.isOnlyCameraData = false
+      this.getalarmList()
     },
     monitoring(e) {
       this.showAlarm = 'monitoring'
@@ -585,7 +590,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99999
+          size: 300
         },
         params: [
           {
@@ -607,11 +612,12 @@ export default {
       }
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
+          this.getPanelList()
           this.stepsData = response.body.data
           this.yData = []
           this.xData = []
           response.body.data.forEach(item => {
-            if (item.state !== null) {
+            if (item.handlerId !== null) {
               this.yData.push(item)
             } else {
               this.xData.push(item)
@@ -636,9 +642,6 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
-          /* if (item.childNodes[1].classList.contains('offline')) {
-            return
-          } */
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
@@ -684,19 +687,18 @@ export default {
           } else {
             this.cameraState = '此摄像头已离线'
           }
-
           this.center = [this.form.longitude, this.form.latitude]
           this.showZwMes = false
           const params = {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 300
             },
             params: [
               {
                 field: 'cameraId',
-                operator: 'BETWEEN',
+                operator: 'EQUALS',
                 value: this.form.id
               }
             ],
@@ -710,11 +712,12 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
+              this.getPanelList()
               this.stepsData = response.body.data || []
               this.yData = []
               this.xData = []
               response.body.data.forEach(item => {
-                if (item.state !== null) {
+                if (item.handlerId !== null) {
                   this.yData.push(item)
                 } else {
                   [...this.timers].forEach((item, index) => {
@@ -724,6 +727,12 @@ export default {
                   this.xData.push(item)
                 }
               })
+              // 两分钟后自动恢复默认全部列表
+              this.isOnlyCameraData = true
+              setTimeout(() => {
+                this.getalarmList()
+                this.isOnlyCameraData = false
+              }, 120000)
             }
           })
         }
@@ -889,15 +898,31 @@ export default {
       if (this.active++ > 2) this.active = 0
     },
     normal() {
-      fetchNormalStatus(this.dataDia.id, 0).then((res) => {
+      const params = [{
+        id: this.dataDia.id,
+        state: 0,
+        handlerId: this.userId
+
+      }]
+      notifyState(params, 0).then((res) => {
         this.getalarmList()
+        this.getPanelList()
         this.dialogVisable = false
+        this.isOnlyCameraData = false
       })
     },
     unnormal() {
-      fetchNormalStatus(this.dataDia.id, 1).then((res) => {
+      const params = [{
+        id: this.dataDia.id,
+        state: 1,
+        handlerId: this.userId
+
+      }]
+      notifyState(params, 1).then((res) => {
         this.getalarmList()
+        this.getPanelList()
         this.dialogVisable = false
+        this.isOnlyCameraData = false
       })
     }
   }
@@ -1116,9 +1141,6 @@ export default {
   overflow: hidden;
   cursor: pointer;
 }
-/* .youContent .addressword {
-  margin-left: 30px;
-} */
 .dizhi {
   width: 100%;
   font-size: 15px;

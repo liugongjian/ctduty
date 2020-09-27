@@ -62,7 +62,7 @@
             </div>
           </el-dialog>
           <!-- 新增车牌数据的显示框 -->
-          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="620px" @close="closeDialog">
+          <el-dialog :visible="dialogVisable" title="新增车牌数据" width="520px" @close="closeDialog">
             <el-form
               ref="addCarForm"
               :model="addCarForm"
@@ -70,7 +70,7 @@
               label-width="130px"
             >
               <el-form-item label="车牌号: " class="carInput">
-                <el-select v-model="addCarForm.province" style="width:30vw;" class="filter-item">
+                <el-select v-model="addCarForm.province" placeholder="省市区" style="width:70px;margin-right:10px;" class="filter-item">
                   <el-option
                     v-for="item in typeOptions"
                     :key="item._id"
@@ -78,14 +78,14 @@
                     :value="item.id"
                   ></el-option>
                 </el-select>
-                <el-input v-model="addCarForm.carWord" placeholder="请输入内容"></el-input>
+                <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
               </el-form-item>
-
               <el-form-item label="所属名单：">
                 <el-select
                   v-model="addCarForm.carlist"
                   :value="addCarForm.carlist"
-                  style="width:50vw;"
+                  style="width:210px;"
+                  placeholder="请选择所属名单"
                 >
                   <el-option
                     v-for="item in subordinateList"
@@ -96,7 +96,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="车牌颜色：">
-                <el-select v-model="addCarForm.color" :value="addCarForm.color" placeholder="请选择颜色">
+                <el-select v-model="addCarForm.color" :value="addCarForm.color" style="width:210px;" placeholder="请选择颜色">
                   <el-option
                     v-for="item in colorList"
                     :value="item.value"
@@ -156,7 +156,7 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <el-input v-model="editForm.carNumber"></el-input>
+            <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
             <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
@@ -639,18 +639,18 @@ export default {
 }
 .el-form-item__content {
   display: flex;
-  .el-select--medium {
+/*   .el-select--medium {
     width: 134px !important;
     margin-left: 10px;
     margin-right: 10px;
-  }
+  } */
 
   .xuanze {
     width: 20vw !important;
   }
 }
 .upload-demo {
-  width: 300px;
+  width: 360px;
   margin: 0 auto;
 }
 </style>
