@@ -1,15 +1,14 @@
 <template>
   <div class="dutyManage">
-    <!-- <el-divider></el-divider> -->
-    <div class="app-container" style="padding: 20px">
+    <div class="app-container">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" @click="bulkimport" type="primary">{{ '导入车牌数据' }}</el-button>
-
+          <el-button class="filter-item" @click="bulkimport" type="primary">{{ '导入值班表' }}</el-button>
+          <!-- 导入值班表 -->
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
-            title="导入车牌数据"
+            title="导入值班表"
             width="50vw"
             height="80vh"
             @close="closebulkimportDialog"
@@ -25,9 +24,10 @@
               @filter-change="filerStatus"
               @selection-change="handleSelectionChange"
             >
-              <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班领导'" prop="color"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'值班民警'" prop="color"></el-table-column>
             </el-table>
             <div v-else>
               <el-upload
@@ -61,9 +61,7 @@
               <el-button type="primary" @click="importConfirm">提 交</el-button>
             </div>
           </el-dialog>
-          <!-- 新增车牌数据的显示框 -->
         </div>
-        <div class="pull-right"></div>
       </div>
       <el-table
         :data="importData"
@@ -75,7 +73,7 @@
         @filter-change="filerStatus"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column width="55"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="licenseNo"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
           <template slot-scope="scope">
@@ -109,9 +107,8 @@ import {
   addCarData,
   importCarData,
   deleteCarData,
-  carEditConfirm,
-  searchList,
-  dlTemplate
+  dlTemplate,
+  dutyImportList
 } from "@/api/dm";
 const token = Cookies.get("token");
 export default {
@@ -123,42 +120,12 @@ export default {
         Authorization: token
       },
       importUrl: process.env.LOT_ROOT + "/CarLicense/Import",
-      colorList: [
-        {
-          value: "黑色",
-          label: "黑色"
-        },
-        {
-          value: "白色",
-          label: "白色"
-        },
-        {
-          value: "蓝色",
-          label: "蓝色"
-        },
-        {
-          value: "绿色",
-          label: "绿色"
-        }
-      ],
+
       headers: {
         Authorization: localStorage.getItem("token")
       },
       isBatchSuccess: false,
-      subordinateList: [
-        {
-          value: "白名单",
-          label: "白名单"
-        },
-        {
-          value: "嫌疑车辆黑名单",
-          label: "嫌疑车辆黑名单"
-        },
-        {
-          value: "疑似套牌车辆",
-          label: "疑似套牌车辆"
-        }
-      ],
+
       value: "",
       fileList: [
         {
@@ -179,37 +146,13 @@ export default {
         model: "",
         phone: ""
       },
-      typeOptions: [
-        { name: "浙", id: "浙" },
-        { name: "京", id: "京" },
-        { name: "沪", id: "沪" },
-        { name: "粤", id: "粤" }
-      ],
+
       imageUrl: "",
       addCarForm: {
         carWord: "",
         province: "",
         carlist: "",
         color: ""
-      },
-      addFaceForm: {},
-      addrules: {
-        creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
-        ],
-
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
-        manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
-        ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
-        inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
-        ]
-      },
-      formInline: {
-        searchkey: "",
-        typeValue: "list"
       },
       listLoading: false,
       filteredValue: [],
@@ -327,9 +270,7 @@ export default {
       this.oldSize = this.limit;
       this.getList();
     },
-    goBack() {
-      this.$router.go(-1);
-    },
+
     filerStatus(columnObj) {
       for (const key in columnObj) {
         this.originCode = columnObj[key][0];
@@ -353,37 +294,6 @@ export default {
         if (this.delIDArr.indexOf(item.id) === -1) {
           this.delIDArr.push(item.id);
         }
-      });
-    },
-    dialogQuxiao() {
-      this.dialogVisable = false;
-    },
-    addCar() {
-      this.$refs.addCarForm.validate(valid => {
-        if (!valid) return;
-        const params = [
-          {
-            licenseNo: this.addCarForm.province + this.addCarForm.carWord,
-            type: this.addCarForm.carlist,
-            color: this.addCarForm.color
-          }
-        ];
-        addCarData(params)
-          .then(res => {
-            this.getList();
-            this.dialogVisable = false;
-            this.$message({
-              message: "添加成功",
-              type: "success"
-            });
-            this.addCarForm = {
-              carWord: "",
-              province: "",
-              carlist: "",
-              color: ""
-            };
-          })
-          .catch(err => {});
       });
     }
   }

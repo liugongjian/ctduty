@@ -219,10 +219,10 @@ export const asyncRouterMap = [
       {
         path: "dutyManage",
         component: () => import("@/views/sysmanage/dutyManage/index"),
-        name: "sysUser",
+        name: "sysdutyManage",
         meta: {
           title: "dutyManage",
-          icon: "userManage",
+          icon: "dutyManage",
           noCache: false
         }
       },
