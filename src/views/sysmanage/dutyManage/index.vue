@@ -24,7 +24,7 @@
             >
               <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
                 <template slot-scope="scope">
-                  <span>{{ renderTime(scope.row.scheduleDate) }}</span>
+                  <span>{{ renderTime(scope.row.scheduleDate).split('00:00:00')[0] }}</span>
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
@@ -77,7 +77,7 @@
       >
         <el-table-column :show-overflow-tooltip="true" :label="'值班日期'" prop="scheduleDate">
           <template slot-scope="scope">
-            <span>{{ formatDate(scope.row.scheduleDate) }}</span>
+            <span>{{ renderTime(scope.row.scheduleDate).split('00:00:00')[0] }}</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'值班时间'" prop="type">
@@ -99,7 +99,6 @@
   </div>
 </template>
 <script>
-import {formatDate} from '@/utils/time.js'
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import { renderTime } from '@/utils'
@@ -235,12 +234,6 @@ export default {
       bulkimportVisble: false,
       value: '',
       isUpSuccess: false
-    }
-  },
-  filters: {
-    formatDate(time) {
-      let date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd')
     }
   },
   watch: {
