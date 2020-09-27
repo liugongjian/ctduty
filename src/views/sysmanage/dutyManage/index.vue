@@ -393,7 +393,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style  lang='scss' scoped>
 .dutyManage {
   padding: 0px 20px;
 }
@@ -441,12 +441,6 @@ export default {
 }
 .el-form-item__content {
   display: flex;
-  /*   .el-select--medium {
-    width: 134px !important;
-    margin-left: 10px;
-    margin-right: 10px;
-  } */
-
   .xuanze {
     width: 20vw !important;
   }
