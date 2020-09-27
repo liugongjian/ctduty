@@ -93,7 +93,7 @@
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" width="100"></el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" width="100">
                 <template slot-scope="scope">
-                  <span>{{ '其他' }}</span>
+                  <span>{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</span>
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
