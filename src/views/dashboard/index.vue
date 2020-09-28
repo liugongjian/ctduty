@@ -87,7 +87,7 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
-import huayin from '@/json/weinan.json'
+import huayin from '@/json/huayin.json'
 import elementResizeDetectorMaker from 'element-resize-detector'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
