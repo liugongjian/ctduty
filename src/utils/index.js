@@ -1,6 +1,9 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
+import axios from 'axios'
+import Cookies from 'js-cookie'
+
 export function myBrowser() {
   var userAgent = navigator.userAgent // 取得浏览器的userAgent字符串
   var isOpera = userAgent.indexOf('Opera') > -1
@@ -363,4 +366,42 @@ export const getDomainHost = (host = location.host) => {
     host,
     domain: `${domain}.${suffix}`
   }
+}
+
+export const downLoadByUrl = (url, contractName) => {
+  return new Promise((resolve, reject) => {
+    // axios.defaults.headers['content-type'] = ''
+    const token = Cookies.get('token')
+
+    axios({
+      method: 'get',
+      url: url, // 请求地址
+      responseType: 'blob', // 表明返回服务器返回的数据类型
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        Authorization: token || ''
+      }
+    }).then(
+      response => {
+        resolve(response.data)
+        const blob = new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        })
+        const fileName = contractName + '_' + Date.parse(new Date()) + '.xlsx'
+        if (window.navigator.msSaveOrOpenBlob) {
+          navigator.msSaveBlob(blob, fileName)
+        } else {
+          var link = document.createElement('a')
+          link.href = window.URL.createObjectURL(blob)
+          link.download = fileName
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+        }
+      },
+      err => {
+        reject(err)
+      }
+
+    )
+  })
 }

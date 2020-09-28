@@ -60,7 +60,7 @@
                 class="dlTem"
                 style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
               >
-                <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+                <a :href="`#`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
               </p>
             </div>
             <div v-if="isUpSuccess" slot="footer" class="dialog-footer">
@@ -103,10 +103,11 @@
 <script>
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
-import { renderTime } from '@/utils'
+import { renderTime, downLoadByUrl } from '@/utils'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
+import axios from 'axios'
 import {
   fetchCarList,
   addCarData,
@@ -121,7 +122,7 @@ export default {
   data() {
     return {
       renderTime,
-      path: 'http://host31.880508.xyz:10000/Schedule/Template',
+      // path: 'http://host31.880508.xyz:10000/Schedule/Template',
       importHeader: {
         Authorization: token
       },
@@ -250,6 +251,7 @@ export default {
   },
   methods: {
     dlTem() {
+      downLoadByUrl('http://36.41.71.26:8920/Schedule/Template', '值班管理导入模板')
       fetchDutyTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',

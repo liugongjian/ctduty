@@ -98,7 +98,7 @@
                           icon-class="untreated2"
                         />
                         <svg-icon
-                          v-else-if="item.state === null"
+                          v-else-if="item.handlerId === null"
                           class="untreated"
                           icon-class="untreated"
                         />
@@ -135,7 +135,7 @@
                         icon-class="untreated2"
                       />
                       <svg-icon
-                        v-else-if="item.state === null"
+                        v-else-if="item.handlerId === null"
                         class="untreated"
                         icon-class="untreated"
                       />
@@ -171,7 +171,7 @@
                         icon-class="untreated2"
                       />
                       <svg-icon
-                        v-else-if="item.state === null"
+                        v-else-if="item.handlerId === null"
                         class="untreated"
                         icon-class="untreated"
                       />
