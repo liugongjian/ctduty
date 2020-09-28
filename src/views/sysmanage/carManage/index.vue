@@ -335,7 +335,7 @@ export default {
   },
   methods: {
     dlTem() {
-      downLoadByUrl('http://36.41.71.26:8920/Schedule/Template', '车牌数据导入模板')
+      downLoadByUrl('http://36.41.71.26:8920/CarLicense/Template', '车牌数据导入模板')
       dlTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',
