@@ -155,6 +155,7 @@ export default {
       deletePoliceName: '',
       deletePoliceDialogVisible: false,
       deletePoliceId: 0,
+      oldFilterName: '',
       departmentInfo: [
         {
           departmentId: 3275699862611970,
@@ -175,6 +176,9 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    filterName(v) {
+      this.oldFilterName = v
     }
   },
   created() {
@@ -193,6 +197,7 @@ export default {
       })
     },
     filerStatus(columnObj) {
+      this.page = 1
       for (const key in columnObj) {
         if (!columnObj[key][0]) {
           this.filterName = ''
@@ -214,9 +219,6 @@ export default {
             value: this.filterName
           }]
       }
-      if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
-      }
       filterPoliceList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
@@ -226,6 +228,9 @@ export default {
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      if (this.filterName !== this.oldFilterName) {
         this.page = 1
       }
       this.oldSize = this.limit

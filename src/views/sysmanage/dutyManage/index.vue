@@ -39,8 +39,10 @@
               <el-upload
                 :action="importUrl"
                 :on-success="batchUpSuccess"
+                :on-error="batchUpError"
                 :headers="importHeader"
                 :before-upload="beforeAvatarUpload"
+                :show-file-list="false"
                 class="upload-demo"
                 name="file"
                 multiple
@@ -289,14 +291,29 @@ export default {
       })
     },
     batchUpSuccess(res) {
+      if (+res.code === 50000) {
+        this.$message({
+          message: '文件上传失败',
+          type: 'error'
+        })
+        this.isUpSuccess = false
+        this.upSuccessData = []
+        this.bulkimportVisble = false
+        return
+      }
       this.upSuccessData = res.body.data
       this.isUpSuccess = true
+    },
+    batchUpError(err) {
+      this.$message({
+        message: err,
+        type: 'error'
+      })
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload(file) {
-      console.log(file.type, file, 'file.typefile.type')
       const isxlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
