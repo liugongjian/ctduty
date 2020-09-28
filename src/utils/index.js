@@ -372,7 +372,6 @@ export const downLoadByUrl = (url, contractName) => {
   return new Promise((resolve, reject) => {
     // axios.defaults.headers['content-type'] = ''
     const token = Cookies.get('token')
-
     axios({
       method: 'get',
       url: url, // 请求地址
