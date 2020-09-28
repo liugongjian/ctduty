@@ -706,7 +706,7 @@ export default {
     display:inline-block;
     width:90px;
   }
-  /* .formMargin {
-    margin-bottom: 26px !important;
-  } */
+  .formMargin {
+    margin-bottom: 5px !important;
+  } 
 </style>
