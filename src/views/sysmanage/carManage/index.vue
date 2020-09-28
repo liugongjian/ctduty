@@ -54,7 +54,7 @@
                 <div slot="tip" class="el-upload__tip" style="width: 400px">支持的格式：仅支持xlsx格式文件</div>
               </el-upload>
               <p class="dlTem" style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;" >
-                <a :href="`${path}`" :download="`${path}`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+                <a :href="`#`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
               </p>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -64,8 +64,8 @@
           <!-- 新增车牌数据的显示框 -->
           <el-dialog :visible="dialogVisable" title="新增车牌数据" width="520px" @close="closeDialog">
             <el-form
-              :rules="addrules"
               ref="addCarForm"
+              :rules="addrules"
               :model="addCarForm"
               label-position="right"
               label-width="130px"
@@ -201,6 +201,7 @@ import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
+import { downLoadByUrl } from '@/utils'
 import {
   fetchCarList,
   fetchSingleCarData,
@@ -334,6 +335,7 @@ export default {
   },
   methods: {
     dlTem() {
+      downLoadByUrl('http://36.41.71.26:8920/Schedule/Template', '车牌数据导入模板')
       dlTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',
@@ -483,7 +485,7 @@ export default {
       this.clearValidate('addCarForm')
     },
     clearValidate(formName) {
-      this.$refs[formName].clearValidate();
+      this.$refs[formName].clearValidate()
     },
     onSearch() {
       const query = {
