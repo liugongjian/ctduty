@@ -228,7 +228,7 @@
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
               </el-form-item>
-              <el-form-item label="触发事件:" prop="imageCut">
+              <el-form-item label="触发事件:" prop="type">
                 <span>{{ dataDia.type === 1?'人员':dataDia.type === 2?"机动车":'非机动车' }}</span>
               </el-form-item>
             </el-form>
