@@ -140,6 +140,9 @@
                 <el-form-item label="结构化照片：" prop="imageCut" >
                   <el-image :src="temp.imageCut"></el-image>
                 </el-form-item>
+                <el-form-item label="结构化照片：" prop="type" >
+                  <span>{{ temp.type === 1 ? '人员':temp.type === 2 ?'机动车':'非机动车' }}</span>
+                </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button
