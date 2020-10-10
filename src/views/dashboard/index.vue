@@ -761,10 +761,10 @@ export default {
       var option = {
         backgroundColor: '#fff',
         grid: {
-          left: '5%',
-          top: '5%',
-          bottom: '5%',
-          right: '5%'
+          left: '60px',
+          top: '15px',
+          bottom: '30px',
+          right: '10px'
         },
         legend: {
           type: 'scroll',
@@ -861,13 +861,7 @@ export default {
           },
           data: data
         }
-        ],
-        grid: {
-          left: '25px',
-          top: '25px',
-          bottom: '25px',
-          right: '25px'
-        }
+        ]
       }
       charts.setOption(option)
     }
