@@ -950,6 +950,7 @@ export default {
 }
 #echarts05 {
    position:relative !important;
+   overflow: hidden;
   div {
     width: 100%;
     position: absolute !important;
