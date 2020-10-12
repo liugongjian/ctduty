@@ -207,10 +207,15 @@ export default {
       this.rowHeight = Math.floor(mainHeight / 12);
       [].forEach.call(document.getElementsByTagName('canvas'), function(item) {
         if (item.parentNode.parentNode.id === 'man' || item.parentNode.parentNode.id === 'car' || item.parentNode.parentNode.id === 'bicycle') {
+          item.parentNode.style.top = '50%'
+          item.parentNode.style.transform = 'translateY(-50%)'
           item.style.width = item.parentNode.parentNode.parentNode.clientWidth / 3 + 'px'
           item.parentNode.style.width = item.parentNode.parentNode.parentNode.clientWidth / 3 + 'px'
         } else {
           item.style.width = item.parentNode.parentNode.clientWidth + 'px'
+          item.parentNode.style.width = item.parentNode.parentNode.clientWidth + 'px'
+          item.parentNode.style.top = '50%'
+          item.parentNode.style.transform = 'translateY(-50%)'
         }
       })
     },
