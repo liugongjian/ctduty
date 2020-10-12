@@ -207,7 +207,7 @@ export default {
           this.notReadNotice = []
         }
       })
-    }, 5 * 1000)
+    }, 30 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
