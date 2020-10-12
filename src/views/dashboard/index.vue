@@ -203,12 +203,16 @@ export default {
   methods: {
     resize() { // 当宽高变化时就会执行
       // 执行某些操作
-    /*   document.getElementById('alarmLine').children[0].style.width = document.getElementById('trend').clientWidth
-      console.log(document.getElementById('alarmLine').children[0].children, document.getElementById('alarmLine').children[0].style.width)
-      document.getElementsByTagName('canvas').forEach(item => {
-        console.log(item.parentNode.parentNode.classList)
-      }) */
-      // console.log(document.getElementsByTagName('canvas').parentNode.classList)
+      [].forEach.call(document.getElementsByTagName('canvas'), function(item) {
+        console.log(item.parentNode.parentNode.id)
+        if (item.parentNode.parentNode.id === 'man' || item.parentNode.parentNode.id === 'car' || item.parentNode.parentNode.id === 'bicycle') {
+          console.log(item.parentNode.parentNode.parentNode)
+          item.style.width = item.parentNode.parentNode.parentNode.clientWidth / 3 + 'px'
+          item.parentNode.style.width = item.parentNode.parentNode.parentNode.clientWidth / 3 + 'px'
+        } else {
+          item.style.width = item.parentNode.parentNode.clientWidth + 'px'
+        }
+      })
     },
     goAlarmList() {
       this.$router.push('/alarmMessage')
