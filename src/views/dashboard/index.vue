@@ -192,7 +192,6 @@ export default {
     const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
     this.mainHeight = mainHeight
     this.rowHeight = Math.floor(mainHeight / 12)
-    console.log(this.rowHeight, 'this.rowHeight')
   },
   mounted() {
     // map, trend, dispose, classify, hotarea, net
@@ -203,6 +202,9 @@ export default {
   methods: {
     resize() { // 当宽高变化时就会执行
       // 执行某些操作
+      const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+      this.mainHeight = mainHeight
+      this.rowHeight = Math.floor(mainHeight / 12);
       [].forEach.call(document.getElementsByTagName('canvas'), function(item) {
         if (item.parentNode.parentNode.id === 'man' || item.parentNode.parentNode.id === 'car' || item.parentNode.parentNode.id === 'bicycle') {
           item.style.width = item.parentNode.parentNode.parentNode.clientWidth / 3 + 'px'
