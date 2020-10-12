@@ -1,5 +1,5 @@
 <template>
-  <div id="dashID" class="dashboard-container">
+  <div v-resize="resize" id="dashID" class="dashboard-container">
     <el-row :gutter="12">
       <el-col :span="18" class="status">
         <div id="map" :class="isFullscreen?'mapE':''">
@@ -28,12 +28,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6" style="{width: '50%'; height: '60vh'; margin-top: 20px;}">
+      <el-col :span="6" style="{width: '50%';  margin-top: 20px;}">
         <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
-          <p class="trendTitle">目标评估</p>
-          <p class="trenddes">{{ trendText }}</p>
-          <div id="alarmLine" :style="{width: '100%', height: '120px'}" class="lineEcharts"></div>
+          <div class="trendTitleBox">
+            <p class="trendTitle">目标评估</p>
+            <p class="trenddes">{{ trendText }}</p>
+          </div>
+          <div id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
         <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
@@ -42,14 +44,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="18" style="margin-top:20px;margin-bottom:20px;">
+      <el-col id="bottomCol1" :span="18" style="margin-bottom:20px;">
         <el-col :span="16" style="padding-left:0;">
           <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
               各类告警占比
               <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
             </div>
-            <div class="pie">
+            <div id="pie">
               <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
               <div id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
               <div id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
@@ -59,7 +61,7 @@
         <el-col :span="8" style="padding-right:0;">
           <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
-            <div class="tagbox">
+            <div id="tagbox">
               <WordCloud
                 v-if="hotTag.length"
                 id="echarts05"
@@ -67,12 +69,11 @@
                 height="100%"
                 width="100%"
               />
-              <!--  <tag-cloud :data="hotTag" :hover="false" radius="20" rotate-angle-xbase="800" rotate-angle-ybase="800" @clickTag="clickTagItem"></tag-cloud> -->
             </div>
           </div>
         </el-col>
       </el-col>
-      <el-col :span="6" style="margin-top: 20px;margin-bottom:20px;">
+      <el-col id="bottomCol2" :span="6" style="margin-bottom:20px;">
         <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
           <div id="camerarate" :class="isFullscreen?'chartHei':''"></div>
@@ -88,7 +89,6 @@ import echarts from 'echarts'
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
 import huayin from '@/json/huayin.json'
-import elementResizeDetectorMaker from 'element-resize-detector'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -107,6 +107,26 @@ export default {
   // mixins: [PreCheck],
   components: {
     WordCloud
+  },
+  directives: { // 使用局部注册指令的方式
+    resize: { // 指令的名称
+      bind(el, binding) { // el为绑定的元素，binding为绑定给指令的对象
+        let width = ''
+        let height = ''
+        function isReize() {
+          const style = document.defaultView.getComputedStyle(el)
+          if (width !== style.width || height !== style.height) {
+            binding.value() // 关键
+          }
+          width = style.width
+          height = style.height
+        }
+        el.__vueSetInterval__ = setInterval(isReize, 500)
+      },
+      unbind(el) {
+        clearInterval(el.__vueSetInterval__)
+      }
+    }
   },
   data() {
     return {
@@ -130,7 +150,9 @@ export default {
       screenHeight: '',
       wordCloudData: [
 
-      ]
+      ],
+      mainHeight: null,
+      rowHeight: null
     }
   },
   watch: {
@@ -141,54 +163,58 @@ export default {
         item.parentNode.style = `display:inline-block;text-align:center;`
       })
     },
-    screenHeight(v) {
-      const canvas = document.getElementsByTagName('canvas');
-      [].forEach.call(canvas, function(item) {
-        item.style.width = '100%'
-        item.parentNode.style = `display:inline-block;text-align:center;`
-      })
-      if (v === window.screen.height - 50) {
-        this.isFullscreen = true
-      } else {
-        this.isFullscreen = false
-      }
+    rowHeight(v) {
+      document.getElementById('map').style.height = this.rowHeight * 7.4 + 'px'
+      document.getElementById('mapChart').style.height = this.rowHeight * 7.4 - 100 + 'px'
+      document.getElementById('trend').style.height = this.rowHeight * 3.5 + 'px'
+      document.getElementById('alarmLine').style.height = this.rowHeight * 3.5 - 90 + 'px'
+      document.getElementById('dispose').style.height = this.rowHeight * 3.5 + 'px'
+      document.getElementById('dispose').style.marginTop = this.rowHeight * 0.4 + 'px'
+      document.getElementById('panel').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('classify').style.height = this.rowHeight * 3.5 + 'px'
+      document.getElementById('hotarea').style.height = this.rowHeight * 3.5 + 'px'
+      document.getElementById('net').style.height = this.rowHeight * 3.5 + 'px'
+      document.getElementById('man').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('car').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('bicycle').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('tagbox').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('camerarate').style.height = this.rowHeight * 3.5 - 40 + 'px'
+      document.getElementById('bottomCol1').style.marginTop = this.rowHeight * 0.4 + 'px'
+      document.getElementById('bottomCol2').style.marginTop = this.rowHeight * 0.4 + 'px'
+      document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
+      console.log((document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px')
     }
   },
   async created() {
     await this.getNowList()
     await this.getList()
     registerMap()
+    const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+    this.mainHeight = mainHeight
+    this.rowHeight = Math.floor(mainHeight / 12)
+    console.log(this.rowHeight, 'this.rowHeight')
   },
   mounted() {
-    [].forEach.call(document.getElementsByClassName('app-main'), function(item) {
-      item.style.height = '100%'
-    })
-    const that = this
-    that.screenWidth = document.getElementById('dashID').clientWidth
-    that.screenHeight = document.getElementById('dashID').clientHeight
-    const erd = elementResizeDetectorMaker()
-    erd.listenTo(document.getElementById('dashID'), element => {
-      that.$nextTick(() => {
-        // 监听到事件后执行的业务逻辑
-        that.screenWidth = element.clientWidth
-        that.screenHeight = element.clientHeight
-      })
-    })
-    // that.getMap()
-    /*  that.camerarate()
-    that.drawPie('man', '人员', '#1890FF', NaN)
-    that.drawPie('car', '机动车', '#5DDECF', NaN)
-    that.drawPie('bicycle', '非机动车', '#2FC25B', NaN)
-    that.getPanel(that.cameraOnlineRate) */
-    // that.drawZhu('alarmLine')
+    // map, trend, dispose, classify, hotarea, net
+    console.log(
+      document.getElementById('tagbox').style.height, 'document.getElementById'
+    )
   },
   methods: {
+    resize() { // 当宽高变化时就会执行
+      // 执行某些操作
+    /*   document.getElementById('alarmLine').children[0].style.width = document.getElementById('trend').clientWidth
+      console.log(document.getElementById('alarmLine').children[0].children, document.getElementById('alarmLine').children[0].style.width)
+      document.getElementsByTagName('canvas').forEach(item => {
+        console.log(item.parentNode.parentNode.classList)
+      }) */
+      // console.log(document.getElementsByTagName('canvas').parentNode.classList)
+    },
     goAlarmList() {
       this.$router.push('/alarmMessage')
     },
     checkFull() {
       var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
-      // to fix : false || undefined == undefined
       if (isFull === undefined) {
         isFull = false
       }
@@ -761,10 +787,10 @@ export default {
       var option = {
         backgroundColor: '#fff',
         grid: {
-          left: '5%',
-          top: '5%',
-          bottom: '5%',
-          right: '5%'
+          left: '60px',
+          top: '15px',
+          bottom: '30px',
+          right: '10px'
         },
         legend: {
           type: 'scroll',
@@ -861,13 +887,7 @@ export default {
           },
           data: data
         }
-        ],
-        grid: {
-          left: '25px',
-          top: '25px',
-          bottom: '25px',
-          right: '25px'
-        }
+        ]
       }
       charts.setOption(option)
     }
@@ -876,7 +896,7 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
+ <style lang="scss" scoped>
 .app-main {
   height: 100% !important;
 }
@@ -930,6 +950,7 @@ export default {
 }
 #echarts05 {
    position:relative !important;
+   overflow: hidden;
   div {
     width: 100%;
     position: absolute !important;
@@ -971,17 +992,19 @@ export default {
   }
 }
 .dashboard-container {
-  height: 759px;
+  // height: 759px;
   padding: 0px 20px;
   background: #F0F2F5;
   #map {
-    height: 440px;
+    // height: 440px;
     background-color: #fff;
   }
   #trend{
-    height: 30%;
+    // height: 30%;
     background-color: #fff;
-    .trendTitle {
+    .trendTitleBox {
+      height: 40px;
+      .trendTitle {
       padding: 0;
       font-size: 12px;
       color: #ccc;
@@ -994,25 +1017,22 @@ export default {
       font-size: 12px;
       margin-left: 10px;
     }
+    }
+
   }
   #dispose {
-    height: 30%;
     background-color: #fff;
-    margin-top:20px;
   }
   #classify {
-    height: 30%;
     background-color: #fff;
   }
   #hotarea {
-    height: 30%;
     background-color: #fff;
   }
   #net {
-    height: 30%;
     background-color: #fff;
     #camerarate {
-      height: 170px;
+
       display: flex;
     }
   }
@@ -1074,30 +1094,16 @@ export default {
     }
   }
 }
-/* .el-row {
-  height: 100vh;
-} */
 .mapbox {
-  height: 400px;
   padding: 0;
   overflow: hidden;
   #mapChart {
     width: 900px;
-    height: 330px;
-    margin-top:20px;
     display: flex;
-    /* div {
-      width: 100%;
-      height: 100%;
-    } */
-    /* canvas {
-      width: 100%;
-      height: 100%;
-    } */
   }
   .overv {
     width: 100%;
-    height: 50px;
+    height: 60px;
     display: flex;
     justify-content: flex-start;
     .overvBox {
@@ -1123,8 +1129,7 @@ export default {
     opacity: 0;
   }
 }
-.pie {
-  height: 170px;
+#pie {
   display: flex;
   overflow: hidden;
 }
@@ -1134,7 +1139,7 @@ export default {
   }
   .tagbox {
     width: 100%;
-    height: 170px;
+
     overflow: hidden;
     .tag-cloud {
     height: 100%;
@@ -1142,7 +1147,7 @@ export default {
   }
   .disbox {
     width: 100%;
-    height: 170px;
+
     #panel {
       height: 100%;
     }
