@@ -182,7 +182,6 @@ export default {
       document.getElementById('bottomCol1').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('bottomCol2').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
-      console.log((document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px')
     }
   },
   async created() {
@@ -195,9 +194,6 @@ export default {
   },
   mounted() {
     // map, trend, dispose, classify, hotarea, net
-    console.log(
-      document.getElementById('tagbox').style.height, 'document.getElementById'
-    )
   },
   methods: {
     resize() { // 当宽高变化时就会执行
@@ -381,24 +377,20 @@ export default {
             triggerOn: 'mousemove',
             position: 'top',
             formatter: function(params) {
-              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]};<br/>未处理: ${params.data.value[4]};`
+              return `${params.data.name}<br/> 告警数: ${params.data.value[2]}<br/> 已处理: ${params.data.value[3]}<br/>未处理: ${params.data.value[4]}`
             }
-            // handledCount
           },
           label: {
             show: false,
             normal: {
-              // show: 0,
               show: true,
               textStyle: {
                 color: '#000'
               }
             },
             emphasis: {
-              // show: 0,
               show: true,
               textStyle: {
-                // show: 0,
                 show: true,
                 color: '#000'
               }
