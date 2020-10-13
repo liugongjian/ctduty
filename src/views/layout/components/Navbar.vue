@@ -157,11 +157,18 @@ export default {
       'sidebar',
       // 'name',
       'avatar',
-      'device'
+      'device',
+      'noticeTotal',
+      'noticeArr'
     ])
-
   },
   watch: {
+    noticeTotal(v) {
+      this.notReadNoticeTotal = v
+    },
+    noticeArr(v) {
+      this.notReadNotice = v
+    },
     isFullscreen(v) {
       if (v) {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
@@ -207,7 +214,7 @@ export default {
           this.notReadNotice = []
         }
       })
-    }, 30 * 1000)
+    }, 120 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
