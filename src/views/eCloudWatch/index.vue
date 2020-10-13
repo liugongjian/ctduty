@@ -242,9 +242,9 @@
                 <span>{{dataDia.license}}</span>
               </el-form-item>
               <!-- 人员 -->
-              <!-- <el-form-item v-if="licence" label="姓名:" prop="licence">
-                <span>{{dataDia.licence}}</span>
-              </el-form-item> -->
+              <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
+                <span>{{dataDia.username}}</span>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button round @click="normal">正 常</el-button>
