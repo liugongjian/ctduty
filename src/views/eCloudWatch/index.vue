@@ -182,7 +182,7 @@
                       <div class="addressword">
                         <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                         <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
-                        <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
+                        <svg-icon v-else-if="item.type === 3" class="trafficSvg" icon-class="bicycle" />
                         <span
                           style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
                         >{{ renderTime(item.createTime) }}</span>
@@ -229,7 +229,21 @@
                 <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
               </el-form-item>
               <el-form-item label="触发事件:" prop="type">
-                <span>{{ dataDia.type === 1?'人员':dataDia.type === 2?"机动车":'非机动车' }}</span>
+                <span v-if="dataDia.type === 1">人员</span>
+                <span v-else-if="dataDia.type === 2">机动车</span>
+              </el-form-item>
+              <el-form-item v-if="dataDia.label" label="布控标签:" prop="label">
+                <span v-if="dataDia.label === 1">白名单</span>
+                <span v-else-if="dataDia.label === 2">黑名单</span>
+                <span v-else-if="dataDia.label === 3">其他</span>
+              </el-form-item>
+              <!-- 车牌 -->
+              <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
+                <span>{{dataDia.license}}</span>
+              </el-form-item>
+              <!-- 人员 -->
+              <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
+                <span>{{dataDia.username}}</span>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
