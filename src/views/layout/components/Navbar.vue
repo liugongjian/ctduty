@@ -199,7 +199,9 @@ export default {
     }
   },
   created() {
-    this.getNewNotice()
+    setTimeout(() => {
+      this.getNewNotice()
+    }, 2000)
   },
   mounted() {
     this.timer = setInterval(() => {
