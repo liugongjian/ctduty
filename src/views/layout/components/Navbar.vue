@@ -198,22 +198,12 @@ export default {
       clearInterval(this.timer)
     }
   },
+  created() {
+    this.getNewNotice()
+  },
   mounted() {
     this.timer = setInterval(() => {
-      const params = {
-        index: 1,
-        size: 10000,
-        total: 0
-      }
-      notReadNotices(params).then((res) => {
-        if (res.body.data.length > 0) {
-          this.notReadNoticeTotal = res.body.page.total
-          this.notReadNotice = res.body.data
-        } else {
-          this.notReadNoticeTotal = ''
-          this.notReadNotice = []
-        }
-      })
+      this.getNewNotice()
     }, 30 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
@@ -232,26 +222,29 @@ export default {
     })
   },
   methods: {
+    getNewNotice() {
+      const params = {
+        index: 1,
+        size: 10000,
+        total: 0
+      }
+      notReadNotices(params).then((res) => {
+        if (res.body.data.length > 0) {
+          this.notReadNoticeTotal = res.body.page.total
+          this.notReadNotice = res.body.data
+        } else {
+          this.notReadNoticeTotal = ''
+          this.notReadNotice = []
+        }
+      })
+    },
     closeDialog() {
       this.dialogVisable = false
     },
     dialogConfirm() {
       upReadNotices(this.noticeForm.id).then(res => {
         this.dialogVisable = false
-        const params = {
-          index: 1,
-          size: 10000,
-          total: 0
-        }
-        notReadNotices(params).then((res) => {
-          if (res.body.data.length > 0) {
-            this.notReadNoticeTotal = res.body.page.total
-            this.notReadNotice = res.body.data
-          } else {
-            this.notReadNoticeTotal = ''
-            this.notReadNotice = []
-          }
-        })
+        this.getNewNotice()
       })
     },
     handleCommand(command) {
