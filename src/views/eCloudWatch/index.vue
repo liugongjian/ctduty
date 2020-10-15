@@ -232,18 +232,18 @@
                 <span v-if="dataDia.type === 1">人员</span>
                 <span v-else-if="dataDia.type === 2">机动车</span>
               </el-form-item>
-              <el-form-item v-if="dataDia.label" label="布控标签:" prop="label">
+              <el-form-item v-if="dataDia.label || dataDia.label === null" label="布控标签:" prop="label">
                 <span v-if="dataDia.label === 1">白名单</span>
                 <span v-else-if="dataDia.label === 2">黑名单</span>
-                <span v-else-if="dataDia.label === 3">其他</span>
+                <span v-else>其他</span>
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
-                <span>{{ dataDia.license }}</span>
+                <span>{{dataDia.license}}</span>
               </el-form-item>
               <!-- 人员 -->
               <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
-                <span>{{ dataDia.username }}</span>
+                <span>{{dataDia.username}}</span>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -718,15 +718,6 @@ export default {
                 field: 'cameraId',
                 operator: 'EQUALS',
                 value: this.form.id
-              },
-              {
-                field: 'create_time',
-                operator: 'BETWEEN',
-                value: { start: moment(Date.now()).format(
-                  'YYYY-MM-DD 00:00:00'
-                ),
-                end: moment().format('YYYY-MM-DD HH:mm:ss')
-                }
               }
             ],
             sorts: [
