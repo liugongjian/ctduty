@@ -239,11 +239,11 @@
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
-                <span>{{dataDia.license}}</span>
+                <span>{{ dataDia.license }}</span>
               </el-form-item>
               <!-- 人员 -->
               <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
-                <span>{{dataDia.username}}</span>
+                <span>{{ dataDia.username }}</span>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -718,6 +718,15 @@ export default {
                 field: 'cameraId',
                 operator: 'EQUALS',
                 value: this.form.id
+              },
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: { start: moment(Date.now()).format(
+                  'YYYY-MM-DD 00:00:00'
+                ),
+                end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
               }
             ],
             sorts: [
