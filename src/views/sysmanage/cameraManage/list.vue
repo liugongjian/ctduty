@@ -1,9 +1,16 @@
 <template>
   <div class="list">
+    <div class="title">
+      摄像头管理
+    </div>
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <!--  <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
+          <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
+          <el-select v-model="algorithmValue" style="width:120px;" class="filter-item" @change="algListChange">
+            <el-option v-for="item in algOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+          </el-select>
+          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
@@ -14,6 +21,9 @@
                   <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                   </el-option>
                 </el-select>
+              </el-form-item>
+              <el-form-item label="添加人：">
+                {{ creatorName }}
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -51,7 +61,7 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" width="100px" prop="online">
           <template slot-scope="scope">
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
@@ -69,9 +79,10 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :label="'操作'" width="150px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -92,6 +103,16 @@
           </el-form-item>
           <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
+          <!-- <el-form-item label="算法：">
+            <el-tag
+              v-for="tag in tags"
+              :key="tag.name"
+              :type="tag.type"
+              closable
+              @close="algTagClose(tag)">
+              {{ tag.name }}
+            </el-tag>
+          </el-form-item> -->
           <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
@@ -102,6 +123,16 @@
           >确 定</el-button>
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
+      </el-dialog>
+      <el-dialog :visible="algVisable" title="算法" width="520px" @close="algCloseDialog">
+        <el-tag
+          v-for="tag in tags"
+          :key="tag.name"
+          :type="tag.type"
+          closable
+          @close="algTagClose(tag)">
+          {{ tag.name }}
+        </el-tag>
       </el-dialog>
       <pagination
         v-show="total>0"
@@ -128,6 +159,13 @@ export default {
   components: { Pagination },
   data() {
     return {
+      algorithmValue: null,
+      algOptions: [],
+      tags: [
+        { name: '人脸', type: '' },
+        { name: '车辆', type: 'success' },
+        { name: '非机动车', type: 'info' }
+      ],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -205,7 +243,8 @@ export default {
         creatorId: ''
       },
       userList: [],
-      creatorName: ''
+      creatorName: '',
+      algVisable: false
     }
   },
   watch: {
@@ -220,6 +259,26 @@ export default {
     await this.getList()
   },
   methods: {
+    algListChange() {
+      console.log('算法列表改变')
+    },
+    apply() {
+      console.log('应用算法')
+    },
+    algTagClose(tag) {
+      this.algVisable = false
+      this.$confirm('此操作将移出该算法, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.tags.splice(this.tags.indexOf(tag), 1)
+        this.algVisable = true
+        console.log(tag)
+      }).catch(() => {
+        this.algVisable = true
+      })
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -276,6 +335,13 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+    },
+    algDialog(id) {
+      console.log(id, 'id')
+      this.algVisable = true
+    },
+    algCloseDialog() {
+      this.algVisable = false
     },
     editDialog(v) {
       this.editForm.id = v.id
@@ -434,6 +500,9 @@ export default {
 }
 .app-main {
   padding-top: 50px;
+}
+.el-tag {
+  margin-right: 8px;
 }
 </style>
 
