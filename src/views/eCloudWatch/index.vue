@@ -371,7 +371,11 @@ export default {
       // 当天已处理
       todayHandleds: null,
       // 当天未处理
-      todayUndeal: null
+      todayUndeal: null,
+      allXDataCameraIDEQU: null,
+      cameraAlarmObj: {
+
+      }
     }
   },
   watch: {
@@ -446,38 +450,55 @@ export default {
     },
     xData(v) {
       const that = this
+      const firXdataCameraID = v[0].camera.id
+      const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
+      if (!allXDataCameraIDEQU) {
+        that.allXDataCameraIDEQU = allXDataCameraIDEQU
+      } else {
+        that.allXDataCameraIDEQU = null
+      }
+      that.getCameraList()
       that.timers.forEach(item => {
         window.clearInterval(item)
       })
-      v.forEach(item => {
-        setTimeout(() => {
-          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
-            if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
-              window.clearInterval(that.timer6)
-              that.timers[i] = setInterval(() => {
-                dom.classList.add('markerClickImg')
-                dom.timer6 = setTimeout(() => {
-                  dom.classList.remove('markerClickImg')
-                }, 500)
-              }, 1000)
-            }
-          })
-        }, 300)
-      })
+      if (that.allXDataCameraIDEQU === false) {
+        console.log(that.allXDataCameraIDEQU, 'that.allXDataCameraIDEQU')
+        that.cameraAlarmObj = {}
+        v.forEach((item, index) => {
+          if (item.camera.id in that.cameraAlarmObj) {
+            that.cameraAlarmObj[item.camera.id] = that.cameraAlarmObj[item.camera.id] + 1
+          } else {
+            that.cameraAlarmObj[item.camera.id] = 1
+          }
+          setTimeout(() => {
+            [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
+              if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
+                window.clearInterval(that.timer6)
+                that.timers[i] = setInterval(() => {
+                  dom.classList.add('markerClickImg')
+                  dom.timer6 = setTimeout(() => {
+                    dom.classList.remove('markerClickImg')
+                  }, 500)
+                }, 1000)
+              }
+            })
+          }, 300)
+        })
+      }
     }
   },
   async created() {
     this.userId = Cookies.get('userId')
     await this.getPush()
     await this.getalarmList()
-    await this.getCameraList()
+    // await this.getCameraList()
     await this.getPanelList()
   },
   mounted() {
     const that = this
     that.getPush()
     that.getalarmList()
-    that.getCameraList()
+    // that.getCameraList()
     that.getPanelList()
     that.getPanel()
   },
@@ -564,7 +585,7 @@ export default {
             .getElementsByClassName('markerClickImg')[0]
             .classList.remove('markerClickImg')
         }
-        this.formInfo.forEach(item => {
+        this.formInfo.forEach((item) => {
           this.markers.push({
             position: [
               item.longitude,
@@ -572,7 +593,7 @@ export default {
             ],
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
-                <span v-if='${item.state === null}' style='display: ${item.dealSum.split('/')[0] === '0' ? 'none' : 'inline-block'};
+                <span v-if='${item.state === null}' style='display: ${this.cameraAlarmObj[item.id + ''] ? 'inline-block' : 'none'};
       width: 20px;
       height: 15px;
       font-size: 12px;
@@ -584,7 +605,7 @@ export default {
       background-color: red;
       top: -10px;
       right: 20px;
-      '>${+item.dealSum.split('/')[0] > 99 ? '99+' : item.dealSum.split('/')[0]}</span>`
+      '>${this.cameraAlarmObj[item.id + '']}</span>`
           })
         })
       })
