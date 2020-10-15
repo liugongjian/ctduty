@@ -144,10 +144,10 @@
                 <span v-if="temp.type === 1">人员</span>
                 <span v-else-if="temp.type === 2">机动车</span>
               </el-form-item>
-              <el-form-item v-if="temp.label" label="布控标签:" prop="label">
+              <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
                 <span v-if="temp.label === 1">白名单</span>
                 <span v-else-if="temp.label === 2">黑名单</span>
-                <span v-else-if="temp.label === 3">其他</span>
+                <span v-else>其他</span>
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="temp.license" label="车牌:" prop="license">
