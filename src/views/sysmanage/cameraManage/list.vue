@@ -273,8 +273,9 @@ export default {
         type: 'warning'
       }).then(() => {
         this.tags.splice(this.tags.indexOf(tag), 1)
-        this.algVisable = true
-        console.log(tag)
+        if (this.tags.length) {
+          this.algVisable = true
+        }
       }).catch(() => {
         this.algVisable = true
       })
@@ -338,7 +339,14 @@ export default {
     },
     algDialog(id) {
       console.log(id, 'id')
-      this.algVisable = true
+      if (!this.tags.length) {
+        this.$message({
+          message: '此摄像头暂无以应用算法',
+          type: 'warning'
+        })
+      } else {
+        this.algVisable = true
+      }
     },
     algCloseDialog() {
       this.algVisable = false
