@@ -235,7 +235,7 @@
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
               </el-form-item>
-              <el-form-item label="触发事件:" prop="type" v-if="dataDia.type === 1 || dataDia.type === 2">
+              <el-form-item v-if="dataDia.type === 1 || dataDia.type === 2" label="触发事件:" prop="type">
                 <span v-if="dataDia.type === 1">人员</span>
                 <span v-else-if="dataDia.type === 2">机动车</span>
               </el-form-item>
@@ -246,11 +246,11 @@
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
-                <span>{{dataDia.license}}</span>
+                <span>{{ dataDia.license }}</span>
               </el-form-item>
               <!-- 人员 -->
               <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
-                <span>{{dataDia.username}}</span>
+                <span>{{ dataDia.username }}</span>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -373,6 +373,7 @@ export default {
       // 当天未处理
       todayUndeal: null,
       allXDataCameraIDEQU: null,
+      hasCameraDom: false,
       cameraAlarmObj: {
 
       }
@@ -448,7 +449,7 @@ export default {
         }, 300000)
       }
     },
-    xData(v) {
+    async xData(v) {
       const that = this
       const firXdataCameraID = v[0].camera.id
       const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
@@ -457,8 +458,8 @@ export default {
       } else {
         that.allXDataCameraIDEQU = null
       }
-      that.getCameraList()
-      that.timers.forEach(item => {
+      await that.getCameraList()
+      await that.timers.forEach(item => {
         window.clearInterval(item)
       })
       if (that.allXDataCameraIDEQU === false) {
@@ -572,9 +573,6 @@ export default {
       }
       fetchAllCameraList(params).then(res => {
         this.formInfo = res.body.data
-        /*  this.formInfo.forEach(item => {
-          item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
-        }) */
         this.markers = []
         this.showZwMes = true
         if (document.getElementsByClassName('markerClickImg').length) {
@@ -744,6 +742,15 @@ export default {
                 field: 'cameraId',
                 operator: 'EQUALS',
                 value: this.form.id
+              },
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: { start: moment(Date.now()).format(
+                  'YYYY-MM-DD 00:00:00'
+                ),
+                end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
               }
             ],
             sorts: [
