@@ -490,14 +490,12 @@ export default {
     this.userId = Cookies.get('userId')
     await this.getPush()
     await this.getalarmList()
-    // await this.getCameraList()
     await this.getPanelList()
   },
   mounted() {
     const that = this
     that.getPush()
     that.getalarmList()
-    // that.getCameraList()
     that.getPanelList()
     that.getPanel()
   },
