@@ -11,7 +11,7 @@
               </el-button>
             </div>
             <div class="pull-right">
-              <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+              <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
               <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
                 <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="110px">
                   <el-form-item label-width="130px" label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
@@ -47,7 +47,7 @@
                   >确 定</el-button>
                   <el-button @click="dialogQuxiao">取 消</el-button>
                 </div>
-              </el-dialog>
+              </el-dialog> -->
               <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
                 <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
               </el-select>
@@ -708,5 +708,5 @@ export default {
   }
   .formMargin {
     margin-bottom: 5px !important;
-  } 
+  }
 </style>
