@@ -1,8 +1,5 @@
 <template>
   <div class="list">
-    <div class="title">
-      摄像头管理
-    </div>
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -17,9 +14,6 @@
                   <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
                   </el-option>
                 </el-select>
-              </el-form-item>
-              <el-form-item label="添加人：">
-                {{ creatorName }}
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -66,7 +60,6 @@
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creator.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
