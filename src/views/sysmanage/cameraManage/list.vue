@@ -6,9 +6,13 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+          <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
+          <el-select v-model="algorithmValue" style="width:120px;" class="filter-item" @change="algListChange">
+            <el-option v-for="item in algOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+          </el-select>
+          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
+          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -43,7 +47,7 @@
               >确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
-          </el-dialog>
+          </el-dialog> -->
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -99,6 +103,16 @@
           </el-form-item>
           <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
+          <el-form-item label="算法：">
+            <el-tag
+              v-for="tag in tags"
+              :key="tag.name"
+              :type="tag.type"
+              closable
+              @close="algTagClose(tag)">
+              {{ tag.name }}
+            </el-tag>
+          </el-form-item>
           <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
@@ -135,6 +149,13 @@ export default {
   components: { Pagination },
   data() {
     return {
+      algorithmValue: null,
+      algOptions: [],
+      tags: [
+        { name: '人脸', type: '' },
+        { name: '车辆', type: 'success' },
+        { name: '非机动车', type: 'info' }
+      ],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -227,6 +248,16 @@ export default {
     await this.getList()
   },
   methods: {
+    algListChange() {
+      console.log('算法列表改变')
+    },
+    apply() {
+      console.log('应用算法')
+    },
+    algTagClose(tag) {
+      this.tags.splice(this.tags.indexOf(tag), 1)
+      console.log(tag)
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -441,6 +472,9 @@ export default {
 }
 .app-main {
   padding-top: 50px;
+}
+.el-tag {
+  margin-right: 8px;
 }
 </style>
 
