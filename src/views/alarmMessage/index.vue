@@ -140,7 +140,7 @@
                 <el-form-item label="结构化照片：" prop="imageCut" >
                   <el-image :src="temp.imageCut"></el-image>
                 </el-form-item>
-                <el-form-item label="触发事件:" prop="type">
+                <el-form-item label="触发事件:" prop="type" v-if="temp.type === 1 || temp.type === 2">
                 <span v-if="temp.type === 1">人员</span>
                 <span v-else-if="temp.type === 2">机动车</span>
               </el-form-item>
