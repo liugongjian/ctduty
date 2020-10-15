@@ -462,7 +462,6 @@ export default {
         window.clearInterval(item)
       })
       if (that.allXDataCameraIDEQU === false) {
-        console.log(that.allXDataCameraIDEQU, 'that.allXDataCameraIDEQU')
         that.cameraAlarmObj = {}
         v.forEach((item, index) => {
           if (item.camera.id in that.cameraAlarmObj) {
