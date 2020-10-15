@@ -4,7 +4,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-select v-model="algorithmValue" style="width:120px;" class="filter-item" @change="algListChange">
+          <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
             <el-option v-for="item in algOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
           </el-select>
           <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
@@ -257,22 +257,34 @@ export default {
       console.log('算法列表改变')
     },
     apply() {
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择摄像头!',
+          type: 'warning'
+        })
+      }
       console.log('应用算法')
     },
     algTagClose(tag) {
       this.algVisable = false
-      this.$confirm('此操作将移出该算法, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.tags.splice(this.tags.indexOf(tag), 1)
-        if (this.tags.length) {
-          this.algVisable = true
-        }
-      }).catch(() => {
-        this.algVisable = true
-      })
+      setTimeout(() => {
+        this.$confirm('此操作将移出该算法, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tags.splice(this.tags.indexOf(tag), 1)
+          if (this.tags.length) {
+            setTimeout(() => {
+              this.algVisable = true
+            }, 200)
+          }
+        }).catch(() => {
+          setTimeout(() => {
+            this.algVisable = true
+          }, 200)
+        })
+      }, 200)
     },
     getUserList() {
       const query = {
