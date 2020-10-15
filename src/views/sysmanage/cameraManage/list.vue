@@ -341,7 +341,7 @@ export default {
       console.log(id, 'id')
       if (!this.tags.length) {
         this.$message({
-          message: '此摄像头暂无以应用算法',
+          message: '此摄像头暂无已应用算法',
           type: 'warning'
         })
       } else {
