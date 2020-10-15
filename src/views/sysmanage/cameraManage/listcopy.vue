@@ -3,9 +3,9 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
+          <!--  <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
+          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -37,7 +37,7 @@
               >确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
-          </el-dialog>
+          </el-dialog> -->
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -240,19 +240,26 @@ export default {
       })
     },
     batchesDel() {
-      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const params = [...this.delIDArr]
-        delCamera(params).then(response => {
-          this.getList()
-          this.delIDArr = []
-        }).catch(() => {
-          this.delIDArr = []
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
         })
-      })
+      } else {
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = [...this.delIDArr]
+          delCamera(params).then(response => {
+            this.getList()
+            this.delIDArr = []
+          }).catch(() => {
+            this.delIDArr = []
+          })
+        })
+      }
     },
     delAlert(d) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {

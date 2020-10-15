@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { renderTime } from "@/utils";
+import { renderTime } from '@/utils'
 import {
   fetchAreaList,
   searchCountry,
@@ -122,8 +122,8 @@ import {
   getCountryNull,
   addCountry,
   getPolice
-} from "@/api/users";
-import Pagination from "@/components/Pagination";
+} from '@/api/users'
+import Pagination from '@/components/Pagination'
 
 export default {
   components: { Pagination },
@@ -137,53 +137,53 @@ export default {
       addAreaDialogVisible: false,
       addUserFormRules: {
         name: [
-          { required: true, message: "名称不能为空", trigger: "blur" },
-          { min: 5, max: 10, message: "长度在5-12个字符之间", trigger: "blur" }
+          { required: true, message: '名称不能为空', trigger: 'blur' },
+          { min: 5, max: 10, message: '长度在5-12个字符之间', trigger: 'blur' }
         ]
       },
       town: {
-        name: "",
+        name: '',
         level: 1,
-        parentId: "0",
-        policeStationId: ""
+        parentId: '0',
+        policeStationId: ''
       },
       addUserForm: {
-        username: "",
-        name: "",
-        password: "",
-        permissionId: "",
+        username: '',
+        name: '',
+        password: '',
+        permissionId: '',
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: ''
       },
-      regionalism: "town",
+      regionalism: 'town',
       aboutTown: [],
       options: [
         {
-          value: "",
-          label: "",
+          value: '',
+          label: '',
           children: [
             {
-              value: "",
-              label: ""
+              value: '',
+              label: ''
             }
           ]
         }
       ],
       editAreaForm: {
         id: 0,
-        username: "",
-        name: "",
-        password: "",
-        permissionId: "",
+        username: '',
+        name: '',
+        password: '',
+        permissionId: '',
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: ''
       },
       areaList: [
         {
           policeStation: {
-            name: ""
+            name: ''
           }
         }
       ],
@@ -191,23 +191,23 @@ export default {
         pagenum: 1,
         pagesize: 10
       },
-      queryName: "",
+      queryName: '',
       total: 0,
       editAreaDialogVisible: false,
-      deleteAreaName: "",
+      deleteAreaName: '',
       deleteAreaDialogVisible: false,
       deleteAreaId: 0
-    };
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await this.getareaList();
-    this.getTownList();
+    await this.getareaList()
+    this.getTownList()
   },
   methods: {
     getareaList() {
@@ -218,87 +218,86 @@ export default {
           size: this.limit
         },
         params: {}
-      };
-      if (this.queryName.trim() !== "") {
-        query.params.name = this.queryName;
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
       }
 
       fetchAreaList(query).then(response => {
-        if (response.code !== 0) return;
-        this.areaList = response.body.data;
-        this.total = response.body.page.total;
-      });
+        if (response.code !== 0) return
+        this.areaList = response.body.data
+        this.total = response.body.page.total
+      })
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getareaList();
+      this.oldSize = this.limit
+      this.getareaList()
     },
     handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize;
-      this.getareaList();
+      this.queryInfo.pagesize = newsize
+      this.getareaList()
     },
     handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage;
-      this.getareaList();
+      this.queryInfo.pagenum = newpage
+      this.getareaList()
     },
     addArea() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return;
-        const query = [{ ...this.town }];
+        if (!valid) return
+        const query = [{ ...this.town }]
         addCountry(query).then(response => {
-          if (response.code !== 0) return this.$message.error("添加区域失败");
-          this.$message.success("添加区域成功");
-          this.addAreaDialogVisible = false;
-          this.getareaList();
-        });
-      });
+          if (response.code !== 0) return this.$message.error('添加区域失败')
+          this.$message.success('添加区域成功')
+          this.addAreaDialogVisible = false
+          this.getareaList()
+        })
+      })
     },
     addDialogClosed() {
-      this.addUserForm = {};
-      this.$refs.addFormRef.resetFields();
+      this.addUserForm = {}
+      this.$refs.addFormRef.resetFields()
     },
     deleteArea(id) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          const ids = [];
-          ids.push(id);
+          const ids = []
+          ids.push(id)
           deleteCountry(ids).then(response => {
-            if (response.code !== 0)
-              return this.$message.error("删除失败,请稍后再试");
-            this.deleteAreaDialogVisible = false;
-            this.deleteAreaId = 0;
-            this.getareaList();
-            this.$message.success("删除成功");
-          });
+            if (response.code !== 0) { return this.$message.error('删除失败,请稍后再试') }
+            this.deleteAreaDialogVisible = false
+            this.deleteAreaId = 0
+            this.getareaList()
+            this.$message.success('删除成功')
+          })
         })
         .catch(() => {
-          return;
-        });
+          return
+        })
     },
 
     resetQuery() {
-      this.queryName = "";
-      this.getareaList();
+      this.queryName = ''
+      this.getareaList()
     },
 
     handleChange(value) {
-      this.town.parentId = value.reverse()[0];
+      this.town.parentId = value.reverse()[0]
     },
 
     getCountryList() {
-      this.addAreaDialogVisible = true;
+      this.addAreaDialogVisible = true
       getCountryNull().then(res => {
         if (res.code === 0) {
-          this.options = this.formatCountry(res.body.data, 1);
+          this.options = this.formatCountry(res.body.data, 1)
         }
-      });
+      })
     },
     formatCountry(arr, level) {
       return arr.map(item => {
@@ -307,14 +306,14 @@ export default {
             label: item.name,
             value: item.id,
             children: this.formatCountry(item.children, level)
-          };
+          }
         } else {
           return {
             value: item.id,
             label: item.name
-          };
+          }
         }
-      });
+      })
     },
 
     getTownList() {
@@ -324,10 +323,10 @@ export default {
             return {
               label: item.name,
               value: item.id
-            };
-          });
+            }
+          })
         }
-      });
+      })
     },
 
     searchList() {
@@ -339,24 +338,24 @@ export default {
         },
         params: [
           {
-            field: "name",
-            operator: "EQUALS",
+            field: 'name',
+            operator: 'EQUALS',
             value: this.queryName.trim()
           }
         ]
-      };
-      if (this.queryName.trim() !== "") {
-        query.params.name = this.queryName;
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
       }
       searchCountry(query).then(response => {
-        if (response.code !== 0) return;
-        this.areaList = response.body.data;
-        this.total = response.body.page.total;
-        this.queryName = "";
-      });
+        if (response.code !== 0) return
+        this.areaList = response.body.data
+        this.total = response.body.page.total
+        this.queryName = ''
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>
