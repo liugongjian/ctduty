@@ -165,6 +165,7 @@
 
 import { fetchNoticeList, postAddNotices, getNoticeInfo, updateANotice, deleteNotices } from '@/api/notice'
 import { fetchUserList } from '@/api/users'
+import { notReadNotices } from '@/api/notice'
 export default {
   data() {
     return {
@@ -306,6 +307,17 @@ export default {
           this.$message.success('添加成功')
           this.addNoticeDialogVisible = false
           this.getNoticeList()
+          const params = {
+            index: 1,
+            size: 10000,
+            total: 0
+          }
+          notReadNotices(params).then((res) => {
+            if (res.body.data.length > 0) {
+              this.$store.commit('SET_NOTICETOTAL', res.body.page.total)
+              this.$store.commit('SET_NOTICEARR', res.body.data)
+            }
+          })
         })
       })
     },

@@ -157,11 +157,18 @@ export default {
       'sidebar',
       // 'name',
       'avatar',
-      'device'
+      'device',
+      'noticeTotal',
+      'noticeArr'
     ])
-
   },
   watch: {
+    noticeTotal(v) {
+      this.notReadNoticeTotal = v
+    },
+    noticeArr(v) {
+      this.notReadNotice = v
+    },
     isFullscreen(v) {
       if (v) {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
@@ -191,22 +198,14 @@ export default {
       clearInterval(this.timer)
     }
   },
+  created() {
+    setTimeout(() => {
+      this.getNewNotice()
+    }, 2000)
+  },
   mounted() {
     this.timer = setInterval(() => {
-      const params = {
-        index: 1,
-        size: 10000,
-        total: 0
-      }
-      notReadNotices(params).then((res) => {
-        if (res.body.data.length > 0) {
-          this.notReadNoticeTotal = res.body.page.total
-          this.notReadNotice = res.body.data
-        } else {
-          this.notReadNoticeTotal = ''
-          this.notReadNotice = []
-        }
-      })
+      this.getNewNotice()
     }, 30 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
@@ -225,12 +224,29 @@ export default {
     })
   },
   methods: {
+    getNewNotice() {
+      const params = {
+        index: 1,
+        size: 10000,
+        total: 0
+      }
+      notReadNotices(params).then((res) => {
+        if (res.body.data.length > 0) {
+          this.notReadNoticeTotal = res.body.page.total
+          this.notReadNotice = res.body.data
+        } else {
+          this.notReadNoticeTotal = ''
+          this.notReadNotice = []
+        }
+      })
+    },
     closeDialog() {
       this.dialogVisable = false
     },
     dialogConfirm() {
       upReadNotices(this.noticeForm.id).then(res => {
         this.dialogVisable = false
+        this.getNewNotice()
       })
     },
     handleCommand(command) {
