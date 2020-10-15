@@ -124,7 +124,7 @@
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
       </el-dialog>
-      <el-dialog :visible="algVisable" title="算法" width="520px" @close="algCloseDialog">
+      <el-dialog :visible="algVisable" title="已应用算法" width="520px" @close="algCloseDialog">
         <el-tag
           v-for="tag in tags"
           :key="tag.name"
@@ -314,7 +314,7 @@ export default {
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择摄像头!',
           type: 'warning'
         })
       } else {
