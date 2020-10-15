@@ -233,9 +233,9 @@
                 <span v-else-if="dataDia.type === 2">机动车</span>
               </el-form-item>
               <el-form-item v-if="dataDia.label || dataDia.label === null" label="布控标签:" prop="label">
-                <span v-if="dataDia.label === 1">白名单</span>
-                <span v-else-if="dataDia.label === 2">黑名单</span>
-                <span v-else>其他</span>
+                <el-tag v-if="dataDia.label === 1" class="elTag">白名单</el-tag>
+                <el-tag v-else-if="dataDia.label === 2" class="elTag">黑名单</el-tag>
+                <el-tag v-else class="elTag">其他</el-tag>
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
@@ -1250,6 +1250,10 @@ export default {
 .offline {
   fill: #95afc0 !important;
   // cursor: no-drop;
+}
+.elTag {
+  text-align: center;
+  width: 60px;
 }
 </style>
 
