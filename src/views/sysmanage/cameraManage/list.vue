@@ -280,6 +280,12 @@ export default {
           type: 'warning'
         }).then(() => {
           this.tags.splice(this.tags.indexOf(tag), 1)
+          /* this.$notify({
+            title: '成功',
+            message: '移除成功',
+            type: 'success',
+            duration: 2000
+          }) */
           if (this.tags.length) {
             setTimeout(() => {
               this.algVisable = true
@@ -301,9 +307,9 @@ export default {
         },
         params: {}
       }
-      fetchUserList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
+      fetchUserList(query).then(res => {
+        if (res.code !== 0) return
+        this.userList = res.body.data
         this.userList.forEach(item => {
           if (item.id === +this.userId) {
             this.creatorName = item.name
@@ -324,7 +330,16 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = [...this.delIDArr]
-          delCamera(params).then(response => {
+          delCamera(params).then(res => {
+            if (res.code !== 0) {
+              return
+            }
+            this.$notify({
+              title: '成功',
+              message: '批量删除成功',
+              type: 'success',
+              duration: 2000
+            })
             this.getList()
             this.delIDArr = []
           }).catch(() => {
@@ -340,7 +355,16 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [d]
-        delCamera(params).then(response => {
+        delCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getList()
           this.delIDArr = []
         })
@@ -387,7 +411,10 @@ export default {
         name: this.editForm.name,
         creatorId: this.editForm.creatorId
       }]
-      editCamera(params).then(response => {
+      editCamera(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.$notify({
           title: '成功',
           message: '编辑成功',
@@ -455,6 +482,9 @@ export default {
         }
       }
       fetchAllCameraList(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.tableData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
@@ -478,6 +508,9 @@ export default {
             creatorId: this.userId }
         ]
         addCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
           this.dialogForm = {
             address: '',
             creatorId: '',
