@@ -777,9 +777,9 @@ export default {
               })
               // 两分钟后自动恢复默认全部列表
               this.isOnlyCameraData = true
-              setTimeout(() => {
+              /*  setTimeout(() => {
                 this.getalarmList()
-              }, 120000)
+              }, 120000) */
             }
           })
         }
