@@ -492,6 +492,7 @@ export default {
     await this.getPush()
     await this.getalarmList()
     await this.getPanelList()
+    await this.getCameraList()
   },
   mounted() {
     const that = this
@@ -684,6 +685,7 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
+          // this.getCameraList()
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
