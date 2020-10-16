@@ -375,10 +375,8 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      val.forEach(item => {
-        if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id)
-        }
+      this.delIDArr = val.map(item => {
+        return item.id
       })
     },
     dialogQuxiao() {

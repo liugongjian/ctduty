@@ -251,6 +251,9 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    delIDArr(v) {
+      console.log(v, 'id数组')
     }
   },
   async created() {
@@ -491,10 +494,8 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      val.forEach(item => {
-        if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id)
-        }
+      this.delIDArr = val.map(item => {
+        return item.id
       })
     },
     dialogQuxiao() {
