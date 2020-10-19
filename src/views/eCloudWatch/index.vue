@@ -212,7 +212,7 @@
             @close="closeDialog"
           >
             <el-form :model="dataDia" label-position="right" label-width="100px">
-              <el-form-item label="流量状态:">
+              <el-form-item label="摄像头地址:">
                 <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
               </el-form-item>
               <el-form-item label="监控时间:">

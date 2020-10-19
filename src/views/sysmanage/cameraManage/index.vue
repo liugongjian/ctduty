@@ -119,12 +119,12 @@
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item class="formMargin" label="视频流信息：">
+                  <!-- <el-form-item class="formMargin" label="视频流信息：">
                     <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
                       <svg-icon v-if="form.isDeal" class="deal" icon-class="deal" />
                       <svg-icon v-else class="untreated" icon-class="untreated" />
                       {{ form.isDeal ? '已处理':'未处理' }}</div>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item class="formMargin" label="告警信息：">
                     <el-tooltip :content="form.dealSum" placement="top" disabled>
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
@@ -148,8 +148,8 @@
                   </el-form-item>
                   <el-form-item label-width="130px" label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
-                  <el-form-item label-width="130px" label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item>
+                  <!-- <el-form-item label-width="130px" label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
+                  </el-form-item> -->
                   <el-form-item label-width="130px" label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
                   </el-form-item>
                 </el-form>
@@ -220,9 +220,9 @@ export default {
         name: [
           { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
         ],
-        url: [
-          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
-        ],
+        // url: [
+        //   { required: true, trigger: 'blur', message: '视频流信息不能为空' }
+        // ],
         phone: [
           { required: true, trigger: 'blur', message: '手机号不能为空' }
         ],
