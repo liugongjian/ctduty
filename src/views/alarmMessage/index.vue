@@ -101,13 +101,16 @@
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
-              <el-table-column :label="'图片'" prop="image">
+              <el-table-column :label="'图片'">
                 <template slot-scope="scope">
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:150px;" @click="openBig(scope.row.image)"></el-image>
+                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image>
                 </template>
               </el-table-column>
-
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                 <svg-icon v-else class="untreated" icon-class="untreated2" />
@@ -140,23 +143,23 @@
                 <el-form-item label="结构化照片：" prop="imageCut" >
                   <el-image :src="temp.imageCut"></el-image>
                 </el-form-item>
-                <el-form-item label="触发事件:" prop="type" v-if="temp.type === 1 || temp.type === 2">
-                <span v-if="temp.type === 1">人员</span>
-                <span v-else-if="temp.type === 2">机动车</span>
-              </el-form-item>
-              <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
-                <span v-if="temp.label === 1">白名单</span>
-                <span v-else-if="temp.label === 2">黑名单</span>
-                <span v-else>其他</span>
-              </el-form-item>
-              <!-- 车牌 -->
-              <el-form-item v-if="temp.license" label="车牌:" prop="license">
-                <span>{{temp.license}}</span>
-              </el-form-item>
-              <!-- 人员 -->
-              <el-form-item v-if="temp.username" label="姓名:" prop="username">
-                <span>{{temp.username}}</span>
-              </el-form-item>
+                <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
+                  <span v-if="temp.type === 1">人员</span>
+                  <span v-else-if="temp.type === 2">机动车</span>
+                </el-form-item>
+                <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
+                  <span v-if="temp.label === 1">白名单</span>
+                  <span v-else-if="temp.label === 2">黑名单</span>
+                  <span v-else>其他</span>
+                </el-form-item>
+                <!-- 车牌 -->
+                <el-form-item v-if="temp.license" label="车牌:" prop="license">
+                  <span>{{ temp.license }}</span>
+                </el-form-item>
+                <!-- 人员 -->
+                <el-form-item v-if="temp.username" label="姓名:" prop="username">
+                  <span>{{ temp.username }}</span>
+                </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button

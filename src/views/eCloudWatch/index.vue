@@ -28,18 +28,14 @@
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
-      <div class="warn" style="background:rgba(0,0,0,0)">
-        <div class="dispose" style="opacity:1;background:#fff;margin-bottom:20px;">
+      <div class="warn">
+        <div class="dispose" style="opacity:1;margin-bottom:20px;">
           <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 80%; width:100%"></div>
-            <!-- <div class="num">
-              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span></div>
-              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span></div>
-            </div> -->
           </div>
           <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
             <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
@@ -286,8 +282,8 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
-import { play, stop } from '@/api/monitor'
-import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
+import { play } from '@/api/monitor'
+import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
@@ -298,7 +294,6 @@ const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
   components: { Pagination, VideoPlayer },
-  // components: { CameraList },
   // eslint-disable-next-line vue/require-prop-types
   props: ['data', 'defaultActive'],
   data() {
@@ -453,7 +448,7 @@ export default {
       const that = this
       const firXdataCameraID = v[0].camera.id
       const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
-      if (!allXDataCameraIDEQU) {
+      if (allXDataCameraIDEQU === false) {
         that.allXDataCameraIDEQU = allXDataCameraIDEQU
       } else {
         that.allXDataCameraIDEQU = null
@@ -492,6 +487,7 @@ export default {
     await this.getPush()
     await this.getalarmList()
     await this.getPanelList()
+    await this.getCameraList()
   },
   mounted() {
     const that = this
@@ -588,19 +584,7 @@ export default {
             ],
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
-                <span v-if='${item.state === null}' style='display: ${this.cameraAlarmObj[item.id + ''] ? 'inline-block' : 'none'};
-      width: 20px;
-      height: 15px;
-      font-size: 12px;
-      line-height: 15px;
-      text-align: center;
-      color: #fff;
-      position: absolute;
-      border-radius: 5px 5px 5px 0;
-      background-color: red;
-      top: -10px;
-      right: 20px;
-      '>${this.cameraAlarmObj[item.id + '']}</span>`
+                <span v-if='${item.state === null}' style='display: ${this.cameraAlarmObj[item.id] ? 'inline-block' : 'none'};width: 20px;height: 15px;font-size: 12px;line-height: 15px;text-align: center;color: #fff;position: absolute;border-radius: 5px 5px 5px 0;background-color: red;top: -10px;right: 20px;'>${this.cameraAlarmObj[item.id]}</span>`
           })
         })
       })
@@ -684,6 +668,7 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
+          // this.getCameraList()
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
@@ -787,9 +772,9 @@ export default {
               })
               // 两分钟后自动恢复默认全部列表
               this.isOnlyCameraData = true
-              setTimeout(() => {
+              /*  setTimeout(() => {
                 this.getalarmList()
-              }, 120000)
+              }, 120000) */
             }
           })
         }
@@ -1007,6 +992,7 @@ export default {
 .dispose {
   background-color: #fff !important;
   opacity:1 !important;
+  box-sizing: content-box !important;
 }
 .warn {
   height:78vh !important;
@@ -1065,7 +1051,7 @@ export default {
       position: absolute;
       top: 70px;
       right: 10px;
-      background-color: #ffffff;
+      // background-color: #ffffff;
       width: 320px;
       height: 100%;
       .top {

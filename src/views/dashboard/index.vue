@@ -49,7 +49,7 @@
           <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
               各类告警占比
-              <span style="cursor:pointer;" @click="goAlarmList">更多 ></span>
+              <span style="cursor:pointer;" @click="goAlarmList">更多 <svg-icon icon-class="rarrow"></svg-icon></span>
             </div>
             <div id="pie">
               <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>

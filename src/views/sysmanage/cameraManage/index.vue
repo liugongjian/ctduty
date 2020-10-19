@@ -85,7 +85,7 @@
                 </div>
                 <el-form v-else :model="form" label-position="right">
                   <el-form-item class="formMargin" label="摄像头ID：">
-                    <el-tooltip :content="form.id" placement="top" disabled>
+                    <el-tooltip :content="form.id+''" placement="top" disabled>
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
                     </el-tooltip>
                   </el-form-item>
@@ -100,7 +100,7 @@
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="经纬度信息：">
-                    <el-tooltip :content="form.longitude" placement="top" disabled>
+                    <el-tooltip :content="form.longitude+''" placement="top" disabled>
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2)+ ', ' + form.latitude.toFixed(2) }}</div>
                     </el-tooltip>
                   </el-form-item>
@@ -126,7 +126,7 @@
                       {{ form.isDeal ? '已处理':'未处理' }}</div>
                   </el-form-item> -->
                   <el-form-item class="formMargin" label="告警信息：">
-                    <el-tooltip :content="form.dealSum" placement="top" disabled>
+                    <el-tooltip :content="form.dealSum+''" placement="top" disabled>
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
                     </el-tooltip>
                   </el-form-item>
