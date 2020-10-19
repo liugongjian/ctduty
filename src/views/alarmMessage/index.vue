@@ -94,10 +94,6 @@
               <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" width="100">
                 <template slot-scope="scope">
                   <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
-                  <!-- <el-tag type="success">标签二</el-tag>
-                  <el-tag type="info">标签三</el-tag>
-                  <el-tag type="warning">标签四</el-tag>
-                  <el-tag type="danger">标签五</el-tag> -->
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
@@ -129,7 +125,7 @@
               width="750px"
               @close="closeDialog">
               <el-form v-model="temp" label-position="right" label-width="100px">
-                <el-form-item label="流量状态：" prop="camera.address">
+                <el-form-item label="摄像头地址：" prop="camera.address">
                   <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
                 </el-form-item>
                 <el-form-item label="监控时间：" prop="createTime" >
