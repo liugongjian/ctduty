@@ -101,9 +101,9 @@
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image">
+              <el-table-column :label="'图片'" prop="image">
                 <template slot-scope="scope">
-                  <a :href="scope.row.image" target="_blank" class="buttonText">{{ scope.row.image }}</a>
+                  <el-image :src="scope.row.imageCompress" style="width:170px; height:150px;" @click="openBig(scope.row.image)"></el-image>
                 </template>
               </el-table-column>
 
@@ -126,7 +126,7 @@
               width="750px"
               @close="closeDialog">
               <el-form v-model="temp" label-position="right" label-width="100px">
-                <el-form-item label="流量状态：" prop="camera.address">
+                <el-form-item label="摄像头地址：" prop="camera.address">
                   <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
                 </el-form-item>
                 <el-form-item label="监控时间：" prop="createTime" >
