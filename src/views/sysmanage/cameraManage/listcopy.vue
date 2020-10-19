@@ -7,7 +7,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-select v-model="algorithmValue" style="width:120px;" class="filter-item" @change="algListChange">
+          <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
             <el-option v-for="item in algOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
           </el-select>
           <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
@@ -61,7 +61,7 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" width="100px" prop="online">
           <template slot-scope="scope">
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
@@ -70,7 +70,6 @@
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'添加人'" prop="creator.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
@@ -80,9 +79,10 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :label="'操作'" width="150px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -103,7 +103,7 @@
           </el-form-item>
           <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
-          <el-form-item label="算法：">
+          <!-- <el-form-item label="算法：">
             <el-tag
               v-for="tag in tags"
               :key="tag.name"
@@ -112,7 +112,7 @@
               @close="algTagClose(tag)">
               {{ tag.name }}
             </el-tag>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
@@ -123,6 +123,16 @@
           >确 定</el-button>
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
+      </el-dialog>
+      <el-dialog :visible="algVisable" title="已应用算法" width="520px" @close="algCloseDialog">
+        <el-tag
+          v-for="tag in tags"
+          :key="tag.name"
+          :type="tag.type"
+          closable
+          @close="algTagClose(tag)">
+          {{ tag.name }}
+        </el-tag>
       </el-dialog>
       <pagination
         v-show="total>0"
@@ -233,13 +243,17 @@ export default {
         creatorId: ''
       },
       userList: [],
-      creatorName: ''
+      creatorName: '',
+      algVisable: false
     }
   },
   watch: {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    delIDArr(v) {
+      console.log(v, 'id数组')
     }
   },
   async created() {
@@ -252,11 +266,40 @@ export default {
       console.log('算法列表改变')
     },
     apply() {
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择摄像头!',
+          type: 'warning'
+        })
+      }
       console.log('应用算法')
     },
     algTagClose(tag) {
-      this.tags.splice(this.tags.indexOf(tag), 1)
-      console.log(tag)
+      this.algVisable = false
+      setTimeout(() => {
+        this.$confirm('此操作将移出该算法, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.tags.splice(this.tags.indexOf(tag), 1)
+          /* this.$notify({
+            title: '成功',
+            message: '移除成功',
+            type: 'success',
+            duration: 2000
+          }) */
+          if (this.tags.length) {
+            setTimeout(() => {
+              this.algVisable = true
+            }, 200)
+          }
+        }).catch(() => {
+          setTimeout(() => {
+            this.algVisable = true
+          }, 200)
+        })
+      }, 200)
     },
     getUserList() {
       const query = {
@@ -267,9 +310,9 @@ export default {
         },
         params: {}
       }
-      fetchUserList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
+      fetchUserList(query).then(res => {
+        if (res.code !== 0) return
+        this.userList = res.body.data
         this.userList.forEach(item => {
           if (item.id === +this.userId) {
             this.creatorName = item.name
@@ -280,7 +323,7 @@ export default {
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择摄像头!',
           type: 'warning'
         })
       } else {
@@ -290,7 +333,16 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = [...this.delIDArr]
-          delCamera(params).then(response => {
+          delCamera(params).then(res => {
+            if (res.code !== 0) {
+              return
+            }
+            this.$notify({
+              title: '成功',
+              message: '批量删除成功',
+              type: 'success',
+              duration: 2000
+            })
             this.getList()
             this.delIDArr = []
           }).catch(() => {
@@ -306,7 +358,16 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [d]
-        delCamera(params).then(response => {
+        delCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getList()
           this.delIDArr = []
         })
@@ -314,6 +375,20 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+    },
+    algDialog(id) {
+      console.log(id, 'id')
+      if (!this.tags.length) {
+        this.$message({
+          message: '此摄像头暂无已应用算法',
+          type: 'warning'
+        })
+      } else {
+        this.algVisable = true
+      }
+    },
+    algCloseDialog() {
+      this.algVisable = false
     },
     editDialog(v) {
       this.editForm.id = v.id
@@ -339,7 +414,10 @@ export default {
         name: this.editForm.name,
         creatorId: this.editForm.creatorId
       }]
-      editCamera(params).then(response => {
+      editCamera(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.$notify({
           title: '成功',
           message: '编辑成功',
@@ -407,16 +485,17 @@ export default {
         }
       }
       fetchAllCameraList(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.tableData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
       })
     },
     handleSelectionChange(val) {
-      val.forEach(item => {
-        if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id)
-        }
+      this.delIDArr = val.map(item => {
+        return item.id
       })
     },
     dialogQuxiao() {
@@ -430,6 +509,9 @@ export default {
             creatorId: this.userId }
         ]
         addCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
           this.dialogForm = {
             address: '',
             creatorId: '',

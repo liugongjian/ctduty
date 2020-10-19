@@ -81,42 +81,49 @@
             </div>
             <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
               <div v-if="showTabValue === 'all'">
-                <el-button v-if="isOnlyCameraData" type="text" @click="allAlarm">全部数据</el-button>
-                <div :data="stepsData" style="margin-top:10px;">
-                  <template v-if="stepsData.length">
-                    <div
-                      v-for="(item, index) in stepsData"
-                      :key="index"
-                      class="stepword"
-                      @click="showDialogFather(item)"
-                    >
-                      <div style="height:32px; width:32px; float:left" class="lefticon">
-                        <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                        <svg-icon
-                          v-else-if="item.state === 1"
-                          class="untreated"
-                          icon-class="untreated2"
-                        />
-                        <svg-icon
-                          v-else-if="item.handlerId === null"
-                          class="untreated"
-                          icon-class="untreated"
-                        />
-                        <div v-if="index !== stepsData.length -1" class="shu"></div>
-                      </div>
-                      <div class="youContent" style="float:right width:100%;">
-                        <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
-                        <div class="addressword">
-                          <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
-                          <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
-                          <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
-                          <span
-                            style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
-                          >{{ renderTime(item.createTime) }}</span>
+                <div v-if="hasData">
+                  <div :class="{'not-allowed': isDisableAllAlarmBtn}">
+                    <el-button v-if="isOnlyCameraData" :class="{'disable': isDisableAllAlarmBtn}" type="text" @click="allAlarm">全部数据</el-button>
+                  </div>
+                  <div :data="stepsData" style="margin-top:10px;">
+                    <template v-if="stepsData.length">
+                      <div
+                        v-for="(item, index) in stepsData"
+                        :key="index"
+                        class="stepword"
+                        @click="showDialogFather(item)"
+                      >
+                        <div style="height:32px; width:32px; float:left" class="lefticon">
+                          <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+                          <svg-icon
+                            v-else-if="item.state === 1"
+                            class="untreated"
+                            icon-class="untreated2"
+                          />
+                          <svg-icon
+                            v-else-if="item.handlerId === null"
+                            class="untreated"
+                            icon-class="untreated"
+                          />
+                          <div v-if="index !== stepsData.length -1" class="shu"></div>
+                        </div>
+                        <div class="youContent" style="float:right width:100%;">
+                          <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
+                          <div class="addressword">
+                            <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
+                            <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
+                            <svg-icon v-else class="trafficSvg" if="item.type === 3" icon-class="bicycle" />
+                            <span
+                              style="width:100%; font-size: 12px; color:#7e7e7e; margin-top: 4px;"
+                            >{{ renderTime(item.createTime) }}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
+                    </template>
+                  </div>
+                </div>
+                <div v-else style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                  此摄像头暂无告警信息
                 </div>
               </div>
               <div v-if="showTabValue === 'y'">
@@ -193,13 +200,13 @@
               </div>
             </div>
             <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
-              <div v-if="showTabValue === 'all'">
+              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
                 暂无数据
               </div>
-              <div v-if="showTabValue === 'y'">
+              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
                 暂无数据
               </div>
-              <div v-if="showTabValue === 'w'">
+              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
                 暂无数据
               </div>
             </div>
@@ -228,7 +235,7 @@
               <el-form-item label="结构化照片:" prop="imageCut">
                 <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
               </el-form-item>
-              <el-form-item label="触发事件:" prop="type" v-if="dataDia.type === 1 || dataDia.type === 2">
+              <el-form-item v-if="dataDia.type === 1 || dataDia.type === 2" label="触发事件:" prop="type">
                 <span v-if="dataDia.type === 1">人员</span>
                 <span v-else-if="dataDia.type === 2">机动车</span>
               </el-form-item>
@@ -239,11 +246,11 @@
               </el-form-item>
               <!-- 车牌 -->
               <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
-                <span>{{dataDia.license}}</span>
+                <span>{{ dataDia.license }}</span>
               </el-form-item>
               <!-- 人员 -->
               <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
-                <span>{{dataDia.username}}</span>
+                <span>{{ dataDia.username }}</span>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -279,8 +286,8 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
-import { play, stop } from '@/api/monitor'
-import { fetchSinMan, fetchNowInfo } from '@/api/dashboard'
+import { play } from '@/api/monitor'
+import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
 import { renderTime } from '@/utils'
@@ -304,6 +311,7 @@ export default {
         camera: {
         }
       },
+      hasData: true,
       isHint: true,
       // alarmForm: {
       //   address: '',
@@ -328,6 +336,7 @@ export default {
       values: 3,
       xData: [
       ],
+      isDisableAllAlarmBtn: false,
       zoom: 12,
       hasMarker: false,
       showZwMes: true,
@@ -362,7 +371,12 @@ export default {
       // 当天已处理
       todayHandleds: null,
       // 当天未处理
-      todayUndeal: null
+      todayUndeal: null,
+      allXDataCameraIDEQU: null,
+      hasCameraDom: false,
+      cameraAlarmObj: {
+
+      }
     }
   },
   watch: {
@@ -425,7 +439,6 @@ export default {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
               this.getalarmList()
-              this.isOnlyCameraData = false
               this.showDialog(response.body.data[0], true)
             }
           })
@@ -433,44 +446,58 @@ export default {
       } else {
         setTimeout(() => {
           this.getalarmList()
-          this.isOnlyCameraData = false
         }, 300000)
       }
     },
-    xData(v) {
+    async xData(v) {
       const that = this
-      that.timers.forEach(item => {
+      const firXdataCameraID = v[0].camera.id
+      const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
+      if (allXDataCameraIDEQU === false) {
+        that.allXDataCameraIDEQU = allXDataCameraIDEQU
+      } else {
+        that.allXDataCameraIDEQU = null
+      }
+      await that.getCameraList()
+      await that.timers.forEach(item => {
         window.clearInterval(item)
       })
-      v.forEach(item => {
-        setTimeout(() => {
-          [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
-            if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
-              window.clearInterval(that.timer6)
-              that.timers[i] = setInterval(() => {
-                dom.classList.add('markerClickImg')
-                dom.timer6 = setTimeout(() => {
-                  dom.classList.remove('markerClickImg')
-                }, 500)
-              }, 1000)
-            }
-          })
-        }, 300)
-      })
+      if (that.allXDataCameraIDEQU === false) {
+        that.cameraAlarmObj = {}
+        v.forEach((item, index) => {
+          if (item.camera.id in that.cameraAlarmObj) {
+            that.cameraAlarmObj[item.camera.id] = that.cameraAlarmObj[item.camera.id] + 1
+          } else {
+            that.cameraAlarmObj[item.camera.id] = 1
+          }
+          setTimeout(() => {
+            [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
+              if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
+                window.clearInterval(that.timer6)
+                that.timers[i] = setInterval(() => {
+                  dom.classList.add('markerClickImg')
+                  dom.timer6 = setTimeout(() => {
+                    dom.classList.remove('markerClickImg')
+                  }, 500)
+                }, 1000)
+              }
+            })
+          }, 300)
+        })
+      }
     }
   },
   async created() {
     this.userId = Cookies.get('userId')
     await this.getPush()
     await this.getalarmList()
-    await this.getCameraList()
     await this.getPanelList()
+    await this.getCameraList()
   },
   mounted() {
     const that = this
     that.getPush()
     that.getalarmList()
-    that.getCameraList()
     that.getPanelList()
     that.getPanel()
   },
@@ -487,8 +514,8 @@ export default {
   },
   methods: {
     allAlarm() {
-      this.isOnlyCameraData = false
       this.getalarmList()
+      this.isDisableAllAlarmBtn = true
     },
     video_type(_url) {
       var url = _url.toLowerCase()
@@ -547,9 +574,6 @@ export default {
       }
       fetchAllCameraList(params).then(res => {
         this.formInfo = res.body.data
-        /*  this.formInfo.forEach(item => {
-          item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:SS')
-        }) */
         this.markers = []
         this.showZwMes = true
         if (document.getElementsByClassName('markerClickImg').length) {
@@ -557,7 +581,7 @@ export default {
             .getElementsByClassName('markerClickImg')[0]
             .classList.remove('markerClickImg')
         }
-        this.formInfo.forEach(item => {
+        this.formInfo.forEach((item) => {
           this.markers.push({
             position: [
               item.longitude,
@@ -565,19 +589,7 @@ export default {
             ],
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
-                <span v-if='${item.state === null}' style='display: ${item.dealSum.split('/')[0] === '0' ? 'none' : 'inline-block'};
-      width: 20px;
-      height: 15px;
-      font-size: 12px;
-      line-height: 15px;
-      text-align: center;
-      color: #fff;
-      position: absolute;
-      border-radius: 5px 5px 5px 0;
-      background-color: red;
-      top: -10px;
-      right: 20px;
-      '>${+item.dealSum.split('/')[0] > 99 ? '99+' : item.dealSum.split('/')[0]}</span>`
+                <span v-if='${item.state === null}' style='display: ${this.cameraAlarmObj[item.id] ? 'inline-block' : 'none'};width: 20px;height: 15px;font-size: 12px;line-height: 15px;text-align: center;color: #fff;position: absolute;border-radius: 5px 5px 5px 0;background-color: red;top: -10px;right: 20px;'>${this.cameraAlarmObj[item.id]}</span>`
           })
         })
       })
@@ -595,7 +607,6 @@ export default {
       this.showAlarm = 'rate'
       this.showActive = true
       this.alarmActive = false
-      this.isOnlyCameraData = false
       this.getalarmList()
     },
     monitoring(e) {
@@ -632,6 +643,8 @@ export default {
         if (response.body.data.length) {
           this.getPanelList()
           this.stepsData = response.body.data
+          this.isOnlyCameraData = false
+          this.isDisableAllAlarmBtn = false
           this.yData = []
           this.xData = []
           response.body.data.forEach(item => {
@@ -660,6 +673,7 @@ export default {
           this.cameraId = null
         }
         if (item.className === 'amap-marker-content') {
+          // this.getCameraList()
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
@@ -718,6 +732,15 @@ export default {
                 field: 'cameraId',
                 operator: 'EQUALS',
                 value: this.form.id
+              },
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: { start: moment(Date.now()).format(
+                  'YYYY-MM-DD 00:00:00'
+                ),
+                end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
               }
             ],
             sorts: [
@@ -729,9 +752,16 @@ export default {
 
           }
           fetchalarmList(params).then(response => {
-            if (response.body.data.length) {
+            if (!response.body.data.length) {
+              this.hasData = false
+              setTimeout(() => {
+                this.getalarmList()
+                this.hasData = true
+              }, 3000)
+            } else {
               this.getPanelList()
               this.stepsData = response.body.data || []
+              this.hasData = true
               this.yData = []
               this.xData = []
               response.body.data.forEach(item => {
@@ -747,10 +777,9 @@ export default {
               })
               // 两分钟后自动恢复默认全部列表
               this.isOnlyCameraData = true
-              setTimeout(() => {
+              /*  setTimeout(() => {
                 this.getalarmList()
-                this.isOnlyCameraData = false
-              }, 120000)
+              }, 120000) */
             }
           })
         }
@@ -926,7 +955,6 @@ export default {
         this.getalarmList()
         this.getPanelList()
         this.dialogVisable = false
-        this.isOnlyCameraData = false
       })
     },
     unnormal() {
@@ -940,7 +968,6 @@ export default {
         this.getalarmList()
         this.getPanelList()
         this.dialogVisable = false
-        this.isOnlyCameraData = false
       })
     }
   }
