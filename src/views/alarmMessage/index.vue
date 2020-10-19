@@ -106,7 +106,11 @@
                   <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                 <svg-icon v-else class="untreated" icon-class="untreated2" />
@@ -530,7 +534,6 @@ export default {
         ]
       }
       getAlertInfos(params).then(response => {
-        console.log(response.body.data[0], '图片')
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
