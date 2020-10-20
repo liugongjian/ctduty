@@ -86,33 +86,32 @@
             <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div>
 
             <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
-
-              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" prop="id" ></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" prop="createTime">
+              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" min-width="15%" prop="id" ></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" min-width="15%" prop="createTime">
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" prop="type" width="100"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" width="100">
+              <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" min-width="5%" prop="type" width="100"></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" min-width="5%" width="100">
                 <template slot-scope="scope">
                   <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
-              <el-table-column :label="'图片'">
+              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column>
+              <el-table-column :label="'图片'" min-width="15%">
                 <template slot-scope="scope">
                   <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" prop="handler.username" width="100">
+              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" style="padding-left:30px;" min-width="5%" prop="handler.username" width="100">
                 <template slot-scope="scope">
                   <span>{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" prop="handlerId" width="100"><template slot-scope="scope">
+              <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" min-width="5%" prop="handlerId" width="100"><template slot-scope="scope">
                 <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
                 <svg-icon v-else class="untreated" icon-class="untreated2" />
                 <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
               </template></el-table-column>
-              <el-table-column label="操作" width="80">
+              <el-table-column min-width="15%" label="操作">
                 <template slot-scope="scope">
                   <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
                   <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
@@ -631,5 +630,10 @@ export default {
   }
   .kb{
     margin-block-end: 14px;
+  }
+  td {
+    .el-image {
+      vertical-align: middle;
+    }
   }
     </style>
