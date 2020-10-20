@@ -91,43 +91,54 @@
       </span>
       <el-button type="primary" @click="onSearch">搜索</el-button>
     </div>
-    <div v-loading="listLoading">
-      <div class="card-wrapper">
-        <el-card v-for="(item, index) in tableData" :body-style="{ padding: '0px' }" :key="item.id" class="card">
-          <img :src="item.imageCut" class="image">
-          <div class="card-desp">
-            <span class="card-desp-title">
-              <span>{{ item.licence || '' }}</span>
-              <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
-              <span>{{ item.label? listType[item.label] : '' }}</span>
-            </span>
-            <div class="bottom clearfix">
-              <div class="location">
-                <i class="el-icon-map-location" />
-                <span>{{ item.camera.address }}</span>
+    <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
+      <el-tab-pane
+        v-for="item in tabsArr"
+        :key="item"
+        :label="item"
+        :name="item">
+        <div v-loading="listLoading">
+          <div v-if="tableData&& tableData.length >0" class="card-wrapper">
+            <el-card v-for="(item, index) in tableData" :body-style="{ padding: '0px' }" :key="item.id" class="card">
+              <img :src="item.imageCut" class="image">
+              <div class="card-desp">
+                <span class="card-desp-title">
+                  <span>{{ item.licence || '' }}</span>
+                  <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
+                  <span>{{ item.label? listType[item.label] : '' }}</span>
+                </span>
+                <div class="bottom clearfix">
+                  <div class="location">
+                    <i class="el-icon-map-location" />
+                    <span>{{ item.camera.address }}</span>
+                  </div>
+                  <div class="location">
+                    <i class="el-icon-time" />
+                    <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
+                    <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.licence, item.plateType, item.label? listType[item.label] : '')">
+                      <svg-icon icon-class="import"></svg-icon>
+                      <!-- <i class="el-icon-upload" /> -->
+                    </el-button>
+                  </div>
+                </div>
               </div>
-              <div class="location">
-                <i class="el-icon-time" />
-                <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
-                <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.licence, item.plateType, item.label? listType[item.label] : '')">
-                  <svg-icon icon-class="import"></svg-icon>
-                <!-- <i class="el-icon-upload" /> -->
-                </el-button>
-              </div>
-            </div>
+            </el-card>
           </div>
-        </el-card>
-      </div>
-      <div class="pagination-wrapper">
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="page"
-          :limit.sync="limit"
-          @pagination="pageChange()"
-        />
-      </div>
-    </div>
+          <div v-else>
+            暂无数据
+          </div>
+          <div class="pagination-wrapper">
+            <pagination
+              v-show="total>0"
+              :total="total"
+              :page.sync="page"
+              :limit.sync="limit"
+              @pagination="pageChange()"
+            />
+          </div>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script>
@@ -146,13 +157,12 @@ import {
 } from '@/api/dm'
 const token = Cookies.get('token')
 const timeFormate = 'hh:mm:ss'
-const dateFormate = 'YYYY-MM-DD'
+const dateFormat = 'YYYY-MM-DD'
 
 export default {
   components: { Pagination },
   data() {
     return {
-      currentDate: new Date().toLocaleString(),
       dateRange: [moment().subtract(7, 'days'), moment()],
       startTime: moment('02:00:00', 'hh:mm:ss'),
       endTime: moment('22:00:00', 'hh:mm:ss'),
@@ -162,6 +172,8 @@ export default {
         type: '',
         color: ''
       },
+      tabsArr: [],
+      defaultTab: '', currentTab: '',
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       allTotal: 0,
       page: 1,
@@ -214,12 +226,57 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.onSearch()
   },
   methods: {
     onSearch() {
       console.log(this.dateRange)
+      const [startDate, endDate] = this.dateRange
       console.log(this.startTime)
+      this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
+      // this.tabsArr = this.tabsDateArr
+      // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
+      // this.value1=[this.startDate,this.endDate]
+      if (this.tabsArr.indexOf(this.currentTab) === -1) {
+        this.defaultTab = this.tabsArr[0]
+        this.currentTab = this.defaultTab
+      }
+      this.getList()
+    },
+    tabChangeQuery(e) {
+      this.currentTab = e.label
+      this.getList()
+    },
+    getDayAll(start, end) {
+      var result = []
+      if (start === end) {
+        result.push(start)
+        return result
+      }
+      var beginDay = start.split('-')
+      var endDay = end.split('-')
+      var diffDay = new Date()
+      var dateList = new Array()
+      var i = 0
+      diffDay.setDate(beginDay[2])
+      diffDay.setMonth(beginDay[1] - 1)
+      diffDay.setFullYear(beginDay[0])
+      result.push(start)
+      while (i == 0) {
+        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000
+        diffDay.setTime(countDay)
+        dateList[2] = diffDay.getDate()
+        dateList[1] = diffDay.getMonth() + 1
+        dateList[0] = diffDay.getFullYear()
+        if (String(dateList[1]).length == 1) { dateList[1] = '0' + dateList[1] }
+        if (String(dateList[2]).length == 1) { dateList[2] = '0' + dateList[2] }
+        result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
+        if (dateList[0] == endDay[0] && dateList[1] == endDay[1] && dateList[2] == endDay[2]) {
+          i = 1
+        }
+      }
+
+      return result
     },
     onAddCar() {
       this.$refs['carEdit'].validate((valid) => {
@@ -264,7 +321,7 @@ export default {
       const param = [{
         field: 'createTime',
         operator: 'BETWEEN',
-        value: { 'start': `${this.dateRange[0].format(dateFormate)} ${this.startTime.format(timeFormate)}` || '', 'end': `${this.dateRange[1].format(dateFormate)} ${this.endTime.format(timeFormate)}` || '' }
+        value: { 'start': `${this.currentTab} ${this.startTime.format(timeFormate)}` || '', 'end': `${this.currentTab} ${this.endTime.format(timeFormate)}` || '' }
       },
       {
         field: 'type',
