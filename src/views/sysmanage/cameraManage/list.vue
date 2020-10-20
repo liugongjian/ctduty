@@ -9,42 +9,6 @@
           </el-select>
           <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-<<<<<<< HEAD
-=======
-          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
-              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width:240px;" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button
-                type="primary"
-                @click="dialogConfirm('dialogForm')"
-              >确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
-            </div>
-          </el-dialog> -->
->>>>>>> 57a572d36231aff42bea36ee575961a38fe6e9a8
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
