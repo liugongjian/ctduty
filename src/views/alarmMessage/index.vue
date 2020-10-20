@@ -507,11 +507,17 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
+      },{
+        field: 'username',
+        operator: 'NULL'
       }
       ] : [{
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
+      },{
+        field: 'username',
+        operator: 'NULL'
       },
       ss
       ]
