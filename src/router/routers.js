@@ -275,14 +275,38 @@ export const asyncRouterMap = [
       },
       {
         path: 'faceManage',
-        component: () => import('@/views/sysmanage/faceManage/index'),
+        component: MainLayout,
         name: 'sysFaceManage',
         meta: {
           title: 'faceManage',
           icon: 'face',
-          noCache: false
-        }
-      }
+          noCache: false,
+        },
+        withnonestmenu:true,
+        children:[
+          {
+            path:'',
+            component: ()=>import('@/views/sysmanage/faceManage/index'),
+            hidden:true,
+            meta: {
+              title: 'faceManage',
+              icon: 'face',
+              noCache: false,
+            },
+          },
+          {
+            path:'faceHistory',
+            component: ()=>import('@/views/sysmanage/faceManage/history'),
+            name:'sysFaceHistory',
+            hidden:true,
+            meta: {
+              title: 'faceHistory',
+              icon: 'face',
+              noCache: false
+            },
+          }
+        ]
+      },
     ]
   }
 ]
