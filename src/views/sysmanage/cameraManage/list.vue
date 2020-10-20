@@ -207,16 +207,14 @@ export default {
       taskList: [],
       taskName: '',
       showDialogId: '',
-      isDelOperat: false
+      isDelOperat: false,
+      isApplySuccess: false
     }
   },
   watch: {
     limit() {
       this.page = 1
       this.pageChange()
-    },
-    delIDArr(v) {
-      console.log(v, 'id数组')
     }
   },
   async created() {
@@ -236,10 +234,10 @@ export default {
         params: {}
       }
       taskList(query).then(res => {
-        console.log(res, 'res')
         if (res.code === 0) {
           this.taskList = res.body.data
           this.algorithmValue = res.body.data[0].id
+          this.taskName = res.body.data[0].name
         }
       })
     },
@@ -251,7 +249,7 @@ export default {
         }
       })
     },
-    apply() {
+    async apply() {
       if (!this.delIDArr.length) {
         this.$message({
           message: '请选择摄像头!',
@@ -259,17 +257,31 @@ export default {
         })
         return
       }
-      this.delIDArr.forEach(item => {
-        console.log(item, 'item')
+      await this.delIDArr.forEach(item => {
         const query = {
           deviceId: item,
           taskId: this.algorithmValue,
           taskName: this.taskName
         }
         addTask(query).then(res => {
-          console.log(res, 'res')
+          if (res.code === 0) {
+            this.isApplySuccess = true
+          } else {
+            this.isApplySuccess = false
+          }
         })
       })
+      if (this.isApplySuccess) {
+        this.$notify({
+          title: '成功',
+          message: '算法应用成功',
+          type: 'success',
+          duration: 2000
+        })
+        setTimeout(() => {
+          this.isApplySuccess = false
+        }, 500)
+      }
     },
     algTagClose(tag) {
       this.algVisable = false
