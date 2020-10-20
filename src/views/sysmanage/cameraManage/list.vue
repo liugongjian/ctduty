@@ -206,7 +206,8 @@ export default {
       algVisable: false,
       taskList: [],
       taskName: '',
-      showDialogId: ''
+      showDialogId: '',
+      isDelOperat: false
     }
   },
   watch: {
@@ -269,9 +270,6 @@ export default {
           console.log(res, 'res')
         })
       })
-
-      /*  */
-      console.log('应用算法')
     },
     algTagClose(tag) {
       this.algVisable = false
@@ -289,6 +287,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.isDelOperat = true
               this.getAloneTask(this.showDialogId)
             }
           })
@@ -392,10 +391,12 @@ export default {
             }, 50)
           } else {
             this.tags = []
-            this.$message({
-              message: '此摄像头暂无已应用算法',
-              type: 'warning'
-            })
+            if (!this.isDelOperat) {
+              this.$message({
+                message: '此摄像头暂无已应用算法',
+                type: 'warning'
+              })
+            }
             this.algVisable = false
           }
         }
@@ -403,6 +404,7 @@ export default {
     },
     algDialog(id) {
       this.showDialogId = id
+      this.isDelOperat = false
       this.getAloneTask(id)
     },
     algCloseDialog() {
