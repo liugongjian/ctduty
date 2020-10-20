@@ -12,42 +12,6 @@
           </el-select>
           <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
-              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width:240px;" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="添加人：">
-                {{ creatorName }}
-              </el-form-item>
-              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button
-                type="primary"
-                @click="dialogConfirm('dialogForm')"
-              >确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
-            </div>
-          </el-dialog> -->
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -152,7 +116,7 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList, editCamera, addCamera, delCamera, taskList, addTask
+  fetchAllCameraList, editCamera, addCamera, delCamera, taskList, addTask, getTask, delTask
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
@@ -160,11 +124,7 @@ export default {
   data() {
     return {
       algorithmValue: null,
-      tags: [
-        { name: '人脸', type: '' },
-        { name: '车辆', type: 'success' },
-        { name: '非机动车', type: 'info' }
-      ],
+      tags: [],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -244,7 +204,9 @@ export default {
       userList: [],
       creatorName: '',
       algVisable: false,
-      taskList: []
+      taskList: [],
+      taskName: '',
+      showDialogId: ''
     }
   },
   watch: {
@@ -280,8 +242,13 @@ export default {
         }
       })
     },
-    algListChange() {
-      console.log('算法列表改变')
+    algListChange(v) {
+      this.algorithmValue = v
+      this.taskList.map(item => {
+        if (item.id === v) {
+          this.taskName = item.name
+        }
+      })
     },
     apply() {
       if (!this.delIDArr.length) {
@@ -291,7 +258,19 @@ export default {
         })
         return
       }
+      this.delIDArr.forEach(item => {
+        console.log(item, 'item')
+        const query = {
+          deviceId: item,
+          taskId: this.algorithmValue,
+          taskName: this.taskName
+        }
+        addTask(query).then(res => {
+          console.log(res, 'res')
+        })
+      })
 
+      /*  */
       console.log('应用算法')
     },
     algTagClose(tag) {
@@ -302,18 +281,17 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tags.splice(this.tags.indexOf(tag), 1)
-          /* this.$notify({
-            title: '成功',
-            message: '移除成功',
-            type: 'success',
-            duration: 2000
-          }) */
-          if (this.tags.length) {
-            setTimeout(() => {
-              this.algVisable = true
-            }, 200)
-          }
+          delTask(tag.id).then(res => {
+            if (res.code === 0) {
+              this.$notify({
+                title: '成功',
+                message: '算法删除成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.getAloneTask(this.showDialogId)
+            }
+          })
         }).catch(() => {
           setTimeout(() => {
             this.algVisable = true
@@ -396,16 +374,36 @@ export default {
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
+    getAloneTask(id) {
+      getTask(id).then(res => {
+        if (res.code === 0) {
+          if (res.body) {
+            this.tags = res.body.data.map(item => {
+              const types = ['', 'success', 'info', 'warning', 'danger']
+              var index = Math.floor((Math.random() * types.length))
+              return {
+                name: item.taskCnName,
+                id: item.id,
+                type: types[index]
+              }
+            })
+            setTimeout(() => {
+              this.algVisable = true
+            }, 50)
+          } else {
+            this.tags = []
+            this.$message({
+              message: '此摄像头暂无已应用算法',
+              type: 'warning'
+            })
+            this.algVisable = false
+          }
+        }
+      })
+    },
     algDialog(id) {
-      console.log(id, 'id')
-      if (!this.tags.length) {
-        this.$message({
-          message: '此摄像头暂无已应用算法',
-          type: 'warning'
-        })
-      } else {
-        this.algVisable = true
-      }
+      this.showDialogId = id
+      this.getAloneTask(id)
     },
     algCloseDialog() {
       this.algVisable = false
@@ -577,6 +575,7 @@ export default {
 }
 .el-tag {
   margin-right: 8px;
+  margin-bottom: 5px;
 }
 </style>
 

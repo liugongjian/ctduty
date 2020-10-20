@@ -67,3 +67,19 @@ export function addTask(query) {
     data: query
   })
 }
+
+// 查询单个摄像头算法
+export function getTask(id) {
+  return request({
+    url: `/nvsapi/taskInst/list/${id}`,
+    method: 'get'
+  })
+}
+
+// 删除算法
+export function delTask(id) {
+  return request({
+    url: `/nvsapi/taskInst/delete?id=${id}`,
+    method: 'delete'
+  })
+}
