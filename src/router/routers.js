@@ -245,6 +245,33 @@ export const asyncRouterMap = [
           icon: 'license',
           noCache: false
         }
+        // alwaysShow: true, // will always show the root menu
+        // hidden: false,
+        // children: [
+        //   {
+        //     path: 'carHistory',
+        //     name: 'carHistory',
+        //     redirect: '/carHistory',
+        //     component: () => import('@/views/sysmanage/carHistory/index'),
+        //     hidden: true
+        //     // meta: {
+        //     //   title: 'carHistory',
+        //     //   icon: 'license',
+        //     //   noCache: false
+        //     // }
+        //   }
+        // ]
+      },
+      {
+        path: 'carHistory',
+        name: 'carHistory',
+        component: () => import('@/views/sysmanage/carHistory/index'),
+        // hidden: true
+        meta: {
+          title: 'carHistory',
+          icon: 'license',
+          noCache: false
+        }
       },
       {
         path: 'faceManage',
