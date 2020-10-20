@@ -205,7 +205,7 @@ export default {
       taskName: '',
       showDialogId: '',
       isDelOperat: false,
-      isApplySuccess: false
+      isApplySuccessArr: []
     }
   },
   watch: {
@@ -254,7 +254,7 @@ export default {
         })
         return
       }
-      await this.delIDArr.forEach(item => {
+      await this.delIDArr.forEach((item, index) => {
         const query = {
           deviceId: item,
           taskId: this.algorithmValue,
@@ -262,23 +262,17 @@ export default {
         }
         addTask(query).then(res => {
           if (res.code === 0) {
-            this.isApplySuccess = true
-          } else {
-            this.isApplySuccess = false
+            if (index === this.delIDArr.length - 1) {
+              this.$notify({
+                title: '成功',
+                message: '算法应用成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
           }
         })
       })
-      if (this.isApplySuccess) {
-        this.$notify({
-          title: '成功',
-          message: '算法应用成功',
-          type: 'success',
-          duration: 2000
-        })
-        setTimeout(() => {
-          this.isApplySuccess = false
-        }, 500)
-      }
     },
     algTagClose(tag) {
       this.algVisable = false
