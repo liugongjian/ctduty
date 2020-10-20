@@ -54,7 +54,8 @@ export default {
     pushSet: "推送设置",
     carManage: "车牌数据管理",
     faceManage: "人脸数据管理",
-    monitorScreen: "监控大屏"
+    monitorScreen: "监控大屏",
+    faceHistory:"历史抓拍"
   },
   activeList: {
     name: "名称",

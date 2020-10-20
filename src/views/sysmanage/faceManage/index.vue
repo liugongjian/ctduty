@@ -13,7 +13,8 @@
             @click="addFace"
           >{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          <el-button class="filter-item" @click="gohistory ">{{ '历史抓拍' }}</el-button>
+          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
           <el-dialog
             :visible="bulkimportVisble"
             title="导入人脸数据"
@@ -146,6 +147,19 @@
           <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
         </div>
       </div>
+
+      <el-row>
+        <el-col :span="7" v-for="(item,index) in tableData" :key="index" :index="index" :offset="1">
+          <el-card class="face-card">
+            <el-image :src="item.image" style="width: 100%; height: 200px" />
+            <div class="face-info">
+              <div class="face-name">姓名：{{item.name}}</div>
+              <div class="face-kind">布控标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+
       <el-table
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
@@ -180,6 +194,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="姓名：">
@@ -623,6 +638,9 @@ export default {
       this.page = 1
       this.limit = 10
       this.getfaceList()
+    },
+    gohistory(){
+       this.$router.push('/sysmanage/faceManage/faceHistory')
     }
   }
 }
@@ -668,6 +686,15 @@ export default {
 }
 .el-popover.el-popover--plain {
   z-index: 9999999999999999999999 !important;
+}
+
+.face-card{
+  .face-info{
+    margin-top: 5px;
+  }
+  .face-name{
+    padding: 5px 0;
+  }
 }
 </style>
 
