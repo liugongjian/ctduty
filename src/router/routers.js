@@ -238,13 +238,40 @@ export const asyncRouterMap = [
       },
       {
         path: 'carManage',
-        component: () => import('@/views/sysmanage/carManage/index'),
+        // component: () => import('@/views/sysmanage/carManage/index'),
+        component: MainLayout,
+        withnonestmenu: true,
         name: 'sysCarManage',
         meta: {
           title: 'carManage',
           icon: 'license',
           noCache: false
-        }
+        },
+        // alwaysShow: true, // will always show the root menu
+        // hidden: false,
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/sysmanage/carManage/index'),
+            hidden: true,
+            meta: {
+              title: 'carManage',
+              icon: 'license',
+              noCache: false
+            }
+          },
+          {
+            path: 'carHistory',
+            name: 'carHistory',
+            component: () => import('@/views/sysmanage/carHistory/index'),
+            hidden: true,
+            meta: {
+              title: 'carHistory',
+              icon: 'license',
+              noCache: false
+            }
+          }
+        ]
       },
       {
         path: 'faceManage',
@@ -253,33 +280,33 @@ export const asyncRouterMap = [
         meta: {
           title: 'faceManage',
           icon: 'face',
-          noCache: false,
+          noCache: false
         },
-        withnonestmenu:true,
-        children:[
+        withnonestmenu: true,
+        children: [
           {
-            path:'',
-            component: ()=>import('@/views/sysmanage/faceManage/index'),
-            hidden:true,
+            path: '',
+            component: () => import('@/views/sysmanage/faceManage/index'),
+            hidden: true,
             meta: {
               title: 'faceManage',
               icon: 'face',
-              noCache: false,
-            },
+              noCache: false
+            }
           },
           {
-            path:'faceHistory',
-            component: ()=>import('@/views/sysmanage/faceManage/history'),
-            name:'sysFaceHistory',
-            hidden:true,
+            path: 'faceHistory',
+            component: () => import('@/views/sysmanage/faceManage/history'),
+            name: 'sysFaceHistory',
+            hidden: true,
             meta: {
               title: 'faceHistory',
               icon: 'face',
               noCache: false
-            },
+            }
           }
         ]
-      },
+      }
     ]
   }
 ]

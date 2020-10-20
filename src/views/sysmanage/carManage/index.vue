@@ -10,6 +10,7 @@
             @click="create"
           >{{ '新增车牌数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport">{{ '导入车牌数据' }}</el-button>
+          <el-button class="filter-item" @click="toHistory">{{ '历史抓拍' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
@@ -398,6 +399,10 @@ export default {
     excelCommit() {},
     bulkimport() {
       this.bulkimportVisble = true
+    },
+    toHistory() {
+      const { currentRoute: { path }} = this.$router
+      this.$router.push(`${path}/carHistory`)
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
