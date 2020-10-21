@@ -151,7 +151,7 @@
       <el-row v-if="tableData.length>0">
         <el-col :span="4" v-for="(item,index) in tableData" :key="index" :index="index" class="face-col">
           <el-card class="face-card" :body-style="{ padding: '0px' }">
-            <el-image :src="item.image" style="width: 100%;height:200px"/>
+            <el-image :src="item.image" style="width: 100%;height:200px;"/>
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
             <div class="face-info">
               <div class="face-name">姓名：{{item.name}}</div>

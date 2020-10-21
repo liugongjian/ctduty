@@ -85,13 +85,13 @@
                     <el-image :src="val.imageCompress" style="width: 100%; height:200px"/>
                     <div class="history-info">
                         <div class="history-name">
-                            <span>{{val.camera.name}}</span>
+                            <span>{{val.username || "未知"}}</span>
                             <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
                             <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
                         </div>
                         <div>
                             <i class="el-icon-map-location">
-                                {{val.camera.address}}
+                                {{val.camera ? val.camera.address : "未知位置"}}
                             </i>
                         </div>
                         <div class="history-time">
@@ -111,7 +111,7 @@
                 </el-card>
                 </el-col>
             </el-row>
-            <div v-else class="face-nodata">暂无数据</div>
+            <div v-else class="history-nodata">暂无数据</div>
             <pagination
               v-show="total>0"
               :total="total"
