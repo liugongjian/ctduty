@@ -44,7 +44,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  {
+  /*   {
     path: '/ecloudwatch',
     component: Layout,
     redirect: '/ecloudwatch',
@@ -62,7 +62,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  }, */
   {
     path: '/monitorScreen',
     component: Layout,
@@ -196,7 +196,7 @@ export const asyncRouterMap = [
           }
         ]
       }, */
-      {
+      /* {
         path: 'policeManage',
         component: () => import('@/views/sysmanage/areaManage/policeManage'),
         name: 'policeManage',
@@ -205,7 +205,7 @@ export const asyncRouterMap = [
           icon: 'police',
           noCache: false
         }
-      },
+      }, */
       {
         path: 'userManage',
         component: () => import('@/views/sysmanage/userManage/index'),
@@ -216,7 +216,7 @@ export const asyncRouterMap = [
           noCache: false
         }
       },
-      {
+      /* {
         path: 'dutyManage',
         component: () => import('@/views/sysmanage/dutyManage/index'),
         name: 'sysdutyManage',
@@ -225,10 +225,10 @@ export const asyncRouterMap = [
           icon: 'dutyManage',
           noCache: false
         }
-      },
+      }, */
       {
         path: 'cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/index'),
+        component: () => import('@/views/sysmanage/cameraManage/list'),
         name: 'sysCameraManage',
         meta: {
           title: 'cameraManage',

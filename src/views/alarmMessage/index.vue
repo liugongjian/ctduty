@@ -95,7 +95,7 @@
                   <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column>
+              <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
               <el-table-column :label="'图片'" min-width="20%">
                 <template slot-scope="scope">
                   <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image>
@@ -506,7 +506,7 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
-      },{
+      }, {
         field: 'username',
         operator: 'NULL'
       }
@@ -514,7 +514,7 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
-      },{
+      }, {
         field: 'username',
         operator: 'NULL'
       },

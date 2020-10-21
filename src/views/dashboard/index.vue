@@ -88,7 +88,7 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
-import huayin from '@/json/huayin.json'
+import yanan from '@/json/yanan.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -100,7 +100,7 @@ import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
 function registerMap() {
-  echarts.registerMap('渭南', huayin)
+  echarts.registerMap('延安', yanan)
 }
 export default {
   name: 'Dashboard',
@@ -185,6 +185,12 @@ export default {
     }
   },
   async created() {
+    /* address: "华西镇"
+alertCount: 3752
+handledCount: 2
+latitude: "34.5614"
+longitude: "110.174104"
+unHandledCount: 3750 */
     await this.getNowList()
     await this.getList()
     registerMap()
@@ -271,9 +277,14 @@ export default {
         this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
         this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
         res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
-          this.hotTag.push({
+          /* this.hotTag.push({
             value: item.alertCount, name: item.address
-          })
+          }) */
+          this.hotTag = [
+            { value: 3333, name: '宝塔区' },
+            { value: 2222, name: '安塞区' },
+            { value: 2568, name: '黄陵县' }
+          ]
           this.mapShowData.push({
             name: item.address, value: item.alertCount, latitude: item.latitude,
             longitude: item.longitude, handledCount: item.handledCount, unHandledCount: item.unHandledCount
@@ -370,7 +381,7 @@ export default {
           }
         },
         geo: {
-          map: '渭南',
+          map: '延安',
           roam: true,
           aspectScale: 1,
           tooltip: {
@@ -383,7 +394,7 @@ export default {
           label: {
             show: false,
             normal: {
-              show: true,
+              show: false,
               textStyle: {
                 color: '#000'
               }
@@ -392,7 +403,7 @@ export default {
               show: true,
               textStyle: {
                 show: true,
-                color: '#000'
+                color: '#74b9ff'
               }
             }
           },
