@@ -61,6 +61,11 @@
         <el-date-picker
           v-model="dateRange"
           :clearable="false"
+          :picker-options="{
+            disabledDate(time) {
+              return time.getTime() > Date.now() - 8.64e6
+            }
+          }"
           type="daterange"
           range-separator="～"
           start-placeholder="开始日期"
@@ -75,6 +80,7 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
+          style="width:130px;"
           placeholder="开始时间">
         </el-time-picker>
       </span>
@@ -86,12 +92,16 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
+          style="width:130px;"
           placeholder="结束时间">
         </el-time-picker>
       </span>
-      <el-button type="primary" @click="onSearch">搜索</el-button>
+      <span style="float:right;">
+        <el-button type="primary" @click="onSearch">搜索</el-button>
+        <el-button type="" @click="onClear">重置</el-button>
+      </span>
     </div>
-    <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
+    <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">
       <el-tab-pane
         v-for="item in tabsArr"
         :key="item"
@@ -124,7 +134,7 @@
               </div>
             </el-card>
           </div>
-          <div v-else>
+          <div v-else class="noData">
             暂无数据
           </div>
           <div class="pagination-wrapper">
@@ -158,14 +168,19 @@ import {
 const token = Cookies.get('token')
 const timeFormate = 'hh:mm:ss'
 const dateFormat = 'YYYY-MM-DD'
-
+const initialFilterProps = {
+  dateRange: [moment().subtract(7, 'days'), moment()],
+  startTime: moment('02:00:00', 'hh:mm:ss'),
+  endTime: moment('22:00:00', 'hh:mm:ss')
+}
 export default {
   components: { Pagination },
   data() {
     return {
-      dateRange: [moment().subtract(7, 'days'), moment()],
-      startTime: moment('02:00:00', 'hh:mm:ss'),
-      endTime: moment('22:00:00', 'hh:mm:ss'),
+    //   dateRange: [moment().subtract(7, 'days'), moment()],
+    //   startTime: moment('02:00:00', 'hh:mm:ss'),
+    //   endTime: moment('22:00:00', 'hh:mm:ss'),
+      ...initialFilterProps,
       dialogVisible: false,
       carEdit: {
         licenseNo: '',
@@ -229,6 +244,12 @@ export default {
     this.onSearch()
   },
   methods: {
+    onClear() {
+      Object.keys(initialFilterProps).forEach(key => {
+        this[key] = initialFilterProps[key]
+      })
+      this.onSearch()
+    },
     onSearch() {
       console.log(this.dateRange)
       const [startDate, endDate] = this.dateRange
@@ -241,10 +262,12 @@ export default {
         this.defaultTab = this.tabsArr[0]
         this.currentTab = this.defaultTab
       }
+      this.page = 1
       this.getList()
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
+      this.page = 1
       this.getList()
     },
     getDayAll(start, end) {
@@ -321,7 +344,7 @@ export default {
       const param = [{
         field: 'createTime',
         operator: 'BETWEEN',
-        value: { 'start': `${this.currentTab} ${this.startTime.format(timeFormate)}` || '', 'end': `${this.currentTab} ${this.endTime.format(timeFormate)}` || '' }
+        value: { 'start': `${this.currentTab} ${moment(this.startTime).format(timeFormate)}` || '', 'end': `${this.currentTab} ${moment(this.endTime).format(timeFormate)}` || '' }
       },
       {
         field: 'type',
@@ -371,6 +394,18 @@ export default {
     margin: 0 20px;
     .pagination-container{
         margin-top:0;
+    }
+  }
+  .noData{
+      height: 50px;
+      width:100%;
+      text-align: center;
+      line-height: 50px;
+  }
+  .tab-wrapper{
+    margin: 0 20px 20px 20px;
+    .el-tabs__content {
+        padding: 20px 0;
     }
   }
   .card-wrapper{
