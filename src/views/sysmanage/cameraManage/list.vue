@@ -286,7 +286,7 @@ export default {
             if (res.code === 0) {
               this.$notify({
                 title: '成功',
-                message: '算法删除成功',
+                message: '算法移除成功',
                 type: 'success',
                 duration: 2000
               })
