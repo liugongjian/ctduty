@@ -97,7 +97,7 @@
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" prop="camera.address"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'图片'" prop="image">
+              <el-table-column :label="'图片'" prop="image">
                 <template slot-scope="scope">
                   <el-image :src="scope.row.imageCompress" style="width:200px; height:150px;" @click="openBig(scope.row.image)">
                   </el-image>
