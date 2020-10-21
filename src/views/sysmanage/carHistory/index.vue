@@ -110,22 +110,22 @@
         <div v-loading="listLoading">
           <div v-if="tableData&& tableData.length >0" class="card-wrapper">
             <el-card v-for="(item, index) in tableData" :body-style="{ padding: '0px' }" :key="item.id" class="card">
-              <img :src="item.imageCut" class="image">
+              <el-image :src="item.imageCut" class="image" />
               <div class="card-desp">
                 <span class="card-desp-title">
-                  <span>{{ item.licence || '' }}</span>
+                  <span>{{ item.license || '' }}</span>
                   <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
                   <span>{{ item.label? listType[item.label] : '' }}</span>
                 </span>
                 <div class="bottom clearfix">
                   <div class="location">
                     <i class="el-icon-map-location" />
-                    <span>{{ item.camera.address }}</span>
+                    <span>{{ item.camera && item.camera.address || '未知' }}</span>
                   </div>
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
-                    <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.licence, item.plateType, item.label? listType[item.label] : '')">
+                    <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
                       <svg-icon icon-class="import"></svg-icon>
                       <!-- <i class="el-icon-upload" /> -->
                     </el-button>
@@ -166,12 +166,12 @@ import {
 
 } from '@/api/dm'
 const token = Cookies.get('token')
-const timeFormate = 'hh:mm:ss'
+const timeFormate = 'HH:mm:ss'
 const dateFormat = 'YYYY-MM-DD'
 const initialFilterProps = {
   dateRange: [moment().subtract(7, 'days'), moment()],
-  startTime: moment('02:00:00', 'hh:mm:ss'),
-  endTime: moment('22:00:00', 'hh:mm:ss')
+  startTime: moment('02:00:00', timeFormate),
+  endTime: moment('22:00:00', timeFormate)
 }
 export default {
   components: { Pagination },
@@ -337,7 +337,7 @@ export default {
       this.getList()
     },
     getDateTimeStr(time) {
-      return moment(time).format('YYYY-MM-DD hh:mm:ss')
+      return moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
     getList() {
       this.listLoading = true
@@ -371,7 +371,7 @@ export default {
         this.tableData = data
         this.total = total
         this.listLoading = false
-      })
+      }).catch(err => { console.log(err) })
     }
   }
 }
@@ -401,6 +401,7 @@ export default {
       width:100%;
       text-align: center;
       line-height: 50px;
+      color:#999;
   }
   .tab-wrapper{
     margin: 0 20px 20px 20px;
@@ -423,8 +424,10 @@ export default {
             width: 100%;
             max-width: 250px;
             height:150px;
-            object-fit: fill;//cover;
-            display: block;
+            img{
+                object-fit: contain;//cover;
+                 background-color: rgb(245, 247, 250);
+            }
         }
         .card-desp{
             padding:10px;
