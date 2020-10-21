@@ -1,8 +1,11 @@
 <template>
   <div class="list">
     <div class="app-container" style="padding: 20px">
-      <div class="filter-container clearfix">
+      <div class="filter-container facehistory-box clearfix">
         <div class="pull-right">
+          <el-button v-waves class="filter-item" size="mini" type="warning" @click="onSearch">
+            {{ '搜索' }}
+          </el-button>
           <el-button class="filter-item" style="font-size:12px" icon="el-icon-refresh" @click="onClear">重置</el-button>
         </div>
         <div class="pull-left">
@@ -16,7 +19,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:250 + 'px'}"
+              :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -66,14 +69,6 @@
             >
             </el-time-picker>
           </div>
-
-          <el-select v-model="formInline.typeValue" style="width:100px; margin-left:10px; margin-right: 10px" size="mini" class="filter-item" @change="checkModel">
-            <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
-          </el-select>
-          <el-button v-waves class="filter-item" size="mini" type="warning" @click="onSearch">
-            {{ '搜索' }}
-          </el-button>
-
         </div>
       </div>
       <div>
@@ -83,88 +78,41 @@
             :key="item"
             :label="item"
             :name="item">
-            <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div>
-
-            <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
-              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" min-width="15%" prop="id" ></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" min-width="15%" prop="createTime">
-              </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" min-width="5%" prop="type" width="100"></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" min-width="5%" width="100">
-                <template slot-scope="scope">
-                  <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
-                </template>
-              </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column>
-              <el-table-column :label="'图片'" min-width="20%">
-                <template slot-scope="scope">
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image>
-                </template>
-              </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理人'" min-width="5%" prop="handler.username" width="100">
-                <template slot-scope="scope">
-                  <span style="text-indent:30px">{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :label="'处理结果'" min-width="5%" prop="handlerId" width="100"><template slot-scope="scope">
-                <svg-icon v-if="scope.row.handlerId" class="deal" icon-class="deal" />
-                <svg-icon v-else class="untreated" icon-class="untreated2" />
-                <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
-              </template></el-table-column>
-              <el-table-column min-width="12%" label="操作">
-                <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
-                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-dialog
-              :visible.sync="dialogVisable"
-              title="报警显示"
-              width="750px"
-              @close="closeDialog">
-              <el-form v-model="temp" label-position="right" label-width="100px">
-                <el-form-item label="摄像头地址：" prop="camera.address">
-                  <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
-                </el-form-item>
-                <el-form-item label="监控时间：" prop="createTime" >
-                  <span style="width: 300px;"></span>
-                  {{ renderTime(temp.createTime) }}
-
-                </el-form-item>
-                <el-form-item label="原始照片：" prop="image" >
-                  <el-image :src="temp.imageCompress" style="width:525px; height:300px" @click="()=>{openBig(temp.image)}"></el-image>
-                </el-form-item>
-                <el-form-item label="结构化照片：" prop="imageCut" >
-                  <el-image :src="temp.imageCut"></el-image>
-                </el-form-item>
-                <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
-                  <span v-if="temp.type === 1">人员</span>
-                  <span v-else-if="temp.type === 2">机动车</span>
-                </el-form-item>
-                <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
-                  <span v-if="temp.label === 1">白名单</span>
-                  <span v-else-if="temp.label === 2">黑名单</span>
-                  <span v-else>其他</span>
-                </el-form-item>
-                <!-- 车牌 -->
-                <el-form-item v-if="temp.license" label="车牌:" prop="license">
-                  <span>{{ temp.license }}</span>
-                </el-form-item>
-                <!-- 人员 -->
-                <el-form-item v-if="temp.username" label="姓名:" prop="username">
-                  <span>{{ temp.username }}</span>
-                </el-form-item>
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button
-                  round
-                  @click="dialogConfirm"
-                >正 常</el-button>
-                <el-button type="warning" round @click="dialogQuxiao">异 常</el-button>
-              </div>
-            </el-dialog>
-
+            <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
+            <el-row v-if="tableData.length>0">
+                <el-col :span="4" v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
+                <el-card class="history-card" :body-style="{ padding: '0px' }">
+                    <el-image :src="val.imageCompress" style="width: 100%;"/>
+                    <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
+                    <div class="history-info">
+                        <div class="history-name">
+                            <span>{{val.camera.name}}</span>
+                            <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
+                            <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
+                        </div>
+                        <div>
+                            <i class="el-icon-map-location">
+                                {{val.camera.address}}
+                            </i>
+                        </div>
+                        <div class="history-time">
+                            <i class="el-icon-time">
+                                {{renderTime(val.createTime)}}
+                            </i>
+                        </div>
+                    </div>
+                    <!-- <div class="btn-box">
+                     <el-button 
+                        type="danger" 
+                        icon="el-icon-delete" 
+                        circle 
+                        size="mini" 
+                        @click="delAlert(val.id)"></el-button>
+                    </div> -->
+                </el-card>
+                </el-col>
+            </el-row>
+            <div v-else class="face-nodata">暂无数据</div>
             <pagination
               v-show="total>0"
               :total="total"
@@ -508,7 +456,7 @@ export default {
         value: { 'start': s || '', 'end': e || '' }
       },{
         field: 'username',
-        operator: 'NULL'
+        operator: 'NOT_NULL'
       }
       ] : [{
         field: 'createTime',
@@ -516,7 +464,7 @@ export default {
         value: { 'start': s || '', 'end': e || '' }
       },{
         field: 'username',
-        operator: 'NULL'
+        operator: 'NOT_NULL'
       },
       ss
       ]
@@ -597,8 +545,8 @@ export default {
 }
 </script>
 
-    <style lang='scss'>
-    .title {
+<style lang='scss'>
+.title {
      width: 100%;
      height: 50px;
      line-height: 50px;
@@ -609,19 +557,18 @@ export default {
      border-bottom: 1px solid #ccc;
      background: #FFF;
      padding: 0 20px;
-   }
-   .el-date-editor{
+}
+.el-date-editor{
      height: 28px !important;
-   }
-   .el-range-separator{
-
-     width: 30px !important;
-   }
-   .el-select-dropdown__item {
+}
+.el-range-separator{
+    width: 30px !important;
+}
+.el-select-dropdown__item {
        font-size: 12px !important;
 
-   }
-  .deal {
+}
+.deal {
     fill: #44bd32 !important;
   }
   .untreated{
@@ -637,9 +584,40 @@ export default {
   .kb{
     margin-block-end: 14px;
   }
-  td {
-    .el-image {
-      vertical-align: middle;
-    }
+.history-col{
+  width: 19%;
+  margin: 10px 0.5%;
+}
+.history-card{
+  position: relative;
+  img{
+    width: 100%;
   }
-    </style>
+  .history-info{
+    font-size: 14px;
+    padding: 7px 5px;
+  }
+  .history-name{
+    padding: 5px 0;
+  }
+  .history-time{
+      margin-top: 5px;
+  }
+  .btn-box{
+    display: none;
+  }
+  &:hover .btn-box{
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 99;
+  }
+}
+.history-nodata{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+}
+</style>
