@@ -82,8 +82,7 @@
             <el-row v-if="tableData.length>0">
                 <el-col :span="4" v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
                 <el-card class="history-card" :body-style="{ padding: '0px' }">
-                    <el-image :src="val.imageCompress" style="width: 100%;"/>
-                    <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
+                    <el-image :src="val.imageCompress" style="width: 100%; height:200px"/>
                     <div class="history-info">
                         <div class="history-name">
                             <span>{{val.camera.name}}</span>
