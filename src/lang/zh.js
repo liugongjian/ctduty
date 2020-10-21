@@ -53,8 +53,10 @@ export default {
     onlineUser: "在线用户",
     pushSet: "推送设置",
     carManage: "车牌数据管理",
+    carHistory: "历史抓拍",
     faceManage: "人脸数据管理",
-    monitorScreen: "监控大屏"
+    monitorScreen: "监控大屏",
+    faceHistory:"历史抓拍"
   },
   activeList: {
     name: "名称",
@@ -382,4 +384,4 @@ export default {
     playEndTime: "视频结束时间",
     operate: "操作"
   }
-};
+}

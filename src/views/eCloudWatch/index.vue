@@ -28,18 +28,14 @@
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
-      <div class="warn" style="background:rgba(0,0,0,0)">
-        <div class="dispose" style="opacity:1;background:#fff;margin-bottom:20px;">
+      <div class="warn">
+        <div class="dispose" style="opacity:1;margin-bottom:20px;">
           <div class="watchtitle">
             <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
             <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
           </div>
           <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
             <div id="panel" style="height: 80%; width:100%"></div>
-            <!-- <div class="num">
-              <div class="processed">已处理: <span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span></div>
-              <div class="untreated">未处理: <span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span></div>
-            </div> -->
           </div>
           <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
             <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
@@ -298,7 +294,6 @@ const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
   components: { Pagination, VideoPlayer },
-  // components: { CameraList },
   // eslint-disable-next-line vue/require-prop-types
   props: ['data', 'defaultActive'],
   data() {
@@ -997,6 +992,7 @@ export default {
 .dispose {
   background-color: #fff !important;
   opacity:1 !important;
+  box-sizing: content-box !important;
 }
 .warn {
   height:78vh !important;
@@ -1055,7 +1051,7 @@ export default {
       position: absolute;
       top: 70px;
       right: 10px;
-      background-color: #ffffff;
+      // background-color: #ffffff;
       width: 320px;
       height: 100%;
       .top {

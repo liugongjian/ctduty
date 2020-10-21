@@ -13,7 +13,8 @@
             @click="addFace"
           >{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          <el-button class="filter-item" @click="gohistory ">{{ '历史抓拍' }}</el-button>
+          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
           <el-dialog
             :visible="bulkimportVisble"
             title="导入人脸数据"
@@ -146,7 +147,37 @@
           <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
         </div>
       </div>
-      <el-table
+
+      <el-row v-if="tableData.length>0">
+        <el-col :span="4" v-for="(item,index) in tableData" :key="index" :index="index" class="face-col">
+          <el-card class="face-card" :body-style="{ padding: '0px' }">
+            <el-image :src="item.image" style="width: 100%;height:200px"/>
+            <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
+            <div class="face-info">
+              <div class="face-name">姓名：{{item.name}}</div>
+              <div class="face-kind">布控标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
+            </div>
+            <div class="btn-box">
+              <el-button 
+                icon="el-icon-edit" 
+                size="mini" 
+                type="primary" 
+                circle
+                @click="editDialog(item)"></el-button>
+              <el-button 
+                type="danger" 
+                icon="el-icon-delete" 
+                circle 
+                size="mini" 
+                @click="delAlert(item.id)"></el-button>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+
+       <div v-else class="face-nodata">暂无数据</div>
+
+      <!-- <el-table
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -179,7 +210,8 @@
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </el-table> -->
+
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="姓名：">
@@ -623,6 +655,9 @@ export default {
       this.page = 1
       this.limit = 10
       this.getfaceList()
+    },
+    gohistory(){
+       this.$router.push('/sysmanage/faceManage/faceHistory')
     }
   }
 }
@@ -668,6 +703,39 @@ export default {
 }
 .el-popover.el-popover--plain {
   z-index: 9999999999999999999999 !important;
+}
+.face-col{
+  width: 19%;
+  margin: 10px 0.5%;
+}
+.face-card{
+  position: relative;
+  img{
+    width: 100%;
+  }
+  .face-info{
+    font-size: 14px;
+    padding: 14px;
+  }
+  .face-name{
+    padding: 5px 0;
+  }
+  .btn-box{
+    display: none;
+  }
+  &:hover .btn-box{
+    display: inline-block;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 99;
+  }
+}
+.face-nodata{
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
 }
 </style>
 
