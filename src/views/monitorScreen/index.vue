@@ -6,7 +6,7 @@
           <div class="screen-head">
             <div class="head-label">
               <i class="el-icon-location-information"></i>
-              <span :title="item.address">{{ item.address }}</span>
+              <span :title="item.name">{{ item.name }}</span>
             </div>
             <div class="head-btn">
               <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
@@ -26,21 +26,21 @@
     </div>
     <el-dialog :title="id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
+        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
             :loading="loading"
             filterable
             remote
-            filterable
-            remote
-            placeholder="请选择">
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in options"
               :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              :label="item.name"
+              :value="item.value"
+            >
             </el-option>
           </el-select>
         </el-form-item>
@@ -56,7 +56,7 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
 import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor } from '@/api/monitor'
-import { searchCameraList } from '@/api/camera'
+import { fetchAllCameraList, searchCameraList } from '@/api/camera'
 
 export default {
   components: { VideoPlayer },
@@ -65,15 +65,17 @@ export default {
       pageLoading: true,
       dialogFormVisible: false,
       form: {},
+      deviceName: '',
       rules: {
         cameraId: [
-          { required: true, message: '请选择摄像头地址', trigger: 'change' }
+          { required: true, message: '请选择设备名称', trigger: 'change' }
         ]
       },
       options: [],
       deviceList: [],
       loading: false,
       submiting: false,
+      allCameraList: [],
       id: '',
       videoOptions: {
         autoplay: true,
@@ -86,10 +88,38 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getLiveList()
+  watch: {
+    deviceList(v) {
+      v.map(item => {
+        this.allCameraList.forEach(one => {
+          if (one.id === item.cameraId) {
+            item.name = one.name
+          }
+        })
+      })
+    }
+  },
+  async mounted() {
+    await this.getAllCamera()
+    await this.getLiveList()
   },
   methods: {
+    getAllCamera() {
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 999999
+        },
+        params: {
+        }
+      }
+      fetchAllCameraList(params).then(res => {
+        if (res.code === 0) {
+          this.allCameraList = res.body.data
+        }
+      })
+    },
     getCameraList(keyword) {
       if (keyword !== '') {
         this.loading = true
@@ -119,7 +149,8 @@ export default {
           this.options = data.map(item => {
             return {
               value: item.id,
-              label: item.address
+              label: item.address,
+              name: item.name
             }
           })
           this.loading = false
