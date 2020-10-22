@@ -118,10 +118,10 @@
                   <span>{{ item.label? listType[item.label] : '' }}</span>
                 </span>
                 <div class="bottom clearfix">
-                  <div class="location">
+                  <!-- <div class="location">
                     <i class="el-icon-map-location" />
                     <span>{{ item.camera && item.camera.address || '未知' }}</span>
-                  </div>
+                  </div> -->
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>

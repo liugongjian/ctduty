@@ -89,11 +89,11 @@
                                 <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
                                 <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
                             </div>
-                            <div>
+                            <!-- <div>
                                 <i class="el-icon-map-location">
                                     {{val.camera ? val.camera.address : "未知位置"}}
                                 </i>
-                            </div>
+                            </div> -->
                             <div class="history-time">
                                 <i class="el-icon-time">
                                     {{renderTime(val.createTime)}}
