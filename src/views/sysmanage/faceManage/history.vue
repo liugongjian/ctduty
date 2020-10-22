@@ -82,7 +82,7 @@
             <div v-if="tableData.length>0" class="history-box">
                 <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
                     <el-card class="history-card" :body-style="{ padding: '0px' }">
-                        <el-image :src="val.imageCompress" style="width: 100%; height:200px"/>
+                        <el-image :src="val.imageCut" style="width: 100%; height:200px"/>
                         <div class="history-info">
                             <div class="history-name">
                                 <span>{{val.username || "未知"}}</span>
