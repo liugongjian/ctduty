@@ -1,5 +1,5 @@
 <template>
-  <div class="monitorScreen-wrap" v-loading="pageLoading" element-loading-text="拼命加载中">
+  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
@@ -14,7 +14,7 @@
             </div>
           </div>
           <div class="screen-body">
-            <VideoPlayer :videoRef="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
+            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default {
         })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value))
-        this.pageLoading = false;
+        this.pageLoading = false
       })
     },
     updateMonitorDialog(item) {
@@ -166,7 +166,7 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         delMonitor(item.id).then(res => {
-          this.deviceList = this.deviceList.filter(i => i.id !== item.id); // list接口响应慢，这里先过滤掉
+          this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
           this.getLiveList()
         })
       })
