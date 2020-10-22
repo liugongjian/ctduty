@@ -50,7 +50,8 @@
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
+        <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
+        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
           <template slot-scope="scope">
             <span>{{ scope.row.online ? "离线":"在线" }}</span>

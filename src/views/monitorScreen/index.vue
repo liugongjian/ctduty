@@ -131,7 +131,7 @@ export default {
           },
           params: [
             {
-              field: 'address',
+              field: 'name',
               operator: 'LIKE',
               value: `%${keyword}%`
             },
