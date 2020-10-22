@@ -79,38 +79,38 @@
             :label="item"
             :name="item">
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
-            <el-row v-if="tableData.length>0">
-                <el-col :span="4" v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
-                <el-card class="history-card" :body-style="{ padding: '0px' }">
-                    <el-image :src="val.imageCompress" style="width: 100%; height:200px"/>
-                    <div class="history-info">
-                        <div class="history-name">
-                            <span>{{val.username || "未知"}}</span>
-                            <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
-                            <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
+            <div v-if="tableData.length>0" class="history-box">
+                <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
+                    <el-card class="history-card" :body-style="{ padding: '0px' }">
+                        <el-image :src="val.imageCompress" style="width: 100%; height:200px"/>
+                        <div class="history-info">
+                            <div class="history-name">
+                                <span>{{val.username || "未知"}}</span>
+                                <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
+                                <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
+                            </div>
+                            <div>
+                                <i class="el-icon-map-location">
+                                    {{val.camera ? val.camera.address : "未知位置"}}
+                                </i>
+                            </div>
+                            <div class="history-time">
+                                <i class="el-icon-time">
+                                    {{renderTime(val.createTime)}}
+                                </i>
+                            </div>
                         </div>
-                        <div>
-                            <i class="el-icon-map-location">
-                                {{val.camera ? val.camera.address : "未知位置"}}
-                            </i>
-                        </div>
-                        <div class="history-time">
-                            <i class="el-icon-time">
-                                {{renderTime(val.createTime)}}
-                            </i>
-                        </div>
-                    </div>
-                    <!-- <div class="btn-box">
-                     <el-button 
-                        type="danger" 
-                        icon="el-icon-delete" 
-                        circle 
-                        size="mini" 
-                        @click="delAlert(val.id)"></el-button>
-                    </div> -->
-                </el-card>
-                </el-col>
-            </el-row>
+                        <!-- <div class="btn-box">
+                        <el-button 
+                            type="danger" 
+                            icon="el-icon-delete" 
+                            circle 
+                            size="mini" 
+                            @click="delAlert(val.id)"></el-button>
+                        </div> -->
+                    </el-card>
+                </div>
+            </div>
             <div v-else class="history-nodata">暂无数据</div>
             <pagination
               v-show="total>0"
@@ -583,9 +583,15 @@ export default {
   .kb{
     margin-block-end: 14px;
   }
+.history-box{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
 .history-col{
   width: 19%;
   margin: 10px 0.5%;
+  white-space: space break-all;
 }
 .history-card{
   position: relative;
