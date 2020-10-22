@@ -101,7 +101,11 @@
       </el-dialog>
 
       <el-dialog :visible="configVisable" title="视频AI配置" width="920px" @close="configCloseDialog">
-        <VideoConfig></VideoConfig>
+        <VideoConfig v-if='configVisable'></VideoConfig>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyAlgorithms(false)">取消</el-button>
+          <el-button type="primary"  @click="applyAlgorithms(true)">确定</el-button>
+        </span>
       </el-dialog>
 
       <pagination
@@ -232,6 +236,12 @@ export default {
     await this.getList()
   },
   methods: {
+    applyAlgorithms(flag){
+        this.configVisable = false;
+        if(flag){
+          console.log("调用后端接口保存标注坐标列表")
+        }
+    },
     getTaskList() {
       const query = {
         cascade: true,

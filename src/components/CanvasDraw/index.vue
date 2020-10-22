@@ -3,17 +3,17 @@
     <div class="buttoninfo">
       <el-tooltip content="画直线">
         <el-button :disabled="type == 1" @click="choose(1)" class="buttonSize">
-          <img src="../assets/line.png" class="imageStyle" />
+          <img src="../../assets/images/line.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
       <el-tooltip content="画矩形">
         <el-button :disabled="type == 2" @click="choose(2)" class="buttonSize">
-          <img src="../assets/rect.png" class="imageStyle" />
+          <img src="../../assets/images/rect.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
-      <el-tooltip content="画多边形">
+      <el-tooltip content="画多边形" >
         <el-button :disabled="type == 3" @click="choose(3)" class="buttonSize">
-          <img src="../assets/polygon.png" class="imageStyle" />
+          <img src="../../assets/images/polygon.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
 
@@ -32,35 +32,39 @@
         <el-tooltip content="撤销上一个标记" style="margin-left: 10px">
           <!-- <el-button @click="revoke"> 撤销 </el-button> -->
           <el-button @click="revoke" class="buttonSize">
-            <img src="../assets/revoke.png" class="imageStyle" />
+            <img src="../../assets/images/revoke.png" class="imageStyle" />
           </el-button>
 
         </el-tooltip>
         <el-tooltip content="清除画布" style="margin-left: 10px">
           <!-- <el-button @click="resetTemp"> 清除 </el-button> -->
           <el-button @click="resetTemp" class="buttonSize">
-            <img src="../assets/clear.png" class="imageStyle" />
+            <img src="../../assets/images/clear.png" class="imageStyle" />
           </el-button>
         </el-tooltip>
       </span>
     </div>
-
-    <canvas
-      id="myCanvas"
-      width="640px"
-      height="360px"
-      @mousedown="function (event) {
-          mousedown(event);
-        }
-      "
-      @mousemove="function (event) {
-          mousemove(event);
-        }
-      "
-      @click='chooseAreaGraph'
-    ></canvas>
+    <div class="canvas-box">
+        <canvas
+            id="myCanvas"
+            width="640px"
+            height="360px"
+            @mousedown="function (event) {
+                mousedown(event);
+                }
+            "
+            @mousemove="function (event) {
+                mousemove(event);
+                }
+            "
+            @click='chooseAreaGraph'
+            ></canvas>
+    </div>
     <div v-if="tempChoosePoint.length>0" >
       <h6>当前选中坐标: {{tempChoosePoint}}</h6>
+    </div>
+    <div class="configBtnBox">
+      <el-button class="configBtn" type="primary"  @click="saveAlgorithm()">保存</el-button>
     </div>
   </div>
 </template>
@@ -110,7 +114,6 @@ export default {
     // 设置垂直对齐方式
     this.ctx.textBaseline = "middle";
     this.ctx.fillText("图片正在加载中", 300, 200);
-    // let {data:res} = await this.$http.get(`${baseUrl}/device/snapshot/`+this.deviceId)
     let { data: res } = await client.getImageByDeviceId(this.deviceId);
     var imageValue = "data:image/png;base64," + res;
 
@@ -184,6 +187,9 @@ export default {
        this.ctx.textBaseline="top";
        this.ctx.font = "12px Arial";
        this.ctx.fillText(content, location.x+30, location.y+5);
+    },
+    saveAlgorithm(){
+        console.log("save坐标----------------------")
     },
     choose(type) {
       this.type = type;
@@ -698,7 +704,7 @@ export default {
   },
 };
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 /deep/.el-input__inner {
   height: 35px; 
   line-height: 35px
@@ -706,8 +712,11 @@ export default {
 .box {
   width: 100%;
   height: 100%;
+  padding: 5px;
+  position: relative;
 }
 .buttoninfo {
+  padding-left: 76px;
   width: 100%;
   height: 40px;
   left: 50px;
@@ -727,10 +736,24 @@ export default {
   height: 500px;
   position: relative;
   background-position: center;
+  background: url("../../assets/images/video.jpg"); 
   background-size: cover;
+}
+.canvas-box{
+    width: 640px;
+    margin: 0 auto;
 }
 canvas {
   border: 1px solid red;
+}
+.configBtnBox{
+    position: relative;
+    margin-top: 2px;
+    height: 36px;
+    .configBtn{
+        position: absolute;
+        right: 350px;
+    }
 }
 
 </style>
