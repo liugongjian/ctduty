@@ -82,9 +82,8 @@
           </quill-editor>
         </el-form-item>
 
-        <el-form-item class="select" label="签名档">
+        <!-- <el-form-item class="select" label="签名档">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
-            <!-- <el-option value="1" label="1"></el-option> -->
             <el-option
               v-for="(item,key) in departmentInfo"
               :key="key"
@@ -92,7 +91,7 @@
               :value="item.departmentId">
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
       </el-form>
       <span slot="footer" class="dialog-footer">

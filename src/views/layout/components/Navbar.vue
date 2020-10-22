@@ -74,9 +74,9 @@
           <el-form-item label="内容">
             <span style="margin-left:10px;margin-top:10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;height:150px;" v-html="noticeForm.content"></span>
           </el-form-item>
-          <el-form-item label="签名档">
+          <!-- <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button
