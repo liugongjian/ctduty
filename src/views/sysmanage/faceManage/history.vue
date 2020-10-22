@@ -217,7 +217,7 @@ export default {
     this.userId = Cookies.get('userId')
     this.value1 = [new Date(new Date().setDate(new Date().getDate() - 29)), new Date(new Date().setDate(new Date().getDate()))],
     this.timeChange()
-    this.value1 = ''
+    // this.value1 = ''
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
