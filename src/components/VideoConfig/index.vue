@@ -1,6 +1,6 @@
 <template>
-  <div class="config-box">
-      <div v-for="(algorithm,index) in algorithmListOrigin"  :key="algorithm.id" >
+  <div>
+      <!-- <div v-for="(algorithm,index) in algorithmListOrigin"  :key="algorithm.id" >
            <div class="aiConfigBox">
                 <div style="margin:10px;vertical-align:middle;">
                     <span><img src="../../assets/icon/normal.png" class="iconBox" /></span>
@@ -22,6 +22,33 @@
                 </div>
             </div>
 
+      </div> -->
+      <div class="test">
+          <div  class="config-box" v-for="(val,idx) in arr2" :key="idx">
+              <div  class="aiConfigBox" v-for="(item,index) in val" :key="item.id">
+                  <div style="margin:10px;vertical-align:middle;">
+                    <span><img src="../../assets/icon/normal.png" class="iconBox" /></span>
+                    <span  style="font-weight:bold">{{item.chinese}}</span>
+                    <span style="margin-right:10px;vertical-align:middle;text-align: right;">
+                        <el-checkbox v-model="item.isPick" @change="checked=>checkboxchange(checked,item)">
+                            <span v-if="item.isPick==false || item.isPick==null">未选择</span>
+                            <span v-else>已选择</span>
+                        </el-checkbox>
+                    </span>
+                </div>
+                <div style="margin: 20px 10px 20px 10px;">
+                    {{item.des}}
+                </div>
+                <div class="config-btn">
+                        <el-button size="small" disabled v-show=" item.isPick==true && item.tagConfig==false">无需配置</el-button>
+                        <el-button size="small" v-show="item.isPick==true && item.tagConfig==true && item.isPickBefore==false">待配置</el-button> 
+                        <el-button size="small" v-show="item.isPick==true && item.tagConfig==true && item.isPickBefore==true">已配置,修改</el-button>
+                </div>
+              </div>
+                <div class="configchangebox" v-show="configwith">
+                    12321321
+                </div>
+          </div>
       </div>
       <!-- <div class="aiConfigBox" >
           <div style="margin:10px;vertical-align:middle;">
@@ -46,6 +73,8 @@ import { createNamespacedHelpers } from 'vuex';
 export default {
     data() {
       return {
+        pickwithnoconfig:false,
+        arr2:[],
         algorithmList:[
             {
                 "id": 1,
@@ -155,6 +184,7 @@ export default {
            
            console.log("checkedstatus----->",bol,item)
         //    this.algorithmListOrigin=this.algorithmListOrigin.map(this.saveUpdatePick)
+        this.configwith = bol
        },
        saveUpdatePick(item){
            console.log("增加一个之前的选择值",item)
@@ -185,6 +215,16 @@ export default {
         console.log("xxxxx")
         this.algorithmListOrigin=this.algorithmListOrigin.map(this.saveUpdatePick)
         console.log("处理后的列表",this.algorithmListOrigin)
+
+        this.arr2 = this.algorithmListOrigin.reduce((prev,next,idx)=>{
+            const inner = prev[~~(idx/3)]
+            if(inner !== undefined){
+                inner.push(next)
+            }else{
+                prev.push([next])
+            }
+            return prev
+        },[[]])
 
     },
 
