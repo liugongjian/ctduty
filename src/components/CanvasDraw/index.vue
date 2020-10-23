@@ -1,23 +1,24 @@
 <template>
   <div class="box">
+      <h3 style="text-align:center;">{{currentPickAlgorithm.cnName}}配置</h3>
     <div class="buttoninfo">
-      <el-tooltip content="画直线">
+      <el-tooltip content="画直线" v-show="lineFlag">
         <el-button :disabled="type == 1" @click="choose(1)" class="buttonSize">
           <img src="../../assets/images/line.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
-      <el-tooltip content="画矩形">
+      <el-tooltip content="画矩形" v-show="areaFlag">
         <el-button :disabled="type == 2" @click="choose(2)" class="buttonSize">
           <img src="../../assets/images/rect.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
-      <el-tooltip content="画多边形" >
+      <el-tooltip content="画多边形" v-show="areaFlag">
         <el-button :disabled="type == 3" @click="choose(3)" class="buttonSize">
           <img src="../../assets/images/polygon.png" class="imageStyle" />
         </el-button>
       </el-tooltip>
 
-      <span v-show="type==2 || type==3" style="vertical-align:top" >
+      <span v-show="type!=1 && stepWallCheckShow" style="vertical-align:top" >
         请选择标记类型
         <el-select v-model="value">
           <el-option
@@ -61,16 +62,20 @@
             ></canvas>
     </div>
     <div v-if="tempChoosePoint.length>0" >
-      <h6>当前选中坐标: {{tempChoosePoint}}</h6>
+      <h6 style="margin-left:72px;">当前选中坐标: {{tempChoosePoint}}</h6>
     </div>
     <div class="configBtnBox">
-      <el-button class="configBtn" type="primary"  @click="saveAlgorithm()">保存</el-button>
+      <el-button class="configCancleBtn" plain @click="cancleAlgorithm()">取消</el-button>
+      <el-button  class="configBtn " type="success" plain @click="saveAlgorithm()">保存</el-button>
     </div>
   </div>
 </template>
 <script>
-
+import client from "@/api/vedioAlgo";
+import store from '@/store'
 export default {
+  
+  props:["currentPickDeviceId","currentPickAlgorithm"],
   data() {
     return {
       start_x: "",
@@ -95,11 +100,51 @@ export default {
       forbCount:1,
       lineCount:1,
       markName:"",
-      tempChoosePoint:[]
+      tempChoosePoint:[],
+      needConfigAlgorithms:[
+            {
+            name: "areaAlarm",
+            cnName: "区域画线告警",
+            message: "标记不正确,区域画线告警需要至少一个框,请重新标注",
+            need: "area"
+            },
+            {
+            name: "stepWallCheck",
+            cnName: "翻墙检测",
+            message: "标记不正确,翻墙检测需要至少一个框,请重新标注",
+            need: "area"
+            },
+            {
+            name: "peopleTraffic",
+            cnName: "人流识别",
+            message: "标记不正确,人流识别需要至少一条直线,请重新标注",
+            need: "line"
+            },
+            {
+            name: "plateTraffic",
+            cnName: "车流识别",
+            message: "标记不正确,车流识别需要至少一条直线,请重新标注",
+            need: "line"
+            }
+        ],
+      lineFlag:'',
+      areaFlag:'',
+      stepWallCheckShow:''
     };
   },
-//   props: ["deviceId","algorithm"],
   async mounted() {
+    //动态配置标注图标以及墙体、禁区框图
+    var algoName=this.currentPickAlgorithm.name
+    var algo=this.needConfigAlgorithms.filter(eachAlgo=>eachAlgo.name==algoName)
+    if(algo[0].name=="stepWallCheck"){
+        this.stepWallCheckShow = true
+    }
+    if(algo[0].need=="line"){
+        this.lineFlag = true
+    }else{
+        this.areaFlag = true
+    }
+
     // console.log("xxxx从父组件传值到子组件xxxx",this.deviceId,this.algorithm)
     //页面渲染之后
     const canvas = document.getElementById("myCanvas");
@@ -114,40 +159,60 @@ export default {
     // 设置垂直对齐方式
     this.ctx.textBaseline = "middle";
     this.ctx.fillText("图片正在加载中", 300, 200);
-    let { data: res } = await client.getImageByDeviceId(this.deviceId);
-    var imageValue = "data:image/png;base64," + res;
-
-// 创建对象
+    console.log("从父组件传过的值***********",this.currentPickDeviceId)
+    console.log("从父组件传值过来的一个算法item",this.currentPickAlgorithm)
+    // 创建对象
     var img = new Image();
     // 改变图片的src
-    img.src = imageValue;
+    // img.src ="http://host31.880508.xyz:10000/taskInst/snapshot/61010010001320014340";
+    // img.src ="/nvsapi/taskInst/snapshot/61010010001320014340";
+    img.src =require("../../assets/images/video.jpg");
+    if(this.currentPickAlgorithm.isPick && this.currentPickAlgorithm.isNeedConfig && this.currentPickAlgorithm.isConfigAlready){//只有当被选择、需要配置且已经配置,分两种情况
+        if(this.currentPickAlgorithm.isCommitStatus==true){//已经提交过了,获取历史坐标
+            var hisPoints=this.getAlgorithmHistoryAreas(this.currentPickAlgorithm)
+            this.historyPoints=this.formatHistoryPoints(hisPoints)
+            console.log("获取历史坐标集合",this.historyPoints)
+        }else{ //没有提交,获取对象中暂存的关于这个算法的坐标
+            var beforePoints=this.currentPickAlgorithm['areas']
+            if(beforePoints!=undefined){
+                var points=JSON.parse(JSON.stringify(beforePoints))
+                this.historyPoints=points
+                console.log("从对象中获取历史坐标集合",this.historyPoints)
+            }
+        }
+    }
+    if(this.historyPoints.length>0){
+        var lastHisArea=this.historyPoints[this.historyPoints.length-1];
+        var nameList=lastHisArea.name.split("-"); //字符分割
+        if(lastHisArea.name.startsWith("wall")){
+            this.wallCount=parseInt(nameList[1])+1
+        }else if(lastHisArea.name.startsWith("forb")){
+            this.forbCount=parseInt(nameList[1])+1
+        }else{
+            this.lineCount=parseInt(nameList[1])+1
+        }
+    }
+  
 
-    //调用这个摄像头的标注信息
-    this.historyPoints = [
-      {
-        type: "1",
-        name:"wall-1",
-        points: [
-          {
-            x: 67,
-            y: 75,
-          },
-          {
-            x: 67,
-            y: 207,
-          },
-          {
-            x: 716,
-            y: 207,
-          },
-          {
-            x: 716,
-            y: 75,
-          },
-        ],
-      },
-    ];
-
+    //状态是已配置修改 
+    // if(this.currentPickAlgorithm.isPick && this.currentPickAlgorithm.isNeedConfig && this.currentPickAlgorithm.isConfigAlready){//只有当被选择、需要配置且已经配置,分两种情况
+    //     if(this.currentPickAlgorithm.isCommitStatus==true){//已经提交过了,获取历史坐标
+    //         this.historyPoints=this.getAlgorithmHistoryAreas(this.currentPickAlgorithm)
+    //         console.log("获取历史坐标集合",this.historyPoints)
+    //     }else{ //没有提交,获取vuex中关于这个算法的坐标
+    //         // var points=store.state.algorithmInfo.allAlgorithmPoints[this.currentPickAlgorithm.name]
+    //         //  if(points != undefined || points==null){
+    //         //     this.historyPoints=points
+    //         //     console.log("从vuex中获取历史坐标集合",this.historyPoints)
+    //         // }
+    //         var beforePoints=this.currentPickAlgorithm['areas']
+    //         if(beforePoints!=undefined){
+    //             var points=JSON.parse(JSON.stringify(beforePoints))
+    //             this.historyPoints=points
+    //             console.log("从对象中获取历史坐标集合",this.historyPoints)
+    //         }
+    //     }
+    // }
     //加载完成执行
     var that = this;
     img.onload = loadImageSuccess;
@@ -156,8 +221,7 @@ export default {
       that.ratiox = img.width / canvas.width;
       that.ratioy = img.height / canvas.height;
       that.ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      var newHistoryPoints = that.formatHistoryPoints(that.historyPoints);
-      that.drawGraph(newHistoryPoints);
+      that.drawGraph(that.historyPoints);
     }
     this.image = img;
     //右键菜单禁用
@@ -167,8 +231,19 @@ export default {
   },
   created() {
     //页面没有渲染之前
+    console.log("从父组件传过来的deviceIdxxxxx========",this.currentPickDeviceId)
+    console.log("从父组件传值过来的一个算法item",this.currentPickAlgorithm)
+    // this.currentPickAlgorithm.isPick = false
+    console.log("从父组件传值过来的一个算法item改变之后",this.currentPickAlgorithm)
+
+
   },
   methods: {
+    async getAlgorithmHistoryAreas(item){
+      let {body: res} = await client.getHisInstAreas(item.id)
+      console.log("xxxxxxxxx调用接口获取的历史坐标接口xxxxx",res.data)
+      return res.data
+    },
     isEmpty(obj) {
       if (typeof obj == "undefined" || obj == null || obj == "") {
         return true;
@@ -190,7 +265,76 @@ export default {
     },
     saveAlgorithm(){
         console.log("save坐标----------------------")
+        var newPointsList=this.historyPoints.concat(this.areas)
+        console.log("历史坐标和新的坐标结合起来的点坐标集合",newPointsList)
+        var res=this.checkMarkCorrectAndSave(this.currentPickAlgorithm.name,newPointsList)
+        if(res!=null){
+            alert(res.message)
+        }else{
+            console.log("未提交的历史坐标aaaa",this.historyPoints)
+            console.log("未提交的当前的坐标",this.areas)
+            console.log("历史坐标和新的坐标结合起来的点坐标集合222222",newPointsList)
+            this.currentPickAlgorithm["areas"]=newPointsList
+            this.currentPickAlgorithm.isCommitStatus = false
+            this.currentPickAlgorithm.isConfigAlready = true
+            console.log("aijdjkmf",this.currentPickAlgorithm)
+            this.$emit('saveAlgorithm');
+        }
+
+
+        // var res=this.checkMarkCorrectAndSave(this.currentPickAlgorithm.name,this.areas)
+        // if(res!=null){
+        //     alert(res.message)
+        // }else{
+        //     if(!this.currentPickAlgorithm.isConfigAlready)
+        //     console.log("未提交的历史坐标aaaa",this.historyPoints)
+        //     console.log("未提交的当前的坐标",this.areas)
+        //     //将当前画的坐标保存到vuex中
+        //     console.log("之前vuex中的坐标")
+        //     store.state.algorithmInfo.allAlgorithmPoints[this.currentPickAlgorithm.name]=this.areas
+        //     this.currentPickAlgorithm["areas"]=this.areas
+        //     if(this.currentPickAlgorithm.isCommitStatus){
+        //         this.currentPickAlgorithm.isCommitStatus = false
+        //     }
+        //     this.currentPickAlgorithm.isConfigAlready = true
+        //     console.log("aijdjkmf",this.currentPickAlgorithm)
+        //     this.$emit('saveAlgorithm');
+        // }
+      
+
     },
+    cancleAlgorithm(){
+        this.$emit('saveAlgorithm');
+    },
+
+    checkMarkCorrectAndSave(algoName,areas){
+        var algo=this.needConfigAlgorithms.filter(eachAlgo=>eachAlgo.name==algoName)
+        var flag=false
+        if(areas.length>0){           
+            var lineCount=0
+            var areaCount=0
+            areas.forEach(eachArea=>{
+                var points=eachArea.points
+                if(points.length==2){//是直线
+                    lineCount=lineCount+1
+                }else{
+                    areaCount=areaCount+1
+                }
+            })
+             if(algo[0].need=="area"){
+               if(lineCount==0 && areaCount>=1){
+                   flag=true
+               }
+             }else{
+                if(lineCount>=1 && areaCount==0){
+                    flag=true
+                }
+             }
+        }
+        return flag ? null : algo[0]
+    },
+
+
     choose(type) {
       this.type = type;
     },
@@ -212,9 +356,16 @@ export default {
       this.clearCanvas();
     },
     revoke() {
-      if(this.areas.length==0)
-        return
-      var revokeArea=this.areas.pop();
+      if(this.areas.length==0){
+          //撤销历史记录的坐标
+          if(this.historyPoints.length>0){
+              var revokeArea=this.historyPoints.pop();
+          }else{
+              return
+          }
+      }else{
+        revokeArea=this.areas.pop();
+      }
       if(revokeArea.name.startsWith("wall")){
         this.wallCount--
       }else if(revokeArea.name.startsWith("forb")){
@@ -222,7 +373,6 @@ export default {
       }else{
         this.lineCount--
       }
-      this.$store.state.tempAllPoints.pop();
       this.drawAll();
     },
     //从后端获取的点坐标格式化
@@ -239,7 +389,7 @@ export default {
         });
         newPoints.push({
           type: v.type,
-          name: "his-"+v.name,
+          name: v.name,
           points: vchilds,
         });
       });
@@ -277,12 +427,6 @@ export default {
             name: this.markName,
             points: tempPoints,
           });
-          var newPoints = this.formatPoints(tempPoints);
-          this.$store.state.tempAllPoints.push({
-            type: this.value,
-            name: this.markName,
-            points: newPoints,
-          });
           this.points = [];
           this.resetTypeAndFlag();
           this.markName=""
@@ -315,13 +459,7 @@ export default {
               type: "",
               name: this.markName,
               points: tempPoints,
-            });
-            var newPoints = this.formatPoints(tempPoints);
-            this.$store.state.tempAllPoints.push({
-              type: this.value,
-              name: this.markName,
-              points: newPoints,
-            });
+            });            
             this.resetTypeAndFlag();
 
           } else if (this.type == 2) {
@@ -343,19 +481,11 @@ export default {
               x: this.start_x,
               y: this.end_y,
             });
-           
-           
             this.areas.push({
               type: this.value,
               name: this.markName,
               points: boxs,
-            });
-            var newPoints = this.formatPoints(boxs);
-            this.$store.state.tempAllPoints.push({
-              type: this.value,
-              name: this.markName,
-              points: newPoints,
-            });
+            });           
           }
           this.start_x = "";
           this.start_y = "";
@@ -386,10 +516,12 @@ export default {
       if(this.flag==false){
         //遍历所有的areas、historyPoints显示该图像的坐标点
         var chooseArea=this.getChooseArea(this.areas,event.offsetX,event.offsetY)
+        console.log("历史和当前坐标",this.historyPoints,this.areas)
+        console.log("查找当前是否有chooseArea",chooseArea)
         if(chooseArea==null){
           if(this.historyPoints.length>0){
-            var canvasHisAreas=this.formatHistoryPoints(this.historyPoints)
-            var chooseHisArea=this.getChooseArea(canvasHisAreas,event.offsetX,event.offsetY)
+            var chooseHisArea=this.getChooseArea(this.historyPoints,event.offsetX,event.offsetY)
+            console.log("查找历史是否有chooseArea",chooseArea)
             if(chooseHisArea!=null){
               this.tempChoosePoint=this.formatPoints(chooseHisArea.points)
             }else{
@@ -438,7 +570,8 @@ export default {
       return inside
     },
     //判断(x,y)是否在起点为startPoint终点为endPoint的直线上
-    inLine(startPoint,endPoint,x,y){
+    inLine(startPoint,endPoint,x,y){ 
+      console.log("点击的坐标",x,y)
       if(startPoint.x==endPoint.x){//垂直
         if(x==startPoint.x){
           return true
@@ -446,7 +579,7 @@ export default {
           return false
         }
       }else{
-        if(y==(endPoint.y-startPoint.y)/(endPoint.x-startPoint.x)*(x-startPoint.x)+startPoint.y){
+        if(y==parseInt((endPoint.y-startPoint.y)/(endPoint.x-startPoint.x)*(x-startPoint.x)+startPoint.y)){
           return true
         }else{
           return false
@@ -482,6 +615,7 @@ export default {
 
     },
     resetTypeAndFlag(){
+      console.log("进入到这个页面****************")
       this.type=""
       this.flag=false
     },
@@ -507,7 +641,7 @@ export default {
       this.ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height);
       this.ctx.lineWidth = 4;
       //绘制历史图片
-      this.drawGraph(this.formatHistoryPoints(this.historyPoints));
+      this.drawGraph(this.historyPoints);
       this.drawGraph(this.areas);
     },
     drawGraph(areas) {
@@ -752,7 +886,11 @@ canvas {
     height: 36px;
     .configBtn{
         position: absolute;
-        right: 350px;
+        right: 320px;
+    }
+    .configCancleBtn{
+        position: absolute;
+        right: 400px;
     }
 }
 

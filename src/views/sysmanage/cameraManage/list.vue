@@ -100,8 +100,8 @@
         </el-tag>
       </el-dialog>
 
-      <el-dialog :visible="configVisable" title="视频AI配置" width="920px" @close="configCloseDialog">
-        <VideoConfig v-if='configVisable'></VideoConfig>
+      <el-dialog :visible="configVisable"  title="视频AI配置" width="920px" @close="configCloseDialog">
+        <VideoConfig :deviceId='currentPickDeviceId' ></VideoConfig>
         <span slot="footer" class="dialog-footer">
           <el-button @click="applyAlgorithms(false)">取消</el-button>
           <el-button type="primary"  @click="applyAlgorithms(true)">确定</el-button>
@@ -135,6 +135,7 @@ export default {
   data() {
     return {
       algorithmValue: null,
+      timer:"11",
       tags: [],
       dialogForm: {
         address: '',
@@ -220,7 +221,8 @@ export default {
       taskName: '',
       showDialogId: '',
       isDelOperat: false,
-      isApplySuccessArr: []
+      isApplySuccessArr: [],
+      currentPickDeviceId:''
     }
   },
   watch: {
@@ -428,6 +430,9 @@ export default {
     },
     configDialog(v){
       console.log("弹框显示绑定的设备id",v)
+      this.currentPickDeviceId=v
+      console.log("弹框显示绑定的设备id---------",v,this.currentPickDeviceId)
+      this.timer=new Date().getTime()
       this.configVisable = true
     },
     configCloseDialog(){

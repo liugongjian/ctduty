@@ -6,7 +6,7 @@
           <div class="aiConfigBox" v-for="(item, index) in val" :key="item.id">
             <div style="margin: 10px; vertical-align: middle">
               <span>
-                  <img :src="getImgUrl(item.cnName)" class="iconBox"/>
+                <img :src="getImgUrl(item.cnName)" class="iconBox" />
               </span>
               <span style="font-weight: bold">{{ item.cnName }}</span>
               <span
@@ -44,7 +44,7 @@
                 v-show="
                   item.isPick == true &&
                   item.isNeedConfig == true &&
-                  item.isConfigAreadly == false
+                  item.isConfigAlready == false
                 "
                 @click="operateCanvas(item, idx)"
                 >待配置</el-button
@@ -54,7 +54,7 @@
                 v-show="
                   item.isPick == true &&
                   item.isNeedConfig == true &&
-                  item.isConfigAreadly == true
+                  item.isConfigAlready == true
                 "
                 @click="operateCanvas(item, idx)"
                 >已配置,修改</el-button
@@ -62,8 +62,8 @@
             </div>
           </div>
         </div>
-        <div class="configchangebox" v-show="currentNum == idx">
-          <CanvasDraw></CanvasDraw>
+        <div class="configchangebox" v-if="currentNum == idx" :key="timer">
+          <CanvasDraw :currentPickDeviceId='deviceId' :currentPickAlgorithm='currentItem' v-if="currentNum == idx" @saveAlgorithm="closeCanvas"></CanvasDraw>
         </div>
       </div>
     </div>
@@ -73,122 +73,57 @@
 <script>
 import { createNamespacedHelpers } from "vuex";
 import CanvasDraw from "@/components/CanvasDraw";
+import client from "@/api/vedioAlgo";
+import {getInstanceList} from '@/api/vedioAlgoNew'
+import store from '@/store'
 export default {
   components: {
     CanvasDraw,
   },
+  props:["deviceId"],
   data() {
     return {
-      pickwithnoconfig: false,
+      currentItem:null,
       arr2: [],
+      timer:'',
       currentNum: null,
-      algorithmListOrigin: [
-        {
-          id: 1,
-          name: "carPersonCheck",
-          cnName: "值更检测",
-          description: "可识别人、机动车辆、非机动车辆",
-          isNeedConfig: false,
-          isPick: true,
-        },
-        {
-          id: 2,
-          name: "faceRecognize",
-          cnName: "人脸识别",
-          description: "可识别人脸",
-          isNeedConfig: false,
-          isPick: false,
-        },
-        {
-          id: 3,
-          name: "plateRecognize",
-          cnName: "车牌识别",
-          description: "可识别车辆牌照，对黑名单、白名单车辆出现时，进行预警",
-          isNeedConfig: false,
-          isPick: false,
-        },
-        {
-          id: 4,
-          name: "faceCompare",
-          cnName: "人脸比对",
-          description: "对黑名单、白名单人员出现时，进行预警",
-          isNeedConfig: false,
-          isPick: false,
-        },
-        {
-          id: 5,
-          name: "faceAttribute",
-          cnName: "人脸属性",
-          description: "可识别性别、年龄以及表情",
-          isNeedConfig: false,
-          isPick: false,
-        },
-        {
-          id: 6,
-          name: "areaAlarm",
-          cnName: "区域画线告警",
-          description: "通过在地图上圈定边界，发现有人入侵时进行预警",
-          isNeedConfig: true,
-          isPick: true,
-        },
-        {
-          id: 7,
-          name: "stepWallCheck",
-          cnName: "翻墙检测",
-          description: "通过在地图上圈定墙体及禁区,发现翻墙行为时进行预警",
-          isNeedConfig: true,
-          isPick: false,
-        },
-        {
-          id: 8,
-          name: "peopleTraffic",
-          cnName: "人流识别",
-          description: "可识别人流,人流较大时进行预警",
-          isNeedConfig: true,
-          isPick: false,
-        },
-        {
-          id: 9,
-          name: "plateTraffic",
-          cnName: "车流识别",
-          description: "可识别车流，人流较大时进行预警",
-          isNeedConfig: true,
-          isPick: false,
-        },
-        {
-          id: 10,
-          name: "safetyHat",
-          cnName: "安全帽识别",
-          description: "可识别安全帽时，对未带安全帽者预警",
-          isNeedConfig: false,
-          isPick: false,
-        },
-        {
-          id: 11,
-          name: "workingClothes",
-          cnName: "工服识别",
-          description: "可识别工服，对未穿工服者进行预警",
-          isNeedConfig: false,
-          isPick: false,
-        },
-      ],
+      currentId: null,
+      algorithmListOrigin: [],
+      algorithmListOriginCopy:[] //保存原始的一份数据(一直不变)
     };
   },
   methods: {
-    getImgUrl(name){
-        return require("../../assets/icon/"+name+".png")
+    getImgUrl(name) {
+      return require("../../assets/icon/" + name + ".png");
     },
     checkboxchange(bol, item, index, idx) {
       console.log("checkedstatus----->", bol, item, index, idx);
+      console.log("修改之后的数据",item.beforePickStatus,bol)
+      item.beforePickStatus = bol
+
+      //刚开始选择后来不选择,由true->false的转变
+    //   if(item.isConfigAlready && !bol ){
+    //       console.log("xxxxsdcf",store)
+    //       store.state.algorithmInfo.deletedAlgorithm.push({
+    //           "action":"delete",
+    //           "taskName":item.name
+    //       })
+    //       console.log("xxxxxsjifxxxxx",store.state.algorithmInfo.deletedAlgorithm)
+    //   }
+    //    console.log("xxxxxsjifxxffffxxx",store.state.algorithmInfo.deletedAlgorithm)
       //    this.algorithmListOrigin=this.algorithmListOrigin.map(this.saveUpdatePick)
       //    this.configwith = bol
     },
     saveUpdatePick(item) {
       console.log("增加一个字段表示是否已经配置", item);
       if (item.isPick) {
-        item["isConfigAreadly"] = true;
+        item["isConfigAlready"] = true;
+        item["beforePickStatus"]= true;
+        item["isCommitStatus"]= true;
       } else {
-        item["isConfigAreadly"] = false;
+        item["isConfigAlready"] = false;
+        item["beforePickStatus"]= false;
+        item["isCommitStatus"]= false;
       }
       return item;
     },
@@ -196,41 +131,100 @@ export default {
       console.log("进入到这个方法进行操作画布", item, idx);
       console.log("第一步根据设备id获取截图");
       console.log("获取之前的配置");
-      this.currentNum = idx;
+    //   if(item.isPick && item.isNeedConfig && item.isConfigAlready){//只有当被选择、需要配置且已经配置,分两种情况
+    //         if(item.isCommitStatus==true){//已经提交过了,获取历史坐标
+    //             var hisPoints=this.getAlgorithmHistoryAreas(item)
+    //             console.log("获取历史坐标集合",hisPoints)
+    //             item["areas"]=hisPoints
+    //         }
+    //   }
+      this.currentItem=item
+      this.currentNum = idx
+      this.currentId=item.id
+      this.timer=new Date().getTime()
+      console.log("xxxavcdddd",this.currentItem,this.currentId)
     },
+    async getAlgorithmHistoryAreas(item){
+      let {body: res} = await client.getHisInstAreas(item.id)
+      console.log("xxxxxxxxx调用接口获取的历史坐标接口xxxxx",res.data)
+      return res.data
+    },
+    closeCanvas(){
+        console.log("监听到子组件发布的saveAlgorithm事件")
+        this.currentNum = -1
+        console.log("操作之后的数据内容",this.algorithmListOrigin)
+    },
+    async getAlgorithmList(deviceId){
+      let {body: res} = await client.getInstanceList(deviceId)
+      console.log("ssssss-----",res.data)
+      this.algorithmListOrigin=res.data
+      this.algorithmListOriginCopy=JSON.parse(JSON.stringify(this.algorithmListOrigin))
+      console.log("赋值acvvv-------------",this.algorithmListOrigin)
+      this.algorithmListOrigin = this.algorithmListOrigin.map(this.saveUpdatePick);
+      this.arr2=this.changeToTwoDiArray(this.algorithmListOrigin,3)
+
+    },
+
+    getAlgorithmListNew(){
+        getInstanceList().then(res => {
+            if (res.code === 0) {
+                this.algorithmListOrigin = res.body.data
+                console.log("赋值-------------",this.algorithmListOrigin)
+                this.algorithmListOrigin = this.algorithmListOrigin.map(this.saveUpdatePick);
+                console.log("处理后的列表", this.algorithmListOrigin);
+                this.arr2 = this.algorithmListOrigin.reduce(
+                (prev, next, idx) => {
+                    const inner = prev[~~(idx / 3)];
+                    if (inner !== undefined) {
+                    inner.push(next);
+                    } else {
+                    prev.push([next]);
+                    }
+                    return prev;
+                },
+                [[]]
+                );
+            }
+        })
+    },
+    changeToTwoDiArray(dataList,num){
+        return dataList.reduce(
+                    (prev, next, idx) => {
+                        const inner = prev[~~(idx / num)];
+                        if (inner !== undefined) {
+                        inner.push(next);
+                        } else {
+                        prev.push([next]);
+                        }
+                        return prev;
+                    },
+                    [[]]
+                );
+    }
+
+
   },
   created() {
-    //页面没有渲染之前
-    //第一步调用后端接口获取已经选择的算法列表this.algorithmList
-    // for(var i=0;i<this.algorithmListOrigin.length;i++){
-    //     var eachAlgo=this.algorithmListOrigin[i]
-    //     console.log("xxxxxx",eachAlgo)
-    //     var filterItems=this.algorithmList.filter(item=>item.name==eachAlgo.name)
-    //     if(filterItems.length>0 && filterItems[0].isPick){//选择了这个算法
-    //         eachAlgo['isPick']=true
-    //     }
-    // }
-    // // ajax.then(res => this.algorithmListOrigin = res.)
-    // console.log("处理后的列表",this.algorithmListOrigin)
-    //保存之前的选择
-    console.log("xxxxx");
-    this.algorithmListOrigin = this.algorithmListOrigin.map(
-      this.saveUpdatePick
-    );
-    console.log("处理后的列表", this.algorithmListOrigin);
+    console.log("xxxxx从父组件传过来的值",this.deviceId);
+    this.algorithmListOrigin = this.getAlgorithmList(this.deviceId)
+    // await this.getAlgorithmListNew()
+    // this.algorithmListOrigin = this.algorithmListOrigin.map(
+    //   this.saveUpdatePick
+    // );
+    // console.log("处理后的列表", this.algorithmListOrigin);
 
-    this.arr2 = this.algorithmListOrigin.reduce(
-      (prev, next, idx) => {
-        const inner = prev[~~(idx / 3)];
-        if (inner !== undefined) {
-          inner.push(next);
-        } else {
-          prev.push([next]);
-        }
-        return prev;
-      },
-      [[]]
-    );
+    // this.arr2 = this.algorithmListOrigin.reduce(
+    //   (prev, next, idx) => {
+    //     const inner = prev[~~(idx / 3)];
+    //     if (inner !== undefined) {
+    //       inner.push(next);
+    //     } else {
+    //       prev.push([next]);
+    //     }
+    //     return prev;
+    //   },
+    //   [[]]
+    // );
   },
 };
 </script>
@@ -278,5 +272,4 @@ export default {
 // /deep/ *, *:after,*:before{
 //     box-sizing: border-box !important;
 // }
-
 </style>
