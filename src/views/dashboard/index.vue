@@ -643,6 +643,7 @@ unHandledCount: 3750 */
             opacity: 0.5, // 波浪的透明度
             shadowBlur: 2 // 波浪的阴影范围
           },
+          // eslint-disable-next-line no-dupe-keys
           backgroundStyle: {
             color: '#fff', // 水球未到的背景颜色
             opacity: 0.5
