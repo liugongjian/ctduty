@@ -403,7 +403,6 @@ unHandledCount: 3750 */
               show: true,
               textStyle: {
                 show: true,
-                fontSize: '12px',
                 color: '#74b9ff'
               }
             }
@@ -626,7 +625,7 @@ unHandledCount: 3750 */
           //  shape: 'roundRect',
           phase: 0,
           direction: 'right',
-          data: [0.5, 0.5, 0.5],
+          data: [rate / 100, rate / 100, rate / 100],
           backgroundStyle: {
             borderColor: 'rgba(0,150,255,0.4)', // 背景内边框
             color: 'rgba(0,150,255,0.4)' // 背景颜色
