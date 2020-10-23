@@ -382,7 +382,7 @@ unHandledCount: 3750 */
         },
         geo: {
           map: '延安',
-          roam: true,
+          roam: false,
           aspectScale: 1,
           tooltip: {
             triggerOn: 'mousemove',
@@ -403,6 +403,7 @@ unHandledCount: 3750 */
               show: true,
               textStyle: {
                 show: true,
+                fontSize: '12px',
                 color: '#74b9ff'
               }
             }

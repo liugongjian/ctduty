@@ -98,7 +98,13 @@
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
               <el-table-column :label="'图片'" min-width="20%">
                 <template slot-scope="scope">
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)" />
+                  <el-popover
+                    placement="left"
+                    trigger="hover"
+                  >
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
+                    <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
+                  </el-popover>
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理人'" min-width="5%" prop="handler.username" width="100">
@@ -598,6 +604,18 @@ export default {
 </script>
 
 <style lang='scss'>
+  td {
+    padding:0 !important;
+  }
+ .image {
+    width: 100%;
+    max-width: 250px;
+    height:40px;
+    img{
+        object-fit: contain;//cover;
+          background-color: rgb(245, 247, 250);
+    }
+  }
  .title {
     width: 100%;
     height: 50px;
