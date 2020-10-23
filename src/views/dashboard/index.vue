@@ -371,8 +371,12 @@ export default {
         },
         geo: {
           map: '渭南',
-          roam: false,
+          roam: true,
           aspectScale: 1,
+          scaleLimit: {
+            min: 1,
+            max: 2
+          },
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
