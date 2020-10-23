@@ -3,41 +3,12 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <!--  <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
+          <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
+          <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
+            <el-option v-for="item in taskList" :key="item.id" :label="item.cnName" :value="item.id"></el-option>
+          </el-select>
+          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
           <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
-              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width:240px;" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button
-                type="primary"
-                @click="dialogConfirm('dialogForm')"
-              >确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
-            </div>
-          </el-dialog> -->
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -51,7 +22,7 @@
           width="55">
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" width="100px" prop="online">
           <template slot-scope="scope">
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
@@ -69,9 +40,10 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :label="'操作'" width="150px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -92,6 +64,16 @@
           </el-form-item>
           <el-form-item label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
+          <!-- <el-form-item label="算法：">
+            <el-tag
+              v-for="tag in tags"
+              :key="tag.name"
+              :type="tag.type"
+              closable
+              @close="algTagClose(tag)">
+              {{ tag.name }}
+            </el-tag>
+          </el-form-item> -->
           <el-form-item label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
           </el-form-item>
         </el-form>
@@ -102,6 +84,16 @@
           >确 定</el-button>
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
+      </el-dialog>
+      <el-dialog :visible="algVisable" title="已应用算法" width="520px" @close="algCloseDialog">
+        <el-tag
+          v-for="tag in tags"
+          :key="tag.name"
+          :type="tag.type"
+          closable
+          @close="algTagClose(tag)">
+          {{ tag.name }}
+        </el-tag>
       </el-dialog>
       <pagination
         v-show="total>0"
@@ -121,13 +113,15 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList, editCamera, addCamera, delCamera
+  fetchAllCameraList, editCamera, addCamera, delCamera, taskList, addTask, getTask, delTask
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
   components: { Pagination },
   data() {
     return {
+      algorithmValue: null,
+      tags: [],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -205,7 +199,13 @@ export default {
         creatorId: ''
       },
       userList: [],
-      creatorName: ''
+      creatorName: '',
+      algVisable: false,
+      taskList: [],
+      taskName: '',
+      showDialogId: '',
+      isDelOperat: false,
+      isApplySuccessArr: []
     }
   },
   watch: {
@@ -216,10 +216,91 @@ export default {
   },
   async created() {
     await Message.closeAll()
+    await this.getTaskList()
     await this.getUserList()
     await this.getList()
   },
   methods: {
+    getTaskList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 9999999
+        },
+        params: {}
+      }
+      taskList(query).then(res => {
+        if (res.code === 0) {
+          this.taskList = res.body.data
+          this.algorithmValue = res.body.data[0].id
+          this.taskName = res.body.data[0].name
+        }
+      })
+    },
+    algListChange(v) {
+      this.algorithmValue = v
+      this.taskList.map(item => {
+        if (item.id === v) {
+          this.taskName = item.name
+        }
+      })
+    },
+    async apply() {
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择摄像头!',
+          type: 'warning'
+        })
+        return
+      }
+      await this.delIDArr.forEach((item, index) => {
+        const query = {
+          deviceId: item,
+          taskId: this.algorithmValue,
+          taskName: this.taskName
+        }
+        addTask(query).then(res => {
+          if (res.code === 0) {
+            if (index === this.delIDArr.length - 1) {
+              this.$notify({
+                title: '成功',
+                message: '算法应用成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          }
+        })
+      })
+    },
+    algTagClose(tag) {
+      this.algVisable = false
+      setTimeout(() => {
+        this.$confirm('此操作将移出该算法, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delTask(tag.id).then(res => {
+            if (res.code === 0) {
+              this.$notify({
+                title: '成功',
+                message: '算法移除成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.isDelOperat = true
+              this.getAloneTask(this.showDialogId)
+            }
+          })
+        }).catch(() => {
+          setTimeout(() => {
+            this.algVisable = true
+          }, 200)
+        })
+      }, 200)
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -229,9 +310,9 @@ export default {
         },
         params: {}
       }
-      fetchUserList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
+      fetchUserList(query).then(res => {
+        if (res.code !== 0) return
+        this.userList = res.body.data
         this.userList.forEach(item => {
           if (item.id === +this.userId) {
             this.creatorName = item.name
@@ -242,7 +323,7 @@ export default {
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择摄像头!',
           type: 'warning'
         })
       } else {
@@ -252,7 +333,16 @@ export default {
           type: 'warning'
         }).then(() => {
           const params = [...this.delIDArr]
-          delCamera(params).then(response => {
+          delCamera(params).then(res => {
+            if (res.code !== 0) {
+              return
+            }
+            this.$notify({
+              title: '成功',
+              message: '批量删除成功',
+              type: 'success',
+              duration: 2000
+            })
             this.getList()
             this.delIDArr = []
           }).catch(() => {
@@ -268,7 +358,16 @@ export default {
         type: 'warning'
       }).then(() => {
         const params = [d]
-        delCamera(params).then(response => {
+        delCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getList()
           this.delIDArr = []
         })
@@ -276,6 +375,43 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+    },
+    getAloneTask(id) {
+      getTask(id).then(res => {
+        if (res.code === 0) {
+          if (res.body) {
+            this.tags = res.body.data.map(item => {
+              const types = ['', 'success', 'info', 'warning', 'danger']
+              var index = Math.floor((Math.random() * types.length))
+              return {
+                name: item.taskCnName,
+                id: item.id,
+                type: types[index]
+              }
+            })
+            setTimeout(() => {
+              this.algVisable = true
+            }, 50)
+          } else {
+            this.tags = []
+            if (!this.isDelOperat) {
+              this.$message({
+                message: '此摄像头暂无已应用算法',
+                type: 'warning'
+              })
+            }
+            this.algVisable = false
+          }
+        }
+      })
+    },
+    algDialog(id) {
+      this.showDialogId = id
+      this.isDelOperat = false
+      this.getAloneTask(id)
+    },
+    algCloseDialog() {
+      this.algVisable = false
     },
     editDialog(v) {
       this.editForm.id = v.id
@@ -301,7 +437,10 @@ export default {
         name: this.editForm.name,
         creatorId: this.editForm.creatorId
       }]
-      editCamera(params).then(response => {
+      editCamera(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.$notify({
           title: '成功',
           message: '编辑成功',
@@ -369,6 +508,9 @@ export default {
         }
       }
       fetchAllCameraList(params).then(res => {
+        if (res.code !== 0) {
+          return
+        }
         this.tableData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
@@ -390,6 +532,9 @@ export default {
             creatorId: this.userId }
         ]
         addCamera(params).then(res => {
+          if (res.code !== 0) {
+            return
+          }
           this.dialogForm = {
             address: '',
             creatorId: '',
@@ -432,6 +577,10 @@ export default {
 }
 .app-main {
   padding-top: 50px;
+}
+.el-tag {
+  margin-right: 8px;
+  margin-bottom: 5px;
 }
 </style>
 
