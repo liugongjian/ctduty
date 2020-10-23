@@ -282,13 +282,22 @@ unHandledCount: 3750 */
           }) */
           this.hotTag = [
             { value: 3333, name: '宝塔区' },
-            { value: 2222, name: '安塞区' },
-            { value: 2568, name: '黄陵县' }
+            { value: 2222, name: '安塞区' }
           ]
-          this.mapShowData.push({
+          /* this.mapShowData.push({
             name: item.address, value: item.alertCount, latitude: item.latitude,
             longitude: item.longitude, handledCount: item.handledCount, unHandledCount: item.unHandledCount
-          })
+          }) */
+          this.mapShowData = [
+            {
+              name: '宝塔区', value: 2000, latitude: 36.596291,
+              longitude: 109.55069, handledCount: 1000, unHandledCount: 1000
+            },
+            {
+              name: '安塞区', value: 999, latitude: 36.86441,
+              longitude: 109.225341, handledCount: 499, unHandledCount: 500
+            }
+          ]
         })
         this.getMap(this.mapShowData)
         res.body.data.alertStatisByTypeList.forEach(item => {
