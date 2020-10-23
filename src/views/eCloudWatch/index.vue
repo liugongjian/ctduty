@@ -433,8 +433,45 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
-              this.getalarmList()
-              this.showDialog(response.body.data[0], true)
+              // this.getalarmList()
+              const params = {
+                cascade: true,
+                page: {
+                  index: 1,
+                  size: 300
+                },
+                params: [
+                  {
+                    field: 'create_time',
+                    operator: 'BETWEEN',
+                    value: { start: moment(Date.now()).format(
+                      'YYYY-MM-DD 00:00:00'
+                    ),
+                    end: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                  }
+                ],
+                sorts: [
+                  {
+                    field: 'create_time',
+                    type: 'desc'
+                  }
+                ]
+              }
+              fetchalarmList(params).then(response => {
+                if (response.body.data.length) {
+                  this.getPanelList()
+                  this.yData = []
+                  this.xData = []
+                  response.body.data.forEach(item => {
+                    if (item.handlerId !== null) {
+                      this.yData.push(item)
+                    } else {
+                      this.xData.push(item)
+                    }
+                  })
+                }
+              })
             }
           })
         }, 5000)
@@ -446,8 +483,8 @@ export default {
     },
     async xData(v) {
       const that = this
-      const firXdataCameraID = v[0].camera.id
-      const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
+      const firXdataCameraID = v[0].cameraId
+      const allXDataCameraIDEQU = v.every(item => item.cameraId === firXdataCameraID)
       if (allXDataCameraIDEQU === false) {
         that.allXDataCameraIDEQU = allXDataCameraIDEQU
       } else {
@@ -460,14 +497,14 @@ export default {
       if (that.allXDataCameraIDEQU === false) {
         that.cameraAlarmObj = {}
         v.forEach((item, index) => {
-          if (item.camera.id in that.cameraAlarmObj) {
-            that.cameraAlarmObj[item.camera.id] = that.cameraAlarmObj[item.camera.id] + 1
+          if (item.cameraId in that.cameraAlarmObj) {
+            that.cameraAlarmObj[item.cameraId] = that.cameraAlarmObj[item.cameraId] + 1
           } else {
-            that.cameraAlarmObj[item.camera.id] = 1
+            that.cameraAlarmObj[item.cameraId] = 1
           }
           setTimeout(() => {
             [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
-              if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
+              if (item.cameraId === JSON.parse(dom.attributes[1].nodeValue).id) {
                 window.clearInterval(that.timer6)
                 that.timers[i] = setInterval(() => {
                   dom.classList.add('markerClickImg')
@@ -591,6 +628,8 @@ export default {
     },
     allTab() {
       this.showTabValue = 'all'
+      this.getalarmList()
+      this.isDisableAllAlarmBtn = true
     },
     yTab() {
       this.showTabValue = 'y'
