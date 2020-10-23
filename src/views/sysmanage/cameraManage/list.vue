@@ -4,11 +4,13 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
+          <!-- <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
             <el-option v-for="item in taskList" :key="item.id" :label="item.cnName" :value="item.id"></el-option>
           </el-select>
-          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button> -->
+          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
+          <el-button type="warning" @click="batchesDel">{{ '批量删除' }}</el-button>
+
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -40,11 +42,13 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :label="'操作'" width="150px">
+        <el-table-column :label="'操作'" width="200px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="configDialog(scope.row.id)">{{ '配置' }}</el-button>
             <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -95,6 +99,15 @@
           {{ tag.name }}
         </el-tag>
       </el-dialog>
+
+      <el-dialog :visible="configVisable" title="视频AI配置" width="920px" @close="configCloseDialog">
+        <VideoConfig v-if='configVisable'></VideoConfig>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyAlgorithms(false)">取消</el-button>
+          <el-button type="primary"  @click="applyAlgorithms(true)">确定</el-button>
+        </span>
+      </el-dialog>
+
       <pagination
         v-show="total>0"
         :total="total"
@@ -110,6 +123,7 @@
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
+import VideoConfig from '@/components/VideoConfig'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
@@ -117,7 +131,7 @@ import {
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
-  components: { Pagination },
+  components: { Pagination,VideoConfig },
   data() {
     return {
       algorithmValue: null,
@@ -201,6 +215,7 @@ export default {
       userList: [],
       creatorName: '',
       algVisable: false,
+      configVisable:false,
       taskList: [],
       taskName: '',
       showDialogId: '',
@@ -221,6 +236,12 @@ export default {
     await this.getList()
   },
   methods: {
+    applyAlgorithms(flag){
+        this.configVisable = false;
+        if(flag){
+          console.log("调用后端接口保存标注坐标列表")
+        }
+    },
     getTaskList() {
       const query = {
         cascade: true,
@@ -404,6 +425,13 @@ export default {
           }
         }
       })
+    },
+    configDialog(v){
+      console.log("弹框显示绑定的设备id",v)
+      this.configVisable = true
+    },
+    configCloseDialog(){
+      this.configVisable = false
     },
     algDialog(id) {
       this.showDialogId = id
