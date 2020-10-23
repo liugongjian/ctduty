@@ -98,7 +98,7 @@
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
               <el-table-column :label="'图片'" min-width="20%">
                 <template slot-scope="scope">
-                  <el-image :src="scope.row.imageCut" class="image" @click="openBig(scope.row.imageCut)" />
+                  <el-image :src="scope.row.imageCompress" class="image" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'处理人'" min-width="5%" prop="handler.username" width="100">
