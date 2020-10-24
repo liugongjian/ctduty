@@ -6,7 +6,7 @@
           <div class="aiConfigBox" v-for="(item, index) in val" :key="item.id">
             <div style="margin: 10px; vertical-align: middle">
               <span>
-                <img :src="getImgUrl(item.cnName)" class="iconBox" />
+                <img :src="getImgUrl(item.name)" class="iconBox" />
               </span>
               <span style="font-weight: bold">{{ item.cnName }}</span>
               <span
@@ -80,11 +80,11 @@ export default {
   components: {
     CanvasDraw,
   },
-  props:["deviceId"],
+  props:["deviceId","arr2"],
   data() {
     return {
       currentItem:null,
-      arr2: [],
+      // arr2: [],
       timer:'',
       currentNum: null,
       currentId: null,
@@ -162,7 +162,6 @@ export default {
       console.log("赋值acvvv-------------",this.algorithmListOrigin)
       this.algorithmListOrigin = this.algorithmListOrigin.map(this.saveUpdatePick);
       this.arr2=this.changeToTwoDiArray(this.algorithmListOrigin,3)
-
     },
 
     getAlgorithmListNew(){
@@ -205,8 +204,8 @@ export default {
 
   },
   created() {
-    console.log("xxxxx从父组件传过来的值",this.deviceId);
-    this.algorithmListOrigin = this.getAlgorithmList(this.deviceId)
+    console.log("xxxxx从父组件传过来的值",this.deviceId,this.arr2);
+    // this.algorithmListOrigin = this.getAlgorithmList(this.deviceId)
     // await this.getAlgorithmListNew()
     // this.algorithmListOrigin = this.algorithmListOrigin.map(
     //   this.saveUpdatePick
