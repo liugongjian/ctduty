@@ -73,7 +73,7 @@
         <el-table-column :label="'操作'" width="140px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-            <el-button type="text" size="small" @click="configDialog(scope.row.id)">{{ '配置' }}</el-button>
+            <el-button type="text" size="small" @click="configDialog(scope.row.id)" :disabled="(scope.row.online==1)">{{ '配置' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>

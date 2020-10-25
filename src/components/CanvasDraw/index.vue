@@ -200,10 +200,18 @@ export default {
       }
       //加载完成执行
       console.log("判断是否进行到这一步+2")
-
+      let res= await client.getImageByDeviceId(this.currentPickDeviceId);
+      console.log("获取图片接口返回-----",res)
+      if(res.code===50000){
+        alert(res.message)
+        this.cancleAlgorithm()
+        return
+      }
+      var imageValue = "data:image/png;base64," + res.body.data;
       var that = this;
       // img.src =require("../../assets/images/video.jpg");
-      img.src ="/nvsapi/taskInst/snapshot/"+this.currentPickDeviceId;
+      // img.src ="/nvsapi/taskInst/snapshot/"+this.currentPickDeviceId;
+      img.src=imageValue
       console.log("xxx查看图片xxx",img)
       img.onload = loadImageSuccess;
       function loadImageSuccess() {
