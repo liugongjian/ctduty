@@ -69,9 +69,11 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <!-- <el-table-column :show-overflow-tooltip="true" :label="'操作'"> -->
+        <el-table-column :label="'操作'" width="140px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="configDialog(scope.row.id)">{{ '配置' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -103,6 +105,16 @@
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog :visible="configVisable"  :title='configName' width="920px" @close="configCloseDialog" center>
+        <VideoConfig :deviceId='currentPickDeviceId' :arr2='algorithmListTwoDim' v-if="configVisable" @canvasShow="setCanvasShow"></VideoConfig>
+        <!-- <VideoConfig :deviceId='currentPickDeviceId' v-if="configVisable" :arr2='algorithmListTwoDim'></VideoConfig> -->
+        <span slot="footer" class="dialog-footer" v-show="!canvasShowStatus">
+          <el-button @click="applyAlgorithms(false)">取消</el-button>
+          <el-button type="primary"  @click="applyAlgorithms(true)">确定</el-button>
+        </span>
+      </el-dialog>
+
       <pagination
         v-show="total>0"
         :total="total"
@@ -124,8 +136,11 @@ import {
   fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
+import VideoConfig from '@/components/VideoConfig'
+import client from "@/api/vedioAlgo";
+
 export default {
-  components: { Pagination },
+  components: { Pagination,VideoConfig },
   data() {
     return {
       dialogForm: {
@@ -205,7 +220,15 @@ export default {
         creatorId: ''
       },
       userList: [],
-      creatorName: ''
+      creatorName: '',
+      configVisable:false,
+      currentPickDeviceId:'',
+      algorithmList: [],
+      algorithmListCopy:[],
+      algorithmListTwoDim:[],
+      timer:"11",
+      canvasShowStatus:false,
+      configName:"视频AI配置"
     }
   },
   watch: {
@@ -220,6 +243,159 @@ export default {
     await this.getList()
   },
   methods: {
+    setCanvasShow(payload){
+      console.log("config传过的canvasShowStatus状态",payload)
+      this.canvasShowStatus=payload
+      if(payload==true){
+        this.configName=""
+      }else{
+        this.configName="视频AI配置"
+      }
+    },
+    async getAlgorithmList(deviceId){
+      let {body: res} = await client.getInstanceList(deviceId)
+      console.log("ssssss-----",res.data)
+      this.algorithmList=res.data
+      this.algorithmListCopy=JSON.parse(JSON.stringify(this.algorithmList))
+      console.log("赋值acvvv-------------",this.algorithmListCopy)
+      this.algorithmList = this.algorithmList.map(this.saveUpdatePick);
+      this.algorithmListTwoDim=this.changeToTwoDiArray(this.algorithmList,3)
+    },
+    changeToTwoDiArray(dataList,num){
+        return dataList.reduce(
+                    (prev, next, idx) => {
+                        const inner = prev[~~(idx / num)];
+                        if (inner !== undefined) {
+                        inner.push(next);
+                        } else {
+                        prev.push([next]);
+                        }
+                        return prev;
+                    },
+                    [[]]
+                );
+    },
+    saveUpdatePick(item) {
+      console.log("增加一个字段表示是否已经配置", item);
+      if (item.isPick) {
+        item["isConfigAlready"] = true;
+        item["beforePickStatus"]= true;
+        item["isCommitStatus"]= true;
+        item["originalPickStatus"]= true;
+
+      } else {
+        item["isConfigAlready"] = false;
+        item["beforePickStatus"]= false;
+        item["isCommitStatus"]= false;
+        item["originalPickStatus"]= false;
+      }
+      return item;
+    },
+    applyAlgorithms(flag){
+        if(flag){
+          console.log("调用后端接口保存标注坐标列表")
+          //先组装参数，包含删除、增加、修改
+          var allDatas=[]
+          var nowAlgorithmList=[].concat.apply([],this.algorithmListTwoDim)
+          console.log("现在转化成一维数组",nowAlgorithmList)
+          console.log("二维数组---",this.algorithmListTwoDim)
+          var params=[]
+          var flag = true
+          for(var i=0;i<nowAlgorithmList.length;i++){
+            var algorithmObject=nowAlgorithmList[i]
+            var param={
+                taskId:algorithmObject.id,
+                id:algorithmObject.id,
+                taskName:algorithmObject.name
+              }
+            if(algorithmObject.originalPickStatus && !algorithmObject.isPick){
+              //删除
+              param['action']="delete"
+              params.push(param)
+            }else if(!algorithmObject.originalPickStatus && algorithmObject.isPick){
+              //增加(检查，如果该配置的没有配置需要弹窗告警)
+              param['action']="add"
+              if(algorithmObject.isNeedConfig){
+                var areas=algorithmObject["areas"]
+                if(areas==undefined || areas.length==0){
+                  alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                  flag=false
+                  break
+                }else{
+                  console.log("原来的areas",algorithmObject['areas'])
+                  param['areas']=this.formatAreas(areas,algorithmObject.ratiox,algorithmObject.ratioy)
+                }
+              }
+              params.push(param)
+            }else if(algorithmObject.originalPickStatus && algorithmObject.isPick &&!algorithmObject.isCommitStatus){
+              //修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
+              param['action']="update"
+              var areas=algorithmObject["areas"]
+              if(areas==undefined || areas.length==0){
+                alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                flag=false
+                break
+              }
+              console.log("原来的areas",algorithmObject['areas'])
+              param['areas']=this.formatAreas(areas,algorithmObject.ratiox,algorithmObject.ratioy)
+              params.push(param)
+            }
+
+          }
+          if(flag){
+            if(params.length>0){
+              console.log("组装的参数是-----",params)
+              var finalBody={
+                deviceId:this.currentPickDeviceId,
+                taskInstParams:params
+              }
+              console.log("最终组装的参数是-----",finalBody)
+              this.configTask(finalBody)
+            }
+            this.configVisable = false
+          }
+        }else{
+          this.configVisable = false
+        }
+
+    },
+    formatAreas(areas,ratiox,ratioy){
+      var newAreas=areas.map(eachArea=>{
+        var newPoints=this.formatPoints(eachArea.points,ratiox,ratioy)
+        return {
+          type:eachArea.type,
+          name:eachArea.name,
+          points:newPoints
+        }
+      })
+      return newAreas
+    },
+    formatPoints(points,ratiox,ratioy) {
+      console.log("参数值",points,ratiox,ratiox)
+      var newPoints = [];
+      for (var i = 0; i < points.length; i++) {
+        newPoints.push({
+          x: parseInt(points[i].x * ratiox),
+          y: parseInt(points[i].y * ratioy),
+        });
+      }
+      return newPoints;
+    },
+    async configTask(body){
+      let res= await client.configInstance(body)
+      console.log("任务实例配置调用接口返回-----",res)
+    },
+    configDialog(v){
+      console.log("弹框显示绑定的设备id",v)
+      this.currentPickDeviceId=v
+      console.log("弹框显示绑定的设备id---------",v,this.currentPickDeviceId)
+      this.timer=new Date().getTime()
+      this.configVisable = true
+      this.getAlgorithmList(v)
+    },
+    configCloseDialog(){
+      this.configVisable = false
+    },
     getUserList() {
       const query = {
         cascade: true,
