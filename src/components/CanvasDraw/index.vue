@@ -184,10 +184,7 @@ export default {
               }
           }
       }
-      console.log("判断是否进行到这一步")
       if(this.historyPoints.length>0){
-          console.log("判断是否进行到这一步+1")
-
           var lastHisArea=this.historyPoints[this.historyPoints.length-1];
           var nameList=lastHisArea.name.split("-"); //字符分割
           if(lastHisArea.name.startsWith("wall")){
@@ -199,11 +196,15 @@ export default {
           }
       }
       //加载完成执行
-      console.log("判断是否进行到这一步+2")
       let res= await client.getImageByDeviceId(this.currentPickDeviceId);
       console.log("获取图片接口返回-----",res)
       if(res.code===50000){
-        alert(res.message)
+        this.$message({
+          showClose: false,
+          message: res.message==undefined?res.message:"设备异常",
+          type: 'error'
+        });
+        // alert(res.message)
         this.cancleAlgorithm()
         return
       }
@@ -264,13 +265,16 @@ export default {
     },
     saveAlgorithm(){
         console.log("save坐标----------------------")
-
-
         var newPointsList=this.historyPoints.concat(this.areas)
         console.log("历史坐标和新的坐标结合起来的点坐标集合",newPointsList)
         var res=this.checkMarkCorrectAndSave(this.currentPickAlgorithm.name,newPointsList)
         if(res!=null){
-            alert(res.message)
+            // alert(res.message)
+            this.$message({
+              showClose: false,
+              message: res.message,
+              type: 'error'
+            });
         }else{//没有错
             console.log("未提交的历史坐标aaaa",this.historyPoints)
             console.log("未提交的当前的坐标",this.areas)

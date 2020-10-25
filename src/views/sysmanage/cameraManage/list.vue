@@ -318,7 +318,12 @@ export default {
               if(algorithmObject.isNeedConfig){
                 var areas=algorithmObject["areas"]
                 if(areas==undefined || areas.length==0){
-                  alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                  // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                  this.$message({
+                    showClose: false,
+                    message: algorithmObject.cnName+"没有标注，请标注再提交或者取消选择",
+                    type: 'error'
+                  });
                   flag=false
                   break
                 }else{
@@ -332,7 +337,12 @@ export default {
               param['action']="update"
               var areas=algorithmObject["areas"]
               if(areas==undefined || areas.length==0){
-                alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
+                 this.$message({
+                    showClose: false,
+                    message: algorithmObject.cnName+"没有标注，请标注再提交或者取消选择",
+                    type: 'error'
+                  });
                 flag=false
                 break
               }
