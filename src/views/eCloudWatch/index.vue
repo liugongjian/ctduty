@@ -437,7 +437,6 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
-              window.clearTimeout(this.timer2)
               this.showDialog(response.body.data[0], true)
               const params = {
                 cascade: true,
@@ -499,9 +498,6 @@ export default {
         that.allXDataCameraIDEQU = null
       }
       await that.getCameraList()
-      await that.timers.forEach(item => {
-        window.clearInterval(item)
-      })
       if (that.allXDataCameraIDEQU === false) {
         that.cameraAlarmObj = {}
         v.forEach((item, index) => {
@@ -513,10 +509,9 @@ export default {
           setTimeout(() => {
             [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
               if (item.cameraId === dom.id) {
-                window.clearInterval(that.timer6)
-                that.timers[i] = setInterval(() => {
+                setInterval(() => {
                   dom.classList.add('markerClickImg')
-                  dom.timer6 = setTimeout(() => {
+                  setTimeout(() => {
                     dom.classList.remove('markerClickImg')
                   }, 500)
                 }, 1000)
@@ -812,7 +807,6 @@ export default {
                   this.yData.push(item)
                 } else {
                   [...this.timers].forEach((item, index) => {
-                    window.clearInterval(item)
                     this.timers.splice(index, 1)
                   })
                   this.xData.push(item)
@@ -829,10 +823,9 @@ export default {
 
     },
     blink(dom) {
-      window.clearInterval(this.timer4)
-      this.timer3 = setInterval(() => {
+      setInterval(() => {
         dom.classList.add('markerClickImg')
-        this.timer4 = setTimeout(() => {
+        setTimeout(() => {
           dom.classList.remove('markerClickImg')
         }, 500)
       }, 1000)
