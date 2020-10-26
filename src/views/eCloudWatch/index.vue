@@ -460,6 +460,7 @@ export default {
               }
               fetchalarmList(params).then(response => {
                 if (response.body.data.length) {
+                  this.showDialog(response.body.data[0], true)
                   this.getPanelList()
                   this.yData = []
                   this.xData = []
