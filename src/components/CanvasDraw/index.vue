@@ -74,7 +74,6 @@
 import client from '@/api/vedioAlgo'
 import store from '@/store'
 export default {
-
   props: ['currentPickDeviceId', 'currentPickAlgorithm'],
   data() {
     return {

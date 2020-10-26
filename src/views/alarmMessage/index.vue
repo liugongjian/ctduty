@@ -86,11 +86,15 @@
             <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div>
 
             <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="alaMesTable" style="width: 100%" tooltip-effect="dark" fit @selection-change="handleSelectionChange">
-              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" align="center" min-width="15%" prop="id" ></el-table-column>
-              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" align="center" min-width="15%" prop="createTime">
+              <el-table-column :show-overflow-tooltip="true" :label="'告警ID'" align="center" min-width="7.5%" prop="id" ></el-table-column>
+              <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'时间'" align="center" min-width="7.5%" prop="createTime">
               </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :formatter="formatType" :label="'事件'" align="center" min-width="5%" prop="type" width="100"></el-table-column>
-              <!-- <el-table-column :show-overflow-tooltip="true" :label="'内容'" align="center" min-width="10%" prop="content" width="100"></el-table-column> -->
+              <el-table-column :show-overflow-tooltip="true" :label="'内容'" align="center" min-width="10%" prop="content" width="100">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
+                </template>
+              </el-table-column>
               <el-table-column :show-overflow-tooltip="true" :label="'布控标签'" align="center" min-width="5%" width="100">
                 <template slot-scope="scope">
                   <el-tag :type="scope.row.label === 1 ? 'success':scope.row.label === 2? 'danger':'' ">{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
