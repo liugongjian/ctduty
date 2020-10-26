@@ -14,7 +14,7 @@
           >{{ '新增人脸数据' }}</el-button>
           <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
           <el-button class="filter-item" @click="gohistory ">{{ '历史抓拍' }}</el-button>
-          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
+          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
             title="导入人脸数据"
@@ -151,7 +151,8 @@
       <el-row v-if="tableData.length>0">
         <el-col :span="4" v-for="(item,index) in tableData" :key="index" :index="index" class="face-col">
           <el-card class="face-card" :body-style="{ padding: '0px' }">
-            <el-image :src="item.image" style="width: 100%;height:200px;"/>
+            <el-checkbox :key="item.id" @change="checked=>checkboxchange(checked,item)" class="face-checkbox"></el-checkbox>
+            <el-image :src="item.image" style="width: 100%;height:200px;margin-top:20px"/>
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
             <div class="face-info">
               <div class="face-name">姓名：{{item.name}}</div>
@@ -595,6 +596,14 @@ export default {
         }
       })
     },
+    checkboxchange(e,val){
+      if(e){
+         this.delIDArr.push(val.id)
+      }else{
+        const idx = this.delIDArr.indexOf(val.id);
+        this.delIDArr.splice(idx,1)
+      }
+    },
     addFaceConfirm() {
       this.$refs.addForm.validate(valid => {
         if (!valid) return
@@ -726,7 +735,7 @@ export default {
   &:hover .btn-box{
     display: inline-block;
     position: absolute;
-    top: 5px;
+    top: 25px;
     right: 5px;
     z-index: 99;
   }
@@ -736,6 +745,11 @@ export default {
     height: 50px;
     line-height: 50px;
     text-align: center;
+}
+.face-checkbox{
+  position: absolute;
+  top: 2px;
+  right: 5px;
 }
 </style>
 

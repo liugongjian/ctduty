@@ -1,53 +1,16 @@
 <template>
   <div class="list">
-    <div class="title">
-      摄像头管理
-    </div>
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
-            <el-option v-for="item in algOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+          <!-- <el-select v-model="algorithmValue" placeholder="请选择算法" style="width:120px;" class="filter-item" @change="algListChange">
+            <el-option v-for="item in taskList" :key="item.id" :label="item.cnName" :value="item.id"></el-option>
           </el-select>
-          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
-          <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-            <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
-              <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="负责人：">
-                <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width:240px;" placeholder="请选择岗位">
-                  <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="添加人：">
-                {{ creatorName }}
-              </el-form-item>
-              <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="手机："><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头经度："><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button
-                type="primary"
-                @click="dialogConfirm('dialogForm')"
-              >确 定</el-button>
-              <el-button @click="dialogQuxiao">取 消</el-button>
-            </div>
-          </el-dialog> -->
+          <el-button class="filter-item" type="warning" @click="apply">{{ '应用算法' }}</el-button> -->
+          <!-- <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button> -->
+          <el-button type="warning" @click="batchesDel">{{ '批量删除' }}</el-button>
+
         </div>
         <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -79,11 +42,13 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <el-table-column :label="'操作'" width="150px">
+        <el-table-column :label="'操作'" width="200px">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button type="text" size="small" @click="configDialog(scope.row.id)">{{ '配置' }}</el-button>
             <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -134,6 +99,15 @@
           {{ tag.name }}
         </el-tag>
       </el-dialog>
+
+      <el-dialog :visible="configVisable" title="视频AI配置" width="920px" @close="configCloseDialog">
+        <VideoConfig v-if='configVisable'></VideoConfig>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyAlgorithms(false)">取消</el-button>
+          <el-button type="primary"  @click="applyAlgorithms(true)">确定</el-button>
+        </span>
+      </el-dialog>
+
       <pagination
         v-show="total>0"
         :total="total"
@@ -149,23 +123,19 @@
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
+import VideoConfig from '@/components/VideoConfig'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
-  fetchAllCameraList, editCamera, addCamera, delCamera
+  fetchAllCameraList, editCamera, addCamera, delCamera, taskList, addTask, getTask, delTask
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
-  components: { Pagination },
+  components: { Pagination,VideoConfig },
   data() {
     return {
       algorithmValue: null,
-      algOptions: [],
-      tags: [
-        { name: '人脸', type: '' },
-        { name: '车辆', type: 'success' },
-        { name: '非机动车', type: 'info' }
-      ],
+      tags: [],
       dialogForm: {
         address: '',
         creatorId: '',
@@ -244,35 +214,86 @@ export default {
       },
       userList: [],
       creatorName: '',
-      algVisable: false
+      algVisable: false,
+      configVisable:false,
+      taskList: [],
+      taskName: '',
+      showDialogId: '',
+      isDelOperat: false,
+      isApplySuccessArr: []
     }
   },
   watch: {
     limit() {
       this.page = 1
       this.pageChange()
-    },
-    delIDArr(v) {
-      console.log(v, 'id数组')
     }
   },
   async created() {
     await Message.closeAll()
+    await this.getTaskList()
     await this.getUserList()
     await this.getList()
   },
   methods: {
-    algListChange() {
-      console.log('算法列表改变')
+    applyAlgorithms(flag){
+        this.configVisable = false;
+        if(flag){
+          console.log("调用后端接口保存标注坐标列表")
+        }
     },
-    apply() {
+    getTaskList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 9999999
+        },
+        params: {}
+      }
+      taskList(query).then(res => {
+        if (res.code === 0) {
+          this.taskList = res.body.data
+          this.algorithmValue = res.body.data[0].id
+          this.taskName = res.body.data[0].name
+        }
+      })
+    },
+    algListChange(v) {
+      this.algorithmValue = v
+      this.taskList.map(item => {
+        if (item.id === v) {
+          this.taskName = item.name
+        }
+      })
+    },
+    async apply() {
       if (!this.delIDArr.length) {
         this.$message({
           message: '请选择摄像头!',
           type: 'warning'
         })
+        return
       }
-      console.log('应用算法')
+      await this.delIDArr.forEach((item, index) => {
+        const query = {
+          deviceId: item,
+          taskId: this.algorithmValue,
+          taskName: this.taskName
+        }
+        addTask(query).then(res => {
+          if (res.code === 0) {
+            if (index === this.delIDArr.length - 1) {
+              this.$notify({
+                title: '成功',
+                message: '算法应用成功',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          }
+        })
+      })
     },
     algTagClose(tag) {
       this.algVisable = false
@@ -282,18 +303,18 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.tags.splice(this.tags.indexOf(tag), 1)
-          /* this.$notify({
-            title: '成功',
-            message: '移除成功',
-            type: 'success',
-            duration: 2000
-          }) */
-          if (this.tags.length) {
-            setTimeout(() => {
-              this.algVisable = true
-            }, 200)
-          }
+          delTask(tag.id).then(res => {
+            if (res.code === 0) {
+              this.$notify({
+                title: '成功',
+                message: '算法移除成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.isDelOperat = true
+              this.getAloneTask(this.showDialogId)
+            }
+          })
         }).catch(() => {
           setTimeout(() => {
             this.algVisable = true
@@ -376,16 +397,46 @@ export default {
     formatTime: function(row, column, cellValue) {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
+    getAloneTask(id) {
+      getTask(id).then(res => {
+        if (res.code === 0) {
+          if (res.body) {
+            this.tags = res.body.data.map(item => {
+              const types = ['', 'success', 'info', 'warning', 'danger']
+              var index = Math.floor((Math.random() * types.length))
+              return {
+                name: item.taskCnName,
+                id: item.id,
+                type: types[index]
+              }
+            })
+            setTimeout(() => {
+              this.algVisable = true
+            }, 50)
+          } else {
+            this.tags = []
+            if (!this.isDelOperat) {
+              this.$message({
+                message: '此摄像头暂无已应用算法',
+                type: 'warning'
+              })
+            }
+            this.algVisable = false
+          }
+        }
+      })
+    },
+    configDialog(v){
+      console.log("弹框显示绑定的设备id",v)
+      this.configVisable = true
+    },
+    configCloseDialog(){
+      this.configVisable = false
+    },
     algDialog(id) {
-      console.log(id, 'id')
-      if (!this.tags.length) {
-        this.$message({
-          message: '此摄像头暂无已应用算法',
-          type: 'warning'
-        })
-      } else {
-        this.algVisable = true
-      }
+      this.showDialogId = id
+      this.isDelOperat = false
+      this.getAloneTask(id)
     },
     algCloseDialog() {
       this.algVisable = false
@@ -557,6 +608,7 @@ export default {
 }
 .el-tag {
   margin-right: 8px;
+  margin-bottom: 5px;
 }
 </style>
 

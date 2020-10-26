@@ -50,3 +50,36 @@ export function delCamera(query) {
   })
 }
 
+// 算法列表
+export function taskList(query) {
+  return request({
+    url: '/nvsapi/task/QueryActive',
+    method: 'post',
+    data: query
+  })
+}
+
+// 新增算法
+export function addTask(query) {
+  return request({
+    url: '/nvsapi/taskInst/add',
+    method: 'post',
+    data: query
+  })
+}
+
+// 查询单个摄像头算法
+export function getTask(id) {
+  return request({
+    url: `/nvsapi/taskInst/list/${id}`,
+    method: 'get'
+  })
+}
+
+// 删除算法
+export function delTask(id) {
+  return request({
+    url: `/nvsapi/taskInst/delete?id=${id}`,
+    method: 'delete'
+  })
+}

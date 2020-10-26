@@ -371,8 +371,12 @@ export default {
         },
         geo: {
           map: '渭南',
-          roam: true,
+          roam: false,
           aspectScale: 1,
+          scaleLimit: {
+            min: 1,
+            max: 2
+          },
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
@@ -614,7 +618,7 @@ export default {
           //  shape: 'roundRect',
           phase: 0,
           direction: 'right',
-          data: [0.5, 0.5, 0.5],
+          data: [rate / 100, rate / 100, rate / 100],
           backgroundStyle: {
             borderColor: 'rgba(0,150,255,0.4)', // 背景内边框
             color: 'rgba(0,150,255,0.4)' // 背景颜色
