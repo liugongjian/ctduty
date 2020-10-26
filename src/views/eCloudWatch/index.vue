@@ -438,9 +438,48 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
-              this.showDialog(response.body.data[0])
-              this.getPanelList()
-              this.getalarmList()
+              this.showDialog(response.body.data[0], true)
+              const params = {
+                cascade: true,
+                page: {
+                  index: 1,
+                  size: 300
+                },
+                params: [
+                  {
+                    field: 'create_time',
+                    operator: 'BETWEEN',
+                    value: { start: moment(Date.now()).format(
+                      'YYYY-MM-DD 00:00:00'
+                    ),
+                    end: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                  }
+                ],
+                sorts: [
+                  {
+                    field: 'create_time',
+                    type: 'desc'
+                  }
+                ]
+              }
+              fetchalarmList(params).then(response => {
+                if (response.body.data.length) {
+                  this.getPanelList()
+                  if (!this.isOnlyCameraData) {
+                    this.stepsData = response.body.data
+                  }
+                  this.yData = []
+                  this.xData = []
+                  response.body.data.forEach(item => {
+                    if (item.handlerId !== null) {
+                      this.yData.push(item)
+                    } else {
+                      this.xData.push(item)
+                    }
+                  })
+                }
+              })
             }
           })
         }, 5000)
