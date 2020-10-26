@@ -438,46 +438,9 @@ export default {
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
               window.clearTimeout(this.timer2)
-              // this.getalarmList()
-              const params = {
-                cascade: true,
-                page: {
-                  index: 1,
-                  size: 300
-                },
-                params: [
-                  {
-                    field: 'create_time',
-                    operator: 'BETWEEN',
-                    value: { start: moment(Date.now()).format(
-                      'YYYY-MM-DD 00:00:00'
-                    ),
-                    end: moment().format('YYYY-MM-DD HH:mm:ss')
-                    }
-                  }
-                ],
-                sorts: [
-                  {
-                    field: 'create_time',
-                    type: 'desc'
-                  }
-                ]
-              }
-              fetchalarmList(params).then(response => {
-                if (response.body.data.length) {
-                  this.showDialog(response.body.data[0], true)
-                  this.getPanelList()
-                  this.yData = []
-                  this.xData = []
-                  response.body.data.forEach(item => {
-                    if (item.handlerId !== null) {
-                      this.yData.push(item)
-                    } else {
-                      this.xData.push(item)
-                    }
-                  })
-                }
-              })
+              this.showDialog(response.body.data[0])
+              this.getPanelList()
+              this.getalarmList()
             }
           })
         }, 5000)
@@ -853,7 +816,7 @@ export default {
         item.classList.remove('markerClickImg')
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
-        if (this.form.id === cameraInfo.camera.id) {
+        if (item.id === cameraInfo.camera.id) {
           item.setAttribute('width', 50)
           item.setAttribute('height', 50)
           item.classList.add('markerClickImg')
