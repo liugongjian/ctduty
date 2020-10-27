@@ -71,8 +71,11 @@ service.interceptors.response.use(
                 }).catch(err => {
                     return Promise.reject(err)
                 })
+<<<<<<< HEAD
             } else if (res.code === 50000 && res.message === '设备异常') {
                 return res
+=======
+>>>>>>> 1f410d1f4382cbdb5868842540094b015dbf725b
             } else {
                 return Promise.reject(response.data)
             }
