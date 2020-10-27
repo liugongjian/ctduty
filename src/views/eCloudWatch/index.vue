@@ -88,7 +88,7 @@
                         v-for="(item, index) in stepsData"
                         :key="index"
                         class="stepword"
-                        @click="showDialogFather(item)"
+                        @click="showDialog(item)"
                       >
                         <div style="height:32px; width:32px; float:left" class="lefticon">
                           <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -129,7 +129,7 @@
                     v-for="(item, index) in yData"
                     :key="index"
                     class="stepword"
-                    @click="showDialogFather(item)"
+                    @click="showDialog(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -165,7 +165,7 @@
                     v-for="(item, index) in xData"
                     :key="index"
                     class="stepword"
-                    @click="showDialogFather(item)"
+                    @click="showDialog(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -559,9 +559,6 @@ export default {
         return 'video/ogg'
       }
     },
-    showDialogFather(item) {
-      this.showDialog(item)
-    },
     openBig(url) {
       window.open(url)
     },
@@ -932,14 +929,6 @@ export default {
     markerClick() {
 
     },
-    blink(dom) {
-      setInterval(() => {
-        dom.classList.add('markerClickImg')
-        setTimeout(() => {
-          dom.classList.remove('markerClickImg')
-        }, 500)
-      }, 1000)
-    },
     showDialog(cameraInfo, isAlert) {
       this.dataDia = cameraInfo
       this.dialogVisable = true
@@ -960,11 +949,11 @@ export default {
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
         if (item.id === cameraInfo.camera.id) {
-          item.setAttribute('width', 50)
-          item.setAttribute('height', 50)
           if (item.classList.contains('markergif')) {
             item.classList.add('clickgif')
           } else {
+            item.setAttribute('width', 50)
+            item.setAttribute('height', 50)
             item.classList.add('markerClickImg')
           }
         }
