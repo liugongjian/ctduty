@@ -584,7 +584,6 @@ export default {
       })
     },
     getCameraList() {
-      console.log('请求摄像头')
       const params = {
         cascade: true,
         page: {
@@ -838,7 +837,6 @@ export default {
           if (!item.childNodes[1].classList.contains('offline')) {
             item.childNodes[1].classList.add('markerClickImg')
           }
-          console.log(item.childNodes[1], '哈哈哈')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           if (this.form.online !== 1) {
