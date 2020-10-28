@@ -361,9 +361,7 @@ export default {
       cameraId: null,
       hasUrl: null,
       todayAlerts: null,
-      // 当天已处理
       todayHandleds: null,
-      // 当天未处理
       todayUndeal: null,
       nowShowCameraId: null,
       allXDataCameraIDEQU: null,
@@ -696,6 +694,7 @@ export default {
       fetchalarmList(params).then(response => {
         if (response.body.data.length) {
           this.getPanelList()
+
           this.stepsData = response.body.data
           this.isOnlyCameraData = false
           this.isDisableAllAlarmBtn = false
@@ -1123,6 +1122,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+  margin: 0;
+}
 .clickgif {
   width:50px;
   height:50px;
