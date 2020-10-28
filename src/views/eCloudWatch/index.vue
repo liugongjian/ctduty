@@ -720,8 +720,10 @@ export default {
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
         item.classList.remove('clickgif')
-        item.style.width = '40px'
-        item.style.height = '40px'
+        if (item.classList.contains('markergif')) {
+          item.style.width = '40px'
+          item.style.height = '40px'
+        }
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
       })
@@ -826,6 +828,7 @@ export default {
               this.isOnlyCameraData = true
             }
           })
+          return
         }
         if (item.className === 'amap-marker-content') {
           this.hasUrl = null
@@ -835,6 +838,7 @@ export default {
           if (!item.childNodes[1].classList.contains('offline')) {
             item.childNodes[1].classList.add('markerClickImg')
           }
+          console.log(item.childNodes[1], '哈哈哈')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           if (this.form.online !== 1) {
@@ -951,8 +955,10 @@ export default {
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
         item.classList.remove('clickgif')
-        item.style.width = '40px'
-        item.style.height = '40px'
+        if (item.classList.contains('markergif')) {
+          item.style.width = '40px'
+          item.style.height = '40px'
+        }
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
         if (item.id === cameraInfo.camera.id) {
