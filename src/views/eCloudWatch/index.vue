@@ -804,8 +804,8 @@ export default {
           fetchalarmList(params).then(response => {
             if (!response.body.data.length) {
               this.hasData = false
+              this.getalarmList()
               setTimeout(() => {
-                this.getalarmList()
                 this.hasData = true
               }, 3000)
             } else {
@@ -906,8 +906,8 @@ export default {
           fetchalarmList(params).then(response => {
             if (!response.body.data.length) {
               this.hasData = false
+              this.getalarmList()
               setTimeout(() => {
-                this.getalarmList()
                 this.hasData = true
               }, 3000)
             } else {
