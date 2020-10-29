@@ -780,6 +780,7 @@ export default {
       })
     },
     drawZhu(data, xData, yData) {
+      console.log('datassssssssssssssss',data, xData, yData )
       var charts = echarts.init(document.getElementById('alarmLine'))
       const pointStyle = {
         borderColor: '#ea6f21',
@@ -834,14 +835,13 @@ export default {
       })
       var option = {
         title: {
-          text: '趋势图',
           left: 'left'
         },
         grid: {
           top: '15%',
-          left: '8%',
-          right: '8%',
-          bottom: '15%'
+          left: '16%',
+          right: '10%',
+          bottom: '18%'
         },
         xAxis: [{
           type: 'category',
@@ -855,13 +855,13 @@ export default {
               type: 'dashed'
             }
           },
-          data: ['1/1', '1/2', '1/3', '1/4', '1/5', '1/6']
+          data: xData
         }],
 
         yAxis: [{
           type: 'value',
           min: 0,
-          max: 100,
+          max: 10000,
           splitNumber: 3,
           axisLine: {
             show: false
@@ -923,11 +923,11 @@ export default {
               }
             },
             data: [{
-              name: 'Y 轴值为 80 的水平线',
-              yAxis: 80,
+              name: 'Y 轴值为 0 的水平线',
+              yAxis: 0,
               label: {
                 normal: {
-                  formatter: '(标准) 80'
+                  formatter: '0'
                 }
               }
             }]
