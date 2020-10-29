@@ -294,7 +294,6 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
-import { loadinggif } from '@/assets/string/imgstring.js'
 const amapManager = new VueAMap.AMapManager()
 export default {
   name: 'ECloudWatch',
@@ -303,7 +302,6 @@ export default {
   props: ['data', 'defaultActive'],
   data() {
     return {
-      loadinggif,
       timer: null,
       cameraState: '请选择要查看的摄像头',
       HTMLDoms: null,
@@ -1427,18 +1425,12 @@ body {
   color: #FF9832;
 }
 .switch {
-  width: 300px;
   height: 50px;
   padding: 0 30px;
+  border-bottom: 1px solid #ccc;
   display: flex;
-  justify-content:space-around;
+  justify-content:flex-end;
   align-items: center;
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  background-color: rgba(252,249,242,.3);
-  z-index:9999;
-  border-radius: 50px;
   box-shadow: 0 1px 4px 0;
 }
 .offline {

@@ -1,6 +1,6 @@
 <template>
   <div class="video-wrap">
-    <video :ref="videoRef" class="video-js"></video>
+    <video :ref="videoRef" :controls="false" class="video-js"></video>
   </div>
 </template>
 
