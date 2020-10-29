@@ -197,20 +197,17 @@
               </div>
             </div>
             <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
-              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:50px;font-weight:700;color:#18dcff;">
-                <i class="el-icon-loading loading" style="margin:0;padding:0;"></i>
-                <br>
-                <span style="font-size:16px;line-height:16px;color:#18dcff;margin:0;padding:0;">拼命加载中</span>
+              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+                <i class="el-icon-loading loading"></i>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;font-weight:500;">拼命加载中...</span>
               </div>
-              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:50px;font-weight:700;color:#18dcff;">
-                <i class="el-icon-loading loading" style="margin:0;padding:0;"></i>
-                <br>
-                <span style="font-size:16px;line-height:16px;color:#18dcff;margin:0;padding:0;">拼命加载中</span>
+              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+                <i class="el-icon-loading loading"></i>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;">拼命加载中</span>
               </div>
-              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:50px;font-weight:700;color:#18dcff;">
-                <i class="el-icon-loading loading" style="margin:0;padding:0;"></i>
-                <br>
-                <span style="font-size:16px;line-height:16px;color:#18dcff;margin:0;padding:0;">拼命加载中</span>
+              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+                <i class="el-icon-loading loading"></i>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;">拼命加载中</span>
               </div>
             </div>
           </div>
@@ -437,6 +434,11 @@ export default {
                   start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
                   end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -467,6 +469,11 @@ export default {
                     ),
                     end: moment().format('YYYY-MM-DD HH:mm:ss')
                     }
+                  },
+                  {
+                    field: 'camera.inChargeId',
+                    operator: 'EQUALS',
+                    value: this.userId
                   }
                 ],
                 sorts: [
@@ -671,6 +678,11 @@ export default {
             ),
             end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
+          },
+          {
+            field: 'camera.inChargeId',
+            operator: 'EQUALS',
+            value: this.userId
           }
         ],
         sorts: [
@@ -780,6 +792,11 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -788,7 +805,6 @@ export default {
                 type: 'desc'
               }
             ]
-
           }
           fetchalarmList(params).then(response => {
             if (!response.body.data.length) {
@@ -883,6 +899,11 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -1149,6 +1170,8 @@ body {
   height:78vh !important;
   margin-bottom: 20px;
   overflow: hidden;
+  border-radius: 5px;
+  background-color: #f1f2f6;
 }
 .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
     margin-right: 20px;
@@ -1413,8 +1436,9 @@ body {
   position: fixed;
   top: 70px;
   right: 20px;
-  background-color: rgba(0,0,0,.3);
+  background-color: rgba(252,249,242,.3);
   z-index:9999;
+  border-radius: 50px;
   box-shadow: 0 1px 4px 0;
 }
 .offline {
