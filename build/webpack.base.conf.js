@@ -70,7 +70,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/s,
         loader: 'url-loader',
         exclude: [resolve('src/icons')],
         options: {
