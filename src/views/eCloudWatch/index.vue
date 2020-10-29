@@ -197,17 +197,17 @@
               </div>
             </div>
             <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
-              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
                 <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;font-weight:500;">拼命加载中...</span>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
               </div>
-              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
                 <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;">拼命加载中</span>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
               </div>
-              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;">
+              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
                 <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;margin-bottom:5px;padding:0;">拼命加载中</span>
+                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
               </div>
             </div>
           </div>
@@ -947,6 +947,9 @@ export default {
     },
     showDialog(cameraInfo, isAlert) {
       this.dataDia = cameraInfo
+      setTimeout(() => {
+        document.getElementsByClassName('el-dialog__body')[0].scrollTop = 0
+      }, 0)
       this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
