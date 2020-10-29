@@ -434,6 +434,11 @@ export default {
                   start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
                   end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -464,6 +469,11 @@ export default {
                     ),
                     end: moment().format('YYYY-MM-DD HH:mm:ss')
                     }
+                  },
+                  {
+                    field: 'camera.inChargeId',
+                    operator: 'EQUALS',
+                    value: this.userId
                   }
                 ],
                 sorts: [
@@ -668,6 +678,11 @@ export default {
             ),
             end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
+          },
+          {
+            field: 'camera.inChargeId',
+            operator: 'EQUALS',
+            value: this.userId
           }
         ],
         sorts: [
@@ -777,6 +792,11 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -785,7 +805,6 @@ export default {
                 type: 'desc'
               }
             ]
-
           }
           fetchalarmList(params).then(response => {
             if (!response.body.data.length) {
@@ -880,6 +899,11 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
