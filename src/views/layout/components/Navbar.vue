@@ -173,9 +173,12 @@ export default {
       if (v) {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.add('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.add('texthighlight')
+        console.log('sssssssssssssss', document.getElementsByClassName('screen'))
+        document.getElementsByClassName('screen')[0].innerText = '退出全屏'
       } else {
         document.getElementsByClassName('fullscreen')[0].childNodes[0].classList.remove('highlight')
         document.getElementsByClassName('fullscreen')[0].childNodes[2].classList.remove('texthighlight')
+        document.getElementsByClassName('screen')[0].innerText = '全屏'
       }
     },
     notReadNoticeTotal(v, oldV) {

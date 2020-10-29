@@ -783,7 +783,7 @@ export default {
       console.log('datassssssssssssssss',data, xData, yData )
       var charts = echarts.init(document.getElementById('alarmLine'))
       const pointStyle = {
-        borderColor: '#ea6f21',
+        borderColor: '#1890FF',
         color: '#fff',
         borderWidth: 2
       }
@@ -813,17 +813,17 @@ export default {
         }
         if (index === total.length - 1) {
           ob.itemStyle = {
-            borderColor: '#ea6f21',
-            color: '#ea6f21',
+            borderColor: '#1890FF',
+            color: '#1890FF',
             borderWidth: 3
           }
           ob.label = {
             show: true,
             position: 'top',
             lineHeight: 20,
-            backgroundColor: '#ea6f21',
+            backgroundColor: '#1890FF',
             borderRadius: 5,
-            borderColor: '#ea6f21',
+            borderColor: '#1890FF',
             borderWidth: '1',
             padding: [5, 15, 4],
             color: '#fff',
@@ -883,7 +883,7 @@ export default {
           symbolSize: 10,
           lineStyle: {
             normal: {
-              color: '#ea6f21',
+              color: '#1890FF',
               width: 5
             }
           },
@@ -899,11 +899,11 @@ export default {
                 1,
                 [{
                   offset: 0,
-                  color: 'rgba(236, 169, 44, 1)'
+                  color: '#1890FF'
                 },
                 {
                   offset: 1,
-                  color: 'rgba(236, 169, 44,0)'
+                  color: '#1890FF'
                 }
                 ],
                 false
