@@ -781,6 +781,161 @@ export default {
     },
     drawZhu(data, xData, yData) {
       var charts = echarts.init(document.getElementById('alarmLine'))
+      const pointStyle = {
+        borderColor: '#1890FF',
+        color: '#fff',
+        borderWidth: 1
+      }
+      const labelStyle = {
+        show: true,
+        position: 'top',
+        lineHeight: 10,
+        borderRadius: 5,
+        backgroundColor: 'rgba(255,255,255,.9)',
+        borderColor: '#ccc',
+        borderWidth: '1',
+        padding: [5, 10, 4],
+        color: '#000000',
+        fontSize: 12,
+        fontWeight: 'normal'
+      }
+      let total = yData
+      const seriesData = []
+      total = total.sort(function(a, b) {
+        return a - b
+      })
+      total.forEach((item, index) => {
+        const ob = {
+          value: item,
+          itemStyle: pointStyle,
+          label: labelStyle
+        }
+        if (index === total.length - 1) {
+          ob.itemStyle = {
+            borderColor: '#1890FF',
+            color: '#1890FF',
+            borderWidth: 1
+          }
+          ob.label = {
+            show: true,
+            position: 'top',
+            lineHeight: 10,
+            backgroundColor: '#1890FF',
+            borderRadius: 5,
+            borderColor: '#1890FF',
+            borderWidth: '1',
+            padding: [5, 10, 4],
+            color: '#fff',
+            fontSize: 12,
+            fontWeight: 'normal'
+          }
+        }
+        seriesData.push(ob)
+      })
+      var option = {
+        title: {
+          left: 'left'
+        },
+        grid: {
+          top: '15%',
+          left: '16%',
+          right: '10%',
+          bottom: '18%'
+        },
+        xAxis: [{
+          type: 'category',
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: false,
+            lineStyle: {
+              type: 'dashed'
+            }
+          },
+          data: xData
+        }],
+
+        yAxis: [{
+          type: 'value',
+          min: 0,
+          max: 9000,
+          splitNumber: 3,
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        }],
+        series: [{
+          type: 'line',
+          showAllSymbol: true,
+          symbol: 'circle',
+          symbolSize: 6,
+          lineStyle: {
+            normal: {
+              color: '#1890FF',
+              width: 3
+            }
+          },
+          tooltip: {
+            show: false
+          },
+          areaStyle: {
+            normal: {
+              color: new echarts.graphic.LinearGradient(
+                0,
+                0,
+                0,
+                1,
+                [{
+                  offset: 0,
+                  color: '#1890FF'
+                },
+                {
+                  offset: 1,
+                  color: '#1890FF'
+                }
+                ],
+                false
+              )
+            }
+          },
+          data: seriesData,
+          markLine: {
+            symbol: ['none', 'none'], // 去掉箭头
+            itemStyle: {
+              normal: {
+                lineStyle: {
+                  type: 'dashed',
+                  color: '#ccc',
+                  width: 2
+                }
+              }
+            }
+            // data: [{
+            //   name: 'Y 轴值为 0 的水平线',
+            //   yAxis: 0,
+            //   label: {
+            //     normal: {
+            //       formatter: '0'
+            //     }
+            //   }
+            // }]
+          }
+        }]
+      }
+      charts.setOption(option)
+    }
+    /* drawZhu(data, xData, yData) {
+      var charts = echarts.init(document.getElementById('alarmLine'))
       var XName = xData
       var data1 = yData
       var img = [
@@ -895,7 +1050,7 @@ export default {
         ]
       }
       charts.setOption(option)
-    }
+    } */
   }
 }
 

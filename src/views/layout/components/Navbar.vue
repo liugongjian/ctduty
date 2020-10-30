@@ -188,6 +188,11 @@ export default {
         document
           .getElementsByClassName("fullscreen")[0]
           .childNodes[2].classList.add("texthighlight");
+        console.log(
+          "sssssssssssssss",
+          document.getElementsByClassName("screen")
+        );
+        document.getElementsByClassName("screen")[0].innerText = "退出";
       } else {
         document
           .getElementsByClassName("fullscreen")[0]
@@ -195,6 +200,7 @@ export default {
         document
           .getElementsByClassName("fullscreen")[0]
           .childNodes[2].classList.remove("texthighlight");
+        document.getElementsByClassName("screen")[0].innerText = "全屏";
       }
     },
     notReadNoticeTotal(v, oldV) {

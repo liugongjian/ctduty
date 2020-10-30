@@ -521,6 +521,11 @@ export default {
       }, {
         field: 'username',
         operator: 'NULL'
+      },
+      {
+        field: 'camera.inChargeId',
+        operator: 'EQUALS',
+        value: this.userId
       }
       ] : [{
         field: 'createTime',
@@ -529,6 +534,11 @@ export default {
       }, {
         field: 'username',
         operator: 'NULL'
+      },
+      {
+        field: 'camera.inChargeId',
+        operator: 'EQUALS',
+        value: this.userId
       },
       ss
       ]

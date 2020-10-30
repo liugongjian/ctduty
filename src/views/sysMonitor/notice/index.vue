@@ -1,42 +1,73 @@
 
 <template>
   <div class="notice">
-    <el-row>
-      <el-input ref="queryTitleRef" v-model="queryInfo.params.title" class="searchinput" placeholder="公告标题"></el-input>
-      <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者姓名"></el-input>
-      <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
-        <el-option :value="null" label="所有">所有</el-option>
-        <el-option :value="0" label="公告">通知</el-option>
-        <el-option :value="1" label="通知">公告</el-option>
-      </el-select>
-      <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
-      <el-button @click="resetQuery">重置</el-button>
-      <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
-    </el-row>
+    <div class="app-container" style="padding: 15px">
+      <div class="filter-container clearfix">
+        <div class="pull-left">
+          <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
+        </div>
+        <div class="pull-right">
+          <el-input
+            ref="queryTitleRef"
+            v-model="queryInfo.params.title"
+            class="searchinput"
+            placeholder="公告标题"
+          ></el-input>
+          <el-input
+            ref="queryOperatorRef"
+            v-model="username"
+            class="searchinput"
+            placeholder="创建者姓名"
+          ></el-input>
+          <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
+            <el-option :value="null" label="所有">所有</el-option>
+            <el-option :value="0" label="公告">通知</el-option>
+            <el-option :value="1" label="通知">公告</el-option>
+          </el-select>
+          <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
+          <el-button @click="resetQuery">重置</el-button>
+        </div>
+      </div>
+    </div>
 
-    <el-table :data="noticeList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
+    <el-table
+      :data="noticeList"
+      :header-cell-class-name="tableRowClassHeader"
+      class="amountdetailTable"
+      tooltip-effect="dark"
+      fit
+      style="width: 120vw"
+      @filter-change="filerStatus"
+    >
       <el-table-column type="index" label="序号"></el-table-column>
       <el-table-column label="公告标题">
         <template slot-scope="row_data">
-          <el-link type="primary" @click="showEditDialog(row_data.row.id,'false')">{{ row_data.row.title }}</el-link>
+          <el-link
+            type="primary"
+            @click="showEditDialog(row_data.row.id,'false')"
+          >{{ row_data.row.title }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="公告类型" prop="type">
-        <template slot-scope="row_data">
-          {{ row_data.row.type === 0 ? '通知' : '公告' }}
-        </template>
+        <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
       </el-table-column>
       <el-table-column label="状态" prop="state">
-        <template slot-scope="row_data">
-          {{ row_data.row.state === 0 ? '正常' : '紧急' }}
-        </template>
+        <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
       </el-table-column>
       <el-table-column label="创建者" prop="creator.username"></el-table-column>
       <el-table-column label="创建时间" prop="createTime"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :show-overflow-tooltip="true" :label="'操作'">
         <template slot-scope="row_data">
-          <el-link type="primary" @click="showEditDialog(row_data.row.id,'true')">编辑</el-link>
-          <el-link type="primary" @click="showDeleteDialog(row_data.row.title,row_data.row.id)">删除</el-link>
+          <el-button
+            type="text"
+            size="small"
+            @click="showEditDialog(row_data.row.id,'true')"
+          >{{ '编辑' }}</el-button>
+          <el-button
+            type="text"
+            size="small"
+            @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
+          >{{ '删除' }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,17 +79,18 @@
       :total="totalnum"
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+      @current-change="handleCurrentChange"
+    ></el-pagination>
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
       title="新增通知"
       width="50%"
-      @close="addDialogClosed">
+      @close="addDialogClosed"
+    >
       <el-form ref="addFormRef" :rules="addFormRules" :model="addNoticeForm">
         <el-form-item label="标题" prop="title">
-          <el-input v-model="addNoticeForm.title" class="input_title" ></el-input>
+          <el-input v-model="addNoticeForm.title" class="input_title"></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-radio-group v-model="addNoticeForm.type">
@@ -75,11 +107,7 @@
 
         <el-form-item>
           <span>内容</span>
-          <quill-editor
-            ref="myQuillEditor"
-            v-model="addNoticeForm.content"
-            :options="editorOption">
-          </quill-editor>
+          <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
@@ -89,11 +117,10 @@
               v-for="(item,key) in departmentInfo"
               :key="key"
               :label="item.department"
-              :value="item.departmentId">
-            </el-option>
+              :value="item.departmentId"
+            ></el-option>
           </el-select>
         </el-form-item>
-
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -105,8 +132,14 @@
       :visible.sync="editNoticeDialogVisible"
       title="修改通知"
       width="50%"
-      @close="editDialogClosed">
-      <el-form ref="editFormRef" :rules="addFormRules" :model="editNoticeForm" :disabled="modifiable==='false'">
+      @close="editDialogClosed"
+    >
+      <el-form
+        ref="editFormRef"
+        :rules="addFormRules"
+        :model="editNoticeForm"
+        :disabled="modifiable==='false'"
+      >
         <el-form-item label="标题" prop="title">
           <el-input v-model="editNoticeForm.title" class="input_title"></el-input>
         </el-form-item>
@@ -128,16 +161,25 @@
           <quill-editor
             ref="myQuillEditor"
             v-model="editNoticeForm.content"
-            :options="editorOption">
-          </quill-editor>
+            :options="editorOption"
+          ></quill-editor>
         </el-form-item>
         <el-form-item v-if="modifiable==='false'">
           <span>内容</span>
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
-          <el-select v-model="editNoticeForm.signatureId" :value="editNoticeForm.signatureId" placeholder="请选择">
-            <el-option v-for="item in departmentInfo" :value="item.departmentId" :label="item.department" :key="item.departmentId"></el-option>
+          <el-select
+            v-model="editNoticeForm.signatureId"
+            :value="editNoticeForm.signatureId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.departmentId"
+              :label="item.department"
+              :key="item.departmentId"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -147,36 +189,40 @@
       </span>
     </el-dialog>
 
-    <el-dialog
-      :visible.sync="deleteNoticeDialogVisible"
-      title="删除消息"
-      width="50%">
+    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="50%">
       <span>确认删除信息{{ this.deleteNoticeTitle }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteANotice">确 定</el-button>
         <el-button @click="deleteNoticeDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-
-import { fetchNoticeList, postAddNotices, getNoticeInfo, updateANotice, deleteNotices } from '@/api/notice'
+import {
+  fetchNoticeList,
+  postAddNotices,
+  getNoticeInfo,
+  updateANotice,
+  deleteNotices
+} from '@/api/notice'
 import { fetchUserList } from '@/api/users'
 import { notReadNotices } from '@/api/notice'
 export default {
   data() {
     return {
-
       searchName: '',
       searchUserIds: [],
       addFormRules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
-        creatorId: [{ required: true, message: '创建者不能为空', trigger: 'blur' }],
+        creatorId: [
+          { required: true, message: '创建者不能为空', trigger: 'blur' }
+        ],
         type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
-        state: [{ required: true, message: '紧急程度不能为空', trigger: 'blur' }]
+        state: [
+          { required: true, message: '紧急程度不能为空', trigger: 'blur' }
+        ]
       },
 
       editor_content: '',
@@ -185,7 +231,16 @@ export default {
           toolbar: [
             [
               { size: ['small', 'normal', 'large', 'huge'] },
-              'bold', 'italic', 'underline', 'strike', 'blockquote', { 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, 'link'
+              'bold',
+              'italic',
+              'underline',
+              'strike',
+              'blockquote',
+              { list: 'ordered' },
+              { list: 'bullet' },
+              { indent: '-1' },
+              { indent: '+1' },
+              'link'
             ]
           ]
         },
@@ -202,7 +257,6 @@ export default {
         params: {
           title: '',
           type: null
-
         }
       },
       totalnum: 0,
@@ -238,6 +292,7 @@ export default {
       ]
     }
   },
+
   created() {
     this.getNoticeList()
   },
@@ -277,12 +332,34 @@ export default {
         this.totalnum = response.body.page.total
       })
     },
+    tableRowClassHeader({ row, rowIndex }) {
+      return 'tableRowClassHeader'
+    },
+    filerStatus(columnObj) {
+      for (const key in columnObj) {
+        this.originCode = columnObj[key][0]
+      }
+      this.page = 1
+      let columnObjKey = ''
+      for (var i in columnObj) {
+        columnObjKey = i
+      }
+      if (columnObj[columnObjKey].length === 0) {
+        this.filteredValue = []
+        this.getList()
+      } else {
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
+      }
+    },
 
     async searchUserId() {
-      await fetchUserList({ params: { username: this.username }}).then(response => {
-        if (response.body.data.length == 0) return this.$message.error('该用户不存在，请重新输入')
-        this.userid = response.body.data[0].id
-      })
+      await fetchUserList({ params: { username: this.username }}).then(
+        response => {
+          if (response.body.data.length == 0) { return this.$message.error('该用户不存在，请重新输入') }
+          this.userid = response.body.data[0].id
+        }
+      )
     },
 
     handleSizeChange(newsize) {
@@ -303,7 +380,7 @@ export default {
         // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
-          if (response.code !== 0) return this.$message.error('添加失败，请联系系统管理员')
+          if (response.code !== 0) { return this.$message.error('添加失败，请联系系统管理员') }
           this.$message.success('添加成功')
           this.addNoticeDialogVisible = false
           this.getNoticeList()
@@ -312,7 +389,7 @@ export default {
             size: 10000,
             total: 0
           }
-          notReadNotices(params).then((res) => {
+          notReadNotices(params).then(res => {
             if (res.body.data.length > 0) {
               this.$store.commit('SET_NOTICETOTAL', res.body.page.total)
               this.$store.commit('SET_NOTICEARR', res.body.data)
@@ -348,7 +425,7 @@ export default {
       this.$refs.editFormRef.validate(valid => {
         if (!valid) return
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
-          if (response.code !== 0) return this.$message.error('更新信息失败,请稍后再试')
+          if (response.code !== 0) { return this.$message.error('更新信息失败,请稍后再试') }
           this.editNoticeDialogVisible = false
           this.getNoticeList()
           this.$message.success('更新成功')
@@ -370,7 +447,7 @@ export default {
       const ids = []
       ids.push(this.deleteNoticerId)
       deleteNotices(ids).then(response => {
-        if (response.code !== 0) return this.$message.error('删除失败,请稍后再试')
+        if (response.code !== 0) { return this.$message.error('删除失败,请稍后再试') }
         this.deleteNoticeDialogVisible = false
         this.deleteNoticerId = 0
         this.deleteNoticeTitle = ''
@@ -378,7 +455,8 @@ export default {
         this.$message.success('删除信息成功')
       })
     },
-    getCookie(objName) { // 获取指定名称的cookie的值
+    getCookie(objName) {
+      // 获取指定名称的cookie的值
       var arrStr = document.cookie.split('; ')
       for (var i = 0; i < arrStr.length; i++) {
         var temp = arrStr[i].split('=')
@@ -389,38 +467,38 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>
 .notice {
   padding: 0px 20px;
 }
-.input_title{
-  width:390px;
+.input_title {
+  width: 390px;
 }
-.title{
-    width:150px;height:100px;
-    border:1px solid #000;
-    display:-moz-inline-box; /* css注释：for ff2 */
-    display:inline-block;
+.title {
+  width: 150px;
+  height: 100px;
+  border: 1px solid #000;
+  display: -moz-inline-box; /* css注释：for ff2 */
+  display: inline-block;
 }
-.el-pagination{
-    float: right;
+.el-pagination {
+  float: right;
 }
-.el-table{
-    margin-top: 20px;
+.el-table {
+  margin-top: 20px;
 }
-.searchinput{
-    width: 250px;
+.searchinput {
+  width: 250px;
 }
 .addNotice {
   float: right;
 }
-.quill-editor{
-    display: inline-block;
-    width:700px;
-    height: 200px;
+.quill-editor {
+  display: inline-block;
+  width: 700px;
+  height: 200px;
 }
 .el-row {
   margin-top: 20px;
