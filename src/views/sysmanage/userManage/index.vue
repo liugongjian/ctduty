@@ -1,9 +1,8 @@
-
 <template>
   <div class="userManage">
     <!-- <el-divider></el-divider> -->
-    <div class="app-container" style="padding: 10px">
-      <div class="filter-container clearfix">
+    <div class="app-container">
+      <div class="clearfix">
         <div class="pull-left">
           <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
         </div>
@@ -443,7 +442,7 @@ export default {
 
 <style scoped>
 .userManage {
-  padding: 0px 20px;
+  padding: 10px 20px;
 }
 .title {
   width: 150px;
