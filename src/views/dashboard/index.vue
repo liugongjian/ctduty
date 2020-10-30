@@ -785,19 +785,19 @@ export default {
       const pointStyle = {
         borderColor: '#1890FF',
         color: '#fff',
-        borderWidth: 2
+        borderWidth: 1
       }
       const labelStyle = {
         show: true,
         position: 'top',
-        lineHeight: 20,
+        lineHeight: 10,
         borderRadius: 5,
         backgroundColor: 'rgba(255,255,255,.9)',
         borderColor: '#ccc',
         borderWidth: '1',
-        padding: [5, 15, 4],
+        padding: [5, 10, 4],
         color: '#000000',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'normal'
       }
       let total = yData
@@ -815,19 +815,19 @@ export default {
           ob.itemStyle = {
             borderColor: '#1890FF',
             color: '#1890FF',
-            borderWidth: 3
+            borderWidth: 1
           }
           ob.label = {
             show: true,
             position: 'top',
-            lineHeight: 20,
+            lineHeight: 10,
             backgroundColor: '#1890FF',
             borderRadius: 5,
             borderColor: '#1890FF',
             borderWidth: '1',
-            padding: [5, 15, 4],
+            padding: [5, 10, 4],
             color: '#fff',
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: 'normal'
           }
         }
@@ -848,9 +848,8 @@ export default {
           axisTick: {
             show: false
           },
-
           splitLine: {
-            show: true,
+            show: false,
             lineStyle: {
               type: 'dashed'
             }
@@ -861,7 +860,7 @@ export default {
         yAxis: [{
           type: 'value',
           min: 0,
-          max: 10000,
+          max: 9000,
           splitNumber: 3,
           axisLine: {
             show: false
@@ -880,11 +879,11 @@ export default {
           type: 'line',
           showAllSymbol: true,
           symbol: 'circle',
-          symbolSize: 10,
+          symbolSize: 6,
           lineStyle: {
             normal: {
               color: '#1890FF',
-              width: 5
+              width: 3
             }
           },
           tooltip: {
@@ -922,15 +921,15 @@ export default {
                 }
               }
             },
-            data: [{
-              name: 'Y 轴值为 0 的水平线',
-              yAxis: 0,
-              label: {
-                normal: {
-                  formatter: '0'
-                }
-              }
-            }]
+            // data: [{
+            //   name: 'Y 轴值为 0 的水平线',
+            //   yAxis: 0,
+            //   label: {
+            //     normal: {
+            //       formatter: '0'
+            //     }
+            //   }
+            // }]
           }
         }]
       }
