@@ -1,10 +1,15 @@
-
 <template>
   <div class="notice">
-    <div class="app-container" style="padding: 15px">
-      <div class="filter-container clearfix">
+    <div class="app-container" style="padding: 20px">
+      <div class="clearfix">
         <div class="pull-left">
-          <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
+          <!-- addNotice -->
+          <el-button
+            class="filter-item"
+            @click="addNoticeDialogVisible=true"
+            type="warning"
+            icon="el-icon-plus"
+          >{{ '新增通知' }}</el-button>
         </div>
         <div class="pull-right">
           <el-input
@@ -28,50 +33,48 @@
           <el-button @click="resetQuery">重置</el-button>
         </div>
       </div>
+      <el-table
+        :data="noticeList"
+        :header-cell-class-name="tableRowClassHeader"
+        class="amountdetailTable"
+        tooltip-effect="dark"
+        fit
+        @filter-change="filerStatus"
+        style="width: 120vw"
+      >
+        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column label="公告标题">
+          <template slot-scope="row_data">
+            <el-link
+              type="primary"
+              @click="showEditDialog(row_data.row.id,'false')"
+            >{{ row_data.row.title }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="公告类型" prop="type">
+          <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
+        </el-table-column>
+        <el-table-column label="状态" prop="state">
+          <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
+        </el-table-column>
+        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建时间" prop="createTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+          <template slot-scope="row_data">
+            <el-button
+              type="text"
+              size="small"
+              @click="showEditDialog(row_data.row.id,'true')"
+            >{{ '编辑' }}</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
+            >{{ '删除' }}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-
-    <el-table
-      :data="noticeList"
-      :header-cell-class-name="tableRowClassHeader"
-      class="amountdetailTable"
-      tooltip-effect="dark"
-      fit
-      @filter-change="filerStatus"
-      style="width: 120vw"
-    >
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column label="公告标题">
-        <template slot-scope="row_data">
-          <el-link
-            type="primary"
-            @click="showEditDialog(row_data.row.id,'false')"
-          >{{ row_data.row.title }}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="公告类型" prop="type">
-        <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
-      </el-table-column>
-      <el-table-column label="状态" prop="state">
-        <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
-      </el-table-column>
-      <el-table-column label="创建者" prop="creator.username"></el-table-column>
-      <el-table-column label="创建时间" prop="createTime"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'操作'">
-        <template slot-scope="row_data">
-          <el-button
-            type="text"
-            size="small"
-            @click="showEditDialog(row_data.row.id,'true')"
-          >{{ '编辑' }}</el-button>
-          <el-button
-            type="text"
-            size="small"
-            @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
-          >{{ '删除' }}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
     <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
@@ -496,9 +499,9 @@ export default {
 .searchinput {
   width: 250px;
 }
-.addNotice {
+/* .addNotice {
   float: right;
-}
+} */
 .quill-editor {
   display: inline-block;
   width: 700px;
