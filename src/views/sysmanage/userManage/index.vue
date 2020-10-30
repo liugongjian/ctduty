@@ -4,12 +4,12 @@
     <div class="app-container">
       <div class="clearfix">
         <div class="pull-left">
-          <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
-        </div>
-        <div class="pull-right">
           <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
           <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
           <el-button class="searchbtn" @click="resetQuery">重置</el-button>
+        </div>
+        <div class="pull-right">
+          <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
         </div>
       </div>
     </div>

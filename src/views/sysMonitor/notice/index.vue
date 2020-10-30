@@ -3,9 +3,6 @@
     <div>
       <div class="clearfix">
         <div class="pull-left">
-          <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
-        </div>
-        <div class="pull-right">
           <el-input
             ref="queryTitleRef"
             v-model="queryInfo.params.title"
@@ -25,6 +22,9 @@
           </el-select>
           <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
           <el-button @click="resetQuery">重置</el-button>
+        </div>
+        <div class="pull-right">
+          <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
         </div>
       </div>
     </div>
