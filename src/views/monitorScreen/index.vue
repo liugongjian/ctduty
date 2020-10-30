@@ -8,7 +8,7 @@
           </div>
           <div class="screen-head">
             <div class="head-label">
-              <i class="el-icon-location-information"></i>
+              <!-- <i class="el-icon-location-information"></i> -->
               <span :title="item.address">{{ item.address }}</span>
             </div>
             <div class="head-btn">
