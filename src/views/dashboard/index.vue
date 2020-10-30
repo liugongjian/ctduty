@@ -780,7 +780,6 @@ export default {
       })
     },
     drawZhu(data, xData, yData) {
-      console.log('datassssssssssssssss',data, xData, yData )
       var charts = echarts.init(document.getElementById('alarmLine'))
       const pointStyle = {
         borderColor: '#1890FF',
@@ -920,7 +919,7 @@ export default {
                   width: 2
                 }
               }
-            },
+            }
             // data: [{
             //   name: 'Y 轴值为 0 的水平线',
             //   yAxis: 0,

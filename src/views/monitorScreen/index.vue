@@ -268,7 +268,7 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 40px;
+      height: 30px;
       display: flex;
       padding: 0 10px;
       align-items: center;
@@ -276,8 +276,8 @@ export default {
       border-radius:0 0 3px 3px;
       .head-label {
         flex: 1;
-        font-size: 18px;
-        line-height: 40px;
+        font-size: 14px;
+        line-height: 30px;
         color: #333;
         white-space: nowrap;
         overflow: hidden;
@@ -288,7 +288,7 @@ export default {
         .btn {
           flex: 1;
           cursor: pointer;
-          font-size: 20px;
+          font-size: 16px;
           padding: 8px;
         }
       }
