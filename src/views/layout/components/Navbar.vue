@@ -20,10 +20,10 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
       </template>-->
-      <div v-if="level < 2" class="full">
+      <!-- <div v-if="level < 2" class="full">
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
-      </div>
+      </div> -->
       <div class="fullscreen" @click="screenfull">
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
