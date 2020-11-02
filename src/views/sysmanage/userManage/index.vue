@@ -1,40 +1,63 @@
 <template>
   <div class="userManage">
     <!-- <el-divider></el-divider> -->
-    <div class="app-container">
+    <div class="container">
       <div class="clearfix">
         <div class="pull-left">
-          <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
-          <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
+          <el-input
+            v-model="queryName"
+            class="searchinput"
+            placeholder="请输入用户姓名"
+          ></el-input>
+          <el-button class="searchbtn" type="warning" @click="getUserList"
+            >搜索</el-button
+          >
           <el-button class="searchbtn" @click="resetQuery">重置</el-button>
         </div>
         <div class="pull-right">
-          <el-button class="addbtn" type="warning" @click="addUserDialogVisible=true">+新增用户</el-button>
+          <el-button
+            class="addbtn"
+            type="warning"
+            @click="addUserDialogVisible = true"
+            >+新增用户</el-button
+          >
         </div>
       </div>
     </div>
 
-    <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
+    <el-table
+      :data="userList"
+      :header-cell-style="{ background: '#ecedee', color: '#717171' }"
+    >
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="手机号码" prop="phone"></el-table-column>
       <el-table-column label="岗位" prop="post.name"></el-table-column>
-      <el-table-column label="区域/部门" prop="department.name"></el-table-column>
+      <el-table-column
+        label="区域/部门"
+        prop="department.name"
+      ></el-table-column>
       <el-table-column label="权限" prop="permissions.name"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
-          <el-button type="text" size="small" @click="showEditDialog(row_data.row.id)">{{ '编辑' }}</el-button>
           <el-button
             type="text"
             size="small"
-            @click="showDeleteDialog(row_data.row.username,row_data.row.id)"
-          >{{ '删除' }}</el-button>
+            @click="showEditDialog(row_data.row.id)"
+            >{{ "编辑" }}</el-button
+          >
+          <el-button
+            type="text"
+            size="small"
+            @click="showDeleteDialog(row_data.row.username, row_data.row.id)"
+            >{{ "删除" }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
 
     <pagination
-      v-show="total>0"
+      v-show="total > 0"
       :total="total"
       :page.sync="page"
       :limit.sync="limit"
@@ -47,7 +70,12 @@
       width="50%"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
+      <el-form
+        ref="addFormRef"
+        :model="addUserForm"
+        :rules="addUserFormRules"
+        label-width="100px"
+      >
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
@@ -61,7 +89,10 @@
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="区域/部门">
-          <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
+          <el-select
+            v-model="addUserForm.departmentId"
+            placeholder="请选择区域/部门"
+          >
             <el-option
               v-for="item in departmentInfo"
               :value="item.departmentId"
@@ -137,7 +168,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位">
-          <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
+          <el-select
+            v-model="editUserForm.postId"
+            :value="editUserForm.postId"
+            placeholder="请选择岗位"
+          >
             <el-option
               v-for="item in this.postInfo"
               :value="item.postId"
@@ -163,7 +198,11 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="50%">
+    <el-dialog
+      :visible.sync="deleteUserDialogVisible"
+      title="删除用户"
+      width="50%"
+    >
       <span>确认删除用户{{ this.deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
@@ -442,7 +481,7 @@ export default {
 
 <style scoped>
 .userManage {
-  padding: 10px 15px;
+  padding: 10px 20px;
 }
 .title {
   width: 150px;
