@@ -1,7 +1,6 @@
 <template>
   <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
-
       <el-amap
         :amap-manager="amapManager"
         :center="center"
@@ -333,7 +332,7 @@ export default {
       },
       yData: [
       ],
-      loading: false,
+      loading: true,
       // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
