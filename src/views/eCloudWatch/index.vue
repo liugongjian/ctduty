@@ -215,7 +215,7 @@
           <el-dialog
             v-model="temp"
             :visible="dialogVisable"
-            title="报警显示"
+            title="告警显示"
             width="750px"
             @close="closeDialog"
           >

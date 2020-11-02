@@ -26,7 +26,7 @@
       </div>
       <div class="fullscreen" @click="screenfull">
         <svg-icon icon-class="fullscreen"></svg-icon>
-        <span class="screen">全屏</span>
+        <span class="screen">点击全屏</span>
       </div>
       <el-dropdown placement="bottom" class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
