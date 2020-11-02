@@ -60,12 +60,12 @@
               </div>
               <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理(<span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>)
+                  已处理（<span>{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>）
                 </p>
               </div>
               <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
-                  未处理(<span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>)
+                  未处理（<span>{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>）
                 </p>
               </div>
               <div class="bottom-right">
@@ -1249,7 +1249,6 @@ body {
       position: absolute;
       top: 30px;
       right: 15px;
-      // background-color: #ffffff;
       width: 320px;
       height: 100%;
       .top {
