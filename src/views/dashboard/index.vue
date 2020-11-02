@@ -855,7 +855,6 @@ export default {
           },
           data: xData
         }],
-
         yAxis: [{
           type: 'value',
           min: 0,
