@@ -43,38 +43,35 @@
         <div class="bottom" style="opacity:1;background:#fff;">
           <div class="dash-title todayAlarm">
             今日告警
-            <span class="switch">
+            <div style="float:right;line-height: 20px;margin-left:5px;font-size:12px;color:#FF9832;vertical-align: middle;margin:10px 30px;">
+              <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警 <svg-icon icon-class="rarrow"></svg-icon></a>
+            </div>
+            <!--  <span class="switch">
               <el-switch
                 v-model="isHint"
                 inactive-text="告警提示音"
               >
               </el-switch>
-            </span>
+            </span> -->
           </div>
           <div class="bottom-left">
             <div style="width:100%; height:26px;">
-              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">
+              <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+                <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
                   全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
+              <div :style="{'border-color':showTabValue === 'y'? '#FF9832':'#D9D9D9'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+                <p :style="{'color':showTabValue === 'y'? '#FF9832':'#333'}">
                   已处理(<span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
+              <div :style="{'border-color':showTabValue === 'w'? '#FF9832':'#D9D9D9'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+                <p :style="{'color':showTabValue === 'w'? '#FF9832':'#333'}">
                   未处理(<span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>)
                 </p>
               </div>
-              <div class="bottom-right">
-                <ul>
-                  <li style="float:right;line-height: 20px;margin-left:5px;font-size:12px;">
-                    <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
-                  </li>
-                </ul>
-              </div>
+
             </div>
             <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
               <div v-if="showTabValue === 'all'">
@@ -198,17 +195,17 @@
             </div>
             <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
               <div v-if="loading">
-                <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#FF9832;vertical-align:middle;">
                   <i class="el-icon-loading loading"></i>
-                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#FF9832;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
                 </div>
-                <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#FF9832;vertical-align:middle;">
                   <i class="el-icon-loading loading"></i>
-                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#FF9832;padding-bottom:5px;font-weight:500;">拼命加载中</span>
                 </div>
-                <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#FF9832;vertical-align:middle;">
                   <i class="el-icon-loading loading"></i>
-                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#FF9832;padding-bottom:5px;font-weight:500;">拼命加载中</span>
                 </div>
               </div>
               <div v-else>
@@ -301,7 +298,10 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
-const amapManager = new VueAMap.AMapManager()
+const amapManager = new VueAMap.AMapManager('container', {
+  resizeEnable: true, // 是否监控地图容器尺寸变化
+  zoom: 12 // 初始地图级别
+})
 
 export default {
   name: 'ECloudWatch',
@@ -997,6 +997,8 @@ export default {
       }
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
       this.zoom = 15
+      document.getElementsByClassName('amap-maps')[0].transform = 'translateX(-500px)'
+      console.log(document.getElementsByClassName('amap-maps')[0], parseFloat(document.getElementsByClassName('amap-maps')[0].style.left) - 100 + 'px', '元素')
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
@@ -1209,6 +1211,9 @@ body {
   border-radius: 5px;
   background-color: #f1f2f6;
 }
+.zuoContent {
+  padding: 20px 10px;
+}
 .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
     margin-right: 20px;
     width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
@@ -1243,7 +1248,7 @@ body {
    fill: #EA2027 !important;
  }
  .trafficSvg {
-   fill : #1890ff !important;
+   fill : #FF9832 !important;
  }
 .alarmInfo {
   padding: 0px 20px;
@@ -1292,13 +1297,11 @@ body {
           width: 100%;
           height: 100%;
           float: left;
-
           padding: 0 10px;
           padding-top: 8px;
-
           .zuo {
             float: left;
-            width: 25%;
+            width: 33%;
             height: 26px;
             line-height: 26px;
             background-color: #ffffff;
@@ -1311,31 +1314,31 @@ body {
             }
           }
           .zuo:hover {
-            border: 1px solid #1890ff !important;
+            border: 1px solid #FF9832 !important;
           }
           .zhong:hover {
-            border: 1px solid #1890ff !important;
+            border: 1px solid #FF9832 !important;
           }
           .you:hover {
-            border: 1px solid #1890ff !important;
+            border: 1px solid #FF9832 !important;
           }
           .zuo:active {
-            color: #1890ff;
-            border: 1px solid #1890ff !important;
+            color: #FF9832;
+            border: 1px solid #FF9832 !important;
           }
           .zhong:active {
-            color: #1890ff;
-            border: 1px solid #1890ff !important;
+            color: #FF9832;
+            border: 1px solid #FF9832 !important;
           }
           .you:active {
-            color: #1890ff;
-            border: 1px solid #1890ff !important;
+            color: #FF9832;
+            border: 1px solid #FF9832 !important;
           }
           .zhong {
             float: left;
-            width: 25%;
+            width: 33%;
             height: 26px;
-            border: #1890ff;
+            border: #FF9832;
             background-color: #ffffff;
             p {
               color: #676767;
@@ -1344,9 +1347,9 @@ body {
           }
           .you {
             float: left;
-            width: 25%;
+            width: 33%;
             height: 26px;
-            border: #1890ff;
+            border: #FF9832;
             background-color: #ffffff;
             p {
               color: #676767;
@@ -1362,7 +1365,7 @@ body {
         // float: right;
         padding-top: 5px;
         a {
-          color: #1890ff;
+          color: #FF9832;
           font-size: 12px;
           text-align: center;
         }

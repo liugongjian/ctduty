@@ -76,7 +76,7 @@ export default {
       setTimeout(() => {
         this.clearCanvas()
       }, 300)
-    }, 500)
+    }, 600)
   },
   created() {
     // 页面没有渲染之前
@@ -358,135 +358,6 @@ export default {
       }
       return newPoints
     },
-    /*   mousedown(event) {
-      // 鼠标开始记录坐标
-      if (this.isEmpty(this.type)) return
-      this.flag = true
-      if (this.isEmpty(this.start_x) && this.isEmpty(this.start_y) && this.points.length == 0) {
-        this.markName = this.getMarkName()
-      }
-      if (this.type == 3) {
-        // 保存起始点
-        this.points.push({
-          x: event.offsetX,
-          y: event.offsetY
-        })
-        if (event.button === 2 && this.flag) {
-          // 右键结束
-          // 保存历史记录多边形
-          var tempPoints = this.points
-          this.areas.push({
-            type: this.value,
-            name: this.markName,
-            points: tempPoints
-          })
-          this.points = []
-          this.resetTypeAndFlag()
-          this.markName = ''
-        } else {
-          // 画多边形
-          this.drawPolygon(this.points)
-        }
-      } else {
-        // 是直线和矩形，只需要两个点
-        if (this.isEmpty(this.start_x)) {
-          // 第一个点
-          this.start_x = event.offsetX
-          this.start_y = event.offsetY
-        } else {
-          // 第二个点复制，并把起点置空
-          this.end_x = event.offsetX
-          this.end_y = event.offsetY
-          if (this.type == 1) {
-            // 直线信息
-            var tempPoints = []
-            tempPoints.push({
-              x: this.start_x,
-              y: this.start_y
-            })
-            tempPoints.push({
-              x: this.end_x,
-              y: this.end_y
-            })
-            this.areas.push({
-              type: '',
-              name: this.markName,
-              points: tempPoints
-            })
-            this.resetTypeAndFlag()
-          } else if (this.type == 2) {
-            // 保存矩形坐标
-            var boxs = []
-            boxs.push({
-              x: this.start_x,
-              y: this.start_y
-            })
-            boxs.push({
-              x: this.end_x,
-              y: this.start_y
-            })
-            boxs.push({
-              x: this.end_x,
-              y: this.end_y
-            })
-            boxs.push({
-              x: this.start_x,
-              y: this.end_y
-            })
-            this.areas.push({
-              type: this.value,
-              name: this.markName,
-              points: boxs
-            })
-          }
-          this.start_x = ''
-          this.start_y = ''
-          this.resetTypeAndFlag()
-        }
-      }
-    },
-    mousemove(event) {
-      if (this.isEmpty(this.type)) {
-        return
-      }
-      if (this.type == 1) {
-        this.drawLine(event)
-      } else if (this.type == 2) {
-        this.drawRect(event)
-      } else {
-        this.drawPolygon(
-          this.points.concat({
-            x: event.offsetX,
-            y: event.offsetY
-          })
-        )
-      }
-    }, */
-    /*   chooseAreaGraph(event) {
-      // 只有再不画图的时候对click事件做处理
-      console.log('进入该click方法')
-      if (this.flag == false) {
-        // 遍历所有的areas、historyPoints显示该图像的坐标点
-        var chooseArea = this.getChooseArea(this.areas, event.offsetX, event.offsetY)
-        console.log('历史和当前坐标', this.historyPoints, this.areas)
-        console.log('查找当前是否有chooseArea', chooseArea)
-        if (chooseArea == null) {
-          if (this.historyPoints.length > 0) {
-            var chooseHisArea = this.getChooseArea(this.historyPoints, event.offsetX, event.offsetY)
-            console.log('查找历史是否有chooseArea', chooseArea)
-            if (chooseHisArea != null) {
-              this.tempChoosePoint = this.formatPoints(chooseHisArea.points)
-            } else {
-              this.tempChoosePoint = []
-            }
-          } else {
-            this.tempChoosePoint = []
-          }
-        } else {
-          this.tempChoosePoint = this.formatPoints(chooseArea.points)
-        }
-      }
-    }, */
     // 获取(x,y)坐标在某个标记里的图形是坐标
     getChooseArea(areas, x, y) {
       var resArea = null
@@ -499,27 +370,7 @@ export default {
       }
       return resArea
     },
-    // (x,y)判断的坐标 area某个框图的点集合
-    chenckInArea2(area, x, y) {
-      var points = area.points
-      var i, j
-      var inside = false
-      var pointSize = points.length
-      if (pointSize == 2) {
-        return this.inLine(points[0], points[1], x, y)
-      }
-      for (i = 0, j = pointSize - 1; i < pointSize; j = i++) {
-        // 首先判断点是否在线上。如果点在线上，直接返回
-        if (this.inLine(points[i], points[j], x, y)) {
-          inside = true
-          break
-        }
-        if (((points[i].y > y) != (points[j].y > y)) && (x < (points[j].x - points[i].x) * (y - points[i].y) / (points[j].y - points[i].y) + points[i].x)) {
-          inside = !inside
-        }
-      }
-      return inside
-    },
+
     // 判断(x,y)是否在起点为startPoint终点为endPoint的直线上
     inLine(startPoint, endPoint, x, y) {
       console.log('点击的坐标', x, y)
@@ -581,33 +432,12 @@ export default {
       }
       return name
     },
-    // 先绘制之前的直线、矩形、多边形
-    drawAll() {
-      // 清除画布，相当于橡皮擦
-      const canvas = document.getElementById('myCanvas')
-      this.ctx.clearRect(0, 0, canvas.width, canvas.height)
-      // 绘制存在的图片
-      this.ctx.drawImage(this.image, 0, 0, canvas.width, canvas.height)
-      this.ctx.lineWidth = 4
-      // 绘制历史图片
-      this.drawGraph(this.historyPoints)
-      this.drawGraph(this.areas)
-    },
     drawGraph(areas) {
       // 绘制已经保存的矩形,value是一个对象，包括x,y,width,height
       areas.forEach((eachArea) => {
         // 设置线条颜色，必须放在绘制之前
         var colour = ''
-        if (eachArea.type == '1') {
-          // 是墙体
-          colour = 'green'
-        } else if (eachArea.type == '2') {
-          // 禁区
-          colour = 'red'
-        } else {
-          // 直线用蓝颜色
-          colour = 'blue'
-        }
+        colour = 'red'
         this.ctx.lineWidth = 4
         // 写标记名字
         var location = {
@@ -633,13 +463,7 @@ export default {
       })
     },
     setCanvasColour() {
-      if (this.value == '1') {
-        // 是墙体
-        this.ctx.strokeStyle = 'green'
-      } else {
-        // 禁区
-        this.ctx.strokeStyle = 'red'
-      }
+      this.ctx.strokeStyle = 'red'
     },
     clearCanvas() {
       const canvas = document.getElementById('myCanvas')
@@ -655,13 +479,7 @@ export default {
         this.ctx.clearRect(0, 0, canvas.width, canvas.height)
         this.drawAll()
         var colour = ''
-        if (this.value == '1') {
-          // 是墙体
-          colour = 'green'
-        } else {
-          // 禁区
-          colour = 'red'
-        }
+        colour = 'red'
         // var location={
         //   x:this.start_x,
         //   y:this.start_y
@@ -684,13 +502,7 @@ export default {
         this.ctx.clearRect(0, 0, canvas.width, canvas.height)
         this.drawAll()
         var colour = ''
-        if (this.value == '1') {
-          // 是墙体
-          colour = 'green'
-        } else {
-          // 禁区
-          colour = 'red'
-        }
+        colour = 'red'
         var location = {
           x: points[0].x,
           y: points[0].y
