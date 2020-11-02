@@ -3,18 +3,18 @@
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
+          <div class="screen-body">
+            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
+          </div>
           <div class="screen-head">
             <div class="head-label">
-              <i class="el-icon-location-information"></i>
+              <!-- <i class="el-icon-location-information"></i> -->
               <span :title="item.address">{{ item.address }}</span>
             </div>
             <div class="head-btn">
               <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
               <div class="btn" @click="deleteMonitor(item)"><i class="el-icon-delete"></i></div>
             </div>
-          </div>
-          <div class="screen-body">
-            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
         </div>
       </div>
@@ -24,15 +24,13 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="this.id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
+    <el-dialog :title="id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
       <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
             :loading="loading"
-            filterable
-            remote
             filterable
             remote
             placeholder="请选择">
@@ -270,16 +268,16 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 40px;
+      height: 30px;
       display: flex;
       padding: 0 10px;
       align-items: center;
       border: 1px solid #9b9da0;
-      border-radius: 5px 5px 0 0;
+      border-radius:0 0 3px 3px;
       .head-label {
         flex: 1;
-        font-size: 18px;
-        line-height: 40px;
+        font-size: 14px;
+        line-height: 30px;
         color: #333;
         white-space: nowrap;
         overflow: hidden;
@@ -290,7 +288,7 @@ export default {
         .btn {
           flex: 1;
           cursor: pointer;
-          font-size: 20px;
+          font-size: 16px;
           padding: 8px;
         }
       }

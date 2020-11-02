@@ -11,43 +11,6 @@
               </el-button>
             </div>
             <div class="pull-right">
-              <!-- <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button>
-              <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
-                <el-form ref="addForm" :model="dialogForm" :rules="addrules" label-position="right" label-width="110px">
-                  <el-form-item label-width="130px" label="摄像头ID：" prop="id"><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="负责人：" prop="inChargeId">
-                    <el-select v-model="dialogForm.inChargeId" :value="dialogForm.inChargeId" style="width: 240px;" placeholder="请选择负责人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="添加人：">
-                    {{ creatorName }}
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="制造厂商：" prop="manufacturer"><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="设备型号：" prop="model"><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="视频流：" prop="url"><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="手机：" prop="phone"><el-input v-model="dialogForm.phone" placeholder="请输入手机" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="摄像头经度：" prop="longitude"><el-input v-model="dialogForm.longitude" type="num" placeholder="请输入摄像头经度" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="摄像头纬度：" prop="latitude"><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label-width="130px" label="地址：" prop="address"><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
-                  </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                  <el-button
-                    type="primary"
-                    @click="dialogConfirm('dialogForm')"
-                  >确 定</el-button>
-                  <el-button @click="dialogQuxiao">取 消</el-button>
-                </div>
-              </el-dialog> -->
               <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
                 <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
               </el-select>
@@ -66,7 +29,7 @@
                   class="amap-demo"
                   vid="amapDemo"
                 >
-                  <el-amap-marker v-for="(marker, index) in markers" :events="events" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" @click="markerClick"></el-amap-marker>
+                  <el-amap-marker v-for="(marker, index) in markers" :ext-data="marker.extData" :events="events" :id="'point'+index" :key="index" :position="marker.position" :vid="index" :content="marker.content" anchor="top-right"></el-amap-marker>
                 </el-amap>
               </div>
             </el-col>
@@ -76,12 +39,6 @@
                   摄像头信息
                 </div>
                 <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
-                  <!-- <div style="padding-bottom:10px;">
-                    <svg t="1599289905127" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1303" width="40" height="40"><path d="M24.380952 512c0 269.336381 218.282667 487.619048 487.619048 487.619048s487.619048-218.282667 487.619048-487.619048S781.336381 24.380952 512 24.380952 24.380952 242.663619 24.380952 512z m518.095238 274.285714c0 16.847238-13.628952 30.47619-30.47619 30.476191s-30.47619-13.628952-30.47619-30.476191S495.152762 755.809524 512 755.809524s30.47619 13.628952 30.47619 30.47619z m0-144.774095c0 16.018286-13.628952 28.964571-30.47619 28.964571s-30.47619-12.921905-30.47619-28.964571V236.202667c0-15.993905 13.628952-28.94019 30.47619-28.940191s30.47619 12.921905 30.47619 28.964572v405.308952z" fill="#999" p-id="1304"/></svg>
-                  </div>
-                  暂无摄像头信息！
-                  <br>
-                  请选择您想查看的摄像头。 -->
                 </div>
                 <el-form v-else :model="form" label-position="right">
                   <el-form-item class="formMargin" label="摄像头ID：">
@@ -278,7 +235,9 @@ export default {
       markers: [],
       amapManager,
       events: {
-        click: a => {
+        click: info => {
+          this.form = info.target.G.extData
+          this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
         }
       }
     }
@@ -299,24 +258,19 @@ export default {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0 && !that.highLightMarkerId) {
             item.classList.add('markerClickImg')
-            that.highLightMarkerId = JSON.parse(item.attributes[1].nodeValue).id
-            that.form = JSON.parse(item.attributes[1].nodeValue)
-            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            that.highLightMarkerId = that.form.id
+            that.center = [that.form.longitude, that.form.latitude]
             that.zoom = 15
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
-            that.editForm = JSON.parse(item.attributes[1].nodeValue)
-            that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            that.editForm = that.form
             that.showZwMes = false
           } else {
             setTimeout(() => {
               const markers = document.getElementsByClassName('markerImg');
               [].forEach.call(markers, (item) => {
-                if (JSON.parse(item.attributes[1].nodeValue).id === that.highLightMarkerId) {
-                  that.form = JSON.parse(item.attributes[1].nodeValue)
-                  that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+                if (item.id === that.highLightMarkerId) {
                   that.editForm = JSON.parse(item.attributes[1].nodeValue)
-                  that.form.createTime = moment(that.form.createTime).format('YYYY-MM-DD HH:mm:SS')
                   that.showZwMes = false
                   item.classList.add('markerClickImg')
                 }
@@ -408,11 +362,9 @@ export default {
           item.childNodes[1].classList.add('markerClickImg')
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
-          this.highLightMarkerId = JSON.parse(item.childNodes[1].attributes[1].nodeValue).id
-          this.center = [JSON.parse(item.childNodes[1].attributes[1].nodeValue).longitude, JSON.parse(item.childNodes[1].attributes[1].nodeValue).latitude]
-          this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          this.editForm = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+          this.highLightMarkerId = this.form.id
+          this.center = [this.form.longitude, this.form.latitude]
+          this.editForm = this.form
           this.showZwMes = false
         }
       })
@@ -445,7 +397,7 @@ export default {
         setTimeout(() => {
           const markers = document.getElementsByClassName('markerImg');
           [].forEach.call(markers, (item) => {
-            if (JSON.parse(item.attributes[1].nodeValue).id === this.highLightMarkerId) {
+            if (this.form.id === this.highLightMarkerId) {
               item.classList.add('markerClickImg')
             }
           })
@@ -485,9 +437,16 @@ export default {
         if (this.formInline.typeValue === 'map' && document.getElementsByClassName('markerClickImg').length) {
           document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
         }
-        this.formInfo.forEach(item => {
-          this.markers.push({ position: [item.longitude, item.latitude], /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  data=${JSON.stringify(item)}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
+        this.formInfo.forEach((item, index) => {
+          if (index === 0) {
+            this.form = item
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            this.center = [item.longitude, item.latitude]
+          }
+          this.markers.push({
+            position: [item.longitude, item.latitude],
+            extData: item,
+            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg' id=${item.id}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
           })
         })
       })
@@ -519,8 +478,10 @@ export default {
       setTimeout(() => {
         const markers = document.getElementsByClassName('markerImg');
         [].forEach.call(markers, (item) => {
-          if (JSON.parse(item.attributes[1].nodeValue).id === this.highLightMarkerId) {
+          if (item.id === this.highLightMarkerId) {
             item.classList.add('markerClickImg')
+            item.setAttribute('width', 50)
+            item.setAttribute('height', 50)
           }
         })
       }, 200)
@@ -569,7 +530,7 @@ export default {
     },
     positionClick(i) {
     },
-    markerClick() {
+    markerClick(a) {
     },
     getList() {
       const params = {
@@ -589,9 +550,16 @@ export default {
         if (this.formInline.typeValue === 'map' && document.getElementsByClassName('markerClickImg').length) {
           document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
         }
-        this.formInfo.forEach(item => {
-          this.markers.push({ position: [item.longitude, item.latitude], /* content: `<img class='markerImg' data=${JSON.stringify(item)} src="https://webapi.amap.com/theme/v1.3/markers/b/mark_bs.png" style="width: 19px; height: 33px; top: 0px; left: 0px;">`, */
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  data=${JSON.stringify(item)}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
+        this.formInfo.forEach((item, index) => {
+          if (index === 0) {
+            this.form = item
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            this.center = [item.longitude, item.latitude]
+          }
+          this.markers.push({
+            position: [item.longitude, item.latitude],
+            extData: item,
+            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  id=${item.id} t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
           })
         })
         this.hasMarker = false
