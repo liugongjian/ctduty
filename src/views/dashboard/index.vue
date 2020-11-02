@@ -859,7 +859,7 @@ export default {
         yAxis: [{
           type: 'value',
           min: 0,
-          max: 9000,
+          max: 20000,
           splitNumber: 3,
           axisLine: {
             show: false
