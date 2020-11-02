@@ -3,11 +3,18 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right">
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="请输入..."
+            class="filter-item alarmInp"
+            style="width: 260px; height: 32px"
+            @keyup.enter.native="onSearch"
+          ></el-input>
           <el-button
             class="filter-item"
-            style="font-size:12px"
+            style="font-size:12px; "
             icon="el-icon-refresh"
-            @click="onClear"
+            @click="resetQuery"
           >重置</el-button>
         </div>
         <div class="pull-left">
@@ -81,11 +88,10 @@
             size="mini"
             type="warning"
             @click="onSearch"
-          >{{ '搜索' }}</el-button>
+          >{{ '确定' }}</el-button>
         </div>
       </div>
       <div>
-        <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条</div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
@@ -97,19 +103,19 @@
               fit
               @selection-change="handleSelectionChange"
             >
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'告警ID'"
                 align="center"
                 min-width="7.5%"
                 prop="id"
-              ></el-table-column>
+              ></el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
                 :label="'时间'"
                 align="center"
-                min-width="7.5%"
+                min-width="10%"
                 prop="createTime"
               ></el-table-column>
               <el-table-column
@@ -117,11 +123,11 @@
                 :formatter="formatType"
                 :label="'事件'"
                 align="center"
-                min-width="5%"
+                min-width="8%"
                 prop="type"
                 width="100"
               ></el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'内容'"
                 align="center"
@@ -132,12 +138,12 @@
                 <template slot-scope="scope">
                   <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
                 align="center"
-                min-width="5%"
+                min-width="8%"
                 width="100"
               >
                 <template slot-scope="scope">
@@ -150,10 +156,10 @@
                 :show-overflow-tooltip="true"
                 :label="'摄像头'"
                 align="center"
-                min-width="15%"
+                min-width="18%"
                 prop="camera.address"
               ></el-table-column>
-              <el-table-column :label="'图片'" align="center" min-width="20%">
+              <el-table-column :label="'图片'" align="center" min-width="12%">
                 <template slot-scope="scope">
                   <el-popover placement="left" trigger="hover">
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
@@ -255,6 +261,8 @@
               v-show="total>0"
               :total="total"
               :page.sync="page"
+              :tabsArr="tabsArr"
+              :allTotal="allTotal"
               :limit.sync="limit"
               @pagination="pageChange()"
             />
@@ -395,7 +403,8 @@ export default {
       });
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:SS");
+      // YYYY-MM-DD
+      return moment(cellValue).format("HH:mm:SS");
     },
     formatType(row, column, cellValue) {
       return cellValue === 1 ? "人员" : cellValue === 2 ? "机动车" : "非机动车";
@@ -444,34 +453,43 @@ export default {
 
       return result;
     },
-    onClear() {
-      (this.value1 = [
-        new Date(new Date().setDate(new Date().getDate() - 29)),
-        new Date(new Date().setDate(new Date().getDate()))
-      ]),
-        (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
-      this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-      (this.value1 = ""),
-        (this.page = 1),
-        // this.startTime = '02:00'
-        // this.endTime = '05:00'
-        (this.formInline.typeValue = "all");
-      // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-      // this.defaultTab=this.endDate
-      // this.getList(s1, end1, h1)
-      this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
-      this.defaultTab = this.tabsArr[0];
-      this.currentTab = this.defaultTab;
-      this.getPushSetTime();
-      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      // const h = this.formInline.typeValue
-      // this.getList(s, e, h)
-
-      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-      // this.getTimeAllTotal(s1, e1, h)
+    // 重置搜索
+    // 重置
+    resetQuery() {
+      this.formInline.searchkey = "";
+      this.page = 1;
+      this.limit = 10;
+      this.getList();
     },
+    // 重置起止时间的搜索
+    // onClear() {
+    //   (this.value1 = [
+    //     new Date(new Date().setDate(new Date().getDate() - 29)),
+    //     new Date(new Date().setDate(new Date().getDate()))
+    //   ]),
+    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
+    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
+    //   (this.value1 = ""),
+    //   (this.page = 1),
+    //     // this.startTime = '02:00'
+    //     // this.endTime = '05:00'
+    //   (this.formInline.typeValue = "all");
+    //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+    //   // this.defaultTab=this.endDate
+    //   // this.getList(s1, end1, h1)
+    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
+    //   this.defaultTab = this.tabsArr[0];
+    //   this.currentTab = this.defaultTab;
+    //   this.getPushSetTime();
+    //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+    //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+    //   // const h = this.formInline.typeValue
+    //   // this.getList(s, e, h)
+
+    //   // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+    //   // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+    //   // this.getTimeAllTotal(s1, e1, h)
+    // },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
       // this.tabsArr = this.tabsDateArr
@@ -771,12 +789,13 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-.kb {
-  margin-block-end: 14px;
-}
+
 td {
   .el-image {
     vertical-align: middle;
   }
+}
+.alarmInp input.el-input__inner {
+  height: 34px !important;
 }
 </style>

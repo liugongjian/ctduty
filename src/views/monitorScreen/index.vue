@@ -20,7 +20,7 @@
       </div>
       <div v-if="deviceList.length < 6 && !pageLoading" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
-          <i class="el-icon-circle-plus-outline"></i> 添加监控摄像头
+          <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
     </div>
@@ -258,9 +258,9 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 24px;
-      color: #333;
-      border: 1px solid #9b9da0;
+      font-size: 14px !important;
+      color: #ccc;
+      border: 1px dashed #9b9da0;
       border-radius: 5px 5px 0 0;
       cursor: pointer;
       i {
@@ -299,6 +299,9 @@ export default {
       height: 250px;
       width: auto;
       background: #333;
+    }
+    .el-icon-plus {
+      font-size: 14px !important;
     }
   }
 }
