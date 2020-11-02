@@ -177,16 +177,16 @@
               @change="checked=>checkboxchange(checked,item)"
               class="face-checkbox"
             ></el-checkbox>
-            <el-image :src="item.image" style="width: 100%;height:200px;margin-top:20px" />
+            <el-image :src="item.image" class="image" />
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
             <div class="face-info">
               <div class="face-name">姓名：{{item.name}}</div>
               <div
                 class="face-kind"
-              >布控标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
-            </div>
-            <div class="btn-box">
-              <el-button
+              >其他标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
+            </div>             
+              <div class="bottom clearfix">               
+                <el-button
                 icon="el-icon-edit"
                 size="mini"
                 type="primary"
@@ -200,7 +200,26 @@
                 size="mini"
                 @click="delAlert(item.id)"
               ></el-button>
+              </div>
+          
+
+            <div class="btn-box">
+              <!-- <el-button
+                icon="el-icon-edit"
+                size="mini"
+                type="primary"
+                circle
+                @click="editDialog(item)"
+              ></el-button> -->
+              <!-- <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                size="mini"
+                @click="delAlert(item.id)"
+              ></el-button> -->
             </div>
+            
           </el-card>
         </el-col>
       </el-row>
@@ -755,13 +774,34 @@ export default {
   }
   .face-info {
     font-size: 14px;
-    padding: 14px;
+    padding: 14px; 
+    float: left;
+  }
+
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+    float: right;
   }
   .face-name {
     padding: 5px 0;
+    
   }
   .btn-box {
     display: none;
+ 
+  }
+  .image{
+    
+    width: 100%;
+    max-width: 250px;
+    height:200px;
+    margin-top:20px;
+    img{
+        object-fit: contain;//cover;
+          background-color: rgb(245, 247, 250);
+    }
+        
   }
   &:hover .btn-box {
     display: inline-block;
