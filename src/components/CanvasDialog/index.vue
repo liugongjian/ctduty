@@ -71,7 +71,12 @@ export default {
     }
   },
   async mounted() {
-    this.initCanvas()
+    setInterval(() => {
+      this.initCanvas()
+      setTimeout(() => {
+        this.clearCanvas()
+      }, 300)
+    }, 500)
   },
   created() {
     // 页面没有渲染之前

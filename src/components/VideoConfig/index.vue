@@ -74,7 +74,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import CanvasDraw from '@/components/CanvasDraw'
+import CanvasDraw from '@/components/CanvasDialog'
 import client from '@/api/vedioAlgo'
 import { getInstanceList } from '@/api/vedioAlgoNew'
 import store from '@/store'
