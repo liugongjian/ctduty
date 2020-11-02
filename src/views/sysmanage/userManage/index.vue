@@ -442,7 +442,7 @@ export default {
 
 <style scoped>
 .userManage {
-  padding: 10px 20px;
+  padding: 10px 15px;
 }
 .title {
   width: 150px;

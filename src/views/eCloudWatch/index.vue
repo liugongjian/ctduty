@@ -1,7 +1,6 @@
 <template>
   <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
-
       <el-amap
         :amap-manager="amapManager"
         :center="center"
@@ -198,17 +197,24 @@
               </div>
             </div>
             <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
-              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
-                <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
+              <div v-if="loading">
+                <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
+                </div>
+                <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                </div>
+                <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                </div>
               </div>
-              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
-                <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
-              </div>
-              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
-                <i class="el-icon-loading loading"></i>
-                <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+              <div v-else>
+                <div style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                  暂无数据
+                </div>
               </div>
             </div>
           </div>
@@ -326,6 +332,7 @@ export default {
       },
       yData: [
       ],
+      loading: true,
       // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
@@ -483,6 +490,10 @@ export default {
                 ]
               }
               fetchalarmList(params).then(response => {
+                this.loading = true
+                setTimeout(() => {
+                  this.loading = false
+                }, 10 * 1000)
                 if (response.body.data.length) {
                   this.getPanelList()
                   if (!this.isOnlyCameraData) {
@@ -692,6 +703,10 @@ export default {
         ]
       }
       fetchalarmList(params).then(response => {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 10 * 1000)
         if (response.body.data.length) {
           this.getPanelList()
 
@@ -813,6 +828,10 @@ export default {
                 this.hasData = true
               }, 3000)
             } else {
+              this.loading = true
+              setTimeout(() => {
+                this.loading = false
+              }, 10 * 1000)
               this.getPanelList()
               this.stepsData = response.body.data || []
               this.hasData = true
@@ -921,6 +940,10 @@ export default {
                 this.hasData = true
               }, 3000)
             } else {
+              this.loading = true
+              setTimeout(() => {
+                this.loading = false
+              }, 10 * 1000)
               this.getPanelList()
               this.stepsData = response.body.data || []
               this.hasData = true
