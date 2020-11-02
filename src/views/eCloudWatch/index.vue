@@ -1,13 +1,7 @@
 <template>
   <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
-      <div class="switch">
-        <el-switch
-          v-model="isHint"
-          inactive-text="告警提示音"
-        >
-        </el-switch>
-      </div>
+
       <el-amap
         :amap-manager="amapManager"
         :center="center"
@@ -30,40 +24,47 @@
         ></el-amap-marker>
       </el-amap>
       <div class="warn">
-        <div class="dispose" style="opacity:1;margin-bottom:20px;">
-          <div class="watchtitle">
-            <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
-            <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
-          </div>
-          <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-            <div id="panel" style="height: 80%; width:100%"></div>
-          </div>
-          <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
-            <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
-              <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
-              <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                {{ cameraState }}
+        <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
+          <el-tab-pane label="告警处理率" name="rate">
+            <div class="disbox" style="height: 180px; width:100%">
+              <div id="panel" style="height: 100%; width:100%"></div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="实时监控" name="monitoring">
+            <div class="videoBox" style="height: 180px; width:100%;">
+              <div style="height: 100%; width:100%;">
+                <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
+                <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                  {{ cameraState }}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="bottom" style="opacity:1;background:#fff;margin-top: 13px;">
+          </el-tab-pane>
+        </el-tabs>
+        <div class="bottom" style="opacity:1;background:#fff;">
           <div class="dash-title todayAlarm">
             今日告警
+            <span class="switch">
+              <el-switch
+                v-model="isHint"
+                inactive-text="告警提示音"
+              >
+              </el-switch>
+            </span>
           </div>
           <div class="bottom-left">
-            <div style="width:100%; height:35px;">
-              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+            <div style="width:100%; height:26px;">
+              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">
                   全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
                   已处理(<span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
                   未处理(<span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>)
                 </p>
@@ -76,7 +77,7 @@
                 </ul>
               </div>
             </div>
-            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
+            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div v-if="hasData">
                   <div :class="{'not-allowed': isDisableAllAlarmBtn}">
@@ -196,7 +197,7 @@
                 </template>
               </div>
             </div>
-            <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
+            <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
               <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
                 <i class="el-icon-loading loading"></i>
                 <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
@@ -1168,7 +1169,7 @@ body {
   box-sizing: content-box !important;
 }
 .warn {
-  height:78vh !important;
+  height:83vh !important;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
@@ -1218,14 +1219,13 @@ body {
   .map {
     height: 100%;
     width: 100%;
-    // background-color: #000;
     position: relative;
     overflow: hidden;
     .warn {
       margin-top: 10px;
       position: absolute;
-      top: 70px;
-      right: 10px;
+      top: 30px;
+      right: 15px;
       // background-color: #ffffff;
       width: 320px;
       height: 100%;
@@ -1265,14 +1265,15 @@ body {
           .zuo {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
+            line-height: 26px;
             background-color: #ffffff;
             p {
               color: #676767;
               font-size: 12px;
             }
             .zuoContent {
-              background-color: pink;
+              padding-right: 50px;
             }
           }
           .zuo:hover {
@@ -1299,7 +1300,7 @@ body {
           .zhong {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
             border: #1890ff;
             background-color: #ffffff;
             p {
@@ -1310,7 +1311,7 @@ body {
           .you {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
             border: #1890ff;
             background-color: #ffffff;
             p {
@@ -1359,11 +1360,10 @@ body {
 }
 .dizhi {
   width: 100%;
-  font-size: 15px;
+  font-size: 13px;
   color: #000000;
   font-weight: 300;
-  // margin-left: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 #panel {
   position: absolute;
@@ -1428,13 +1428,8 @@ body {
   color: #FF9832;
 }
 .switch {
-  height: 50px;
+  font-size: 12px;
   padding: 0 30px;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content:flex-end;
-  align-items: center;
-  box-shadow: 0 1px 4px 0;
 }
 .offline {
   fill: #95afc0 !important;

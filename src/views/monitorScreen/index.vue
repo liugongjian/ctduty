@@ -249,6 +249,7 @@ export default {
     width: 33.33%;
     .screen-inner {
       margin: 10px 10px;
+      border-radius: 3px 3px 0 0;
     }
     .screen-add {
       height: 340px;
