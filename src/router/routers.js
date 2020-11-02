@@ -44,25 +44,25 @@ export const asyncRouterMap = [
       }
     ]
   },
-  {
-    path: '/ecloudwatch',
-    component: Layout,
-    redirect: '/ecloudwatch',
-    hidden: false,
-    children: [
-      {
-        path: '/ecloudwatch',
-        component: () => import('@/views/eCloudWatch/index'),
-        name: 'eCloudWatch',
-        meta: {
-          title: 'eCloudWatch',
-          icon: 'ecloudwatch',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/ecloudwatch',
+  //   component: Layout,
+  //   redirect: '/ecloudwatch',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: '/ecloudwatch',
+  //       component: () => import('@/views/eCloudWatch/index'),
+  //       name: 'eCloudWatch',
+  //       meta: {
+  //         title: 'eCloudWatch',
+  //         icon: 'ecloudwatch',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/monitorScreen',
     component: Layout,
@@ -196,16 +196,16 @@ export const asyncRouterMap = [
           }
         ]
       }, */
-      {
-        path: 'policeManage',
-        component: () => import('@/views/sysmanage/areaManage/policeManage'),
-        name: 'policeManage',
-        meta: {
-          title: '派出所管理',
-          icon: 'police',
-          noCache: false
-        }
-      },
+      // {
+      //   path: 'policeManage',
+      //   component: () => import('@/views/sysmanage/areaManage/policeManage'),
+      //   name: 'policeManage',
+      //   meta: {
+      //     title: '派出所管理',
+      //     icon: 'police',
+      //     noCache: false
+      //   }
+      // },
       {
         path: 'userManage',
         component: () => import('@/views/sysmanage/userManage/index'),
@@ -216,16 +216,16 @@ export const asyncRouterMap = [
           noCache: false
         }
       },
-      {
-        path: 'dutyManage',
-        component: () => import('@/views/sysmanage/dutyManage/index'),
-        name: 'sysdutyManage',
-        meta: {
-          title: 'dutyManage',
-          icon: 'dutyManage',
-          noCache: false
-        }
-      },
+      // {
+      //   path: 'dutyManage',
+      //   component: () => import('@/views/sysmanage/dutyManage/index'),
+      //   name: 'sysdutyManage',
+      //   meta: {
+      //     title: 'dutyManage',
+      //     icon: 'dutyManage',
+      //     noCache: false
+      //   }
+      // },
       {
         path: 'cameraManage',
         component: () => import('@/views/sysmanage/cameraManage/index'),
