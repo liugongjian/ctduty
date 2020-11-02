@@ -42,9 +42,16 @@ export default {
 .video-wrap {
   width: 100%;
   height: 100%;
+  text-align: center;
+  margin-top: 20px;
 }
 .video-js {
   // 播放器完全铺满
   width: 100%;
+  height:100%;
+  object-fit:fill !important;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
 }
 </style>
