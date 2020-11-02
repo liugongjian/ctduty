@@ -252,9 +252,9 @@ export default {
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: 340px;
+      height: 280px;
       margin: 10px;
-      // margin-top: 20px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
