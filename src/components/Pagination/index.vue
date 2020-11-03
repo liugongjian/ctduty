@@ -1,6 +1,6 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
-    <div class="showTotal">当日总计：{{ total }} 条</div>
+    <div class="showTotal">当日告警总计：{{ total }} 条</div>
     <!-- {{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 起止告警时间注释 -->
     <div class="kb"> 告警总计: {{ allTotal }} 条</div>
     <el-pagination

@@ -96,7 +96,6 @@ export default {
     }
   },
   created() {
-    console.log('xxxxx从父组件传过来的值', this.deviceId, this.arr2)
     // this.algorithmListOrigin = this.getAlgorithmList(this.deviceId)
     // await this.getAlgorithmListNew()
     // this.algorithmListOrigin = this.algorithmListOrigin.map(
@@ -125,8 +124,6 @@ export default {
       return require('../../assets/icon/' + name + '.png')
     },
     checkboxchange(bol, item, index, idx) {
-      console.log('checkedstatus----->', bol, item, index, idx)
-      console.log('修改之后的数据', item.beforePickStatus, bol)
       item.beforePickStatus = bol
 
       // 刚开始选择后来不选择,由true->false的转变
@@ -143,7 +140,6 @@ export default {
       //    this.configwith = bol
     },
     saveUpdatePick(item) {
-      console.log('增加一个字段表示是否已经配置', item)
       if (item.isPick) {
         item['isConfigAlready'] = true
         item['beforePickStatus'] = true
@@ -156,20 +152,15 @@ export default {
       return item
     },
     operateCanvas(item, idx) {
-      console.log('进入到这个方法进行操作画布', item, idx)
-      console.log('第一步根据设备id获取截图')
-      console.log('获取之前的配置')
       this.currentItem = item
       this.currentNum = idx
       this.currentId = item.id
       this.timer = new Date().getTime()
-      console.log('xxxavcdddd', this.currentItem, this.currentId)
       this.canvasVisable = true
       this.$emit('canvasShow', true)
     },
     async getAlgorithmHistoryAreas(item) {
       const { body: res } = await client.getHisInstAreas(item.id)
-      console.log('xxxxxxxxx调用接口获取的历史坐标接口xxxxx', res.data)
       return res.data
     },
     closeCanvas() {
@@ -181,10 +172,8 @@ export default {
     },
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
-      console.log('ssssss-----', res.data)
       this.algorithmListOrigin = res.data
       this.algorithmListOriginCopy = JSON.parse(JSON.stringify(this.algorithmListOrigin))
-      console.log('赋值acvvv-------------', this.algorithmListOrigin)
       this.algorithmListOrigin = this.algorithmListOrigin.map(this.saveUpdatePick)
       this.arr2 = this.changeToTwoDiArray(this.algorithmListOrigin, 3)
     },
@@ -193,9 +182,7 @@ export default {
       getInstanceList().then(res => {
         if (res.code === 0) {
           this.algorithmListOrigin = res.body.data
-          console.log('赋值-------------', this.algorithmListOrigin)
           this.algorithmListOrigin = this.algorithmListOrigin.map(this.saveUpdatePick)
-          console.log('处理后的列表', this.algorithmListOrigin)
           this.arr2 = this.algorithmListOrigin.reduce(
             (prev, next, idx) => {
               const inner = prev[~~(idx / 3)]
