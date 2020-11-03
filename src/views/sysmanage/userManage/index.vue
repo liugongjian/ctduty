@@ -9,8 +9,11 @@
             class="searchinput"
             placeholder="请输入用户姓名"
           ></el-input>
-          <el-button class="searchbtn" type="warning" @click="getUserList"
-            >搜索</el-button
+          <el-button
+            class="searchbtn"
+            type="warning"
+            @click="getUserList"
+          >搜索</el-button
           >
           <el-button class="searchbtn" @click="resetQuery">重置</el-button>
         </div>
@@ -19,31 +22,12 @@
             class="addbtn"
             type="warning"
             @click="addUserDialogVisible = true"
-            >+新增用户</el-button
+          >+新增用户</el-button
           >
         </div>
       </div>
-      <el-table :data="userList" :header-cell-style="{background:'#ecedee',color:'#717171'}">
-        <el-table-column label="用户名" prop="username"></el-table-column>
-        <el-table-column label="姓名" prop="name"></el-table-column>
-        <el-table-column label="手机号码" prop="phone"></el-table-column>
-        <el-table-column label="岗位" prop="post.name"></el-table-column>
-        <el-table-column label="区域/部门" prop="department.name"></el-table-column>
-        <el-table-column label="权限" prop="permissions.name"></el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="row_data">
-            <el-button type="text" size="small" @click="showEditDialog(row_data.row.id)">{{ '编辑' }}</el-button>
-            <el-button
-              type="text"
-              size="small"
-              @click="showDeleteDialog(row_data.row.username,row_data.row.id)"
-            >{{ '删除' }}</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
     </div>
 
-<<<<<<< HEAD
     <el-table
       :data="userList"
       :header-cell-style="{ background: '#ecedee', color: '#717171' }"
@@ -63,20 +47,18 @@
             type="text"
             size="small"
             @click="showEditDialog(row_data.row.id)"
-            >{{ "编辑" }}</el-button
+          >{{ "编辑" }}</el-button
           >
           <el-button
             type="text"
             size="small"
             @click="showDeleteDialog(row_data.row.username, row_data.row.id)"
-            >{{ "删除" }}</el-button
+          >{{ "删除" }}</el-button
           >
         </template>
       </el-table-column>
     </el-table>
 
-=======
->>>>>>> 3db8808294ed983f09807ff7ea3263a15fe32154
     <pagination
       v-show="total > 0"
       :total="total"
