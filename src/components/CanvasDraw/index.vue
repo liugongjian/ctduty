@@ -132,6 +132,7 @@ export default {
     }
   },
   async mounted() {
+    console.log(this.currentPickAlgorithm, 'chuanru')
     this.initCanvas()
   },
   created() {
@@ -165,6 +166,7 @@ export default {
         if (this.currentPickAlgorithm.isCommitStatus == true) { // 已经提交过了,获取历史坐标
           const { body: res } = await client.getHisInstAreas(this.currentPickAlgorithm.id)
           this.historyPoints = res.data
+          console.log(res.data, '接口')
         } else { // 没有提交,获取对象中暂存的关于这个算法的坐标
           var beforePoints = this.currentPickAlgorithm['areas']
           if (beforePoints != undefined) {

@@ -71,6 +71,7 @@ export default {
     }
   },
   async mounted() {
+    this.initCanvas()
     setInterval(() => {
       this.initCanvas()
       setTimeout(() => {
