@@ -230,12 +230,20 @@
     <el-dialog
       v-model="temp"
       :visible="dialogVisable"
-      title="告警显示"
       width="480px"
       @close="closeDialog"
     >
-      <el-form :model="dataDia" label-position="right" label-width="100px">
-        <el-form-item label="摄像头地址:">
+      <div :model="dataDia" label-position="right" label-width="100px">
+        <div prop="image">
+          <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
+        </div>
+        <div>
+          <span>
+            <svg-icon icon-class="leadership"></svg-icon>
+
+          </span>
+        </div>
+        <!-- <el-form-item label="摄像头地址:">
           <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
         </el-form-item>
         <el-form-item label="监控时间:">
@@ -244,11 +252,8 @@
               renderTime(dataDia.createTime)
             }}
           </span>
-        </el-form-item>
-        <el-form-item label="原始照片:" prop="image">
-          <el-image :src="dataDia.imageCompress" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
-        </el-form-item>
-        <el-form-item label="结构化照片:" prop="imageCut">
+        </el-form-item> -->
+        <!-- <el-form-item label="结构化照片:" prop="imageCut">
           <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
         </el-form-item>
         <el-form-item v-if="dataDia.type === 1 || dataDia.type === 2" label="触发事件:" prop="type">
@@ -259,16 +264,16 @@
           <el-tag v-if="dataDia.label === 1" class="elTag">白名单</el-tag>
           <el-tag v-else-if="dataDia.label === 2" class="elTag">黑名单</el-tag>
           <el-tag v-else class="elTag">其他</el-tag>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 车牌 -->
-        <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
+        <!-- <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
           <span>{{ dataDia.license }}</span>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 人员 -->
-        <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
+        <!-- <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
           <span>{{ dataDia.username }}</span>
-        </el-form-item>
-      </el-form>
+        </el-form-item> -->
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button round @click="normal">正 常</el-button>
         <el-button type="warning" round @click="unnormal">异 常</el-button>
@@ -334,6 +339,7 @@ export default {
       },
       yData: [
       ],
+      nowShowCameraItem: null,
       loading: true,
       // TabLan: all,
       dialogVisable: false,
@@ -399,6 +405,9 @@ export default {
     }
   },
   watch: {
+    nowShowCameraItem(v, oldV) {
+      console.log(v, oldV)
+    },
     markers(v) {
       setTimeout(() => {
         if (document.getElementsByClassName('markerImg').length) {
@@ -983,7 +992,6 @@ export default {
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
-
       this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
@@ -1008,21 +1016,25 @@ export default {
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
         if (item.id === cameraInfo.camera.id) {
-          console.log(item.getBoundingClientRect(), '距离')
-          /*  const left = item.getBoundingClientRect().left
-          const top = item.getBoundingClientRect().top */
           setTimeout(() => {
+            this.nowShowCameraItem = item
+            document.getElementsByClassName('el-dialog__wrapper')[1].style.display = 'none'
             document.getElementsByClassName('v-modal')[0].style.display = 'none'
             document.getElementsByClassName('v-modal')[0].style.opacity = '0'
             document.getElementsByClassName('el-dialog__body')[0].scrollTop = 0
+            document.getElementsByClassName('v-modal')[0].style.display = 'block'
           }, 0)
           setTimeout(() => {
-            document.getElementsByClassName('v-modal')[0].style.display = 'block'
-          }, 10)
-          document.getElementsByClassName('el-dialog__wrapper')[1].style.display = 'block'
-          document.getElementsByClassName('el-dialog')[1].style.top = '300px'
-          document.getElementsByClassName('el-dialog')[1].style.left = '800px'
-          document.getElementsByClassName('el-dialog')[1].style.height = '280px'
+            setTimeout(() => {
+              console.log(item.getBoundingClientRect())
+              const left = item.getBoundingClientRect().left
+              const top = item.getBoundingClientRect().top
+              console.log(left, top)
+              document.getElementsByClassName('el-dialog__wrapper')[1].style.display = 'block'
+              document.getElementsByClassName('el-dialog')[1].style.top = top + 'px'
+              document.getElementsByClassName('el-dialog')[1].style.left = left + 'px'
+            }, 0)
+          }, 1000)
           if (item.classList.contains('markergif')) {
             item.classList.add('clickgif')
           } else {
@@ -1487,6 +1499,23 @@ body {
 .elTag {
   text-align: center;
   width: 60px;
+}
+.el-dialog {
+  height: 360px !important;
+}
+.el-dialog__header {
+  padding: 0 !important;
+
+}
+.el-dialog .el-dialog__body {
+  padding: 0 !important;
+}
+.el-dialog__footer {
+  padding: 0 !important;
+
+}
+.dialog-footer {
+  padding: 10px 0 !important;
 }
 </style>
 
