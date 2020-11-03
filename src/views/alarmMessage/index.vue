@@ -25,7 +25,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:250 + 'px'}"
+              :style="{width:250 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -41,7 +41,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px',height:'10px'}"
+              :style="{width:100 + 'px',height:'32px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -57,7 +57,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px'}"
+              :style="{width:100 + 'px', height: 32 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -84,7 +84,7 @@
           </el-select>
           <el-button
             v-waves
-            class="filter-item"
+            class="filter-item sureItem"
             size="mini"
             type="warning"
             @click="onSearch"
@@ -203,8 +203,8 @@
               </el-table-column>
               <el-table-column min-width="12%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
-                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                  <a style="color: #FA8334; text-decoration:none;" @click="editDialog(scope.row)">处理</a>
+                  <a style="color: #FA8334; text-decoration:none;" @click="delAlert(scope.row.id)">删除</a>
                 </template>
               </el-table-column>
             </el-table>
@@ -768,7 +768,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 32px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -795,7 +795,14 @@ td {
     vertical-align: middle;
   }
 }
+.sureItem {
+  height: 32px;
+}
 .alarmInp input.el-input__inner {
   height: 34px !important;
+}
+.el-input--mini .el-input__inner {
+  height: 32px !important;
+  line-height: 32px !important;
 }
 </style>
