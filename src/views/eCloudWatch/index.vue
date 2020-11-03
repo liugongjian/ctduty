@@ -1010,6 +1010,7 @@ export default {
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
         if (item.id === cameraInfo.camera.id) {
+          console.log(item.parentNode.childNodes, '孩子们')
           if (item.classList.contains('markergif')) {
             item.classList.add('clickgif')
           } else {
