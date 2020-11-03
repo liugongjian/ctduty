@@ -216,71 +216,36 @@
               </div>
             </div>
           </div>
-          <el-dialog
-            v-model="temp"
-            :visible="dialogVisable"
-            width="750px"
-            @close="closeDialog"
-          >
-            <el-form :model="dataDia" label-position="right" label-width="100px">
-              <el-form-item label="摄像头地址:">
-                <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
-              </el-form-item>
-              <el-form-item label="监控时间:">
-                <span style="width: 300px;">
-                  {{
-                    renderTime(dataDia.createTime)
-                  }}
-                </span>
-              </el-form-item>
-              <el-form-item label="原始照片:" prop="image">
-                <el-image :src="dataDia.imageCompress" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
-              </el-form-item>
-              <el-form-item label="结构化照片:" prop="imageCut">
-                <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
-              </el-form-item>
-              <el-form-item v-if="dataDia.type === 1 || dataDia.type === 2" label="触发事件:" prop="type">
-                <span v-if="dataDia.type === 1">人员</span>
-                <span v-else-if="dataDia.type === 2">机动车</span>
-              </el-form-item>
-              <el-form-item v-if="dataDia.label || dataDia.label === null" label="布控标签:" prop="label">
-                <el-tag v-if="dataDia.label === 1" class="elTag">白名单</el-tag>
-                <el-tag v-else-if="dataDia.label === 2" class="elTag">黑名单</el-tag>
-                <el-tag v-else class="elTag">其他</el-tag>
-              </el-form-item>
-              <!-- 车牌 -->
-              <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
-                <span>{{ dataDia.license }}</span>
-              </el-form-item>
-              <!-- 人员 -->
-              <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
-                <span>{{ dataDia.username }}</span>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button round @click="normal">正 常</el-button>
-              <el-button type="warning" round @click="unnormal">异 常</el-button>
-            </div>
-          </el-dialog>
-          <pagination
-            v-show="total>0"
-            :total="total"
-            :page.sync="page"
-            :limit.sync="limit"
-            @pagination="pageChange()"
-          />
         </div>
       </div>
     </div>
     <el-dialog
       v-model="temp"
       :visible="dialogVisable"
-      title="告警显示"
       width="480px"
       @close="closeDialog"
     >
-      <el-form :model="dataDia" label-position="right" label-width="100px">
-        <el-form-item label="摄像头地址:">
+      <div :model="dataDia" label-position="right" label-width="100px">
+        <div prop="image">
+          <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
+        </div>
+        <div class="popfooter">
+          <el-tooltip class="item" effect="light" :content="dataDia.camera.address" placement="top-start">  
+            <div class="popfooteraddress">
+              <svg-icon icon-class="pulladdress"></svg-icon>
+              <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+            </div>
+          </el-tooltip>
+          <div class="popfootertime">
+            <svg-icon icon-class="pulltime"></svg-icon>
+            <span style="width: 260px;">
+              {{
+                renderTime(dataDia.createTime)
+              }}
+            </span>
+          </div>
+        </div>
+        <!-- <el-form-item label="摄像头地址:">
           <span style="width: 300px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
         </el-form-item>
         <el-form-item label="监控时间:">
@@ -289,11 +254,8 @@
               renderTime(dataDia.createTime)
             }}
           </span>
-        </el-form-item>
-        <el-form-item label="原始照片:" prop="image">
-          <el-image :src="dataDia.imageCompress" style="width:525px; height:300px;" @click="()=>{openBig(dataDia.image)}"></el-image>
-        </el-form-item>
-        <el-form-item label="结构化照片:" prop="imageCut">
+        </el-form-item> -->
+        <!-- <el-form-item label="结构化照片:" prop="imageCut">
           <el-image :src="dataDia.imageCut" style="width:150px;"></el-image>
         </el-form-item>
         <el-form-item v-if="dataDia.type === 1 || dataDia.type === 2" label="触发事件:" prop="type">
@@ -304,16 +266,16 @@
           <el-tag v-if="dataDia.label === 1" class="elTag">白名单</el-tag>
           <el-tag v-else-if="dataDia.label === 2" class="elTag">黑名单</el-tag>
           <el-tag v-else class="elTag">其他</el-tag>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 车牌 -->
-        <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
+        <!-- <el-form-item v-if="dataDia.license" label="车牌:" prop="license">
           <span>{{ dataDia.license }}</span>
-        </el-form-item>
+        </el-form-item> -->
         <!-- 人员 -->
-        <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
+        <!-- <el-form-item v-if="dataDia.username" label="姓名:" prop="username">
           <span>{{ dataDia.username }}</span>
-        </el-form-item>
-      </el-form>
+        </el-form-item> -->
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button round @click="normal">正 常</el-button>
         <el-button type="warning" round @click="unnormal">异 常</el-button>
@@ -1069,7 +1031,7 @@ export default {
           document.getElementsByClassName('el-dialog__wrapper')[1].style.display = 'block'
           document.getElementsByClassName('el-dialog')[1].style.top = '300px'
           document.getElementsByClassName('el-dialog')[1].style.left = '800px'
-          document.getElementsByClassName('el-dialog')[1].style.height = '280px'
+          document.getElementsByClassName('el-dialog')[1].style.height = '360px'
           if (item.classList.contains('markergif')) {
             item.classList.add('clickgif')
           } else {
@@ -1535,5 +1497,34 @@ body {
   text-align: center;
   width: 60px;
 }
+.el-dialog__header {
+  padding: 0 !important;
+
+}
+.el-dialog .el-dialog__body {
+  padding: 0 !important;
+}
+.el-dialog__footer {
+  padding: 0 !important;
+
+}
+.dialog-footer {
+  padding: 10px 0 !important;
+}
+.popfooter {
+  padding-top: 4px;
+  padding-left: 4px;
+  display: flex;
+  .popfooteraddress {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    width: 330px;
+  }
+  .popfootertime {
+    width: 150px;
+  }
+}
+
 </style>
 
