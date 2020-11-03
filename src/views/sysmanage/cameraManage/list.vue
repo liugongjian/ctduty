@@ -244,7 +244,6 @@ export default {
   },
   methods: {
     setCanvasShow(payload) {
-      console.log('config传过的canvasShowStatus状态', payload)
       this.canvasShowStatus = payload
       if (payload == true) {
         this.configName = ''
@@ -254,10 +253,8 @@ export default {
     },
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
-      console.log('ssssss-----', res.data)
       this.algorithmList = res.data
       this.algorithmListCopy = JSON.parse(JSON.stringify(this.algorithmList))
-      console.log('赋值acvvv-------------', this.algorithmListCopy)
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
       this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
     },
@@ -276,7 +273,6 @@ export default {
       )
     },
     saveUpdatePick(item) {
-      console.log('增加一个字段表示是否已经配置', item)
       if (item.isPick) {
         item['isConfigAlready'] = true
         item['beforePickStatus'] = true
@@ -292,12 +288,9 @@ export default {
     },
     applyAlgorithms(flag) {
       if (flag) {
-        console.log('调用后端接口保存标注坐标列表')
         // 先组装参数，包含删除、增加、修改
         var allDatas = []
         var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
-        console.log('现在转化成一维数组', nowAlgorithmList)
-        console.log('二维数组---', this.algorithmListTwoDim)
         var params = []
         var flag = true
         for (var i = 0; i < nowAlgorithmList.length; i++) {
@@ -326,7 +319,6 @@ export default {
                 flag = false
                 break
               } else {
-                console.log('原来的areas', algorithmObject['areas'])
                 param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
               }
             }
@@ -345,19 +337,16 @@ export default {
               flag = false
               break
             }
-            console.log('原来的areas', algorithmObject['areas'])
             param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
             params.push(param)
           }
         }
         if (flag) {
           if (params.length > 0) {
-            console.log('组装的参数是-----', params)
             var finalBody = {
               deviceId: this.currentPickDeviceId,
               taskInstParams: params
             }
-            console.log('最终组装的参数是-----', finalBody)
             this.configTask(finalBody)
           }
           this.configVisable = false
@@ -378,7 +367,6 @@ export default {
       return newAreas
     },
     formatPoints(points, ratiox, ratioy) {
-      console.log('参数值', points, ratiox, ratiox)
       var newPoints = []
       for (var i = 0; i < points.length; i++) {
         newPoints.push({
@@ -390,12 +378,9 @@ export default {
     },
     async configTask(body) {
       const res = await client.configInstance(body)
-      console.log('任务实例配置调用接口返回-----', res)
     },
     configDialog(v) {
-      console.log('弹框显示绑定的设备id', v)
       this.currentPickDeviceId = v
-      console.log('弹框显示绑定的设备id---------', v, this.currentPickDeviceId)
       this.timer = new Date().getTime()
       this.configVisable = true
       this.getAlgorithmList(v)

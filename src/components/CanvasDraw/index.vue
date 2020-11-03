@@ -136,10 +136,7 @@ export default {
   },
   created() {
     // 页面没有渲染之前
-    console.log('从父组件传过来的deviceIdxxxxx========', this.currentPickDeviceId)
-    console.log('从父组件传值过来的一个算法item', this.currentPickAlgorithm)
     // this.currentPickAlgorithm.isPick = false
-    console.log('从父组件传值过来的一个算法item改变之后', this.currentPickAlgorithm)
   },
   methods: {
     async initCanvas() {
@@ -160,8 +157,6 @@ export default {
       this.ctx.textAlign = 'center'
       this.ctx.textBaseline = 'middle'
       this.ctx.fillText('图片正在加载中', 300, 200)
-      console.log('canvas从父组件传过的值***********', this.currentPickDeviceId)
-      console.log('canvas从父组件传值过来的一个算法item', this.currentPickAlgorithm)
       var img = new Image()
       // 改变图片的src
       // img.src ="http://host31.880508.xyz:10000/taskInst/snapshot/61010010001320014340";
@@ -169,15 +164,12 @@ export default {
       if (this.currentPickAlgorithm.isPick && this.currentPickAlgorithm.isNeedConfig && this.currentPickAlgorithm.isConfigAlready) { // 只有当被选择、需要配置且已经配置,分两种情况
         if (this.currentPickAlgorithm.isCommitStatus == true) { // 已经提交过了,获取历史坐标
           const { body: res } = await client.getHisInstAreas(this.currentPickAlgorithm.id)
-          console.log('xxx直接获取历史坐标', res)
           this.historyPoints = res.data
-          console.log('获取历史坐标集合', this.historyPoints)
         } else { // 没有提交,获取对象中暂存的关于这个算法的坐标
           var beforePoints = this.currentPickAlgorithm['areas']
           if (beforePoints != undefined) {
             var points = JSON.parse(JSON.stringify(beforePoints))
             this.historyPoints = points
-            console.log('从对象中获取历史坐标集合', this.historyPoints)
           }
         }
       }
@@ -194,7 +186,6 @@ export default {
       }
       // 加载完成执行
       const res = await client.getImageByDeviceId(this.currentPickDeviceId)
-      console.log('获取图片接口返回-----', res)
       if (res.code === 50000) {
         this.$message({
           showClose: false,
@@ -210,21 +201,16 @@ export default {
       // img.src =require("../../assets/images/video.jpg");
       // img.src ="/nvsapi/taskInst/snapshot/"+this.currentPickDeviceId;
       img.src = imageValue
-      console.log('xxx查看图片xxx', img)
       img.onload = loadImageSuccess
       function loadImageSuccess() {
-        console.log('什么时候进入到加载图片成功方法')
         that.ctx.clearRect(0, 0, canvas.width, canvas.height)
         that.ratiox = img.width / canvas.width
         that.ratioy = img.height / canvas.height
-        console.log('----ratiox---', that.ratiox)
-        console.log('----ratioy---', that.ratioy)
         that.ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
         if (that.currentPickAlgorithm.isPick && that.currentPickAlgorithm.isNeedConfig && that.currentPickAlgorithm.isConfigAlready) { // 只有当被选择、需要配置且已经配置,分两种情况
           // 如果是已经提交了,第一次修改，需要格式化坐标
           if (that.currentPickAlgorithm.isCommitStatus == true) { // 已经提交过了,获取历史坐标
             that.historyPoints = that.formatHistoryPoints(that.historyPoints)
-            console.log('获取历史坐标集合---------', that.historyPoints)
           }
         }
         that.drawGraph(that.historyPoints)
@@ -237,7 +223,6 @@ export default {
     },
     async getAlgorithmHistoryAreas(item) {
       const { body: res } = await client.getHisInstAreas(item.id)
-      console.log('xxxxxxxxx调用接口获取的历史坐标接口xxxxx', res.data)
       return res.data
     },
     isEmpty(obj) {
@@ -260,9 +245,7 @@ export default {
       this.ctx.fillText(content, location.x + 30, location.y + 5)
     },
     saveAlgorithm() {
-      console.log('save坐标----------------------')
       var newPointsList = this.historyPoints.concat(this.areas)
-      console.log('历史坐标和新的坐标结合起来的点坐标集合', newPointsList)
       var res = this.checkMarkCorrectAndSave(this.currentPickAlgorithm.name, newPointsList)
       if (res != null) {
         // alert(res.message)
@@ -272,15 +255,11 @@ export default {
           type: 'error'
         })
       } else { // 没有错
-        console.log('未提交的历史坐标aaaa', this.historyPoints)
-        console.log('未提交的当前的坐标', this.areas)
-        console.log('历史坐标和新的坐标结合起来的点坐标集合222222', newPointsList)
         this.currentPickAlgorithm['areas'] = newPointsList
         this.currentPickAlgorithm['ratiox'] = this.ratiox
         this.currentPickAlgorithm['ratioy'] = this.ratioy
         this.currentPickAlgorithm.isCommitStatus = false
         this.currentPickAlgorithm.isConfigAlready = true
-        console.log('aijdjkmf', this.currentPickAlgorithm)
         this.$emit('saveAlgorithm')
         // if(this.areas.length==0 && this.currentPickAlgorithm.isCommitStatus){//如果曾经提交了，只是打开看了一下保存，直接发送事件
         //   this.$emit('saveAlgorithm');
@@ -387,7 +366,6 @@ export default {
     // 从后端获取的点坐标格式化
     formatHistoryPoints(historyPoints) {
       // 每个坐标按照比列缩小或者放大
-      console.log('传过来的参数', historyPoints)
       var newPoints = []
       historyPoints.forEach((v) => {
         var vchilds = []
@@ -521,16 +499,12 @@ export default {
     },
     chooseAreaGraph(event) {
       // 只有再不画图的时候对click事件做处理
-      console.log('进入该click方法')
       if (this.flag == false) {
         // 遍历所有的areas、historyPoints显示该图像的坐标点
         var chooseArea = this.getChooseArea(this.areas, event.offsetX, event.offsetY)
-        console.log('历史和当前坐标', this.historyPoints, this.areas)
-        console.log('查找当前是否有chooseArea', chooseArea)
         if (chooseArea == null) {
           if (this.historyPoints.length > 0) {
             var chooseHisArea = this.getChooseArea(this.historyPoints, event.offsetX, event.offsetY)
-            console.log('查找历史是否有chooseArea', chooseArea)
             if (chooseHisArea != null) {
               this.tempChoosePoint = this.formatPoints(chooseHisArea.points)
             } else {
@@ -579,7 +553,6 @@ export default {
     },
     // 判断(x,y)是否在起点为startPoint终点为endPoint的直线上
     inLine(startPoint, endPoint, x, y) {
-      console.log('点击的坐标', x, y)
       if (startPoint.x == endPoint.x) { // 垂直
         if (x == startPoint.x) {
           return true
@@ -595,11 +568,8 @@ export default {
       }
     },
     checkInArea(area, x, y) {
-      console.log('area==>', area)
       var points = area.points
       var minx = points[0].x, maxx = points[0].x, miny = points[0].y, maxy = points[0].y
-      console.log('最大最小值start', minx, maxx, miny, maxy, '最大最小值end')
-      console.log('x--', x, 'y--', y)
       points.forEach(temp => {
         if (temp.x < minx) {
           minx = temp.x
@@ -615,13 +585,11 @@ export default {
           maxy = temp.y
         }
       })
-      console.log('找到最大最小值start', minx, maxx, miny, maxy, '找到最大最小值end')
       if (x >= minx && x <= maxx && y >= miny && y <= maxy) {
         return true
       } else { return false }
     },
     resetTypeAndFlag() {
-      console.log('进入到这个页面****************')
       this.type = ''
       this.flag = false
     },
@@ -806,7 +774,6 @@ export default {
       ctx.stroke()
     },
     drawRectMethod(ctx, colour, start_x, start_y, width, height) {
-      console.log('width,height------', width, height)
       var location = {
         x: start_x,
         y: start_y
