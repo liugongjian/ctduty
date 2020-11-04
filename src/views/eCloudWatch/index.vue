@@ -26,17 +26,27 @@
           v-if="window.visable"
           :auto-move="true"
           :position="window.position"
-          :show-shadow="true">
-          <div>
-          <div :model="dataDia" label-position="right" label-width="100px">
-            <div prop="image">
-              <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
-            </div>
-            <div class="popfooter">
-              <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
-                <div class="popfooteraddress">
-                  <svg-icon icon-class="pulladdress"></svg-icon>
-                  <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+        >
+          <div style="height:336px;">
+            <div :model="dataDia" label-position="right" label-width="100px">
+              <div prop="image" style="height:270px;position:relative;">
+                <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
+                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;" @click="()=>{openBig(dataDia.image)}"></CanvasDialog>
+              </div>
+              <div class="popfooter">
+                <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
+                  <div class="popfooteraddress">
+                    <svg-icon icon-class="pulladdress"></svg-icon>
+                    <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+                  </div>
+                </el-tooltip>
+                <div class="popfootertime">
+                  <svg-icon icon-class="pulltime"></svg-icon>
+                  <span style="width: 260px;">
+                    {{
+                      renderTime(dataDia.createTime)
+                    }}
+                  </span>
                 </div>
               </el-tooltip>
               <div class="popfootertime">
@@ -48,11 +58,10 @@
                 </span>
               </div>
             </div>
-          </div>
-          <div slot="footer" class="dialog-footer" style="text-align: center; background:  #F5F5F5; padding: 4px 10px">
-            <el-button round @click="normal" class="warnnormal popwarn" ><span class="spantext">正 常</span></el-button>
-            <el-button type="warning" round @click="unnormal" class="warnunnormal popwarn"><span class="spantext">异 常</span></el-button>
-          </div>
+            <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
+              <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal">正 常</el-button>
+              <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal">异 常</el-button>
+            </div>
           </div>
         </el-amap-info-window>
       </el-amap>
@@ -747,22 +756,6 @@ export default {
               this.xData.push(item)
             }
           })
-        } else {
-          const res = { 'code': 0, 'message': 'success', 'body': { 'data': [{ 'id': 3285673629698048, 'cameraId': '61010010001320014374', 'type': 1, 'state': 0, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673629030400', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673629673472', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673629669376', 'handlerId': 3275930383091712, 'createTime': '2020-11-03T00:00:27.000+0800', 'updateTime': '2020-11-03T15:23:27.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': '[1217, 282, 1251, 360]', 'camera': { 'id': '61010010001320014374', 'name': '蒿坪镇狮子沟村潘世财15336271144', 'longitude': 110.176434, 'latitude': 34.577865, 'inChargeId': 3275930383091712, 'manufacturer': 'test', 'model': 'test', 'address': '公司王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12089603', 'phone': '', 'creatorId': 3275930383091712, 'createTime': '2020-09-19T13:17:34.000+0800', 'updateTime': '2020-11-04T09:02:47.000+0800', 'online': 1, 'village': null }, 'handler': { 'id': 3275930383091712, 'username': 'admin', 'name': '苗小姐', 'password': 'Uzj07FB7', 'phone': '18621976330', 'departmentId': 3275699862611970, 'postId': 3275699862609920, 'permissionId': 3274944196083713, 'enable': 'y', 'createTime': '2020-09-08T22:29:42.000+0800', 'updateTime': '2020-09-08T22:29:42.000+0800' }}, { 'id': 3285673618024448, 'cameraId': '61010010001320014340', 'type': 1, 'state': 0, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673617371136', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673617989632', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673617969152', 'handlerId': 3275930383091712, 'createTime': '2020-11-03T00:00:21.000+0800', 'updateTime': '2020-11-03T20:07:01.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': null, 'camera': { 'id': '61010010001320014340', 'name': '蒿坪镇双胜村陈启红门口15332658182', 'longitude': 110.176404, 'latitude': 34.5553, 'inChargeId': 3275930383091712, 'manufacturer': 'TP-LINK', 'model': 'CT2S-W1', 'address': '陕西省华阴市小寨村村委会南北路孙姣姣门口王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12092003', 'phone': '', 'creatorId': 3275930383091712, 'createTime': '2020-09-15T19:46:07.000+0800', 'updateTime': '2020-11-04T09:03:46.000+0800', 'online': 1, 'village': null }, 'handler': { 'id': 3275930383091712, 'username': 'admin', 'name': '苗小姐', 'password': 'Uzj07FB7', 'phone': '18621976330', 'departmentId': 3275699862611970, 'postId': 3275699862609920, 'permissionId': 3274944196083713, 'enable': 'y', 'createTime': '2020-09-08T22:29:42.000+0800', 'updateTime': '2020-09-08T22:29:42.000+0800' }}, { 'id': 3285673610346496, 'cameraId': '61010010001320014340', 'type': 1, 'state': 0, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673609660416', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673610297344', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673610272768', 'handlerId': 3275930383091712, 'createTime': '2020-11-03T00:00:17.000+0800', 'updateTime': '2020-11-03T20:33:17.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': null, 'camera': { 'id': '61010010001320014340', 'name': '蒿坪镇双胜村陈启红门口15332658182', 'longitude': 110.176404, 'latitude': 34.5553, 'inChargeId': 3275930383091712, 'manufacturer': 'TP-LINK', 'model': 'CT2S-W1', 'address': '陕西省华阴市小寨村村委会南北路孙姣姣门口王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12092003', 'phone': '', 'creatorId': 3275930383091712, 'createTime': '2020-09-15T19:46:07.000+0800', 'updateTime': '2020-11-04T09:03:46.000+0800', 'online': 1, 'village': null }, 'handler': { 'id': 3275930383091712, 'username': 'admin', 'name': '苗小姐', 'password': 'Uzj07FB7', 'phone': '18621976330', 'departmentId': 3275699862611970, 'postId': 3275699862609920, 'permissionId': 3274944196083713, 'enable': 'y', 'createTime': '2020-09-08T22:29:42.000+0800', 'updateTime': '2020-09-08T22:29:42.000+0800' }}, { 'id': 3285673607854080, 'cameraId': '61010010001320014370', 'type': 1, 'state': null, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673590200320', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673607772160', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673607745536', 'handlerId': null, 'createTime': '2020-11-03T00:00:16.000+0800', 'updateTime': '2020-11-03T00:00:16.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': null, 'camera': { 'id': '61010010001320014370', 'name': '蒿坪镇蒿坪村张良田18909150857', 'longitude': 110.16947, 'latitude': 34.575318, 'inChargeId': 3275930383091712, 'manufacturer': 'TP-LINK', 'model': 'CT2S-W1', 'address': '华阴市华山镇高家村村委王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12089363', 'phone': '17724503907', 'creatorId': 3274991922276352, 'createTime': '2020-09-06T11:03:38.000+0800', 'updateTime': '2020-11-04T09:01:46.000+0800', 'online': 1, 'village': '华山镇' }, 'handler': null }, { 'id': 3285673607866368, 'cameraId': '61010010001320014374', 'type': 1, 'state': null, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673590194176', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673607806976', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673607802880', 'handlerId': null, 'createTime': '2020-11-03T00:00:16.000+0800', 'updateTime': '2020-11-03T00:00:16.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': null, 'camera': { 'id': '61010010001320014374', 'name': '蒿坪镇狮子沟村潘世财15336271144', 'longitude': 110.176434, 'latitude': 34.577865, 'inChargeId': 3275930383091712, 'manufacturer': 'test', 'model': 'test', 'address': '公司王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12089603', 'phone': '', 'creatorId': 3275930383091712, 'createTime': '2020-09-19T13:17:34.000+0800', 'updateTime': '2020-11-04T09:02:47.000+0800', 'online': 1, 'village': null }, 'handler': null }, { 'id': 3285673586806784, 'cameraId': '61010010001320014374', 'type': 1, 'state': null, 'content': '', 'image': 'http://36.41.71.26:8920/images/id/3285673586030592', 'imageCut': 'http://36.41.71.26:8920/images/id/3285673586776064', 'imageCompress': 'http://36.41.71.26:8920/images/id/3285673586771968', 'handlerId': null, 'createTime': '2020-11-03T00:00:06.000+0800', 'updateTime': '2020-11-03T00:00:06.000+0800', 'label': 3, 'license': '', 'username': null, 'gender': 3, 'plateType': '', 'box': null, 'camera': { 'id': '61010010001320014374', 'name': '蒿坪镇狮子沟村潘世财15336271144', 'longitude': 110.176434, 'latitude': 34.577865, 'inChargeId': 3275930383091712, 'manufacturer': 'test', 'model': 'test', 'address': '公司王福平', 'url': 'rtsp://117.33.170.218:6002/ffcs/l_12089603', 'phone': '', 'creatorId': 3275930383091712, 'createTime': '2020-09-19T13:17:34.000+0800', 'updateTime': '2020-11-04T09:02:47.000+0800', 'online': 1, 'village': null }, 'handler': null }], 'page': { 'index': 1, 'size': 10, 'total': 6 }}, 'timestamp': 1604453779945, 'serial': 'd0ffa8e4-bce6-4aa1-b493-bef8a169658f' }
-          const response = JSON.parse(JSON.stringify(res))
-          console.log(response)
-          this.stepsData = response.body.data
-          this.isOnlyCameraData = false
-          this.isDisableAllAlarmBtn = false
-          this.yData = []
-          this.xData = []
-          response.body.data.forEach(item => {
-            if (item.handlerId !== null) {
-              this.yData.push(item)
-            } else {
-              this.xData.push(item)
-            }
-          })
         }
       })
     },
@@ -1014,19 +1007,26 @@ export default {
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
+      console.log(cameraInfo.image)
+      this.points = JSON.parse(cameraInfo.box)
       // this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
           audio.play()// 播放
         }
+        this.window.visable = true
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
+      } else {
+        this.window.visable = false
+        setTimeout(() => {
+          this.window.visable = true
+        }, 0)
       }
-      this.center = [cameraInfo.camera.longitude + 0.018, cameraInfo.camera.latitude + 0.002]
-      this.window.visable = true
-      this.window.position = [cameraInfo.camera.longitude + 0.004, cameraInfo.camera.latitude - 0.001]
+      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
+      this.window.position = [cameraInfo.camera.longitude + 0.0015, cameraInfo.camera.latitude + 0.001]
       this.window.content = `
         <div style="width: 480px; height: 400px" >
           <div style="width: 100%; height: 100%">
@@ -1046,19 +1046,6 @@ export default {
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
         if (item.id === cameraInfo.camera.id) {
-          console.log(document.getElementsByClassName('el-dialog'), '弹窗')
-          /* setTimeout(() => {
-            document.getElementsByClassName('v-modal')[0].style.display = 'none'
-            document.getElementsByClassName('v-modal')[0].style.opacity = '0'
-            document.getElementsByClassName('el-dialog__body')[0].scrollTop = 0
-          }, 0)
-          setTimeout(() => {
-            document.getElementsByClassName('v-modal')[0].style.display = 'block'
-          }, 10)
-          document.getElementsByClassName('el-dialog__wrapper')[1].style.display = 'block'
-          document.getElementsByClassName('el-dialog')[1].style.top = '300px'
-          document.getElementsByClassName('el-dialog')[1].style.left = '800px'
-          document.getElementsByClassName('el-dialog')[1].style.height = '360px' */
           if (item.classList.contains('markergif')) {
             item.classList.add('clickgif')
           } else {
@@ -1070,7 +1057,7 @@ export default {
       })
     },
     closeDialog() {
-      this.dialogVisable = false
+      this.window.visable = false
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -1589,6 +1576,9 @@ body {
 .amap-info-content {
   padding: 0px !important;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6857aac3d56649fde7b90e76d5698247eab15544
 </style>
 

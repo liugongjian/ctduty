@@ -237,7 +237,7 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '治安案件有所降低' : res.body.data.alertAvgVariance > 0.4 ? '治安案件保持稳定' : '治安案件有所增加'
+        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
