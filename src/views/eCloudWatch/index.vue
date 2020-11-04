@@ -22,7 +22,7 @@
           :ext-data="marker.extData"
           @click="markerClick"
         ></el-amap-marker>
-        <el-amap-info-window :position="window.position" :content="window.content" :visable="window.visable"></el-amap-info-window>
+        <el-amap-info-window v-if="window.visable" :position="window.position" :content="window.content" :visable="window.visable"></el-amap-info-window>
       </el-amap>
       <div class="warn">
         <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
@@ -376,7 +376,7 @@ export default {
         }
       },
       window: {
-        visable: true,
+        visable: false,
         position: [110.170143, 34.567009],
         content: '<div>{{`哈哈哈`}} </div>'
       }
@@ -984,7 +984,7 @@ export default {
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
-      this.dialogVisable = true
+      // this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
@@ -995,7 +995,14 @@ export default {
         }, 5000)
       }
       this.center = [cameraInfo.camera.longitude + 0.018, cameraInfo.camera.latitude + 0.002]
+      this.window.visable = true
       this.window.position = [cameraInfo.camera.longitude + 0.004, cameraInfo.camera.latitude - 0.001]
+      this.window.content = `
+        <div style="width: 480px; height: 400px" >
+          <div style="width: 100%; height: 100%">
+            <img src="${cameraInfo.image}" style="width: 100%; height: 300px" />
+          </div>
+        </div> `
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
