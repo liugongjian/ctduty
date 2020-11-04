@@ -50,7 +50,7 @@
             </div>
           </div>
           <div slot="footer" class="dialog-footer" style="text-align: center; background:  #F5F5F5; padding: 4px 10px">
-            <el-button round @click="normal" class="warnnormal popwarn"><span class="spantext">正 常</span></el-button>
+            <el-button round @click="normal" class="warnnormal popwarn" ><span class="spantext">正 常</span></el-button>
             <el-button type="warning" round @click="unnormal" class="warnunnormal popwarn"><span class="spantext">异 常</span></el-button>
           </div>
           </div>
