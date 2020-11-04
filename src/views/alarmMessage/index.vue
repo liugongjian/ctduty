@@ -285,6 +285,7 @@
               :tabs-arr="tabsArr"
               :all-total="allTotal"
               :limit.sync="limit"
+              :alarmtext = "alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -319,6 +320,7 @@ export default {
   },
   data() {
     return {
+      alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
       temp: {
