@@ -995,6 +995,7 @@ export default {
         }, 5000)
       }
       this.center = [cameraInfo.camera.longitude + 0.018, cameraInfo.camera.latitude + 0.002]
+      this.window.position = [cameraInfo.camera.longitude + 0.004, cameraInfo.camera.latitude - 0.001]
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
