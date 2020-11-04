@@ -414,6 +414,9 @@ export default {
   methods: {
     searchAlarm() {
       console.log('ccccccccccccc', this.formInline.searchkey)
+      const s = this.currentTab + ' ' + this.startTime + ':00' 
+      const e = this.currentTab + ' ' + this.endTime + ':00' 
+      //  + ' ' + this.startTime + ':00'
       let params
       if (isNaN(this.formInline.searchkey)) {
         params = {
@@ -423,6 +426,11 @@ export default {
               field: "camera.address",
               operator:"LIKE",
               value:`%${this.formInline.searchkey}%`
+            },
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
             }
           ]
         }
@@ -679,6 +687,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      console.log('se', s , e)
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -747,6 +756,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+      console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1

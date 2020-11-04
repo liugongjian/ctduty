@@ -48,14 +48,6 @@
                     }}
                   </span>
                 </div>
-              </el-tooltip>
-              <div class="popfootertime">
-                <svg-icon icon-class="pulltime"></svg-icon>
-                <span style="width: 260px;">
-                  {{
-                    renderTime(dataDia.createTime)
-                  }}
-                </span>
               </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
@@ -310,6 +302,7 @@ require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
+import CanvasDialog from '@/components/CanvasDialog'
 import { play } from '@/api/monitor'
 import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
@@ -325,7 +318,7 @@ const amapManager = new VueAMap.AMapManager('container', {
 
 export default {
   name: 'ECloudWatch',
-  components: { Pagination, VideoPlayer },
+  components: { Pagination, VideoPlayer, CanvasDialog },
   // eslint-disable-next-line vue/require-prop-types
   props: ['data', 'defaultActive'],
   data() {
@@ -400,6 +393,7 @@ export default {
       allXDataCameraIDEQU: null,
       hasCameraDom: false,
       isPushOff: null,
+      points: [],
       cameraAlarmObj: {
 
       },
@@ -1238,6 +1232,7 @@ body {
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
+  opacity: .92;
   background-color: #f1f2f6;
 }
 .zuoContent {
@@ -1569,9 +1564,5 @@ body {
 .amap-info-content {
   padding: 0px !important;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 6857aac3d56649fde7b90e76d5698247eab15544
 </style>
 
