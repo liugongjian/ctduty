@@ -27,6 +27,7 @@
           :auto-move="true"
           :position="window.position"
           :show-shadow="true">
+          <div>
           <div :model="dataDia" label-position="right" label-width="100px">
             <div prop="image">
               <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
@@ -48,9 +49,10 @@
               </div>
             </div>
           </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button round @click="normal">正 常</el-button>
-            <el-button type="warning" round @click="unnormal">异 常</el-button>
+          <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
+            <el-button round @click="normal" style="border-radius: 2px">正 常</el-button>
+            <el-button type="warning" round @click="unnormal" style="border-radius: 2px">异 常</el-button>
+          </div>
           </div>
         </el-amap-info-window>
       </el-amap>
@@ -1549,6 +1551,11 @@ body {
     width: 150px;
   }
 }
-
+.amap-info-content {
+  padding-right: 10px;
+}
+.amap-info-close {
+  display: none;
+}
 </style>
 
