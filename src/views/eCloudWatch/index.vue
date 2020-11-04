@@ -30,8 +30,7 @@
           <div>
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image">
-                <!-- <CanvasDialog></CanvasDialog> -->
-                <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
+                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :right-bottom="[points[2],points[3]]"></CanvasDialog>
               </div>
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
@@ -393,6 +392,7 @@ export default {
       allXDataCameraIDEQU: null,
       hasCameraDom: false,
       isPushOff: null,
+      points: [],
       cameraAlarmObj: {
 
       },
@@ -1016,6 +1016,7 @@ export default {
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
+      this.points = JSON.parse(cameraInfo.box)
       // this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
