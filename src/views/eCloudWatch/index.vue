@@ -276,13 +276,12 @@
           <span>{{ dataDia.username }}</span>
         </el-form-item> -->
       </div>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer popsure">
         <el-button round @click="normal">正 常</el-button>
         <el-button type="warning" round @click="unnormal">异 常</el-button>
       </div>
     </el-dialog>
     <div v-if="markers.length>0"></div>
-
   </div>
 </template>
 
@@ -1285,6 +1284,7 @@ body {
     .warn {
       margin-top: 10px;
       position: absolute;
+      opacity: .8;
       top: 30px;
       right: 15px;
       width: 320px;
@@ -1499,16 +1499,14 @@ body {
 }
 .el-dialog__header {
   padding: 0 !important;
-
 }
 .el-dialog .el-dialog__body {
   padding: 0 !important;
 }
 .el-dialog__footer {
   padding: 0 !important;
-
 }
-.dialog-footer {
+.popsure {
   padding: 10px 0 !important;
 }
 .popfooter {
