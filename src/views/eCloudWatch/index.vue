@@ -22,7 +22,37 @@
           :ext-data="marker.extData"
           @click="markerClick"
         ></el-amap-marker>
-        <el-amap-info-window v-if="window.visable" :position="window.position" :content="window.content" :visable="window.visable"></el-amap-info-window>
+        <el-amap-info-window
+          v-if="window.visable"
+          :auto-move="true"
+          :position="window.position"
+          :show-shadow="true">
+          <div :model="dataDia" label-position="right" label-width="100px">
+            <div prop="image">
+              <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
+            </div>
+            <div class="popfooter">
+              <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
+                <div class="popfooteraddress">
+                  <svg-icon icon-class="pulladdress"></svg-icon>
+                  <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+                </div>
+              </el-tooltip>
+              <div class="popfootertime">
+                <svg-icon icon-class="pulltime"></svg-icon>
+                <span style="width: 260px;">
+                  {{
+                    renderTime(dataDia.createTime)
+                  }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button round @click="normal">正 常</el-button>
+            <el-button type="warning" round @click="unnormal">异 常</el-button>
+          </div>
+        </el-amap-info-window>
       </el-amap>
       <div class="warn">
         <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
@@ -376,8 +406,7 @@ export default {
       },
       window: {
         visable: false,
-        position: [110.170143, 34.567009],
-        content: '<div>{{`哈哈哈`}} </div>'
+        position: [110.170143, 34.567009]
       }
     }
   },
