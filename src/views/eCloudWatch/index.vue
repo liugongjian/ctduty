@@ -1001,7 +1001,6 @@ export default {
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
-      console.log(cameraInfo.image)
       this.points = JSON.parse(cameraInfo.box)
       // this.dialogVisable = true
       if (isAlert) {
@@ -1021,12 +1020,6 @@ export default {
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
       this.window.position = [cameraInfo.camera.longitude + 0.0015, cameraInfo.camera.latitude + 0.001]
-      this.window.content = `
-        <div style="width: 480px; height: 400px" >
-          <div style="width: 100%; height: 100%">
-            <img src="${cameraInfo.image}" style="width: 100%; height: 300px" />
-          </div>
-        </div> `
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
