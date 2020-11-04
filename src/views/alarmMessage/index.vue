@@ -8,14 +8,14 @@
             placeholder="请输入..."
             class="filter-item alarmInp"
             style="width: 240px; height: 32px"
-            @keyup.enter.native="onSearch"
+            @keyup.enter.native="searchAlarm"
           >
           </el-input>
           <el-button
             class="filter-item searchsure"
             style="font-size:12px; "
             icon="el-icon-search"
-            @click="onSearch"
+            @click="searchAlarm"
           ></el-button>
           <el-button
             class="filter-item"
@@ -412,6 +412,48 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
+    searchAlarm() {
+      console.log('ccccccccccccc', this.formInline.searchkey)
+      const s = this.currentTab + ' ' + this.startTime + ':00' 
+      const e = this.currentTab + ' ' + this.endTime + ':00' 
+      //  + ' ' + this.startTime + ':00'
+      let params
+      if (isNaN(this.formInline.searchkey)) {
+        params = {
+          cascade:true,
+          params: [
+            {
+              field: "camera.address",
+              operator:"LIKE",
+              value:`%${this.formInline.searchkey}%`
+            },
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            }
+          ]
+        }
+      } else {
+        params = {
+          cascade:true,
+          params: [
+            {
+              field: "id",
+              operator:"EQUALS",
+              value: this.formInline.searchkey
+            },
+            
+          ]
+        }
+      }
+      getAlertInfos(params).then(response => {
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
+        this.formInline.searchkey = ''
+      })
+    },
     openBig(url) {
       window.open(url)
     },
@@ -645,6 +687,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      console.log('se', s , e)
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -713,6 +756,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+      console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1

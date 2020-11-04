@@ -88,9 +88,6 @@ export default {
       }
     }
   },
-  created() {
-    console.log('分页接收告警', this.props)
-  },
   methods: {
     handleSizeChange(val) {
       this.$emit('pagination', { page: this.currentPage, limit: val })
