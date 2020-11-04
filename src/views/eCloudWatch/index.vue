@@ -30,8 +30,8 @@
           <div style="height:336px;">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="height:270px;position:relative;">
-                <el-image :src="dataDia.image" style="z-index:1;"></el-image>
-                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;" @click="()=>{openBig(dataDia.image)}"></CanvasDialog>
+                <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
+                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;" @click="()=>{openBig(dataDia.image)}"></CanvasDialog>
               </div>
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
@@ -1020,7 +1020,7 @@ export default {
         }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
-      this.window.position = [cameraInfo.camera.longitude + 0.004, cameraInfo.camera.latitude - 0.001]
+      this.window.position = [cameraInfo.camera.longitude + 0.0015, cameraInfo.camera.latitude + 0.001]
       this.window.content = `
         <div style="width: 480px; height: 400px" >
           <div style="width: 100%; height: 100%">
