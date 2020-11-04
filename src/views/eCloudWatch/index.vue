@@ -755,6 +755,11 @@ export default {
     },
     watchClick(e) {
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
+        e.path.forEach(item => {
+          if (item.className === 'amap-labels') {
+            this.closeDialog()
+          }
+        })
         return
       }
       const markers = document.getElementsByClassName('markerImg');
