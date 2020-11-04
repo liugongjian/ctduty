@@ -402,7 +402,6 @@ export default {
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
-    console.log('currentTab', this.currentTab)
     this.getPushSetTime()
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
@@ -435,7 +434,8 @@ export default {
               field: "id",
               operator:"EQUALS",
               value: this.formInline.searchkey
-            }
+            },
+            
           ]
         }
       }
