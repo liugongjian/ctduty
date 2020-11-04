@@ -1,6 +1,6 @@
 <template>
   <div class="canvasBox">
-    <canvas id="canvas" style="position:absolute;width:480px;height:270px;"></canvas>
+    <canvas id="canvas" style="width:480px;height:270px;"></canvas>
   </div>
 </template>
 
@@ -44,10 +44,16 @@ export default {
         img.onload = function() {
           canvas.width = _width = this.width
           canvas.height = _height = this.height
-          ctx.clearRect(0, 0, _width, _height)
           ctx.globalCompositeOperation = 'source-over'
           ctx.drawImage(img, 0, 0)
-          ctx.strokeRect(Math.ceil(coor.leftTop[0] / 4), Math.ceil(coor.leftTop[1] / 4), Math.ceil(_width / 4), Math.ceil(_height / 4))
+          ctx.lineWidth = 4
+          ctx.strokeStyle = 'red'
+          setInterval(() => {
+            ctx.strokeRect(Math.ceil(coor.leftTop[0] / 4), Math.ceil(coor.leftTop[1] / 4), Math.ceil(_width / 4), Math.ceil(_height / 4))
+            setTimeout(() => {
+              ctx.clearRect(0, 0, _width, _height)
+            }, 300)
+          }, 600)
         }
       }, 0)
     }
@@ -56,6 +62,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang='scss'>
+.canvasBox{
+  position: absolute;
+}
 </style>
