@@ -49,9 +49,9 @@
               </div>
             </div>
           </div>
-          <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
-            <el-button round @click="normal" style="border-radius: 2px">正 常</el-button>
-            <el-button type="warning" round @click="unnormal" style="border-radius: 2px">异 常</el-button>
+          <div slot="footer" class="dialog-footer" style="text-align: center; background:  #F5F5F5; padding: 4px 10px">
+            <el-button round @click="normal" class="warnnormal popwarn"><span class="spantext">正 常</span></el-button>
+            <el-button type="warning" round @click="unnormal" class="warnunnormal popwarn"><span class="spantext">异 常</span></el-button>
           </div>
           </div>
         </el-amap-info-window>
@@ -1557,5 +1557,38 @@ body {
 .amap-info-close {
   display: none;
 }
+.warnnormal {
+  border: 1px solid #ccc;
+  background:#fff;
+  .spantext {
+    margin-left: -4px !important;
+  }
+}
+.popwarn {
+  border-radius: 2px !important;
+  width: 60px;
+  height: 30px;
+  font-size: 12px;
+  line-height: 10px;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+.warnunnormal {
+  border: 1px solid #FF9832;
+  color: #fff;
+  background:#FF9832;
+  margin-left: 10px;
+  .spantext {
+    margin-left: -4px !important;
+  }
+}
+.amap-info-content .amap-info-outer {
+  padding-bottom: 0px !important;
+}
+.amap-info-content {
+  padding: 0px !important;
+}
+
 </style>
 
