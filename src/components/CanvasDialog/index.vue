@@ -79,13 +79,6 @@ export default {
       }, 300)
     }, 600)
   },
-  created() {
-    // 页面没有渲染之前
-    console.log('从父组件传过来的deviceIdxxxxx========', this.currentPickDeviceId)
-    console.log('从父组件传值过来的一个算法item', this.currentPickAlgorithm)
-    // this.currentPickAlgorithm.isPick = false
-    console.log('从父组件传值过来的一个算法item改变之后', this.currentPickAlgorithm)
-  },
   methods: {
     async initCanvas() {
       var algoName = this.currentPickAlgorithm.name
@@ -105,27 +98,10 @@ export default {
       this.ctx.textAlign = 'center'
       this.ctx.textBaseline = 'middle'
       this.ctx.fillText('图片正在加载中', 300, 200)
-      console.log('canvas从父组件传过的值***********', this.currentPickDeviceId)
-      console.log('canvas从父组件传值过来的一个算法item', this.currentPickAlgorithm)
       var img = new Image()
       // 改变图片的src
       // img.src ="http://host31.880508.xyz:10000/taskInst/snapshot/61010010001320014340";
       // img.src ="/nvsapi/taskInst/snapshot/61010010001320014340";
-      if (this.currentPickAlgorithm.isPick && this.currentPickAlgorithm.isNeedConfig && this.currentPickAlgorithm.isConfigAlready) { // 只有当被选择、需要配置且已经配置,分两种情况
-        if (this.currentPickAlgorithm.isCommitStatus == true) { // 已经提交过了,获取历史坐标
-          const { body: res } = await client.getHisInstAreas(this.currentPickAlgorithm.id)
-          console.log('xxx直接获取历史坐标', res)
-          this.historyPoints = res.data
-          console.log('获取历史坐标集合', this.historyPoints)
-        } else { // 没有提交,获取对象中暂存的关于这个算法的坐标
-          var beforePoints = this.currentPickAlgorithm['areas']
-          if (beforePoints != undefined) {
-            var points = JSON.parse(JSON.stringify(beforePoints))
-            this.historyPoints = points
-            console.log('从对象中获取历史坐标集合', this.historyPoints)
-          }
-        }
-      }
       if (this.historyPoints.length > 0) {
         var lastHisArea = this.historyPoints[this.historyPoints.length - 1]
         var nameList = lastHisArea.name.split('-') // 字符分割

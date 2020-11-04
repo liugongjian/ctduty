@@ -27,31 +27,33 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div :model="dataDia" label-position="right" label-width="100px">
-            <div prop="image">
-              <CanvasDialog></CanvasDialog>
-              <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
-            </div>
-            <div class="popfooter">
-              <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
-                <div class="popfooteraddress">
-                  <svg-icon icon-class="pulladdress"></svg-icon>
-                  <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+          <div>
+            <div :model="dataDia" label-position="right" label-width="100px">
+              <div prop="image">
+                <!-- <CanvasDialog></CanvasDialog> -->
+                <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
+              </div>
+              <div class="popfooter">
+                <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
+                  <div class="popfooteraddress">
+                    <svg-icon icon-class="pulladdress"></svg-icon>
+                    <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
+                  </div>
+                </el-tooltip>
+                <div class="popfootertime">
+                  <svg-icon icon-class="pulltime"></svg-icon>
+                  <span style="width: 260px;">
+                    {{
+                      renderTime(dataDia.createTime)
+                    }}
+                  </span>
                 </div>
-              </el-tooltip>
-              <div class="popfootertime">
-                <svg-icon icon-class="pulltime"></svg-icon>
-                <span style="width: 260px;">
-                  {{
-                    renderTime(dataDia.createTime)
-                  }}
-                </span>
               </div>
             </div>
-          </div>
-          <div slot="footer" class="dialog-footer">
-            <el-button round @click="normal">正 常</el-button>
-            <el-button type="warning" round @click="unnormal">异 常</el-button>
+            <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
+              <el-button round style="border-radius: 2px" @click="normal">正 常</el-button>
+              <el-button type="warning" round style="border-radius: 2px" @click="unnormal">异 常</el-button>
+            </div>
           </div>
         </el-amap-info-window>
       </el-amap>
@@ -278,13 +280,12 @@
           </div>
         </div>
       </div>
-      <div slot="footer" class="dialog-footer">
+      <div slot="footer" class="dialog-footer popsure">
         <el-button round @click="normal">正 常</el-button>
         <el-button type="warning" round @click="unnormal">异 常</el-button>
       </div>
     </el-dialog>
     <div v-if="markers.length>0"></div>
-
   </div>
 </template>
 
@@ -1025,7 +1026,7 @@ export default {
           this.closeDialog()
         }, 5000)
       }
-      this.center = [cameraInfo.camera.longitude + 0.018, cameraInfo.camera.latitude + 0.002]
+      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
       this.window.visable = true
       this.window.position = [cameraInfo.camera.longitude + 0.004, cameraInfo.camera.latitude - 0.001]
       this.window.content = `
@@ -1314,6 +1315,7 @@ body {
     .warn {
       margin-top: 10px;
       position: absolute;
+      opacity: .8;
       top: 30px;
       right: 15px;
       width: 320px;
@@ -1528,16 +1530,14 @@ body {
 }
 .el-dialog__header {
   padding: 0 !important;
-
 }
 .el-dialog .el-dialog__body {
   padding: 0 !important;
 }
 .el-dialog__footer {
   padding: 0 !important;
-
 }
-.dialog-footer {
+.popsure {
   padding: 10px 0 !important;
 }
 .popfooter {
@@ -1554,6 +1554,11 @@ body {
     width: 150px;
   }
 }
-
+.amap-info-content {
+  padding-right: 10px;
+}
+.amap-info-close {
+  display: none;
+}
 </style>
 

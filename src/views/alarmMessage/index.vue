@@ -7,9 +7,16 @@
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
-            style="width: 260px; height: 32px"
+            style="width: 240px; height: 32px"
             @keyup.enter.native="onSearch"
-          ></el-input>
+          >
+          </el-input>
+          <el-button
+            class="filter-item searchsure"
+            style="font-size:12px; "
+            icon="el-icon-search"
+            @click="onSearch"
+          ></el-button>
           <el-button
             class="filter-item"
             style="font-size:12px; "
@@ -210,30 +217,44 @@
             </el-table>
 
             <el-dialog
+              v-model="temp"
               :visible.sync="dialogVisable"
-              title="报警显示"
-              width="750px"
+              width="480px"
               @close="closeDialog"
             >
-              <el-form v-model="temp" label-position="right" label-width="100px">
-                <el-form-item label="摄像头地址：" prop="camera.address">
+              <div label-position="right" label-width="100px">
+                <!-- <el-form-item label="摄像头地址：" prop="camera.address">
                   <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
                 </el-form-item>
                 <el-form-item label="监控时间：" prop="createTime">
                   <span style="width: 300px;"></span>
                   {{ renderTime(temp.createTime) }}
-                </el-form-item>
-                <el-form-item label="原始照片：" prop="image">
+                </el-form-item> -->
+                <div label="原始照片：" prop="image">
                   <el-image
                     :src="temp.imageCompress"
-                    style="width:525px; height:300px"
+                    style="width:100%; height:100%"
                     @click="()=>{openBig(temp.image)}"
                   ></el-image>
-                </el-form-item>
-                <el-form-item label="结构化照片：" prop="imageCut">
+                </div>
+                <div class="popfooter">
+                  <el-tooltip class="item" effect="light" :content="temp.camera.address" placement="top-start">  
+                    <div class="popfooteraddress">
+                      <svg-icon icon-class="pulladdress"></svg-icon>
+                      <span style="width: 260px;">{{ temp.camera | formatNull }}</span>
+                    </div>
+                  </el-tooltip>
+                  <div class="popfootertime">
+                    <svg-icon icon-class="pulltime"></svg-icon>
+                    <span style="width: 260px;">
+                      {{ renderTime(temp.createTime) }}
+                    </span>
+                  </div>
+                </div>
+                <!-- <el-form-item label="结构化照片：" prop="imageCut">
                   <el-image :src="temp.imageCut"></el-image>
-                </el-form-item>
-                <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
+                </el-form-item> -->
+                <!-- <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
                   <span v-if="temp.type === 1">人员</span>
                   <span v-else-if="temp.type === 2">机动车</span>
                 </el-form-item>
@@ -241,16 +262,16 @@
                   <span v-if="temp.label === 1">白名单</span>
                   <span v-else-if="temp.label === 2">黑名单</span>
                   <span v-else>其他</span>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- 车牌 -->
-                <el-form-item v-if="temp.license" label="车牌:" prop="license">
+                <!-- <el-form-item v-if="temp.license" label="车牌:" prop="license">
                   <span>{{ temp.license }}</span>
-                </el-form-item>
+                </el-form-item> -->
                 <!-- 人员 -->
-                <el-form-item v-if="temp.username" label="姓名:" prop="username">
+                <!-- <el-form-item v-if="temp.username" label="姓名:" prop="username">
                   <span>{{ temp.username }}</span>
-                </el-form-item>
-              </el-form>
+                </el-form-item> -->
+              </div>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogConfirm">正 常</el-button>
                 <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
@@ -801,8 +822,44 @@ td {
 .alarmInp input.el-input__inner {
   height: 34px !important;
 }
+.pull-right {
+  position: relative;
+}
+.searchsure {
+  position: absolute;
+  top: 1px;
+  right: 90px;
+  // border-left: none;
+  border-radius: 0 4px 4px 0;
+}
 .el-input--mini .el-input__inner {
   height: 32px !important;
   line-height: 32px !important;
+}
+.el-dialog__header {
+  padding: 0 !important;
+}
+.el-dialog .el-dialog__body {
+  padding: 0 !important;
+}
+.el-dialog__footer {
+  padding: 0 !important;
+}
+.dialog-footer {
+  padding: 10px 0 !important;
+}
+.popfooter {
+  padding-top: 4px;
+  padding-left: 4px;
+  display: flex;
+  .popfooteraddress {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    width: 330px;
+  }
+  .popfootertime {
+    width: 150px;
+  }
 }
 </style>
