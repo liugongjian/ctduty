@@ -1,9 +1,10 @@
 <template>
-  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
           <div class="screen-body">
+            <!-- <el-image :src=""></el-image> -->
             <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
           <div class="screen-head">
@@ -53,7 +54,7 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
-import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor } from '@/api/monitor'
+import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor, loadingImg } from '@/api/monitor'
 import { searchCameraList } from '@/api/camera'
 
 export default {
@@ -86,6 +87,17 @@ export default {
   },
   mounted() {
     this.getLiveList()
+    loadingImg().then(res => {
+      if (res.body.data.length > 0) {
+        res.body.data.forEach(item => {
+          console.log(item)
+          this.deviceList.push({
+            address: item.address,
+            image: item.image
+          })
+        })
+      }
+    })
   },
   methods: {
     getCameraList(keyword) {
