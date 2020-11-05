@@ -27,7 +27,7 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="width:480px;height:358px;">
+          <div style="width:500px;height:365px; padding: 10px 10px 0px">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
@@ -50,7 +50,7 @@
                 </div>
               </div>
             </div>
-            <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
+            <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
               <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal"><span class="spantext">正 常</span></el-button>
               <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal"><span class="spantext">异 常</span></el-button>
             </div>
@@ -58,7 +58,7 @@
         </el-amap-info-window>
       </el-amap>
       <div class="warn">
-        <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
+        <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #e9e9e9;" @tab-click="handleClick">
           <el-tab-pane label="告警处理率" name="rate">
             <div class="disbox" style="height: 180px; width:100%">
               <div id="panel" class="panelown" style="height: 100%; width:100%"></div>
@@ -425,7 +425,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 500
             },
             params: [
               {
@@ -458,7 +458,7 @@ export default {
                 cascade: true,
                 page: {
                   index: 1,
-                  size: 99999
+                  size: 500
                 },
                 params: [
                   {
@@ -683,7 +683,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 99999
+          size: 500
         },
         params: [
           {
@@ -800,7 +800,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 500
             },
             params: [
               {
@@ -911,7 +911,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 99999
+              size: 500
             },
             params: [
               {
@@ -1389,24 +1389,24 @@ body {
 .lefticon {
   height: 100%;
   .shu {
-    width: 2px;
-    height: 30px;
+    width: 1px;
+    height: 28px;
     background-color: #d9d9d9;
-    margin-left: 5px;
+    margin-left: 9px;
     margin-top: 2px;
   }
 }
 .youContent {
-  margin-bottom: 5px;
+  margin-bottom: 16px;
   overflow: hidden;
   cursor: pointer;
 }
 .dizhi {
   width: 100%;
-  font-size: 13px;
+  font-size: 14px;
   color: #000000;
   font-weight: 300;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 #panel.panelown {
   position: absolute;
@@ -1551,6 +1551,9 @@ body {
 }
 .video-wrap {
   margin-top: 0px !important;
+}
+.untreated {
+  font-size: 18px;
 }
 // .amap-info-content.amap-info-outer {
 //   height: 358px !important;
