@@ -66,8 +66,8 @@ export default {
   },
   methods: {
     submitForm(form) {
-      this.$store.commit('SET_HINT', this.isHint)
       localStorage.setItem('HINT', this.isHint)
+      this.$store.commit('SET_HINT', JSON.parse(localStorage.getItem('HINT')))
       const param = {
         date1: this.form.date1,
         date2: this.form.date2,
