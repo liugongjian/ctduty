@@ -106,8 +106,6 @@ export default {
             image: item.image ? item.image : fakeimg,
             id: item.id
           })
-          this.id = item.id
-          this.form.cameraId = item.cameraId
         })
       }
     })
@@ -219,9 +217,14 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          this.deviceList.push({
-            address: this.form.cameraId,
-            image: fakeimg
+          this.options.forEach(item => {
+            if (item.value === this.form.cameraId) {
+              this.deviceList.push({
+                address: item.label,
+                image: fakeimg,
+                id: item.id
+              })
+            }
           })
           if (this.id) {
             updateMonitor({
