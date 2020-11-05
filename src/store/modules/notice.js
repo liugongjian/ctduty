@@ -1,7 +1,8 @@
 const notice = {
   state: {
     total: '',
-    arr: []
+    arr: [],
+    hint: true
   },
   mutations: {
     SET_NOTICETOTAL: (state, num) => {
@@ -9,6 +10,9 @@ const notice = {
     },
     SET_NOTICEARR: (state, arr) => {
       state.arr = arr
+    },
+    SET_HINT: (state, hint) => {
+      state.hint = hint
     }
   }
 }

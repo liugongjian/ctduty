@@ -27,9 +27,9 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="height:336px;">
+          <div style="width:480px;height:336px;">
             <div :model="dataDia" label-position="right" label-width="100px">
-              <div prop="image" style="height:270px;position:relative;">
+              <div prop="image" style="width:480px;height:270px;position:relative;">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
                 <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;" @click="()=>{openBig(dataDia.image)}"></CanvasDialog>
               </div>
@@ -311,6 +311,7 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
+import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
   resizeEnable: true, // 是否监控地图容器尺寸变化
   zoom: 14 // 初始地图级别
@@ -332,7 +333,7 @@ export default {
         }
       },
       hasData: true,
-      isHint: true,
+      isHint: null,
       // alarmForm: {
       //   address: '',
       //   createTime: ''
@@ -414,6 +415,11 @@ export default {
         position: [110.170143, 34.567009]
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'hint'
+    ])
   },
   watch: {
     markers(v) {
@@ -542,8 +548,11 @@ export default {
       }
     }
   },
+
   async created() {
     this.userId = Cookies.get('userId')
+    this.isHint = this.$store.state.notice.hint
+    console.log(this.$store.state, this.$store.state.notice.hint, this.isHint)
     await this.getPush()
     await this.getalarmList()
     await this.getPanelList()
@@ -561,6 +570,7 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+
     allAlarm() {
       this.getalarmList()
       this.isDisableAllAlarmBtn = true
