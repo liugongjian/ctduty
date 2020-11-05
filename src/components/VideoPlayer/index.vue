@@ -1,46 +1,50 @@
 <template>
   <div class="video-wrap">
     <div v-if="false" class="fuzzyImg">
-      <img src="../../images/al0arm.jpg" alt="" class="fuzzy">
+      <img src="../../images/al0arm.jpg" alt class="fuzzy" />
     </div>
     <video :ref="videoRef" :controls="false" class="video-js"></video>
   </div>
 </template>
 
 <script>
-import videojs from 'video.js'
-import 'videojs-flash'
-import 'video.js/dist/video-js.css'
+import videojs from "video.js";
+import "videojs-flash";
+import "video.js/dist/video-js.css";
 
 export default {
-  name: 'VideoPlayer',
+  name: "VideoPlayer",
   props: {
     options: {
       type: Object,
       default() {
-        return {}
+        return {};
       }
     },
     videoRef: {
       type: String,
       default() {
-        return 'videoPlayer'
+        return "videoPlayer";
       }
     }
   },
   mounted() {
-    console.log('this.options', this.options)
-    this.player = videojs(this.$refs[this.videoRef], this.options, function onPlayerReady() {
-      console.log('player created')
-    })
+    console.log("this.options", this.options);
+    this.player = videojs(
+      this.$refs[this.videoRef],
+      this.options,
+      function onPlayerReady() {
+        console.log("player created");
+      }
+    );
   },
   beforeDestroy() {
     if (this.player) {
-      this.player.dispose()
-      console.log('player dispose')
+      this.player.dispose();
+      console.log("player dispose");
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
 .video-wrap {
@@ -70,11 +74,10 @@ export default {
 .video-js {
   // 播放器完全铺满
   width: 100%;
-  height:100%;
-  object-fit:fill !important;
+  height: 100%;
+  object-fit: fill !important;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 50px;
 }
-
 </style>
