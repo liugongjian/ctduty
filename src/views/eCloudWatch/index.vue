@@ -23,15 +23,15 @@
           @click="markerClick"
         ></el-amap-marker>
         <el-amap-info-window
-          v-if="window.visable"
+          v-if="dialogVisable"
           :auto-move="true"
           :position="window.position"
         >
-          <div style="height:336px;">
+          <div style="width:480px;height:336px;">
             <div :model="dataDia" label-position="right" label-width="100px">
-              <div prop="image" style="height:270px;position:relative;">
+              <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
-                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;" @click="()=>{openBig(dataDia.image)}"></CanvasDialog>
+                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
               </div>
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
@@ -51,8 +51,8 @@
               </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
-              <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal">正 常</el-button>
-              <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal">异 常</el-button>
+              <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal"><span class="spantext">正 常</span></el-button>
+              <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal"><span class="spantext">异 常</span></el-button>
             </div>
           </div>
         </el-amap-info-window>
@@ -61,7 +61,7 @@
         <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
           <el-tab-pane label="告警处理率" name="rate">
             <div class="disbox" style="height: 180px; width:100%">
-              <div id="panel" style="height: 100%; width:100%"></div>
+              <div id="panel" class="panelown" style="height: 100%; width:100%"></div>
             </div>
           </el-tab-pane>
           <el-tab-pane label="实时监控" name="monitoring">
@@ -96,12 +96,12 @@
                   全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '30%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
                   已处理（<span>{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>）
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '30%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
                   未处理（<span>{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>）
                 </p>
@@ -253,38 +253,6 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      v-model="temp"
-      :visible="dialogVisable"
-      width="480px"
-      @close="closeDialog"
-    >
-      <div :model="dataDia" label-position="right" label-width="100px">
-        <div prop="image">
-          <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
-        </div>
-        <div class="popfooter">
-          <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
-            <div class="popfooteraddress">
-              <svg-icon icon-class="pulladdress"></svg-icon>
-              <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
-            </div>
-          </el-tooltip>
-          <div class="popfootertime">
-            <svg-icon icon-class="pulltime"></svg-icon>
-            <span style="width: 260px;">
-              {{
-                renderTime(dataDia.createTime)
-              }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer popsure">
-        <el-button round @click="normal">正 常</el-button>
-        <el-button type="warning" round @click="unnormal">异 常</el-button>
-      </div>
-    </el-dialog>
     <div v-if="markers.length>0"></div>
   </div>
 </template>
@@ -311,6 +279,7 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
+import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
   resizeEnable: true, // 是否监控地图容器尺寸变化
   zoom: 14 // 初始地图级别
@@ -332,7 +301,7 @@ export default {
         }
       },
       hasData: true,
-      isHint: true,
+      isHint: null,
       // alarmForm: {
       //   address: '',
       //   createTime: ''
@@ -358,8 +327,8 @@ export default {
       xData: [
       ],
       isDisableAllAlarmBtn: false,
-      zoom: 14,
-      zooms: [14, 15],
+      zoom: 13,
+      zooms: [13, 15],
       hasMarker: false,
       showZwMes: true,
       center: [110.170143, 34.567009],
@@ -414,6 +383,11 @@ export default {
         position: [110.170143, 34.567009]
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'hint'
+    ])
   },
   watch: {
     markers(v) {
@@ -542,8 +516,11 @@ export default {
       }
     }
   },
+
   async created() {
     this.userId = Cookies.get('userId')
+    this.isHint = this.$store.state.notice.hint
+    console.log(this.$store.state, this.$store.state.notice.hint, this.isHint)
     await this.getPush()
     await this.getalarmList()
     await this.getPanelList()
@@ -561,6 +538,7 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
+
     allAlarm() {
       this.getalarmList()
       this.isDisableAllAlarmBtn = true
@@ -1013,14 +991,14 @@ export default {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
           audio.play()// 播放
         }
-        this.window.visable = true
+        this.dialogVisable = true
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
       } else {
-        this.window.visable = false
+        this.dialogVisable = false
         setTimeout(() => {
-          this.window.visable = true
+          this.dialogVisable = true
         }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
@@ -1049,7 +1027,7 @@ export default {
       })
     },
     closeDialog() {
-      this.window.visable = false
+      this.dialogVisable = false
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
@@ -1415,7 +1393,7 @@ body {
     width: 2px;
     height: 30px;
     background-color: #d9d9d9;
-    margin-left: 8px;
+    margin-left: 5px;
     margin-top: 2px;
   }
 }
@@ -1431,7 +1409,7 @@ body {
   font-weight: 300;
   margin-bottom: 5px;
 }
-#panel {
+#panel.panelown {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1505,15 +1483,15 @@ body {
   text-align: center;
   width: 60px;
 }
-.el-dialog__header {
-  padding: 0 !important;
-}
-.el-dialog .el-dialog__body {
-  padding: 0 !important;
-}
-.el-dialog__footer {
-  padding: 0 !important;
-}
+// .el-dialog__header {
+//   padding: 0 !important;
+// }
+// .el-dialog .el-dialog__body {
+//   padding: 0 !important;
+// }
+// .el-dialog__footer {
+//   padding: 0 !important;
+// }
 .popsure {
   padding: 10px 0 !important;
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="video-wrap">
-    <div class="fuzzyImg" v-if="false">
-      <img src="../../images/alarm.jpg" alt class="fuzzy" />
+    <div v-if="false" class="fuzzyImg">
+      <img src="../../images/al0arm.jpg" alt class="fuzzy" />
     </div>
     <video :ref="videoRef" :controls="false" class="video-js"></video>
   </div>
@@ -11,7 +11,6 @@
 import videojs from "video.js";
 import "videojs-flash";
 import "video.js/dist/video-js.css";
-import { loadingImg } from "@/api/monitor";
 
 export default {
   name: "VideoPlayer",
@@ -19,9 +18,7 @@ export default {
     options: {
       type: Object,
       default() {
-        return {
-          DialogImg: false
-        };
+        return {};
       }
     },
     videoRef: {

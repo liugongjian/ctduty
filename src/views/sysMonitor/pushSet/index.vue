@@ -30,10 +30,13 @@
       </el-form-item>
 
       <el-form-item label="弹窗推送服务" prop="deliveryPush">
-        <el-switch v-model="form.deliveryPush"></el-switch>
+        <el-switch v-model="form.deliveryPush" style="margin-top:7px;"></el-switch>
+      </el-form-item>
+      <el-form-item label="告警提示音">
+        <el-switch v-model="isHint" style="margin-top:7px;"></el-switch>
       </el-form-item>
       <el-form-item label="短信服务" prop="deliveryMessage">
-        <el-switch v-model="form.deliveryMessage"></el-switch>
+        <el-switch v-model="form.deliveryMessage" style="margin-top:7px;"></el-switch>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('form')">提交</el-button>
@@ -53,14 +56,18 @@ export default {
         date2: '05:00',
         deliveryPush: false,
         deliveryMessage: true
-      }
+      },
+      isHint: true
     }
   },
   created() {
+    this.isHint = JSON.parse(localStorage.getItem('HINT'))
     this.getList()
   },
   methods: {
     submitForm(form) {
+      localStorage.setItem('HINT', this.isHint)
+      this.$store.commit('SET_HINT', JSON.parse(localStorage.getItem('HINT')))
       const param = {
         date1: this.form.date1,
         date2: this.form.date2,
@@ -99,6 +106,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+      this.isHint = true
     }
   }
 

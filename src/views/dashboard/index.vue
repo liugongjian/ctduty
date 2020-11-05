@@ -33,7 +33,7 @@
           <div class="dash-title">告警趋势</div>
           <div class="trendTitleBox">
             <p class="trendTitle">目标评估</p>
-            <p class="trenddes">{{ trendText }}</p>
+            <p class="trenddes" style="margin-top: 8px">{{ trendText }}</p>
           </div>
           <div id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
