@@ -1,9 +1,10 @@
 <template>
-  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
           <div class="screen-body">
+            <!-- <el-image :src=""></el-image> -->
             <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
           <div class="screen-head">
@@ -12,8 +13,12 @@
               <span :title="item.address">{{ item.address }}</span>
             </div>
             <div class="head-btn">
-              <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
-              <div class="btn" @click="deleteMonitor(item)"><i class="el-icon-delete"></i></div>
+              <div class="btn" @click="updateMonitorDialog(item)">
+                <i class="el-icon-setting"></i>
+              </div>
+              <div class="btn" @click="deleteMonitor(item)">
+                <i class="el-icon-delete"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -24,7 +29,12 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="id ? '修改监控摄像头' : '添加监控摄像头' " :visible.sync="dialogFormVisible" width="540px" @closed="onClose">
+    <el-dialog
+      :title="id ? '修改监控摄像头' : '添加监控摄像头' "
+      :visible.sync="dialogFormVisible"
+      width="540px"
+      @closed="onClose"
+    >
       <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
           <el-select
@@ -33,13 +43,14 @@
             :loading="loading"
             filterable
             remote
-            placeholder="请选择">
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
-            </el-option>
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -53,7 +64,7 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
-import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor } from '@/api/monitor'
+import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor, loadingImg } from '@/api/monitor'
 import { searchCameraList } from '@/api/camera'
 
 export default {
@@ -86,8 +97,22 @@ export default {
   },
   mounted() {
     this.getLiveList()
+    loadingImg().then(res => {
+      if (res.body.data.length > 0) {
+        res.body.data.forEach(item => {
+          console.log(item)
+          this.deviceList.push({
+            address: item.address,
+            image: item.image
+          })
+        })
+      }
+    })
   },
   methods: {
+    getLoadImg() {
+      loadingImg().then(res => {})
+    },
     getCameraList(keyword) {
       if (keyword !== '') {
         this.loading = true
@@ -113,7 +138,9 @@ export default {
         searchCameraList(params).then(res => {
           let data = res.body.data || []
           // 已添加到九宫格的摄像头要过滤掉
-          data = data.filter(i => !this.deviceList.find(r => r.cameraId === i.id))
+          data = data.filter(
+            i => !this.deviceList.find(r => r.cameraId === i.id)
+          )
           this.options = data.map(item => {
             return {
               value: item.id,
@@ -129,27 +156,31 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
-        this.deviceList = data.filter(i => i.rtmpuri).map(item => {
-          return {
-            ...item,
-            videoOptions: {
-              autoplay: true,
-              controls: true,
-              width: 400, // 播放器宽度
-              height: 300, // 播放器高度
-              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-              fluid: true, // 流体布局，自动充满，并保持播放其比例
-              sources: [
-                {
-                  src: item.rtmpuri,
-                  type: this.video_type(item.rtmpuri)
-                }
-              ]
+        this.deviceList = data
+          .filter(i => i.rtmpuri)
+          .map(item => {
+            return {
+              ...item,
+              videoOptions: {
+                autoplay: true,
+                controls: true,
+                width: 400, // 播放器宽度
+                height: 300, // 播放器高度
+                // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+                fluid: true, // 流体布局，自动充满，并保持播放其比例
+                sources: [
+                  {
+                    src: item.rtmpuri,
+                    type: this.video_type(item.rtmpuri)
+                  }
+                ]
+              }
             }
-          }
-        })
+          })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
-        this.options = this.options.filter(i => !this.deviceList.find(r => r.cameraId === i.value))
+        this.options = this.options.filter(
+          i => !this.deviceList.find(r => r.cameraId === i.value)
+        )
         this.pageLoading = false
       })
     },
@@ -181,7 +212,7 @@ export default {
       this.dialogFormVisible = true
     },
     saveMonitor() {
-      this.$refs['ruleForm'].validate((valid) => {
+      this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
           if (this.id) {
@@ -190,7 +221,9 @@ export default {
               cameraId: this.form.cameraId
             }).then(res => {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
-              this.options = this.options.filter(i => i.value !== this.form.cameraId)
+              this.options = this.options.filter(
+                i => i.value !== this.form.cameraId
+              )
               this.onClose()
               this.getLiveList()
               this.submiting = false
@@ -200,7 +233,9 @@ export default {
               cameraId: this.form.cameraId
             }).then(res => {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
-              this.options = this.options.filter(i => i.value !== this.form.cameraId)
+              this.options = this.options.filter(
+                i => i.value !== this.form.cameraId
+              )
               this.onClose()
               this.getLiveList()
               this.submiting = false
@@ -232,7 +267,7 @@ export default {
 .monitorScreen-wrap {
   padding: 20px;
   height: 100%;
-  background: #F0F2F5;
+  background: #f0f2f5;
   .el-input__inner {
     width: 360px;
   }
@@ -275,7 +310,7 @@ export default {
       padding: 0 10px;
       align-items: center;
       border: 1px solid #9b9da0;
-      border-radius:0 0 3px 3px;
+      border-radius: 0 0 3px 3px;
       .head-label {
         flex: 1;
         font-size: 14px;
