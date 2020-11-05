@@ -6,37 +6,37 @@
           <div class="cameraPanel-icon cameraPanel-icon-online"> <svg-icon icon-class="dashboardCamera"></svg-icon></div>
           <div class="cameraPanel-info">
             <div class="cameraPanel-title">在线摄像头</div>
-            <div class="cameraPanel-number">1200个</div>
+            <div class="cameraPanel-number">{{ realTimeData.onlineCameras }} 个</div>
           </div>
         </div>
-        <div class="cameraPanel-footer">占比 12%</div>
+        <div class="cameraPanel-footer">占比 {{ cameraOnlineRateText }}</div>
       </div>
       <div class="cameraPanel">
         <div class="cameraPanel-content">
           <div class="cameraPanel-icon"> <svg-icon icon-class="dashboardCamera"></svg-icon></div>
           <div class="cameraPanel-info">
             <div class="cameraPanel-title">离线摄像头</div>
-            <div class="cameraPanel-number">1200个</div>
+            <div class="cameraPanel-number">{{ realTimeData.offlineCameras }} 个</div>
           </div>
         </div>
-        <div class="cameraPanel-footer">占比 12%</div>
+        <div class="cameraPanel-footer">占比 {{ cameraOfflineRateText }}</div>
       </div>
       <div class="amount-flipper">
         <div class="overviews-itemTitle">今日告警数</div>
         <div class="flip-container">
-          <Flipper ref="flipperHour1" />
+          <Flipper ref="millionFlag" />
           <span class="number-split" />
-          <Flipper ref="flipperHour1" />
+          <Flipper ref="thousand100" />
           <span class="span5px" />
-          <Flipper ref="flipperHour2" />
+          <Flipper ref="thousand10" />
           <span class="span5px" />
-          <Flipper ref="flipperMinute1" />
+          <Flipper ref="thousand" />
           <span class="number-split" />
-          <Flipper ref="flipperMinute2" />
+          <Flipper ref="hundred" />
           <span class="span5px" />
-          <Flipper ref="flipperSecond1" />
+          <Flipper ref="tenFlag" />
           <span class="span5px" />
-          <Flipper ref="flipperSecond2" />
+          <Flipper ref="digitFlag" />
         </div>
       </div>
       <div class="summaryBar">
@@ -59,7 +59,7 @@
     <div class="alarm-detail">
       <div class="chart-title">告警详情</div>
       <div class="alarm-detail-table"><el-table
-        :data="userList"
+        :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
         <el-table-column label="摄像头名称" prop="username"></el-table-column>
@@ -76,6 +76,7 @@ import echarts from 'echarts'
 import Flipper from '@/components/Charts/Flipper'
 import StackedBar from '@/components/Charts/stackedBar'
 import SimpleBar from '@/components/Charts/simpleBar'
+import DoughntPie from '@/components/Charts/doughntPie'
 // 引入水波球
 import 'echarts-liquidfill'
 import huayin from '@/json/huayin.json'
@@ -89,36 +90,15 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
-function registerMap() {
-  echarts.registerMap('渭南', huayin)
-}
+
 export default {
   name: 'Dashboard',
   // mixins: [PreCheck],
   components: {
     Flipper,
     StackedBar,
-    SimpleBar
-  },
-  directives: { // 使用局部注册指令的方式
-    resize: { // 指令的名称
-      bind(el, binding) { // el为绑定的元素，binding为绑定给指令的对象
-        let width = ''
-        let height = ''
-        function isReize() {
-          const style = document.defaultView.getComputedStyle(el)
-          if (width !== style.width || height !== style.height) {
-            binding.value() // 关键
-          }
-          width = style.width
-          height = style.height
-        }
-        el.__vueSetInterval__ = setInterval(isReize, 500)
-      },
-      unbind(el) {
-        clearInterval(el.__vueSetInterval__)
-      }
-    }
+    SimpleBar,
+    DoughntPie
   },
   data() {
     return {
@@ -128,6 +108,13 @@ export default {
         height: '67px',
         lineHeight: '67px'
       },
+      realTimeData: {
+        cameraOnlineRate: null,
+        offlineCameras: '-',
+        onlineCameras: '-',
+        todayAlerts: 0
+      },
+      tableData: [],
       testData: [
         {
           'id': 1,
@@ -162,249 +149,111 @@ export default {
       ]
     }
   },
+  computed: {
+    cameraOnlineRateText() {
+      const { cameraOnlineRate } = this.realTimeData
+      return cameraOnlineRate ? (cameraOnlineRate * 100).toFixed(2) + '%' : '-'
+    },
+    cameraOfflineRateText() {
+      const { cameraOnlineRate } = this.realTimeData
+      return cameraOnlineRate ? ((1 - cameraOnlineRate) * 100).toFixed(2) + '%' : '-'
+    }
+  },
   watch: {
-    screenWidth(v) {
-      const canvas = document.getElementsByTagName('canvas');
-      [].forEach.call(canvas, function(item) {
-        item.style.width = '100%'
-        item.parentNode.style = `display:inline-block;text-align:center;`
-      })
+    realTimeData: function(newVal, oldVal) {
+      let { todayAlerts: newAlerts } = newVal
+      let { todayAlerts: oldAlerts } = oldVal
+      if (newAlerts === oldAlerts) {
+        return
+      }
+      newAlerts = this.padLeftZero(newAlerts)
+      oldAlerts = this.padLeftZero(oldAlerts)
+      for (let i = 0; i < this.flipObjs.length; i++) {
+        if (newAlerts[i] === oldAlerts[i]) {
+          continue
+        }
+        this.flipObjs[i].flipDown(
+          oldAlerts[i],
+          newAlerts[i]
+        )
+      }
     }
   },
   mounted() {
     this.flipObjs = [
-      this.$refs.flipperHour1,
-      this.$refs.flipperHour2,
-      this.$refs.flipperMinute1,
-      this.$refs.flipperMinute2,
-      this.$refs.flipperSecond1,
-      this.$refs.flipperSecond2
+      this.$refs.millionFlag,
+      this.$refs.thousand100,
+      this.$refs.thousand10,
+      this.$refs.thousand,
+      this.$refs.hundred,
+      this.$refs.tenFlag,
+      this.$refs.digitFlag
     ]
     this.init()
-    this.run()
+    this.getRealtimeData()
+    this.getChartsData()
+    this.timer = setInterval(() => {
+      this.getRealtimeData()
+    }, 5000)
   },
   methods: {
   // 初始化数字
     init() {
-      const now = new Date()
-      const nowTimeStr = this.formatDate(new Date(now.getTime()), 'hhiiss')
       for (let i = 0; i < this.flipObjs.length; i++) {
-        this.flipObjs[i].setFront(nowTimeStr[i])
+        this.flipObjs[i].setFront(0)
       }
     },
-    // 开始计时
-    run() {
-      this.timer = setInterval(() => {
-      // 获取当前时间
-        const now = new Date()
-        const nowTimeStr = this.formatDate(new Date(now.getTime() - 1000), 'hhiiss')
-        const nextTimeStr = this.formatDate(now, 'hhiiss')
-        for (let i = 0; i < this.flipObjs.length; i++) {
-          if (nowTimeStr[i] === nextTimeStr[i]) {
-            continue
-          }
-          this.flipObjs[i].flipDown(
-            nowTimeStr[i],
-            nextTimeStr[i]
-          )
-        }
-      }, 1000)
-    },
-    // 正则格式化日期
-    formatDate(date, dateFormat) {
-    /* 单独格式化年份，根据y的字符数量输出年份
-     * 例如：yyyy => 2019
-            yy => 19
-            y => 9
-     */
-      if (/(y+)/.test(dateFormat)) {
-        dateFormat = dateFormat.replace(
-          RegExp.$1,
-          (date.getFullYear() + '').substr(4 - RegExp.$1.length)
-        )
-      }
-      // 格式化月、日、时、分、秒
-      const o = {
-        'm+': date.getMonth() + 1,
-        'd+': date.getDate(),
-        'h+': date.getHours(),
-        'i+': date.getMinutes(),
-        's+': date.getSeconds()
-      }
-      for (const k in o) {
-        if (new RegExp(`(${k})`).test(dateFormat)) {
-        // 取出对应的值
-          const str = o[k] + ''
-          /* 根据设置的格式，输出对应的字符
-           * 例如: 早上8时，hh => 08，h => 8
-           * 但是，当数字>=10时，无论格式为一位还是多位，不做截取，这是与年份格式化不一致的地方
-           * 例如: 下午15时，hh => 15, h => 15
-           */
-          dateFormat = dateFormat.replace(
-            RegExp.$1,
-            RegExp.$1.length === 1 ? str : this.padLeftZero(str)
-          )
-        }
-      }
-      return dateFormat
-    },
-    // 日期时间补零
+    // 数字翻牌器补零
     padLeftZero(str) {
-      return ('00' + str).substr(str.length)
+      str = str + ''
+      if (str.length > 7) {
+        this.$message('告警数过大无法显示全！')
+        return str.substring(str.length - 7, 7)
+      }
+      while (str.length < 7) {
+        str = '0' + str
+      }
+      return str
     },
-    drawZhu(data, xData, yData) {
-      var charts = echarts.init(document.getElementById('alarmLine'))
-      const pointStyle = {
-        borderColor: '#1890FF',
-        color: '#fff',
-        borderWidth: 1
-      }
-      const labelStyle = {
-        show: true,
-        position: 'top',
-        lineHeight: 10,
-        borderRadius: 5,
-        backgroundColor: 'rgba(255,255,255,.9)',
-        borderColor: '#ccc',
-        borderWidth: '1',
-        padding: [5, 10, 4],
-        color: '#000000',
-        fontSize: 12,
-        fontWeight: 'normal'
-      }
-      let total = yData
-      const seriesData = []
-      total = total.sort(function(a, b) {
-        return a - b
-      })
-      total.forEach((item, index) => {
-        const ob = {
-          value: item,
-          itemStyle: pointStyle,
-          label: labelStyle
-        }
-        if (index === total.length - 1) {
-          ob.itemStyle = {
-            borderColor: '#1890FF',
-            color: '#1890FF',
-            borderWidth: 1
-          }
-          ob.label = {
-            show: true,
-            position: 'top',
-            lineHeight: 10,
-            backgroundColor: '#1890FF',
-            borderRadius: 5,
-            borderColor: '#1890FF',
-            borderWidth: '1',
-            padding: [5, 10, 4],
-            color: '#fff',
-            fontSize: 12,
-            fontWeight: 'normal'
-          }
-        }
-        seriesData.push(ob)
-      })
-      var option = {
-        title: {
-          left: 'left'
+    getRealtimeData() {
+      // fetchAllData
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
         },
-        grid: {
-          top: '15%',
-          left: '16%',
-          right: '10%',
-          bottom: '18%'
-        },
-        xAxis: [{
-          type: 'category',
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            show: false,
-            lineStyle: {
-              type: 'dashed'
-            }
-          },
-          data: xData
-        }],
-        yAxis: [{
-          type: 'value',
-          min: 0,
-          max: 20000,
-          splitNumber: 3,
-          axisLine: {
-            show: false
-          },
-          axisTick: {
-            show: false
-          },
-          splitLine: {
-            show: true,
-            lineStyle: {
-              type: 'dashed'
-            }
-          }
-        }],
-        series: [{
-          type: 'line',
-          showAllSymbol: true,
-          symbol: 'circle',
-          symbolSize: 6,
-          lineStyle: {
-            normal: {
-              color: '#1890FF',
-              width: 3
-            }
-          },
-          tooltip: {
-            show: false
-          },
-          areaStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(
-                0,
-                0,
-                0,
-                1,
-                [{
-                  offset: 0,
-                  color: '#1890FF'
-                },
-                {
-                  offset: 1,
-                  color: '#1890FF'
-                }
-                ],
-                false
-              )
-            }
-          },
-          data: seriesData,
-          markLine: {
-            symbol: ['none', 'none'], // 去掉箭头
-            itemStyle: {
-              normal: {
-                lineStyle: {
-                  type: 'dashed',
-                  color: '#ccc',
-                  width: 2
-                }
-              }
-            }
-          // data: [{
-          //   name: 'Y 轴值为 0 的水平线',
-          //   yAxis: 0,
-          //   label: {
-          //     normal: {
-          //       formatter: '0'
-          //     }
-          //   }
-          // }]
-          }
-        }]
+        params: {
+        }
       }
-      charts.setOption(option)
+      fetchNowInfo(params).then(res => {
+        const { body: { data }} = res
+        this.realTimeData = data
+        // const { body: { data: {
+        //   cameraOnlineRate,
+        //   offlineCameras,
+        //   onlineCameras,
+        //   todayAlerts
+        // }}} = res
+        // this.cameraOnlineRate = cameraOnlineRate
+        // this.offlineCameras = offlineCameras
+        // this.onlineCameras = onlineCameras
+        // this.todayAlerts = todayAlerts
+      })
+    },
+    getChartsData() {
+      const params = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 20
+        },
+        params: {
+        }
+      }
+      fetchAllData(params).then(res => {
+        console.log(res)
+      })
     }
   }
 }
@@ -452,7 +301,7 @@ $summaryBarWidth: 600px;
       margin-bottom: 20px;
     }
     .cameraPanel{
-      flex-grow:1;
+      flex-grow:0.5;
       margin-right: 20px;
       border-radius: 2px;
       width: $cameraWidth;
@@ -514,7 +363,7 @@ $summaryBarWidth: 600px;
       }
     }
     .summaryBar{
-      flex-grow:1;
+      flex-grow:0.5;
       border-radius: 2px;
       width:$summaryBarWidth;
       background-color:white;
