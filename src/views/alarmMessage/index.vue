@@ -220,6 +220,7 @@
               v-model="temp"
               :visible.sync="dialogVisable"
               width="480px"
+              height='400px'
               @close="closeDialog"
             >
               <div label-position="right" label-width="100px">

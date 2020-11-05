@@ -27,7 +27,7 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="width:480px;height:336px;">
+          <div style="width:480px;height:358px;">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
@@ -93,17 +93,17 @@
             <div style="width:100%; height:26px;">
               <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
-                  全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
+                  全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '30%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '33%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理（<span>{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>）
+                  已处理<span style="margin-left: 2px">{{ '(' +  (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '30%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '33%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
-                  未处理（<span>{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>）
+                  未处理<span style="margin-left: 2px">{{ '(' + (todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal) + ')' }}</span>
                 </p>
               </div>
 
@@ -1547,5 +1547,14 @@ body {
 .amap-info-content {
   padding: 0px !important;
 }
+.el-tabs__header {
+  margin: 0px;
+}
+.video-wrap {
+  margin-top: 0px !important;
+}
+// .amap-info-content.amap-info-outer {
+//   height: 358px !important;
+// }
 </style>
 
