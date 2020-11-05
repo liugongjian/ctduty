@@ -61,7 +61,7 @@
         <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
           <el-tab-pane label="告警处理率" name="rate">
             <div class="disbox" style="height: 180px; width:100%">
-              <div id="panel" style="height: 100%; width:100%"></div>
+              <div id="panel" class="panelown" style="height: 100%; width:100%"></div>
             </div>
           </el-tab-pane>
           <el-tab-pane label="实时监控" name="monitoring">
@@ -1441,7 +1441,7 @@ body {
   font-weight: 300;
   margin-bottom: 5px;
 }
-#panel {
+#panel.panelown {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1515,15 +1515,15 @@ body {
   text-align: center;
   width: 60px;
 }
-.el-dialog__header {
-  padding: 0 !important;
-}
-.el-dialog .el-dialog__body {
-  padding: 0 !important;
-}
-.el-dialog__footer {
-  padding: 0 !important;
-}
+// .el-dialog__header {
+//   padding: 0 !important;
+// }
+// .el-dialog .el-dialog__body {
+//   padding: 0 !important;
+// }
+// .el-dialog__footer {
+//   padding: 0 !important;
+// }
 .popsure {
   padding: 10px 0 !important;
 }

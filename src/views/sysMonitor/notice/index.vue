@@ -70,7 +70,7 @@
       </el-table>
     </div>
 
-    <el-table
+    <!-- <el-table
       :data="noticeList"
       :header-cell-class-name="tableRowClassHeader"
       class="amountdetailTable"
@@ -98,11 +98,12 @@
       <el-table-column label="创建时间" prop="createTime"></el-table-column>
       <el-table-column :show-overflow-tooltip="true" :label="'操作'">
         <template slot-scope="row_data">
-          <el-button
+          <a
+            style="color: #FA8334; text-decoration:none;" 
             type="text"
             size="small"
             @click="showEditDialog(row_data.row.id,'true')"
-          >{{ '编辑' }}</el-button>
+          >{{ '编辑' }}</a>
           <el-button
             type="text"
             size="small"
@@ -110,7 +111,7 @@
           >{{ '删除' }}</el-button>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
     <el-pagination
       :current-page="queryInfo.pagenum"
