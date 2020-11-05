@@ -1,6 +1,6 @@
 <template>
   <div class="video-wrap">
-    <div class="fuzzyImg" :visible.sync="DialogImg">
+    <div class="fuzzyImg" v-if="false">
       <img src="../../images/alarm.jpg" alt class="fuzzy" />
     </div>
     <video :ref="videoRef" :controls="false" class="video-js"></video>
@@ -45,48 +45,6 @@ export default {
     if (this.player) {
       this.player.dispose();
       console.log("player dispose");
-    }
-  },
-  updated() {
-    let imgList = document.getElementsByClassName("fuzzyImg");
-    let imgCount = imgList.length;
-    let imgLoad = 0;
-
-    for (let i = 0; i < imgCount; i++) {
-      imgList[i].onload = () => {
-        imgLoad++;
-        // console.log(imgLoad);
-        if (imgLoad === imgCount) {
-          this.loading = false;
-          this.display = true;
-        }
-      };
-    }
-
-    setTimeout(() => {
-      if (!this.display) {
-        this.loading = false;
-        this.display = !this.display;
-        console.log("11111");
-      }
-    }, 5000);
-  },
-  methods: {
-    getLoadImg() {
-      loadingImg().then(res => {
-        let data = res.body.data || [];
-        // this.deviceList = data
-        //   .filter(i => i.address)
-        //   .map(item => {
-        //     return { ...item };
-        //   });
-        const dataImg = res.body.data || [];
-        console.log(this.dataImg);
-        this.form.cameraId = item.cameraId;
-        this.form.address = item.address;
-        this.DialogImg = true;
-        this.id = item.id;
-      });
     }
   }
 };
