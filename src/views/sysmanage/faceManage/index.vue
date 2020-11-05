@@ -186,21 +186,8 @@
               >其他标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
             </div>
             <!-- <div class="bottom clearfix">
-              <el-button
-                icon="el-icon-edit"
-                size="mini"
-                type="primary"
-                circle
-                @click="editDialog(item)"
-              ></el-button>
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                size="mini"
-                @click="delAlert(item.id)"
-              ></el-button>
-              type="primary" type="danger"
+              <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
+              <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
             </div>-->
             <div class="btn-box">
               <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
@@ -764,16 +751,17 @@ export default {
     float: left;
   }
 
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-    float: right;
-  }
   .face-name {
     padding: 5px 0;
+    font-size: 12px;
+  }
+  .face-kind {
+    font-size: 12px;
   }
   .btn-box {
     display: none;
+    margin-top: 6px;
+    line-height: 12px;
   }
   .image {
     width: 100%;
