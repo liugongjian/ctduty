@@ -23,7 +23,7 @@
           @click="markerClick"
         ></el-amap-marker>
         <el-amap-info-window
-          v-if="window.visable"
+          v-if="dialogVisable"
           :auto-move="true"
           :position="window.position"
         >
@@ -253,38 +253,6 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      v-model="temp"
-      :visible="dialogVisable"
-      width="480px"
-      @close="closeDialog"
-    >
-      <div :model="dataDia" label-position="right" label-width="100px">
-        <div prop="image">
-          <el-image :src="dataDia.imageCompress" style="width:100%; height:100%;" @click="()=>{openBig(dataDia.image)}"></el-image>
-        </div>
-        <div class="popfooter">
-          <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
-            <div class="popfooteraddress">
-              <svg-icon icon-class="pulladdress"></svg-icon>
-              <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
-            </div>
-          </el-tooltip>
-          <div class="popfootertime">
-            <svg-icon icon-class="pulltime"></svg-icon>
-            <span style="width: 260px;">
-              {{
-                renderTime(dataDia.createTime)
-              }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer popsure">
-        <el-button round @click="normal">正 常</el-button>
-        <el-button type="warning" round @click="unnormal">异 常</el-button>
-      </div>
-    </el-dialog>
     <div v-if="markers.length>0"></div>
   </div>
 </template>
@@ -1023,14 +991,14 @@ export default {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
           audio.play()// 播放
         }
-        this.window.visable = true
+        this.dialogVisable = true
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
       } else {
-        this.window.visable = false
+        this.dialogVisable = false
         setTimeout(() => {
-          this.window.visable = true
+          this.dialogVisable = true
         }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
@@ -1059,7 +1027,7 @@ export default {
       })
     },
     closeDialog() {
-      this.window.visable = false
+      this.dialogVisable = false
     },
     getPanel(rate) {
       this.charts = echarts.init(document.getElementById('panel'))
