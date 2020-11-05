@@ -1,57 +1,56 @@
 <template>
   <div class="video-wrap">
     <div v-if="false" class="fuzzyImg">
-      <img src="../../images/al0arm.jpg" alt class="fuzzy" />
+      <img src="../../images/al0arm.jpg" alt class="fuzzy" >
     </div>
     <video :ref="videoRef" :controls="false" class="video-js"></video>
   </div>
 </template>
 
 <script>
-import videojs from "video.js";
-import "videojs-flash";
-import "video.js/dist/video-js.css";
+import videojs from 'video.js'
+import 'videojs-flash'
+import 'video.js/dist/video-js.css'
 
 export default {
-  name: "VideoPlayer",
+  name: 'VideoPlayer',
   props: {
     options: {
       type: Object,
       default() {
-        return {};
+        return {}
       }
     },
     videoRef: {
       type: String,
       default() {
-        return "videoPlayer";
+        return 'videoPlayer'
       }
     }
   },
   mounted() {
-    console.log("this.options", this.options);
+    console.log('this.options', this.options)
     this.player = videojs(
       this.$refs[this.videoRef],
       this.options,
       function onPlayerReady() {
-        console.log("player created");
+        console.log('player created')
       }
-    );
+    )
   },
   beforeDestroy() {
     if (this.player) {
-      this.player.dispose();
-      console.log("player dispose");
+      this.player.dispose()
+      console.log('player dispose')
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .video-wrap {
   width: 100%;
   height: 100%;
   text-align: center;
-  margin-top: 20px;
   position: relative;
   overflow: hidden;
 
