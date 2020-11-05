@@ -4,8 +4,8 @@
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
           <div class="screen-body">
-            <!-- <el-image :src=""></el-image> -->
-            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
+            <el-image v-if="item.image" :src="item.image" style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"></el-image>
+            <VideoPlayer v-else :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
           <div class="screen-head">
             <div class="head-label">
@@ -66,6 +66,7 @@
 import VideoPlayer from '@/components/VideoPlayer'
 import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor, loadingImg } from '@/api/monitor'
 import { searchCameraList } from '@/api/camera'
+import fakeimg from '@/assets/images/fakeimg.png'
 
 export default {
   components: { VideoPlayer },
@@ -100,11 +101,13 @@ export default {
     loadingImg().then(res => {
       if (res.body.data.length > 0) {
         res.body.data.forEach(item => {
-          console.log(item)
           this.deviceList.push({
             address: item.address,
-            image: item.image
+            image: item.image ? item.image : fakeimg,
+            id: item.id
           })
+          this.id = item.id
+          this.form.cameraId = item.cameraId
         })
       }
     })
@@ -161,6 +164,7 @@ export default {
           .map(item => {
             return {
               ...item,
+              image: null,
               videoOptions: {
                 autoplay: true,
                 controls: true,
@@ -215,6 +219,10 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
+          this.deviceList.push({
+            address: this.form.cameraId,
+            image: fakeimg
+          })
           if (this.id) {
             updateMonitor({
               id: this.id,
