@@ -11,16 +11,16 @@ import algorithmInfo from './modules/algorithmInfo'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-    modules: {
-        app,
-        errorLog,
-        permission,
-        tagsView,
-        user,
-        notice,
-        algorithmInfo
-    },
-    getters
+  modules: {
+    app,
+    errorLog,
+    permission,
+    tagsView,
+    user,
+    notice,
+    algorithmInfo
+  },
+  getters
 })
 
 export default store

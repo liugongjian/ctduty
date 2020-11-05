@@ -13,18 +13,20 @@
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
           <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
 
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          
         </div>
 
         <div class="pull-right">
-          <el-button class="filter-item" type="success" @click="bulkimport">{{ '导入车牌数据' }}</el-button>
-          <el-button class="filter-item" type="danger" @click="toHistory">{{ '历史抓拍' }}</el-button>
           <el-button
             class="filter-item"
             type="warning"
             icon="el-icon-plus"
             @click="create"
           >{{ '新增车牌数据' }}</el-button>
+          <el-button class="filter-item"  @click="bulkimport">{{ '导入车牌数据' }}</el-button>
+          <el-button class="filter-item"  @click="toHistory">{{ '历史抓拍' }}</el-button>
+          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          
         </div>
 
         <el-dialog
