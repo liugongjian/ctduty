@@ -356,6 +356,7 @@ export default {
     }
     .screen-body {
       height: 250px;
+      margin-top: 20px;
       width: auto;
       background: #333;
     }
