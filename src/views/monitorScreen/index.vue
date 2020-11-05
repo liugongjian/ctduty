@@ -1,28 +1,31 @@
 <template>
   <div class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
-      <div v-for="item in deviceList" :key="item.id" class="screen">
-        <div class="screen-inner">
-          <div class="screen-body">
-            <el-image v-if="item.image" :src="item.image" style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"></el-image>
-            <VideoPlayer v-else :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
-          </div>
-          <div class="screen-head">
-            <div class="head-label">
-              <!-- <i class="el-icon-location-information"></i> -->
-              <span :title="item.address">{{ item.address }}</span>
+      <template v-for="(item,index) in deviceList">
+        <div v-if="index < 6" :key="item.id" class="screen">
+          <div class="screen-inner">
+            <div class="screen-body">
+              <el-image v-if="item.image" :src="item.image" style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"></el-image>
+              <VideoPlayer v-else :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
             </div>
-            <div class="head-btn">
-              <div class="btn" @click="updateMonitorDialog(item)">
-                <i class="el-icon-setting"></i>
+            <div class="screen-head">
+              <div class="head-label">
+                <!-- <i class="el-icon-location-information"></i> -->
+                <span :title="item.address">{{ item.address }}</span>
               </div>
-              <div class="btn" @click="deleteMonitor(item)">
-                <i class="el-icon-delete"></i>
+              <div class="head-btn">
+                <div class="btn" @click="updateMonitorDialog(item)">
+                  <i class="el-icon-setting"></i>
+                </div>
+                <div class="btn" @click="deleteMonitor(item)">
+                  <i class="el-icon-delete"></i>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
+
       <div v-if="deviceList.length < 6 && !pageLoading" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-plus"></i> 添加监控摄像头
@@ -99,6 +102,7 @@ export default {
   mounted() {
     this.getLiveList()
     loadingImg().then(res => {
+      console.log(res, 'res')
       if (res.body.data.length > 0) {
         res.body.data.forEach(item => {
           this.deviceList.push({
@@ -217,12 +221,16 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          this.options.forEach(item => {
-            if (item.value === this.form.cameraId) {
-              this.deviceList.push({
-                address: item.label,
-                image: fakeimg,
-                id: item.id
+          loadingImg().then(res => {
+            if (res.body.data.length > 0) {
+              res.body.data.forEach(item => {
+                if (item.cameraId === this.form.cameraId) {
+                  this.deviceList.push({
+                    address: item.address,
+                    image: item.image ? item.image : fakeimg,
+                    id: item.id
+                  })
+                }
               })
             }
           })
