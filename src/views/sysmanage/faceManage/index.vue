@@ -179,12 +179,30 @@
             ></el-checkbox>
             <el-image :src="item.image" class="image" />
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
-            <div class="face-info">
+            <!-- <div class="face-info">
               <div class="face-name">姓名：{{item.name}}</div>
-              <div
-                class="face-kind"
-              >其他标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
-            </div>
+              <div class="face-kind">
+                <el-tag>{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</el-tag>
+            </div>-->
+            <!-- </div> -->
+            <el-tooltip class="face-info" content="1111" placement="bottom-start">
+              <div class="face-info">
+                <!-- <div class="face-name">姓名：{{item.name}}</div> -->
+                <div class="face-name">
+                  姓名：
+                  <span
+                    style="overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                display: inline-block; width: 45px"
+                  >{{item.name}}</span>
+                </div>
+                <div class="face-kind">
+                  <el-tag>{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</el-tag>
+                </div>
+              </div>
+            </el-tooltip>
+
             <!-- <div class="bottom clearfix">
               <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
               <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
