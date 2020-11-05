@@ -61,7 +61,7 @@ export default {
     }
   },
   created() {
-    this.isHint = localStorage.getItem('HINT')
+    this.isHint = JSON.parse(localStorage.getItem('HINT'))
     this.getList()
   },
   methods: {
