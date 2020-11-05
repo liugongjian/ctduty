@@ -26,7 +26,7 @@ export default {
     activities: "活动中心",
     activeList: "活动列表",
     prizeList: "奖品列表",
-    nvs: "天翼值更",
+    nvs: "智能视频",
     application: "视频应用",
     database: "数据库管理",
     alarm: "报警管理",
@@ -46,7 +46,7 @@ export default {
     dutyManage: "值班管理",
     cameraManage: "摄像头管理",
     areaManage: "区域管理",
-    eCloudWatch: "天翼值更",
+    eCloudWatch: "智能视频",
     alarmMessage: "告警信息",
     sysMonitor: "系统监控",
     notice: "通知公告",
@@ -56,6 +56,7 @@ export default {
     carHistory: "历史抓拍",
     faceManage: "人脸数据管理",
     monitorScreen: "监控大屏",
+    videoMonitor:"视频监控",
     faceHistory:"历史抓拍"
   },
   activeList: {

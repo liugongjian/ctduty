@@ -413,6 +413,7 @@ export default {
     .avatar-container {
       // position: absolute;
       // right: 0px;
+      cursor: pointer;
       margin-top: 12px;
       .avatar-wrapper {
         margin-right: 20px;
