@@ -96,12 +96,12 @@
                   全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '30%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
                   已处理（<span>{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>）
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '30%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
                   未处理（<span>{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>）
                 </p>

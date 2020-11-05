@@ -210,8 +210,8 @@
               </el-table-column>
               <el-table-column min-width="12%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <a style="color: #FA8334; text-decoration:none;" @click="editDialog(scope.row)">处理</a>
-                  <a style="color: #FA8334; text-decoration:none;" @click="delAlert(scope.row.id)">删除</a>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">处理</el-button>
+                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -907,5 +907,8 @@ td {
   .popfootertime {
     width: 150px;
   }
+}
+.el-button--text {
+  color: #FA8334 !important;
 }
 </style>
