@@ -5,8 +5,17 @@
         <div v-if="index < 6" :key="item.id" class="screen">
           <div class="screen-inner">
             <div class="screen-body">
-              <el-image v-if="item.image" :src="item.image" style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"></el-image>
-              <VideoPlayer v-else :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
+              <el-image
+                v-if="item.image"
+                :src="item.image"
+                style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"
+              ></el-image>
+              <VideoPlayer
+                v-else
+                :video-ref="item.cameraId"
+                :key="item.cameraId"
+                :options="item.videoOptions"
+              />
             </div>
             <div class="screen-head">
               <div class="head-label">
@@ -66,7 +75,13 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
-import { fetchAllMonitor, updateMonitor, addMonitor, delMonitor, loadingImg } from '@/api/monitor'
+import {
+  fetchAllMonitor,
+  updateMonitor,
+  addMonitor,
+  delMonitor,
+  loadingImg
+} from '@/api/monitor'
 import { searchCameraList } from '@/api/camera'
 import fakeimg from '@/assets/images/fakeimg.png'
 
