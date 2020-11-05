@@ -51,8 +51,8 @@
               </div>
             </div>
             <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 8px">
-              <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal">正 常</el-button>
-              <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal">异 常</el-button>
+              <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="normal"><span class="spantext">正 常</span></el-button>
+              <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="unnormal"><span class="spantext">异 常</span></el-button>
             </div>
           </div>
         </el-amap-info-window>
@@ -1425,7 +1425,7 @@ body {
     width: 2px;
     height: 30px;
     background-color: #d9d9d9;
-    margin-left: 8px;
+    margin-left: 5px;
     margin-top: 2px;
   }
 }
