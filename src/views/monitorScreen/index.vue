@@ -25,8 +25,7 @@
           </div>
         </div>
       </template>
-
-      <div v-if="deviceList.length < 6 && !pageLoading" class="screen">
+      <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
         <div class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
@@ -102,7 +101,6 @@ export default {
   mounted() {
     this.getLiveList()
     loadingImg().then(res => {
-      console.log(res, 'res')
       if (res.body.data.length > 0) {
         res.body.data.forEach(item => {
           this.deviceList.push({
@@ -115,9 +113,6 @@ export default {
     })
   },
   methods: {
-    getLoadImg() {
-      loadingImg().then(res => {})
-    },
     getCameraList(keyword) {
       if (keyword !== '') {
         this.loading = true
@@ -221,16 +216,11 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          loadingImg().then(res => {
-            if (res.body.data.length > 0) {
-              res.body.data.forEach(item => {
-                if (item.cameraId === this.form.cameraId) {
-                  this.deviceList.push({
-                    address: item.address,
-                    image: item.image ? item.image : fakeimg,
-                    id: item.id
-                  })
-                }
+          this.options.forEach(item => {
+            if (item.value === this.form.cameraId) {
+              this.deviceList.push({
+                address: item.label,
+                image: fakeimg
               })
             }
           })

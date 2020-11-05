@@ -98,7 +98,7 @@
               </div>
               <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '33%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理<span style="margin-left: 2px">{{ '(' +  (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
+                  已处理<span style="margin-left: 2px">{{ '(' + (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
                 </p>
               </div>
               <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '33%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
@@ -520,7 +520,6 @@ export default {
   async created() {
     this.userId = Cookies.get('userId')
     this.isHint = this.$store.state.notice.hint
-    console.log(this.$store.state, this.$store.state.notice.hint, this.isHint)
     await this.getPush()
     await this.getalarmList()
     await this.getPanelList()
