@@ -1578,6 +1578,7 @@ body {
 }
 .amap-info-content {
   padding: 0px !important;
+  opacity: .95;
 }
 </style>
 
