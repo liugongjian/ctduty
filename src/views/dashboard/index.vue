@@ -286,7 +286,7 @@ export default {
           } else if (item.type === '2') {
             this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
           } else {
-            this.drawPie('bicycle', '非机动车', '#2FC25B', (item.typeRate * 100).toFixed(1))
+            this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
           }
         })
       })
@@ -456,13 +456,13 @@ export default {
               color: function(params) {
                 if (params.data.value[2]) {
                   if (params.data.value[2] < 1000) {
-                    return '#17b885'
+                    return '#1890FF'
                   }
                   if ((params.data.value[2]) >= 1000 && (params.data.value[2] <= 2000)) {
-                    return '#eec511'
+                    return '#FF9832'
                   }
                   if (params.data.value[2] > 3000) {
-                    return '#d04132'
+                    return '#52C41A'
                   }
                 }
               },
@@ -478,16 +478,16 @@ export default {
         {
           name: '小于1000',
           type: 'bar',
-          color: '#17b885'
+          color: '#1890FF'
         },
         {
           name: '小于2000',
           type: 'bar',
-          color: '#eec511'
+          color: '#FF9832'
         }, {
           name: '大于3000',
           type: 'bar',
-          color: '#d04132'
+          color: '#52C41A'
         }
         ]
       }
