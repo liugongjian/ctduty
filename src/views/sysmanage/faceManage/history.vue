@@ -571,7 +571,7 @@ export default {
     fill: #44bd32 !important;
   }
   .untreated{
-    fill: #E6A23C  !important;
+    fill: #FF9832  !important;
   }
   .v-modal{
     z-index: 999  !important;

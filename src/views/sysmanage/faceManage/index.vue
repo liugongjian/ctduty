@@ -165,17 +165,17 @@
 
       <el-row v-if="tableData.length>0">
         <el-col
-          :span="4"
           v-for="(item,index) in tableData"
+          :span="4"
           :key="index"
           :index="index"
           class="face-col"
         >
-          <el-card class="face-card" :body-style="{ padding: '0px' }">
+          <el-card :body-style="{ padding: '0px' }" class="face-card">
             <el-checkbox
               :key="item.id"
-              @change="checked=>checkboxchange(checked,item)"
               class="face-checkbox"
+              @change="checked=>checkboxchange(checked,item)"
             ></el-checkbox>
             <el-image :src="item.image" class="image" />
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->

@@ -414,7 +414,7 @@ export default {
   },
   methods: {
     searchAlarm() {
-      console.log('ccccccccccccc', this.formInline.searchkey)
+      // console.log('ccccccccccccc', this.formInline.searchkey)
       const s = this.currentTab + ' ' + this.startTime + ':00' 
       const e = this.currentTab + ' ' + this.endTime + ':00' 
       //  + ' ' + this.startTime + ':00'
@@ -473,7 +473,6 @@ export default {
       return moment(cellValue).format('HH:mm:SS')
     },
     formatType(row, column, cellValue) {
-      // console.log('cellValue', cellValue)
       if (cellValue === 1) {
         return '人员'
       } else if (cellValue === 2) {
@@ -711,7 +710,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      console.log('se', s , e)
+      // console.log('se', s , e)
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -780,7 +779,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log('this.multipleSelection', this.multipleSelection, 'val', val)
+      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1
@@ -871,7 +870,7 @@ export default {
   fill: #44bd32 !important;
 }
 .untreated {
-  fill: #e6a23c !important;
+  fill: #FF9832 !important;
 }
 .v-modal {
   z-index: 999 !important;
