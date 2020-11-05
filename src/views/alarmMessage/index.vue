@@ -473,7 +473,30 @@ export default {
       return moment(cellValue).format('HH:mm:SS')
     },
     formatType(row, column, cellValue) {
-      return cellValue === 1 ? '人员' : cellValue === 2 ? '机动车' : '非机动车'
+      // console.log('cellValue', cellValue)
+      if (cellValue === 1) {
+        return '人员'
+      } else if (cellValue === 2) {
+        return '机动车'
+      } else if (cellValue === 3) {
+        return '非机动车'
+      } else if (cellValue === 4) {
+        return '翻墙'
+      } else if (cellValue === 5) {
+        return '人员逗留'
+      } else if (cellValue === 6) {
+        return '人员聚集'
+      } else if (cellValue === 7) {
+        return '区域划线'
+      } else if (cellValue === 8) {
+        return '安全帽'
+      } else if (cellValue === 9) {
+        return '打架斗殴'
+      } else if (cellValue === 10) {
+        return '摔倒'
+      } else if (cellValue === 11) {
+        return '占道经营'
+      }
     },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
