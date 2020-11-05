@@ -27,7 +27,7 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="width:480px;height:336px;">
+          <div style="width:480px;height:358px;">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
@@ -1547,5 +1547,14 @@ body {
 .amap-info-content {
   padding: 0px !important;
 }
+.el-tabs__header {
+  margin: 0px;
+}
+.video-wrap {
+  margin-top: 0px !important;
+}
+// .amap-info-content.amap-info-outer {
+//   height: 358px !important;
+// }
 </style>
 
