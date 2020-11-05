@@ -15,17 +15,17 @@
           ></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
           <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
         </div>
         <div class="pull-right">
-          <el-button class="filter-item" type="success" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
-          <el-button class="filter-item" type="danger" @click="gohistory ">{{ '历史抓拍' }}</el-button>
           <el-button
             class="filter-item"
             type="warning"
             icon="el-icon-plus"
             @click="addFace"
           >{{ '新增人脸数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
+          <el-button class="filter-item" @click="gohistory ">{{ '历史抓拍' }}</el-button>
+          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
         </div>
         <el-dialog
           :visible="bulkimportVisble"
@@ -184,9 +184,9 @@
               <div
                 class="face-kind"
               >其他标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
-            </div>             
-              <div class="bottom clearfix">               
-                <el-button
+            </div>
+            <!-- <div class="bottom clearfix">
+              <el-button
                 icon="el-icon-edit"
                 size="mini"
                 type="primary"
@@ -200,26 +200,12 @@
                 size="mini"
                 @click="delAlert(item.id)"
               ></el-button>
-              </div>
-          
-
+              type="primary" type="danger"
+            </div>-->
             <div class="btn-box">
-              <!-- <el-button
-                icon="el-icon-edit"
-                size="mini"
-                type="primary"
-                circle
-                @click="editDialog(item)"
-              ></el-button> -->
-              <!-- <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                size="mini"
-                @click="delAlert(item.id)"
-              ></el-button> -->
+              <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
+              <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
             </div>
-            
           </el-card>
         </el-col>
       </el-row>
@@ -774,7 +760,7 @@ export default {
   }
   .face-info {
     font-size: 14px;
-    padding: 14px; 
+    padding: 14px;
     float: left;
   }
 
@@ -785,23 +771,19 @@ export default {
   }
   .face-name {
     padding: 5px 0;
-    
   }
   .btn-box {
     display: none;
- 
   }
-  .image{
-    
+  .image {
     width: 100%;
     max-width: 250px;
-    height:200px;
-    margin-top:20px;
-    img{
-        object-fit: contain;//cover;
-          background-color: rgb(245, 247, 250);
+    height: 200px;
+    margin-top: 20px;
+    img {
+      object-fit: contain; //cover;
+      background-color: rgb(245, 247, 250);
     }
-        
   }
   &:hover .btn-box {
     display: inline-block;
