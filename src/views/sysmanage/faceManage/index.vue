@@ -187,26 +187,13 @@
             <!-- </div> -->
             <el-tooltip class="face-info" content="1111" placement="bottom-start">
               <div class="face-info">
-                <!-- <div class="face-name">姓名：{{item.name}}</div> -->
-                <div class="face-name">
-                  姓名：
-                  <span
-                    style="overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                display: inline-block; width: 45px"
-                  >{{item.name}}</span>
-                </div>
+                <div class="face-name">姓名： {{item.name}}</div>
                 <div class="face-kind">
                   <el-tag>{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</el-tag>
                 </div>
               </div>
             </el-tooltip>
 
-            <!-- <div class="bottom clearfix">
-              <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
-              <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
-            </div>-->
             <div class="btn-box">
               <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
               <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
@@ -777,8 +764,8 @@ export default {
     font-size: 12px;
   }
   .btn-box {
-    display: none;
-    margin-top: 6px;
+    // display: none;
+    // margin-top: 6px;
     line-height: 12px;
   }
   .image {
@@ -791,12 +778,21 @@ export default {
       background-color: rgb(245, 247, 250);
     }
   }
-  &:hover .btn-box {
+  .btn-box {
     display: inline-block;
     position: absolute;
-    top: 25px;
+    bottom: 25px;
     right: 5px;
     z-index: 99;
+  }
+  .face-checkbox {
+    display: none;
+  }
+  &:hover .face-checkbox {
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    display: inline-block;
   }
 }
 .face-nodata {
@@ -804,11 +800,6 @@ export default {
   height: 50px;
   line-height: 50px;
   text-align: center;
-}
-.face-checkbox {
-  position: absolute;
-  top: 2px;
-  right: 5px;
 }
 </style>
 
