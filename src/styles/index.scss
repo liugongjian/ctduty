@@ -426,3 +426,20 @@ html {
   width:50px !important;
   height:50px !important;
 }
+
+.amap-info-outer {
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.15) !important; 
+}
+.el-tabs__nav {
+    text-align: center !important;
+}
+.el-tabs__active-bar {
+    height: 1px !important;
+    width: 80px !important;
+    margin-left: 10px !important;
+    display: inline-block !important;
+}
+.el-tabs__nav-wrap::after {
+    height: 1px !important;
+}

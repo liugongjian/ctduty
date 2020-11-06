@@ -27,7 +27,7 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="width:500px;height:365px; padding: 10px 10px 0px">
+          <div style="width:500px;height:350px; padding: 10px 10px 0px">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
@@ -89,26 +89,27 @@
               </el-switch>
             </span> -->
           </div>
-          <div class="bottom-left">
-            <div style="width:100%; height:26px;">
-              <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
-                  全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
-                </p>
-              </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '33%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理<span style="margin-left: 2px">{{ '(' + (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
-                </p>
-              </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '33%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
-                  未处理<span style="margin-left: 2px">{{ '(' + (todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal) + ')' }}</span>
-                </p>
-              </div>
-
+          <div style="width:100%; height:26px;display:flex;Justify-content：center;padding:0 1% 0 3%;">
+            <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9', width: '30%'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+              <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
+                全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
+              </p>
             </div>
-            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
+            <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '30%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
+                已处理<span style="margin-left: 2px">{{ '(' + (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
+              </p>
+            </div>
+            <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '30%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
+                未处理<span style="margin-left: 2px">{{ '(' + (todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal) + ')' }}</span>
+              </p>
+            </div>
+
+          </div>
+          <div class="bottom-left">
+
+            <div v-if="stepsData.length" class="zuoContent" style="width:100%;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div v-if="hasData">
                   <div :class="{'not-allowed': isDisableAllAlarmBtn}">
@@ -228,7 +229,7 @@
                 </template>
               </div>
             </div>
-            <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
+            <div v-else class="zuoContent" style="width:100%;overflow: auto;">
               <div v-if="loading">
                 <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#FF9832;vertical-align:middle;">
                   <i class="el-icon-loading loading"></i>
@@ -1210,7 +1211,7 @@ body {
   box-sizing: content-box !important;
 }
 .warn {
-  height:83vh !important;
+  height:83% !important;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
@@ -1301,10 +1302,12 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 100%;
+          height: 54%;
           float: left;
           padding: 0 10px;
           padding-top: 8px;
+          overflow: auto;
+          position:relative;
           .zuo {
             float: left;
             width: 33%;
@@ -1317,6 +1320,7 @@ body {
             }
             .zuoContent {
               padding-right: 50px;
+              height: 100%;
             }
           }
           .zuo:hover {
@@ -1555,8 +1559,6 @@ body {
 .untreated {
   font-size: 18px;
 }
-// .amap-info-content.amap-info-outer {
-//   height: 358px !important;
-// }
+
 </style>
 
