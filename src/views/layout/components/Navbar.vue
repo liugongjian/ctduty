@@ -88,9 +88,9 @@
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
-          <el-form-item label="签名档">
+          <!-- <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogConfirm()">确 定</el-button>

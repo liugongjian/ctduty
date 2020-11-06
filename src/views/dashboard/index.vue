@@ -90,7 +90,6 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
-
 export default {
   name: 'Dashboard',
   // mixins: [PreCheck],

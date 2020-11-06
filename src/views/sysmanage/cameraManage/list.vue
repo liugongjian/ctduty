@@ -4,7 +4,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!--  <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          <el-button type="warning" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
           <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
@@ -39,18 +39,19 @@
             </div>
           </el-dialog> -->
         </div>
-        <div class="pull-right">
+        <!--  <div class="pull-right">
           <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
             <el-option v-for="item in typeOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
           </el-select>
-        </div>
+        </div> -->
       </div>
       <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
+        <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
+        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
           <template slot-scope="scope">
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
@@ -59,7 +60,7 @@
         <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
+        <!-- <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
@@ -69,11 +70,9 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
-        <!-- <el-table-column :show-overflow-tooltip="true" :label="'操作'"> -->
-        <el-table-column :label="'操作'" width="140px">
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-            <el-button :disabled="(scope.row.online==1)" type="text" size="small" @click="configDialog(scope.row.id)">{{ '配置' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -105,16 +104,6 @@
           <el-button @click="editDialogQuxiao">取 消</el-button>
         </div>
       </el-dialog>
-
-      <el-dialog :visible="configVisable" :title="configName" width="920px" center @close="configCloseDialog">
-        <VideoConfig v-if="configVisable" :device-id="currentPickDeviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
-        <!-- <VideoConfig :deviceId='currentPickDeviceId' v-if="configVisable" :arr2='algorithmListTwoDim'></VideoConfig> -->
-        <span v-show="!canvasShowStatus" slot="footer" class="dialog-footer">
-          <el-button @click="applyAlgorithms(false)">取消</el-button>
-          <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
-        </span>
-      </el-dialog>
-
       <pagination
         v-show="total>0"
         :total="total"
@@ -220,15 +209,7 @@ export default {
         creatorId: ''
       },
       userList: [],
-      creatorName: '',
-      configVisable: false,
-      currentPickDeviceId: '',
-      algorithmList: [],
-      algorithmListCopy: [],
-      algorithmListTwoDim: [],
-      timer: '11',
-      canvasShowStatus: false,
-      configName: '视频AI配置'
+      creatorName: ''
     }
   },
   watch: {
@@ -243,151 +224,6 @@ export default {
     await this.getList()
   },
   methods: {
-    setCanvasShow(payload) {
-      this.canvasShowStatus = payload
-      if (payload == true) {
-        this.configName = ''
-      } else {
-        this.configName = '视频AI配置'
-      }
-    },
-    async getAlgorithmList(deviceId) {
-      const { body: res } = await client.getInstanceList(deviceId)
-      this.algorithmList = res.data
-      this.algorithmListCopy = JSON.parse(JSON.stringify(this.algorithmList))
-      this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
-      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
-    },
-    changeToTwoDiArray(dataList, num) {
-      return dataList.reduce(
-        (prev, next, idx) => {
-          const inner = prev[~~(idx / num)]
-          if (inner !== undefined) {
-            inner.push(next)
-          } else {
-            prev.push([next])
-          }
-          return prev
-        },
-        [[]]
-      )
-    },
-    saveUpdatePick(item) {
-      if (item.isPick) {
-        item['isConfigAlready'] = true
-        item['beforePickStatus'] = true
-        item['isCommitStatus'] = true
-        item['originalPickStatus'] = true
-      } else {
-        item['isConfigAlready'] = false
-        item['beforePickStatus'] = false
-        item['isCommitStatus'] = false
-        item['originalPickStatus'] = false
-      }
-      return item
-    },
-    applyAlgorithms(flag) {
-      if (flag) {
-        // 先组装参数，包含删除、增加、修改
-        var allDatas = []
-        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
-        var params = []
-        var flag = true
-        for (var i = 0; i < nowAlgorithmList.length; i++) {
-          var algorithmObject = nowAlgorithmList[i]
-          var param = {
-            taskId: algorithmObject.id,
-            id: algorithmObject.id,
-            taskName: algorithmObject.name
-          }
-          if (algorithmObject.originalPickStatus && !algorithmObject.isPick) {
-            // 删除
-            param['action'] = 'delete'
-            params.push(param)
-          } else if (!algorithmObject.originalPickStatus && algorithmObject.isPick) {
-            // 增加(检查，如果该配置的没有配置需要弹窗告警)
-            param['action'] = 'add'
-            if (algorithmObject.isNeedConfig) {
-              var areas = algorithmObject['areas']
-              if (areas == undefined || areas.length == 0) {
-                // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
-                this.$message({
-                  showClose: false,
-                  message: algorithmObject.cnName + '没有标注，请标注再提交或者取消选择',
-                  type: 'error'
-                })
-                flag = false
-                break
-              } else {
-                param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
-              }
-            }
-            params.push(param)
-          } else if (algorithmObject.originalPickStatus && algorithmObject.isPick && !algorithmObject.isCommitStatus) {
-            // 修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
-            param['action'] = 'update'
-            var areas = algorithmObject['areas']
-            if (areas == undefined || areas.length == 0) {
-              // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
-              this.$message({
-                showClose: false,
-                message: algorithmObject.cnName + '没有标注，请标注再提交或者取消选择',
-                type: 'error'
-              })
-              flag = false
-              break
-            }
-            param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
-            params.push(param)
-          }
-        }
-        if (flag) {
-          if (params.length > 0) {
-            var finalBody = {
-              deviceId: this.currentPickDeviceId,
-              taskInstParams: params
-            }
-            this.configTask(finalBody)
-          }
-          this.configVisable = false
-        }
-      } else {
-        this.configVisable = false
-      }
-    },
-    formatAreas(areas, ratiox, ratioy) {
-      var newAreas = areas.map(eachArea => {
-        var newPoints = this.formatPoints(eachArea.points, ratiox, ratioy)
-        return {
-          type: eachArea.type,
-          name: eachArea.name,
-          points: newPoints
-        }
-      })
-      return newAreas
-    },
-    formatPoints(points, ratiox, ratioy) {
-      var newPoints = []
-      for (var i = 0; i < points.length; i++) {
-        newPoints.push({
-          x: parseInt(points[i].x * ratiox),
-          y: parseInt(points[i].y * ratioy)
-        })
-      }
-      return newPoints
-    },
-    async configTask(body) {
-      const res = await client.configInstance(body)
-    },
-    configDialog(v) {
-      this.currentPickDeviceId = v
-      this.timer = new Date().getTime()
-      this.configVisable = true
-      this.getAlgorithmList(v)
-    },
-    configCloseDialog() {
-      this.configVisable = false
-    },
     getUserList() {
       const query = {
         cascade: true,
