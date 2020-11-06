@@ -80,36 +80,36 @@
             :name="item">
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
             <div v-if="tableData.length>0" class="history-box">
-                <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
-                    <el-card class="history-card" :body-style="{ padding: '0px' }">
-                        <el-image :src="val.imageCut" style="width: 100%; height:200px"/>
-                        <div class="history-info">
-                            <div class="history-name">
-                                <span>{{val.username || "未知"}}</span>
-                                <span>{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
-                                <span>{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
-                            </div>
-                            <div>
-                                <i class="el-icon-map-location">
-                                    {{val.camera ? val.camera.address : "未知位置"}}
-                                </i>
-                            </div>
-                            <div class="history-time">
-                                <i class="el-icon-time">
-                                    {{renderTime(val.createTime)}}
-                                </i>
-                            </div>
-                        </div>
-                        <!-- <div class="btn-box">
-                        <el-button 
-                            type="danger" 
-                            icon="el-icon-delete" 
-                            circle 
-                            size="mini" 
+              <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
+                <el-card :body-style="{ padding: '0px' }" class="history-card">
+                  <el-image :src="val.imageCut" class="image" style="width: 100%; height:200px"/>
+                  <div class="card-desp">
+                    <div class="history-name">
+                      <span>{{ val.username || "未知" }}</span>
+                      <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
+                      <span>{{ val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他" }}</span>
+                    </div>
+                    <div class="bottom clearfix">
+                      <div class="location">
+                        <i class="el-icon-map-location" />
+                        <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                      </div>
+                      <div class="location">
+                        <i class="el-icon-time" />
+                        <time class="time"> {{ renderTime(val.createTime) }}</time>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="btn-box">
+                        <el-button
+                            type="danger"
+                            icon="el-icon-delete"
+                            circle
+                            size="mini"
                             @click="delAlert(val.id)"></el-button>
                         </div> -->
-                    </el-card>
-                </div>
+                </el-card>
+              </div>
             </div>
             <div v-else class="history-nodata">暂无数据</div>
             <pagination
@@ -453,7 +453,7 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
-      },{
+      }, {
         field: 'username',
         operator: 'NOT_NULL'
       }
@@ -461,7 +461,7 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': s || '', 'end': e || '' }
-      },{
+      }, {
         field: 'username',
         operator: 'NOT_NULL'
       },
@@ -603,7 +603,7 @@ export default {
     padding: 7px 5px;
   }
   .history-name{
-    padding: 5px 0;
+    font-size: 12px;
   }
   .history-time{
       margin-top: 5px;
@@ -624,5 +624,42 @@ export default {
     height: 50px;
     line-height: 50px;
     text-align: center;
+}
+.card-desp{
+    padding:10px;
+    &-title{
+        font-size:14px;
+        &>span{
+            display:inline-block;
+        }
+    }
+    .button{
+        font-size: 16px;
+        float: right;
+        padding: 0;
+    }
+    .bottom {
+        margin-top: 5px;
+        line-height: 20px;
+        font-size:13px;
+        color:#999;
+    }
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+    .clearfix:after {
+        clear: both
+    }
+}
+.image {
+    width: 100%;
+    max-width: 250px;
+    height:120px;
+    img{
+    object-fit: contain;//cover;
+    background-color: rgb(245, 247, 250);
+    }
 }
 </style>
