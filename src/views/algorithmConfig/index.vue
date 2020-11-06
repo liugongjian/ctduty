@@ -6,7 +6,7 @@
           <div class="tabCon">
             <p>智能算法</p>
             <div class="btnBox">
-              <span v-for="(v,k) in taskData" :key="k" :class="activeAlgorithm === k ? 'btnTab active' : 'btnTab'" @click="changeActive(k)">
+              <span v-for="(v,k) in taskData" :key="k" :class="activeAlgorithm === k ? 'btnTab active' : 'btnTab'" @click="changeActive(k,v.id)">
                 {{ v.cnName }}
               </span>
             </div>
@@ -21,34 +21,51 @@
               <span class="infoName">
                 已配置视频列表
               </span>
-              <span class="infoDetail">
-                (已配置视频数：111路，已配置视频数占比：12%)
+              <span v-if="videoWithConfig && videoWithConfig.length > 0" class="infoDetail">
+                (已配置视频数：{{ videoWithConfig.length }}路，已配置视频数占比：{{ (videoWithConfig.length/totalCameras*100).toFixed(2) }}%)
+              </span>
+              <span v-else class="infoDetail">
+                (已配置视频数：0路，已配置视频数占比：0%)
               </span>
             </div>
-            <ul class="nameList">
-              <li v-for="(v,k) in nameList" :key="k" >
+            <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
+              <li v-for="(v,k) in videoWithConfig" :key="k" >
                 {{ v.name }}
               </li>
             </ul>
+            <div v-else class="nodata">
+              暂无已配置视频
+            </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="算法配置" name="second">
+        <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
           <el-row>
-            <el-col :span="6" class="totalLine">
+            <el-col :span="7" class="videoQueryBox">
               <div class="videoTotalBox">
                 <div class="videoTotal">
-                  <span>视频列表</span>
-                  <span>总计：25个摄像头</span>
+                  <span class="videoTotalText">视频列表</span>
+                  <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
                 </div>
-                <el-input placeholder="请输入关键字" suffix-icon="el-icon-search"></el-input>
+                <el-input v-model="queryKeyword" placeholder="请输入关键字" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
+
               </div>
               <ul class="videoResult">
-                <li v-for="(v,k) in nameList" :key="k" @click="changeDeviceId(v.id)">
+                <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
                   {{ v.name }}
                 </li>
               </ul>
+              <pagination
+                v-show="total>0"
+                :total="total"
+                :page.sync="page"
+                :limit.sync="limit"
+                small
+                pager-count="5"
+                layout="prev, pager, next"
+                @pagination="pageChange"
+              />
             </el-col>
-            <el-col :span="18">
+            <el-col :span="17" class="algorithmConfigList totalLine">
               <VideoConfig v-if="true" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
             </el-col>
           </el-row>
@@ -65,41 +82,53 @@ import VideoPlayer from '@/components/VideoPlayer'
 import VideoConfig from '@/components/VideoConfig'
 import client from '@/api/vedioAlgo'
 import {
-  taskList
+  taskList, videoListByAlgorithmId, getCameraList
 } from '@/api/algorithm'
-import {
-  fetchAllCameraList
-} from '@/api/camera'
+
 export default {
   components: { Pagination, VideoPlayer, VideoConfig },
   data() {
     return {
       activeName: 'first',
-      pageLoading: false,
+      pageLoading: true,
       activeAlgorithm: 0,
+      videoWithConfig: [],
       nameList: [],
       taskData: [],
       deviceId: '',
-      algorithmListTwoDim: []
+      algorithmListTwoDim: [],
+      algorithmId: '',
+      activeVideoResult: 0,
+      totalCameras: 0,
+      cameraListByQuery: [],
+      total: 0,
+      page: 1,
+      limit: 20,
+      queryKeyword: ''
     }
   },
-  mounted() {
-    //    this.nameList = ['A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是', 'A视频啊我是']
-
-    // this.getTaskList()
-    // this.getList()
-    console.log(this.deviceId)
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
   },
+  mounted() {},
   async created() {
     await this.getTaskList()
-    await this.getList()
   },
   methods: {
     handleClick(tab, event) {
-    //   console.log(tab, event)
+      if (tab.index === 0) {
+        this.getTaskList()
+      } else {
+        this.getList()
+      }
     },
-    changeActive(k) {
+    changeActive(k, id) {
       this.activeAlgorithm = k
+      this.pageLoading = true
+      this.getVideoList(id)
     },
     getTaskList() {
       const query = {
@@ -113,32 +142,57 @@ export default {
       taskList(query).then(res => {
         if (res.code === 0) {
           this.taskData = res.body.data
-          this.algorithmValue = res.body.data[0].id
+          //   this.algorithmId = res.body.data[0].id
+          this.listLoading = false
+          const id = res.body.data[0].id
           this.taskName = res.body.data[0].name
+          this.getVideoList(id)
+        }
+      })
+    },
+    getVideoList(id) {
+      videoListByAlgorithmId(id).then(res => {
+        if (res.code === 0) {
+          this.pageLoading = false
+          this.videoWithConfig = res.body.data.configCameras
+          this.totalCameras = res.body.data.totalCameras
         }
       })
     },
     getList() {
-      const params = {
-        cascade: true,
-        page: {
-          index: this.page,
-          size: this.limit
+      const query = this.queryKeyword ? {
+        'page': {
+          'index': this.page,
+          'size': this.limit
         },
-        params: {
-        }
+        'params': [
+          {
+            'field': 'address',
+            'operator': 'LIKE',
+            'value': `%${this.queryKeyword.trim()}%`
+
+          }]
+      } : {
+        'page': {
+          'index': this.page,
+          'size': this.limit
+        },
+        'params': []
       }
-      fetchAllCameraList(params).then(res => {
-        this.nameList = res.body.data
-        this.total = res.body.page.total
-        this.listLoading = false
-        this.deviceId = res.body.data[0].id
-        this.getAlgorithmList(this.deviceId)
-        // console.log('id-------------->', res.body.data[0].id, this.deviceId)
+      getCameraList(query).then(res => {
+        if (res.code === 0) {
+          this.nameList = res.body.data
+          this.total = res.body.page.total
+          this.listLoading = false
+          this.deviceId = res.body.data[0].id
+          this.total = res.body.page.total
+          this.getAlgorithmList(this.deviceId)
+        }
       })
     },
-    changeDeviceId(id) {
+    changeDeviceId(id, k) {
       this.deviceId = id
+      this.activeVideoResult = k
       this.getAlgorithmList(id)
     },
     async getAlgorithmList(deviceId) {
@@ -177,6 +231,10 @@ export default {
     },
     setCanvasShow(payload) {
       this.canvasShowStatus = payload
+    },
+    pageChange(obj) {
+      this.page = obj.page
+      this.getList()
     }
   }
 }
@@ -185,10 +243,20 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    height: 100%;
+    // height: 100%;
     .algorithmConfig{
         background: #fff;
-        height: 100%;
+        // height: 100%;
+    }
+    // /deep/.el-tabs__header{
+    //     margin: 0 0 5px;
+    // }
+    // /deep/.el-tabs__item{
+    //     height: 40px;
+    //     line-height: 40px;
+    // }
+    /deep/.el-tabs__content{
+        overflow: auto;
     }
     .tabCon{
         padding: 0 22px;
@@ -234,6 +302,15 @@ export default {
             margin: 10px 20px 10px 10px;
         }
     }
+    .nodata{
+        font-size: 16px;
+        color: #333;
+        border: 1px solid #EEE;
+        margin: 20px 0;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
     .videoList{
         margin-top: 20px;
         padding: 0 22px;
@@ -249,27 +326,59 @@ export default {
         }
     }
     //算法配置
+    .videoContainerBox{
+        margin-bottom: 15px;
+    }
     .totalLine{
-        height: 100%;
-        border-right: 1px solid #EEE;
+        border-left: 1px solid #EEE;
+    }
+    .videoQueryBox{
+        position: relative;
+    }
+    /deep/.pagination-container .showTotal{
+        display: none;
     }
     .videoTotalBox{
         padding:20px;
+    }
+    .videoTotal{
+        position: relative;
+        margin-bottom: 10px;
+    }
+    .videoTotalText{
+        font-size: 16px;
+        color: #333;
+        font-weight: bolder;
+    }
+    .videoTotalNum{
+        font-size: 12px;
+        color: #666666;
+        position: absolute;
+        top:4px;
+        right: 10px;
     }
     .videoResult{
         display: flex;
         flex-wrap: wrap;
         list-style: none;
         padding: 0 20px;
-        margin: 20px 0;
+        margin: 0 0 20px;
         li{
-            margin: 10px 20px 10px 10px;
+            margin: 7px 20px 7px 10px;
+            padding: 2px 5px;
             cursor: pointer;
+            &.active{
+                background: #FA8334;
+                border-radius: 2px;
+                color: #FFFFFF;
+            }
         }
     }
-    .test{
-        width: 828px;
-        margin: 0 auto;
+    .algorithmConfigList{
+        .test{
+            width: 828px;
+            margin: 0 auto 20px;
+        }
     }
 }
 </style>

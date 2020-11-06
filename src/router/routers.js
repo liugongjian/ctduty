@@ -63,25 +63,25 @@ export const asyncRouterMap = [
   //     }
   //   ]
   // },
-  {
-    path: '/videomonitor',
-    component: Layout,
-    redirect: '/videomonitor',
-    hidden: false,
-    children: [
-      {
-        path: '/videomonitor',
-        component: () => import('@/views/videoMonitor/index'),
-        name: 'videoMonitor',
-        meta: {
-          title: 'videoMonitor',
-          icon: 'monitor',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/videomonitor',
+  //   component: Layout,
+  //   redirect: '/videomonitor',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: '/videomonitor',
+  //       component: () => import('@/views/videoMonitor/index'),
+  //       name: 'videoMonitor',
+  //       meta: {
+  //         title: 'videoMonitor',
+  //         icon: 'monitor',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/monitorScreen',
     component: Layout,
@@ -113,7 +113,7 @@ export const asyncRouterMap = [
         name: 'algorithmConfig',
         meta: {
           title: 'algorithmConfig',
-          icon: 'monitor',
+          icon: 'algorithmconfig',
           noCache: true,
           affix: true
         }

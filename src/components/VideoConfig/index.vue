@@ -6,8 +6,8 @@
           <div v-for="(item, index) in val" :key="item.id" class="aiConfigBox">
             <div style="margin: 10px; vertical-align: middle">
               <span>
-                <img :src="getImgUrl(item.name)" class="iconBox" >
-              </span>
+                <el-image :src="getImgUrl(item.name)" class="iconBox" >
+              </el-image></span>
               <span style="font-weight: bold">{{ item.cnName }}</span>
               <span
                 style="
@@ -121,7 +121,8 @@ export default {
       this.canvasVisable = false
     },
     getImgUrl(name) {
-      return require('../../assets/icon/' + name + '.png')
+      // return require('../../assets/icon/' + name + '.png')
+      return require('../../assets/icon/carPersonCheck.png')
     },
     checkboxchange(bol, item, index, idx) {
       item.beforePickStatus = bol
