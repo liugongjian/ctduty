@@ -52,6 +52,20 @@ export default {
     this.chart = null
   },
   methods: {
+    // createRandomItemStyle1 (params) {　　　　//此方法与下方配置中的第一个textStle下的color等同
+    //     var colors = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
+    //     return colors[parseInt(Math.random() * 6)];
+    // },
+    // createRandomItemStyle2() {
+    //   var colorArr = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
+    //   var flag = parseInt(Math.random() * 6);
+    //   return {
+    //       normal: {
+    //           fontFamily: '微软雅黑',
+    //           color:colorArr[flag]
+    //       }
+    //   };
+    // },
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
       const option = {
@@ -81,7 +95,16 @@ export default {
             // maskImage: maskImage,
             textStyle: {
               normal: {
-                color: function() {
+                // color: ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B", '#fddb7e', '#735ba1', '#bda29a', '#6e7074', '#546570', '#c4ccd3']
+                // color: this.createRandomItemStyle2()
+                color: 
+                // function () {
+                //   var colors = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
+                //   return(
+                //     colors[parseInt(Math.random() * 6)]
+                //   )
+                // }
+                function() {
                   return (
                     'rgb(' +
                     Math.round(Math.random() * 255) +
@@ -94,6 +117,13 @@ export default {
                 }
               }
             },
+            // textStyle:this.createRandomItemStyle2(),
+            // textStyle:{
+            //   normal: {
+            //     fontFamily: '微软雅黑',
+            //     color: this.createRandomItemStyle1()
+            //   }
+            // },
             // 位置相关设置
             // Folllowing left/top/width/height/right/bottom are used for positioning the word cloud
             // Default to be put in the center and has 75% x 80% size.

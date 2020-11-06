@@ -75,45 +75,38 @@
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
             <div v-if="tableData.length>0" class="history-box">
               <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
-                <el-card class="history-card" :body-style="{ padding: '0px' }">
-                  <el-image :src="val.imageCut" style="width: 100%; height:200px" />
-                  <div class="history-info">
+                <el-card :body-style="{ padding: '0px' }" class="history-card">
+                  <el-image :src="val.imageCut" class="image" style="width: 100%; height:200px" />
+                  <div class="card-desp">
                     <div class="history-name">
-                      <span class="font">{{val.username || "未知"}}</span>
-                      <span class="font">{{val.gender === 1 ? "男" : val.gender === 2? "女" : "未知"}}</span>
-                      <span
-                        class="font"
-                      >{{val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他"}}</span>
+                      <span>{{ val.username || "未知" }}</span>
+                      <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
+                      <el-tag
+                        style="margin-top:3px;margin-left:3px;"
+                        size="mini"
+                      >{{ val.nameList === "1" ? "白名单" : val.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
                     </div>
-
-                    <el-tooltip :content="val.camera.address" placement="bottom-start">
-                      <!-- <div
-                      :disabled="item.name.length <12"
-                        class="face-name"
-                      >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>-->
-
-                      <div>
-                        <span class="font">
-                          <i
-                            class="el-icon-map-location"
-                          >{{val.camera ? val.camera.address : "未知位置"}}</i>
-                        </span>
+                    <div class="bottom clearfix">
+                      <div
+                        class="location"
+                        style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
+                      >
+                        <i class="el-icon-map-location" />
+                        <span>{{ val.camera && val.camera.address || '未知' }}</span>
                       </div>
-                    </el-tooltip>
-
-                    <div class="history-time">
-                      <span class="font">
-                        <i class="el-icon-time">{{renderTime(val.createTime)}}</i>
-                      </span>
+                      <div class="location">
+                        <i class="el-icon-time" />
+                        <time class="time">{{ renderTime(val.createTime) }}</time>
+                      </div>
                     </div>
                   </div>
                   <!-- <div class="btn-box">
-                  <el-button
-                      type="danger"
-                      icon="el-icon-delete"
-                      circle
-                      size="mini"
-                      @click="delAlert(val.id)"></el-button>
+                        <el-button
+                            type="danger"
+                            icon="el-icon-delete"
+                            circle
+                            size="mini"
+                            @click="delAlert(val.id)"></el-button>
                   </div>-->
                 </el-card>
               </div>
@@ -646,7 +639,8 @@ export default {
     padding: 7px 5px;
   }
   .history-name {
-    padding: 5px 0;
+    font-size: 12px;
+    // padding: 5px 0;
   }
   .font {
     font-size: 13px;
@@ -671,5 +665,42 @@ export default {
   height: 50px;
   line-height: 50px;
   text-align: center;
+}
+.card-desp {
+  padding: 10px;
+  &-title {
+    font-size: 14px;
+    & > span {
+      display: inline-block;
+    }
+  }
+  .button {
+    font-size: 16px;
+    float: right;
+    padding: 0;
+  }
+  .bottom {
+    margin-top: 5px;
+    line-height: 20px;
+    font-size: 13px;
+    color: #999;
+  }
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both;
+  }
+}
+.image {
+  width: 100%;
+  max-width: 250px;
+  height: 120px;
+  img {
+    object-fit: contain; //cover;
+    background-color: rgb(245, 247, 250);
+  }
 }
 </style>

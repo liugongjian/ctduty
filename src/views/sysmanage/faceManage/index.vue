@@ -198,12 +198,14 @@
                 <el-button
                   type="text"
                   icon="el-icon-edit-outline"
-                  style="width:10px;height:10px;color: #898989;"
+                  style="width:10px;height:10px;color: #898989; margin-right: 4px;"
                   size="mini"
                   @click="editDialog(item)"
                 ></el-button>
                 <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
-                  <div style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9;"></div>
+                  <div
+                    style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9; margin-right: 4px;"
+                  ></div>
                 </div>
                 <el-button
                   type="text"
@@ -789,7 +791,7 @@ export default {
     width: 30px;
     display: flex;
     justify-content: space-between;
-    margin-left: 10px;
+    margin-right: 10px;
     margin-bottom: 5px;
   }
   .image {
