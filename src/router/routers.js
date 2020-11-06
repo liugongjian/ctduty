@@ -234,16 +234,16 @@ export const asyncRouterMap = [
           }
         ]
       }, */
-      // {
-      //   path: 'policeManage',
-      //   component: () => import('@/views/sysmanage/areaManage/policeManage'),
-      //   name: 'policeManage',
-      //   meta: {
-      //     title: '派出所管理',
-      //     icon: 'police',
-      //     noCache: false
-      //   }
-      // },
+      /* {
+        path: 'policeManage',
+        component: () => import('@/views/sysmanage/areaManage/policeManage'),
+        name: 'policeManage',
+        meta: {
+          title: '派出所管理',
+          icon: 'police',
+          noCache: false
+        }
+      }, */
       {
         path: 'userManage',
         component: () => import('@/views/sysmanage/userManage/index'),
@@ -254,19 +254,19 @@ export const asyncRouterMap = [
           noCache: false
         }
       },
-      // {
-      //   path: 'dutyManage',
-      //   component: () => import('@/views/sysmanage/dutyManage/index'),
-      //   name: 'sysdutyManage',
-      //   meta: {
-      //     title: 'dutyManage',
-      //     icon: 'dutyManage',
-      //     noCache: false
-      //   }
-      // },
+      /* {
+        path: 'dutyManage',
+        component: () => import('@/views/sysmanage/dutyManage/index'),
+        name: 'sysdutyManage',
+        meta: {
+          title: 'dutyManage',
+          icon: 'dutyManage',
+          noCache: false
+        }
+      }, */
       {
         path: 'cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/index'),
+        component: () => import('@/views/sysmanage/cameraManage/list'),
         name: 'sysCameraManage',
         meta: {
           title: 'cameraManage',

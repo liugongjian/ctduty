@@ -26,6 +26,7 @@ export default {
     },
     chartData: {
       type: Array,
+      // eslint-disable-next-line vue/require-valid-default-prop
       default: []
     }
   },
@@ -46,7 +47,6 @@ export default {
   },
   methods: {
     initChart() {
-      const that = this
       this.chart = echarts.init(document.getElementById(this.id))
       this.chart.setOption({
         // tooltip: {

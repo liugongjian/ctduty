@@ -44,11 +44,11 @@
             <span>{{ scope.row.username }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
+        <!--  <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
           <template slot-scope="scope">
             <span>{{ scope.row.department ? scope.row.department.name : '' }} </span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" :label="'主机'" style="text-align: center" prop="ip">
           <template slot-scope="scope">
             <span>{{ scope.row.ip }}</span>
