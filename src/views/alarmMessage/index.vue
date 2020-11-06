@@ -219,15 +219,15 @@
             <el-dialog
               v-model="temp"
               :visible.sync="dialogVisable"
-              width="500px"
-              height="350px"
+              width="520px"
+              style="height:390px;"
               @close="closeDialog"
             >
               <div style="width:500px;height:350px; padding: 10px 10px 0px">
                 <div :model="temp" label-position="right" label-width="100px">
                   <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
                     <img :src="temp.image" width="480" height="270" style="z-index:1;">
-                    <CanvasDialog :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+                    <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
                   </div>
                   <div class="popfooter">
                     <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
@@ -579,9 +579,14 @@ export default {
     },
 
     editDialog(v) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.temp = Object.assign({}, v)
       this.points = JSON.parse(this.temp.box)
-      this.dialogVisable = true
     },
     editCloseDialog() {
       this.editVisable = false
