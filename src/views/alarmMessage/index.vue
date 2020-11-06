@@ -219,6 +219,7 @@
             <el-dialog
               v-model="temp"
               :visible.sync="dialogVisable"
+              class="mesdialog"
               width="520px"
               style="height:390px;"
               @close="closeDialog"
@@ -820,7 +821,7 @@ export default {
 }
 </script>
 
- <style lang='scss' scoped>
+ <style lang='scss'>
 .alaMesTable {
   td {
     padding: 0 !important;
@@ -887,17 +888,19 @@ td {
   height: 32px !important;
   line-height: 32px !important;
 }
-.el-dialog__header {
-  padding: 0 !important;
-}
-.el-dialog .el-dialog__body {
-  padding: 0 !important;
-}
-.el-dialog__footer {
-  padding: 0 !important;
-}
-.dialog-footer {
-  padding: 10px 0 !important;
+.mesdialog {
+  .el-dialog__header {
+    padding: 0 !important;
+  }
+  .el-dialog .el-dialog__body {
+    padding: 0 !important;
+  }
+  .el-dialog__footer {
+    padding: 0 !important;
+  }
+  .dialog-footer {
+    padding: 10px 0 !important;
+  }
 }
 .popfooter {
   padding-top: 4px;
