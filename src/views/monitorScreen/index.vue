@@ -322,7 +322,7 @@ export default {
       align-items: center;
       font-size: 14px !important;
       color: #ccc;
-      border: 1px dashed #f1f2f6;
+      border: 1px dashed #ccc;
       border-radius: 5px 5px 0 0;
       cursor: pointer;
       i {
