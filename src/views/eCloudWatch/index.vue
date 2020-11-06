@@ -981,6 +981,12 @@ export default {
 
     },
     async showDialog(cameraInfo, isAlert) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
@@ -991,7 +997,6 @@ export default {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
           audio.play()// 播放
         }
-        this.dialogVisable = true
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
