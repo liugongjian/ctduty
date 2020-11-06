@@ -123,7 +123,7 @@ export default {
         res.body.data.forEach(item => {
           this.deviceList.push({
             address: item.address,
-            image: item.image ? item.image : fakeimg,
+            image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
             id: item.id
           })
         })
