@@ -934,4 +934,7 @@ td {
 .el-button--text {
   color: #FA8334 !important;
 }
+.el-button--small {
+  font-size: 14px;
+}
 </style>
