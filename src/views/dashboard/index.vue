@@ -49,11 +49,11 @@
     <div class="charts">
       <div class="chart1">
         <div class="chart-title">告警排行</div>
-        <SimpleBar id="times-bar" key="times-bar"/>
+        <SimpleBar id="times-bar" key="times-bar" :chart-data="alertStatisByCameraChartData"/>
       </div>
       <div class="chart2">
         <div class="chart-title">告警趋势</div>
-        <SimpleBar id="trend-bar" key="trend-bar"/>
+        <SimpleBar id="trend-bar" key="trend-bar" :chart-data="alertStatisByDayChartData"/>
       </div>
     </div>
     <div class="alarm-detail">
@@ -66,20 +66,28 @@
         <el-table-column label="A算法" prop="name"></el-table-column>
         <el-table-column label="B算法" prop="phone"></el-table-column>
         <el-table-column label="C算法" prop="post.name"></el-table-column>
-      </el-table></div>
+      </el-table>
+      </div>
     </div>
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="page"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
+import Pagination from '@/components/Pagination'
 import Flipper from '@/components/Charts/Flipper'
 import StackedBar from '@/components/Charts/stackedBar'
 import SimpleBar from '@/components/Charts/simpleBar'
 import DoughntPie from '@/components/Charts/doughntPie'
 // 引入水波球
 import 'echarts-liquidfill'
-import huayin from '@/json/huayin.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -97,10 +105,15 @@ export default {
     Flipper,
     StackedBar,
     SimpleBar,
-    DoughntPie
+    DoughntPie,
+    Pagination
   },
   data() {
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
+      total: 0,
       timer: null,
       flipObjs: [],
       cardStyle: {
@@ -145,6 +158,66 @@ export default {
           'data': 333,
           'percent': 40
         }
+      ],
+      // 告警趋势
+      alertStatisByDayList: [
+        {
+          'calDay': '08月01日',
+          'alertCount': 11,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        },
+        {
+          'calDay': '08月02日',
+          'alertCount': 4011,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        },
+        {
+          'calDay': '08月03日',
+          'alertCount': 15834,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        }
+      ],
+      // 告警排行
+      alertStatisByCameraList: [
+        {
+          'cameraId': '1111',
+          'cameraName': 'nnn',
+          'alertCount': 11,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        },
+        {
+          'cameraId': '2222',
+          'cameraName': 'yyyy',
+          'alertCount': 10,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        },
+        {
+          'cameraId': '3333',
+          'cameraName': 'zzz',
+          'alertCount': 11,
+          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+        }
+      ],
+      // 告警详情
+      alertDetailTale: [
+        {
+          'cameraId': '1111',
+          'cameraName': 'nnn',
+          'alertCount': 11,
+          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
+        },
+        {
+          'cameraId': '2222',
+          'cameraName': 'yyyy',
+          'alertCount': 10,
+          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
+        },
+        {
+          'cameraId': '3333',
+          'cameraName': 'zzz',
+          'alertCount': 11,
+          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
+        }
       ]
     }
   },
@@ -156,9 +229,50 @@ export default {
     cameraOfflineRateText() {
       const { cameraOnlineRate } = this.realTimeData
       return cameraOnlineRate ? ((1 - cameraOnlineRate) * 100).toFixed(2) + '%' : '-'
+    },
+    alertStatisByDayChartData() {
+      const categoryData = []
+      const valueData = []
+      this.alertStatisByDayList.forEach(({ calDay, alertCount }) => {
+        categoryData.push(calDay)
+        valueData.push(alertCount)
+      })
+      return {
+        xAxis: {
+          type: 'category',
+          data: categoryData
+        },
+        yAxis: {
+          type: 'value',
+          data: valueData
+        }
+      }
+    },
+    alertStatisByCameraChartData() {
+      const categoryData = []
+      const valueData = []
+      this.alertStatisByCameraList.forEach(({ cameraName, alertCount }) => {
+        categoryData.push(cameraName)
+        valueData.push(alertCount)
+      })
+      return {
+        yAxis: {
+          type: 'category',
+          data: categoryData
+        },
+        xAxis: {
+          type: 'value',
+          data: valueData
+        }
+
+      }
     }
   },
   watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    },
     realTimeData: function(newVal, oldVal) {
       let { todayAlerts: newAlerts } = newVal
       let { todayAlerts: oldAlerts } = oldVal
@@ -193,10 +307,43 @@ export default {
     this.getChartsData()
     this.timer = setInterval(() => {
       this.getRealtimeData()
-    }, 5000)
+      // const {
+      //   cameraOnlineRate = 0.1,
+      //   offlineCameras = 0,
+      //   onlineCameras = 0,
+      //   todayAlerts = 0
+      // } = this.realTimeData
+      // this.realTimeData = {
+      //   cameraOnlineRate: cameraOnlineRate + 0.1,
+      //   offlineCameras: offlineCameras + 1,
+      //   onlineCameras: onlineCameras + 1,
+      //   todayAlerts: todayAlerts + 123
+      // }
+    }, 3000)
   },
   methods: {
-  // 初始化数字
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getgetPoliceList()
+    },
+    getAlertDetailList() {
+      const query = {
+        page: {
+          index: this.pagenum,
+          size: this.limit
+        },
+        sorts: [{ field: 'create_time', type: 'desc' }]
+      }
+      // fetchUserList(query).then(response => {
+      //   if (response.code !== 0) return
+      //   this.userList = response.body.data
+      //   this.total = response.body.page.total
+      // })
+    },
+    // 初始化数字
     init() {
       for (let i = 0; i < this.flipObjs.length; i++) {
         this.flipObjs[i].setFront(0)

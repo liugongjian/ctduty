@@ -39,6 +39,20 @@ export default {
     height: {
       type: String,
       default: '100%'
+    },
+    chartData: {
+      type: Object,
+      // eslint-disable-next-line vue/require-valid-default-prop
+      default: {
+        xAxis: {
+          type: 'category',
+          data: []
+        },
+        yAxis: {
+          type: 'value',
+          data: []
+        }
+      }
     }
   },
   data() {
@@ -80,19 +94,8 @@ export default {
           containLabel: true
         },
         color: ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
-        xAxis: {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        //   axisLine: {
-        //     show: false
-        //   },
-        //   axisTick: {
-        //     show: false
-        //   }
-        },
+        xAxis: this.chartData.xAxis,
+        yAxis: this.chartData.yAxis,
         series: [{
           data: [120, 200, 150, 80, 70, 110, 130],
           type: 'bar',
