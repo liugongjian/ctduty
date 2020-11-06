@@ -89,7 +89,7 @@
               </el-switch>
             </span> -->
           </div>
-          <div style="width:100%; height:26px;display:flex;Justify-content：center;padding:0 1% 0 3%;">
+          <div style="width:100%; height:26px;display:flex;Justify-content：center;padding:0 1% 0 3%;cursor:pointer;overflow:hidden;">
             <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9', width: '30%'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
               <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
                 全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
@@ -1216,12 +1216,12 @@ body {
   box-sizing: content-box !important;
 }
 .warn {
-  height:83% !important;
+  height:590px !important;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
   opacity: .92;
-  background-color: #f1f2f6;
+  background-color: #ffffff;
 }
 .zuoContent {
   padding: 20px 10px;
@@ -1296,7 +1296,7 @@ body {
 
       .bottom {
         width: 100%;
-        height: 100%;
+        height: 370px;
         background-color: #ffffff;
 
         .todyW {
@@ -1307,7 +1307,7 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 54%;
+          height: 320px;
           float: left;
           padding: 0 8px;
           overflow: auto;
@@ -1318,6 +1318,7 @@ body {
             height: 26px;
             line-height: 26px;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
@@ -1354,6 +1355,7 @@ body {
             height: 26px;
             border: #FF9832;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
@@ -1365,6 +1367,7 @@ body {
             height: 26px;
             border: #FF9832;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
