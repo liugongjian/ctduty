@@ -178,25 +178,41 @@
               @change="checked=>checkboxchange(checked,item)"
             ></el-checkbox>
             <el-image :src="item.image" class="image" />
-            <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
-            <!-- <div class="face-info">
-              <div class="face-name">姓名：{{item.name}}</div>
-              <div class="face-kind">
-                <el-tag>{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</el-tag>
-            </div>-->
-            <!-- </div> -->
-            <el-tooltip class="face-info" content="1111" placement="bottom-start">
-              <div class="face-info">
-                <div class="face-name">姓名： {{item.name}}</div>
-                <div class="face-kind">
-                  <el-tag>{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</el-tag>
-                </div>
+            <div class="face-info">
+              <div style="display:flex;">
+                <el-tooltip
+                  :content="item.name"
+                  :disabled="item.name.length <4"
+                  placement="bottom-start"
+                >
+                  <div
+                    class="face-name"
+                  >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                </el-tooltip>
+                <el-tag
+                  style="margin-top:3px;"
+                  size="mini"
+                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
               </div>
-            </el-tooltip>
-
-            <div class="btn-box">
-              <el-button icon="el-icon-edit" size="mini" circle @click="editDialog(item)"></el-button>
-              <el-button icon="el-icon-delete" circle size="mini" @click="delAlert(item.id)"></el-button>
+              <div class="btn-box">
+                <el-button
+                  type="text"
+                  icon="el-icon-edit-outline"
+                  style="width:10px;height:10px;color: #898989;"
+                  size="mini"
+                  @click="editDialog(item)"
+                ></el-button>
+                <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
+                  <div style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9;"></div>
+                </div>
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  style="width:10px;height:10px;color: #a6a6a6;"
+                  size="mini"
+                  @click="delAlert(item.id)"
+                ></el-button>
+              </div>
             </div>
           </el-card>
         </el-col>
@@ -747,52 +763,43 @@ export default {
 }
 .face-card {
   position: relative;
+  border-radius: 4%;
   img {
     width: 100%;
   }
   .face-info {
     font-size: 14px;
-    padding: 14px;
-    float: left;
+    height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fafafa;
   }
 
   .face-name {
     padding: 5px 0;
     font-size: 12px;
+    margin-right: 5px;
   }
   .face-kind {
     font-size: 12px;
   }
   .btn-box {
-    // display: none;
-    // margin-top: 6px;
-    line-height: 12px;
+    width: 30px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10px;
+    margin-bottom: 5px;
   }
   .image {
     width: 100%;
     max-width: 250px;
     height: 200px;
-    margin-top: 20px;
     img {
       object-fit: contain; //cover;
       background-color: rgb(245, 247, 250);
     }
-  }
-  .btn-box {
-    display: inline-block;
-    position: absolute;
-    bottom: 25px;
-    right: 5px;
-    z-index: 99;
-  }
-  .face-checkbox {
-    display: none;
-  }
-  &:hover .face-checkbox {
-    position: absolute;
-    top: 2px;
-    right: 5px;
-    display: inline-block;
   }
 }
 .face-nodata {
@@ -800,6 +807,11 @@ export default {
   height: 50px;
   line-height: 50px;
   text-align: center;
+}
+.face-checkbox {
+  position: absolute;
+  top: 4px;
+  right: 5px;
 }
 </style>
 
