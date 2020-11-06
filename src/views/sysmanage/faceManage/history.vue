@@ -87,10 +87,12 @@
                     <div class="history-name">
                       <span>{{ val.username || "未知" }}</span>
                       <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
-                      <span>{{ val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他" }}</span>
+                      <el-tag style="margin-top:3px;margin-left:3px;" size="mini">{{ val.nameList === "1" ? "白名单" : val.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
                     </div>
                     <div class="bottom clearfix">
-                      <div class="location">
+                      <div
+                        class="location"
+                        style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;">
                         <i class="el-icon-map-location" />
                         <span>{{ val.camera && val.camera.address || '未知' }}</span>
                       </div>
