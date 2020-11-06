@@ -219,63 +219,37 @@
             <el-dialog
               v-model="temp"
               :visible.sync="dialogVisable"
-              width="480px"
-              height='400px'
+              width="520px"
+              style="height:390px;"
               @close="closeDialog"
             >
-              <div label-position="right" label-width="100px">
-                <!-- <el-form-item label="摄像头地址：" prop="camera.address">
-                  <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
-                </el-form-item>
-                <el-form-item label="监控时间：" prop="createTime">
-                  <span style="width: 300px;"></span>
-                  {{ renderTime(temp.createTime) }}
-                </el-form-item> -->
-                <div label="原始照片：" prop="image">
-                  <el-image
-                    :src="temp.imageCompress"
-                    style="width:100%; height:100%"
-                    @click="()=>{openBig(temp.image)}"
-                  ></el-image>
-                </div>
-                <div class="popfooter">
-                  <el-tooltip class="item" effect="light" :content="temp.camera.address" placement="top-start">  
-                    <div class="popfooteraddress">
-                      <svg-icon icon-class="pulladdress"></svg-icon>
-                      <span style="width: 260px;">{{ temp.camera | formatNull }}</span>
+              <div style="width:500px;height:350px; padding: 10px 10px 0px">
+                <div :model="temp" label-position="right" label-width="100px">
+                  <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
+                    <img :src="temp.image" width="480" height="270" style="z-index:1;">
+                    <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+                  </div>
+                  <div class="popfooter">
+                    <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
+                      <div class="popfooteraddress">
+                        <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
+                        <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
+                      </div>
+                    </el-tooltip>
+                    <div class="popfootertime">
+                      <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
+                      <span style="width: 260px;">
+                        {{
+                          renderTime(temp.createTime)
+                        }}
+                      </span>
                     </div>
-                  </el-tooltip>
-                  <div class="popfootertime">
-                    <svg-icon icon-class="pulltime"></svg-icon>
-                    <span style="width: 260px;">
-                      {{ renderTime(temp.createTime) }}
-                    </span>
                   </div>
                 </div>
-                <!-- <el-form-item label="结构化照片：" prop="imageCut">
-                  <el-image :src="temp.imageCut"></el-image>
-                </el-form-item> -->
-                <!-- <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
-                  <span v-if="temp.type === 1">人员</span>
-                  <span v-else-if="temp.type === 2">机动车</span>
-                </el-form-item>
-                <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
-                  <span v-if="temp.label === 1">白名单</span>
-                  <span v-else-if="temp.label === 2">黑名单</span>
-                  <span v-else>其他</span>
-                </el-form-item> -->
-                <!-- 车牌 -->
-                <!-- <el-form-item v-if="temp.license" label="车牌:" prop="license">
-                  <span>{{ temp.license }}</span>
-                </el-form-item> -->
-                <!-- 人员 -->
-                <!-- <el-form-item v-if="temp.username" label="姓名:" prop="username">
-                  <span>{{ temp.username }}</span>
-                </el-form-item> -->
-              </div>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogConfirm">正 常</el-button>
-                <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
+                <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
+                  <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
+                  <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
+                </div>
               </div>
             </el-dialog>
 
@@ -299,6 +273,7 @@
 <script>
 import { Message } from 'element-ui'
 import { renderTime } from '@/utils'
+import CanvasDialog from '@/components/CanvasDialog'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
 // import 'element-ui/lib/theme-chalk/index.css'
@@ -312,7 +287,7 @@ import {
   getAllTotal
 } from '@/api/alarm'
 export default {
-  components: { Pagination },
+  components: { Pagination, CanvasDialog },
   filters: {
     formatNull: function(val) {
       if (!val) return '无'
@@ -330,6 +305,7 @@ export default {
         image: '',
         imageCut: ''
       },
+      points: [],
       rowId: 0,
       defaultTab: '',
       state: '',
@@ -415,18 +391,18 @@ export default {
   methods: {
     searchAlarm() {
       // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + ' ' + this.startTime + ':00' 
-      const e = this.currentTab + ' ' + this.endTime + ':00' 
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       //  + ' ' + this.startTime + ':00'
       let params
       if (isNaN(this.formInline.searchkey)) {
         params = {
-          cascade:true,
+          cascade: true,
           params: [
             {
-              field: "camera.address",
-              operator:"LIKE",
-              value:`%${this.formInline.searchkey}%`
+              field: 'camera.address',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
             },
             {
               field: 'createTime',
@@ -437,14 +413,14 @@ export default {
         }
       } else {
         params = {
-          cascade:true,
+          cascade: true,
           params: [
             {
-              field: "id",
-              operator:"EQUALS",
+              field: 'id',
+              operator: 'EQUALS',
               value: this.formInline.searchkey
-            },
-            
+            }
+
           ]
         }
       }
@@ -603,8 +579,14 @@ export default {
     },
 
     editDialog(v) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.temp = Object.assign({}, v)
-      this.dialogVisable = true
+      this.points = JSON.parse(this.temp.box)
     },
     editCloseDialog() {
       this.editVisable = false
