@@ -820,7 +820,7 @@ export default {
 }
 </script>
 
- <style lang='scss'>
+ <style lang='scss' scoped>
 .alaMesTable {
   td {
     padding: 0 !important;
