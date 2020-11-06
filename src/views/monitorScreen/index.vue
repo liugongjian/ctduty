@@ -333,7 +333,8 @@ export default {
       display: flex;
       padding: 0 10px;
       align-items: center;
-      border: 1px solid #9b9da0;
+      border: 1px solid #EBEEF5;
+      box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
       border-radius: 0 0 3px 3px;
       .head-label {
         flex: 1;
@@ -364,5 +365,8 @@ export default {
       font-size: 14px !important;
     }
   }
+}
+.screen-body {
+  overflow: hidden;
 }
 </style>
