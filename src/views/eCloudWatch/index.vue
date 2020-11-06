@@ -108,7 +108,6 @@
 
           </div>
           <div class="bottom-left">
-
             <div v-if="stepsData.length" class="zuoContent" style="width:100%;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div v-if="hasData">
@@ -280,6 +279,7 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
+import newarrow from './assets/newarrow.png'
 import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
   resizeEnable: true, // 是否监控地图容器尺寸变化
@@ -1007,7 +1007,7 @@ export default {
         }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
-      this.window.position = [cameraInfo.camera.longitude + 0.0015, cameraInfo.camera.latitude + 0.001]
+      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0007]
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -1309,8 +1309,7 @@ body {
           width: 100%;
           height: 54%;
           float: left;
-          padding: 0 10px;
-          padding-top: 8px;
+          padding: 0 8px;
           overflow: auto;
           position:relative;
           .zuo {
@@ -1554,6 +1553,7 @@ body {
 }
 .amap-info-content {
   padding: 0px !important;
+  border: none;
 }
 .el-tabs__header {
   margin: 0px;
@@ -1564,6 +1564,9 @@ body {
 .untreated {
   font-size: 18px;
 }
-
+.amap-info-sharp {
+  background: url('./assets/newarrow.png') !important;
+  background-repeat: no-repeat !important;
+}
 </style>
 

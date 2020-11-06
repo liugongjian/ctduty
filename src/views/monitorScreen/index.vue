@@ -24,13 +24,13 @@
               </div>
               <div class="head-btn">
                 <div class="btn" @click="updateMonitorDialog(item)">
-                  <i class="el-icon-setting" style="color:#666;"></i>
+                  <i class="el-icon-setting" style="color:#898989;"></i>
                 </div>
                 <div class="btn" style="width:0px;height:24px;padding-left:6px;padding-top:8px;">
-                  <div style="display:inline-block;width: 1px;height: 12px; background: #ccc;"></div>
+                  <div style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9;"></div>
                 </div>
                 <div class="btn" @click="deleteMonitor(item)">
-                  <i class="el-icon-delete" style="color:#e74c3c;"></i>
+                  <i class="el-icon-delete" style="color:#a6a6a6;"></i>
                 </div>
               </div>
             </div>

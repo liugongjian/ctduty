@@ -186,11 +186,11 @@
                 <el-tag style="margin-top:3px;" size="mini">{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
               </div>
               <div class="btn-box">
-                <el-button type="text" icon="el-icon-edit" style="width:10px;height:10px;color: #333;" size="mini" @click="editDialog(item)"></el-button>
+                <el-button type="text" icon="el-icon-edit-outline" style="width:10px;height:10px;color: #898989;" size="mini" @click="editDialog(item)"></el-button>
                 <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
-                  <div style="display:inline-block;width: 1px;height: 12px; background: #ccc;"></div>
+                  <div style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9;"></div>
                 </div>
-                <el-button type="text" icon="el-icon-delete" style="width:10px;height:10px;color: #333;" size="mini" @click="delAlert(item.id)"></el-button>
+                <el-button type="text" icon="el-icon-delete" style="width:10px;height:10px;color: #a6a6a6;" size="mini" @click="delAlert(item.id)"></el-button>
               </div>
             </div>
           </el-card>
