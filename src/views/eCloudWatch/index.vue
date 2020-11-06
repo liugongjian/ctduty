@@ -36,12 +36,12 @@
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
                   <div class="popfooteraddress">
-                    <svg-icon icon-class="pulladdress"></svg-icon>
+                    <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
                     <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
                   </div>
                 </el-tooltip>
                 <div class="popfootertime">
-                  <svg-icon icon-class="pulltime"></svg-icon>
+                  <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
                   <span style="width: 260px;">
                     {{
                       renderTime(dataDia.createTime)
