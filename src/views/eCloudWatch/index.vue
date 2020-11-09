@@ -175,7 +175,7 @@
                         class="untreated"
                         icon-class="untreated"
                       />
-                      <div v-if="index !== yData.length -1" class="shu" style="height:16px;"></div>
+                      <div v-if="index !== yData.length -1" class="shu" style="height:30px;"></div>
                     </div>
                     <div class="youContent" style="float:right width:100%;">
                       <p class="dizhi">{{ item.camera ?item.camera.address : '' }}</p>
@@ -1560,6 +1560,9 @@ body {
 .amap-info-sharp {
   background: url('./assets/newarrow.png') !important;
   background-repeat: no-repeat !important;
+}
+.deal.svg-icon {
+  font-size: 18px;
 }
 </style>
 
