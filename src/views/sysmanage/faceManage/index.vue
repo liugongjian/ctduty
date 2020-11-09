@@ -797,7 +797,7 @@ export default {
   }
   .image {
     width: 100%;
-    max-width: 250px;
+    // max-width: 250px;
     height: 200px;
     img {
       object-fit: contain; //cover;

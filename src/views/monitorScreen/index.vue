@@ -312,14 +312,14 @@ export default {
   .screen {
     float: left;
     width: 33.33%;
+    height: 48%;
     .screen-inner {
       margin: 10px 10px;
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: 280px;
+      height: 41vh;
       margin: 10px;
-      margin-top: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -335,7 +335,7 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 30px;
+      height: 6vh;
       display: flex;
       padding: 0 10px;
       align-items: center;
@@ -363,8 +363,7 @@ export default {
       }
     }
     .screen-body {
-      height: 250px;
-      margin-top: 20px;
+      height: 35vh;
       width: auto;
       background: #333;
     }
