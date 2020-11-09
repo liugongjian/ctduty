@@ -1214,7 +1214,7 @@ body {
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
-  opacity: .92;
+  opacity: .95;
   background-color: #ffffff;
 }
 .zuoContent {
@@ -1266,7 +1266,7 @@ body {
     .warn {
       margin-top: 10px;
       position: absolute;
-      opacity: .8;
+      opacity: .95;
       top: 30px;
       right: 15px;
       width: 320px;
