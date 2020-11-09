@@ -8,14 +8,19 @@
               <el-image
                 v-if="item.image"
                 :src="item.image"
-                style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"
+                style="width:100%;height:100%;object-fit:contain;filter:blur(6px);"
               ></el-image>
               <VideoPlayer
-                v-else
+                v-else-if="item.videoOptions.sources[0].src"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
                 :options="item.videoOptions"
               />
+              <div v-else style="width:100%;height:100%;background-color:#000;text-align:center;position:relative;">
+                <span
+                  style="font-size:24px;color:#fff;position:absolute;
+                 top:40%;left:0;right:0;">视频流加载失败</span>
+              </div>
             </div>
             <div class="screen-head">
               <div class="head-label">
@@ -174,28 +179,26 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
-        this.deviceList = data
-          .filter(i => i.rtmpuri)
-          .map(item => {
-            return {
-              ...item,
-              image: null,
-              videoOptions: {
-                autoplay: true,
-                controls: true,
-                width: 400, // 播放器宽度
-                height: 300, // 播放器高度
-                // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-                fluid: true, // 流体布局，自动充满，并保持播放其比例
-                sources: [
-                  {
-                    src: item.rtmpuri,
-                    type: this.video_type(item.rtmpuri)
-                  }
-                ]
-              }
+        this.deviceList = data.map(item => {
+          return {
+            ...item,
+            image: null,
+            videoOptions: {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: item.rtmpuri ? item.rtmpuri : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri : '')
+                }
+              ]
             }
-          })
+          }
+        })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
