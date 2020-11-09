@@ -27,7 +27,7 @@
           :auto-move="true"
           :position="window.position"
         >
-          <div style="width:500px;height:365px; padding: 10px 10px 0px">
+          <div style="width:500px;height:350px; padding: 10px 10px 0px">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
@@ -36,12 +36,12 @@
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
                   <div class="popfooteraddress">
-                    <svg-icon icon-class="pulladdress"></svg-icon>
+                    <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
                     <span style="width: 260px;">{{ dataDia.camera?dataDia.camera.address : '' }}</span>
                   </div>
                 </el-tooltip>
                 <div class="popfootertime">
-                  <svg-icon icon-class="pulltime"></svg-icon>
+                  <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
                   <span style="width: 260px;">
                     {{
                       renderTime(dataDia.createTime)
@@ -89,26 +89,26 @@
               </el-switch>
             </span> -->
           </div>
-          <div class="bottom-left">
-            <div style="width:100%; height:26px;">
-              <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
-                <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
-                  全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
-                </p>
-              </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '33%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
-                <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理<span style="margin-left: 2px">{{ '(' + (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
-                </p>
-              </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '33%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
-                <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
-                  未处理<span style="margin-left: 2px">{{ '(' + (todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal) + ')' }}</span>
-                </p>
-              </div>
-
+          <div style="width:100%; height:26px;display:flex;Justify-content：center;padding:0 1% 0 3%;cursor:pointer;overflow:hidden;">
+            <div :style="{'border-color':showTabValue === 'all'? '#FF9832':'#D9D9D9', width: '30%'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+              <p :style="{'color':showTabValue === 'all'? '#FF9832':'#333'}">
+                全部<span style="margin-left: 2px">{{ '(' + (todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts) + ')' }}</span>
+              </p>
             </div>
-            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
+            <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '30%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
+                已处理<span style="margin-left: 2px">{{ '(' + (todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds) + ')' }}</span>
+              </p>
+            </div>
+            <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '30%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
+                未处理<span style="margin-left: 2px">{{ '(' + (todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal) + ')' }}</span>
+              </p>
+            </div>
+
+          </div>
+          <div class="bottom-left">
+            <div v-if="stepsData.length" class="zuoContent" style="width:100%;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div v-if="hasData">
                   <div :class="{'not-allowed': isDisableAllAlarmBtn}">
@@ -228,7 +228,7 @@
                 </template>
               </div>
             </div>
-            <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
+            <div v-else class="zuoContent" style="width:100%;overflow: auto;">
               <div v-if="loading">
                 <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#FF9832;vertical-align:middle;">
                   <i class="el-icon-loading loading"></i>
@@ -279,6 +279,7 @@ import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
+import newarrow from './assets/newarrow.png'
 import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
   resizeEnable: true, // 是否监控地图容器尺寸变化
@@ -980,6 +981,12 @@ export default {
 
     },
     async showDialog(cameraInfo, isAlert) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.nowShowCameraId = cameraInfo.camera.id
       await this.getCameraList()
       this.dataDia = cameraInfo
@@ -990,7 +997,6 @@ export default {
           const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
           audio.play()// 播放
         }
-        this.dialogVisable = true
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
@@ -1001,7 +1007,7 @@ export default {
         }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
-      this.window.position = [cameraInfo.camera.longitude + 0.0015, cameraInfo.camera.latitude + 0.001]
+      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0007]
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -1210,12 +1216,12 @@ body {
   box-sizing: content-box !important;
 }
 .warn {
-  height:83vh !important;
+  height:590px !important;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
   opacity: .92;
-  background-color: #f1f2f6;
+  background-color: #ffffff;
 }
 .zuoContent {
   padding: 20px 10px;
@@ -1290,7 +1296,7 @@ body {
 
       .bottom {
         width: 100%;
-        height: 100%;
+        height: 370px;
         background-color: #ffffff;
 
         .todyW {
@@ -1301,22 +1307,25 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 100%;
+          height: 320px;
           float: left;
-          padding: 0 10px;
-          padding-top: 8px;
+          padding: 0 8px;
+          overflow: auto;
+          position:relative;
           .zuo {
             float: left;
             width: 33%;
             height: 26px;
             line-height: 26px;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
             }
             .zuoContent {
               padding-right: 50px;
+              height: 100%;
             }
           }
           .zuo:hover {
@@ -1346,6 +1355,7 @@ body {
             height: 26px;
             border: #FF9832;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
@@ -1357,6 +1367,7 @@ body {
             height: 26px;
             border: #FF9832;
             background-color: #ffffff;
+            cursor: pointer !important;
             p {
               color: #676767;
               font-size: 12px;
@@ -1545,6 +1556,7 @@ body {
 }
 .amap-info-content {
   padding: 0px !important;
+  border: none;
 }
 .el-tabs__header {
   margin: 0px;
@@ -1555,8 +1567,9 @@ body {
 .untreated {
   font-size: 18px;
 }
-// .amap-info-content.amap-info-outer {
-//   height: 358px !important;
-// }
+.amap-info-sharp {
+  background: url('./assets/newarrow.png') !important;
+  background-repeat: no-repeat !important;
+}
 </style>
 

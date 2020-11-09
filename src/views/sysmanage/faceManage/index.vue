@@ -180,17 +180,41 @@
             <el-image :src="item.image" class="image" />
             <div class="face-info">
               <div style="display:flex;">
-                <el-tooltip :content="item.name" :disabled="item.name.length <4" placement="bottom-start">
-                  <div class="face-name">姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}  </div>
+                <el-tooltip
+                  :content="item.name"
+                  :disabled="item.name.length <4"
+                  placement="bottom-start"
+                >
+                  <div
+                    class="face-name"
+                  >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
                 </el-tooltip>
-                <el-tag style="margin-top:3px;" size="mini">{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
+                <el-tag
+                  :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
+                  style="margin-top:3px;"
+                  size="mini"
+                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
               </div>
               <div class="btn-box">
-                <el-button type="text" icon="el-icon-edit" style="width:10px;height:10px;color: #333;" size="mini" @click="editDialog(item)"></el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-edit-outline"
+                  style="width:10px;height:10px;color: #898989; margin-right: 4px;"
+                  size="mini"
+                  @click="editDialog(item)"
+                ></el-button>
                 <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
-                  <div style="display:inline-block;width: 1px;height: 12px; background: #ccc;"></div>
+                  <div
+                    style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9; margin-right: 4px;"
+                  ></div>
                 </div>
-                <el-button type="text" icon="el-icon-delete" style="width:10px;height:10px;color: #333;" size="mini" @click="delAlert(item.id)"></el-button>
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  style="width:10px;height:10px;color: #a6a6a6;"
+                  size="mini"
+                  @click="delAlert(item.id)"
+                ></el-button>
               </div>
             </div>
           </el-card>
@@ -742,16 +766,18 @@ export default {
 }
 .face-card {
   position: relative;
+  border-radius: 4%;
   img {
     width: 100%;
   }
   .face-info {
     font-size: 14px;
     height: 30px;
-    padding:0 10px;
+    padding: 0 10px;
     font-size: 12px;
     display: flex;
     justify-content: space-between;
+    background-color: #fafafa;
   }
 
   .face-name {
@@ -766,7 +792,7 @@ export default {
     width: 30px;
     display: flex;
     justify-content: space-between;
-    margin-left:10px;
+    margin-right: 10px;
     margin-bottom: 5px;
   }
   .image {

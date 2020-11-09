@@ -88,7 +88,7 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
-import huayin from '@/json/huayin.json'
+import huayin from '@/json/weinan.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -371,12 +371,15 @@ export default {
         },
         geo: {
           map: '渭南',
-          roam: false,
-          aspectScale: 1,
+          roam: true,
           scaleLimit: {
-            min: 1,
-            max: 2
+            min: 0.55,
+            max: 0.55
           },
+          boundingCoords: [
+            [109.934181, 34.6],
+            [110.09207, 34.46]
+          ],
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
@@ -389,32 +392,36 @@ export default {
             normal: {
               show: true,
               textStyle: {
+                show: false,
                 color: '#000'
               }
             },
             emphasis: {
               show: true,
               textStyle: {
-                show: true,
+                show: false,
                 color: '#000'
               }
             }
           },
           zoom: 1.2,
           itemStyle: {
-            show: true,
+            show: false,
             normal: {
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               borderColor: '#1c89cd',
-              borderWidth: 2
+              borderWidth: 2,
+              textStyle: {
+                show: false
+              }
             },
             emphasis: { // 鼠标移动上去变色
               show: false,
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               textStyle: {
-                show: true
+                show: false
               }
             }
           }
@@ -436,6 +443,7 @@ export default {
             normal: {
               show: false,
               textStyle: {
+                show: false,
                 color: '#000'
               },
               formatter: function(item) {
@@ -445,7 +453,7 @@ export default {
             emphasis: {
               show: false,
               textStyle: {
-                show: true,
+                show: false,
                 color: '#000'
               }
             }
@@ -472,6 +480,25 @@ export default {
             emphasis: {
               show: true,
               areaColor: '#f00'
+            }
+          }
+        },
+        {
+          // name: '香港18区人口密度',
+          type: 'map',
+          zoom: 1.25,
+          itemStyle: {
+            normal: { label: { show: false }},
+            emphasis: { label: { show: false }}
+          },
+          label: {
+            normal: {
+              textStyle: {
+                show: false,
+                fontSize: 15,
+                fontWeight: 'bold',
+                color: 'red'
+              }
             }
           }
         },
@@ -1257,7 +1284,7 @@ export default {
   padding: 0;
   overflow: hidden;
   #mapChart {
-    width: 900px;
+    width: 100%;
     display: flex;
   }
   .overv {
