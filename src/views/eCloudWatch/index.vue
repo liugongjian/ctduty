@@ -1295,7 +1295,7 @@ body {
 
       .bottom {
         width: 100%;
-        height: 100%;
+        height: 56% !important;
         background-color: #ffffff;
 
         .todyW {
