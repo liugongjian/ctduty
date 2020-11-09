@@ -16,10 +16,12 @@
                 :key="item.cameraId"
                 :options="item.videoOptions"
               />
-              <div v-else style="width:100%;height:100%;background-color:#000;text-align:center;position:relative;">
-                <span
-                  style="font-size:24px;color:#fff;position:absolute;
-                 top:40%;left:0;right:0;">视频流加载失败</span>
+              <div v-else style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;">
+                <el-image
+                  :src="nosrc"
+                  style="position:absolute;width:138px;height:30px;object-fit:contain;top:50%;left:50%;
+                  transform:translate(-50%,-50%);"
+                ></el-image>
               </div>
             </div>
             <div class="screen-head">
@@ -92,6 +94,7 @@ import {
 } from '@/api/monitor'
 import { searchCameraList } from '@/api/camera'
 import fakeimg from '@/assets/images/fakeimg.png'
+import nosrc from '@/assets/images/nosrc.png'
 
 export default {
   components: { VideoPlayer },
@@ -105,6 +108,7 @@ export default {
           { required: true, message: '请选择摄像头地址', trigger: 'change' }
         ]
       },
+      nosrc,
       options: [],
       deviceList: [],
       loading: false,
@@ -374,5 +378,6 @@ export default {
 }
 .screen-body {
   overflow: hidden;
+
 }
 </style>
