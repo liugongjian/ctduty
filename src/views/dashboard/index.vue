@@ -623,15 +623,15 @@ export default {
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: `在线率 \n ${rate}%`,
+          text: `在线率 \n \n ${rate}%`,
           textStyle: {
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Microsoft Yahei',
             fontWeight: 'normal',
-            color: '#ccc',
+            color: '#fff',
             rich: {
               a: {
-                fontSize: 28
+                fontSize: 14
               }
             }
           },
