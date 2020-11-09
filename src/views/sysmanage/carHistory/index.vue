@@ -115,7 +115,11 @@
                 <span class="card-desp-title">
                   <span>{{ item.license || '' }}</span>
                   <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
-                  <span>{{ item.label? listType[item.label] : '' }}</span>
+                  <el-tag
+                    :type="item.label === '1' ? 'success' : item.label === '2' ? 'danger' : ''"
+                    style="margin-left:-8px;"
+                    size="mini"
+                  >{{ item.label? listType[item.label] : '' }}</el-tag>
                 </span>
                 <div class="bottom clearfix">
                   <el-tooltip

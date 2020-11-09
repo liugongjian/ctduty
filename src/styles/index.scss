@@ -307,10 +307,6 @@ code {
     fill: #3E94F9;
 }
 
-.markerClickImg {
-    fill: #EA2027 !important;
-}
-
 .deal {
     fill: #44bd32 !important;
 }
@@ -421,7 +417,14 @@ html {
  // background-color: rgb(245, 247, 250);
  }
 }
-
+.amimage {
+ width:100%;
+ height:39px;
+ img{
+ object-fit: contain;//cover;
+ // background-color: rgb(245, 247, 250);
+ } 
+}
 .clickgif {
   width:50px !important;
   height:50px !important;

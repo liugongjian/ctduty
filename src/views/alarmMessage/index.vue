@@ -173,7 +173,7 @@
                     <el-image
                       slot="reference"
                       :src="scope.row.imageCut"
-                      class="image"
+                      class="amimage"
                       @click="openBig(scope.row.image)"
                     />
                   </el-popover>
