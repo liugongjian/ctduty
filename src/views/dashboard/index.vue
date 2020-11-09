@@ -628,7 +628,7 @@ export default {
             fontSize: 18,
             fontFamily: 'Microsoft Yahei',
             fontWeight: 'normal',
-            color: '#fff',
+            color: '#ccc',
             rich: {
               a: {
                 fontSize: 14

@@ -1402,7 +1402,7 @@ body {
     width: 1px;
     height: 28px;
     background-color: #d9d9d9;
-    margin-left: 9px;
+    margin-left: 25%;
     margin-top: 2px;
   }
 }

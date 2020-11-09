@@ -109,7 +109,7 @@
         :name="item">
         <div v-loading="listLoading">
           <div v-if="tableData&& tableData.length >0" class="card-wrapper">
-            <el-card v-for="(item, index) in tableData" :body-style="{ padding: '0px' }" :key="item.id" class="card">
+            <el-card v-for="item in tableData" :body-style="{ padding: '0px' }" :key="item.id" class="card">
               <el-image :src="item.imageCut" class="image" />
               <div class="card-desp">
                 <span class="card-desp-title">
@@ -118,10 +118,15 @@
                   <span>{{ item.label? listType[item.label] : '' }}</span>
                 </span>
                 <div class="bottom clearfix">
-                  <div class="location">
-                    <i class="el-icon-map-location" />
-                    <span>{{ item.camera && item.camera.address || '未知' }}</span>
-                  </div>
+                  <el-tooltip
+                    :content="item.camera.address"
+                    placement="top-start"
+                  >
+                    <div class="location">
+                      <i class="el-icon-map-location" />
+                      <span class="locationtext">{{ item.camera && item.camera.address || '未知' }}</span>
+                    </div>
+                  </el-tooltip>
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
@@ -422,7 +427,7 @@ export default {
         margin-right: 2%;
         .image {
             width: 100%;
-            max-width: 250px;
+            // max-width: 250px;
             height:150px;
             img{
                 object-fit: contain;//cover;
@@ -459,6 +464,9 @@ export default {
         }
       }
 
+  }
+  .location {
+    overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
   }
 //   overflow: auto !important;
 //   min-height: calc(100vh - 90px) !important;

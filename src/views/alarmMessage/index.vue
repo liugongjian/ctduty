@@ -220,11 +220,12 @@
               v-model="temp"
               :visible.sync="dialogVisable"
               class="mesdialog"
-              width="520px"
-              style="height:390px;"
+              width="500px"
+              style="height:400px;"
               @close="closeDialog"
+              :show-close='false'
             >
-              <div style="width:500px;height:350px; padding: 10px 10px 0px">
+              <div style="width:500px;height:400px; padding: 10px 10px 0px">
                 <div :model="temp" label-position="right" label-width="100px">
                   <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
                     <img :src="temp.image" width="480" height="270" style="z-index:1;">
@@ -894,6 +895,7 @@ td {
   }
   .el-dialog .el-dialog__body {
     padding: 0 !important;
+    overflow: hidden;
   }
   .el-dialog__footer {
     padding: 0 !important;
@@ -922,4 +924,10 @@ td {
 .el-button--small {
   font-size: 14px;
 }
+// .el-dialog__headerbtn {
+//   // display: none;
+//   position: relative;
+//   top: 4px;
+//   left: 85%;
+// }
 </style>
