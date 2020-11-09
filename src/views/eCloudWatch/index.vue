@@ -1210,7 +1210,7 @@ body {
   box-sizing: content-box !important;
 }
 .warn {
-  height:590px !important;
+  // height:590px !important;
   margin-bottom: 20px;
   overflow: hidden;
   border-radius: 5px;
@@ -1266,11 +1266,11 @@ body {
     .warn {
       margin-top: 10px;
       position: absolute;
-      opacity: .8;
+      height: 80vh;
+      opacity: .9;
       top: 30px;
       right: 15px;
       width: 320px;
-      height: 100%;
       .top {
         width: 100%;
         height: 270px;
@@ -1287,7 +1287,7 @@ body {
 
       .bottom {
         width: 100%;
-        height: 370px;
+        height: 55vh;
         background-color: #ffffff;
 
         .todyW {
@@ -1298,7 +1298,7 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 320px;
+          height: 42vh;
           float: left;
           padding: 0 8px;
           overflow: auto;
