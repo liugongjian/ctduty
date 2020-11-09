@@ -1,19 +1,32 @@
 <template>
   <div class="loginContainer" style="display: flex; height: 100%;">
     <div class="fffmark"></div>
-    <div class="huashanBJ">
+    <!-- <div class="huashanBJ">
       <div class="line">
         <img width="720px" height="540px" src="./images/line.svg" alt="">
       </div>
-    </div>
+    </div> -->
     <div class="leftLogo">
+      <div class="leftTop">
+        <img src="./images/leftTop.png" alt="">
+      </div>
+      <div class="rightTop">
+        <img src="./images/rightTop.png" alt="">
+      </div>
+      <div class="leftBottom">
+        <img src="./images/leftBottom.png" alt="">
+      </div>
+      <div class="rightBottom">
+        <img src="./images/rightBottom.png" alt="">
+      </div>
       <div class="logo">
-        <img src="./images/logo.svg" alt="">
+        <img src="./images/logo.png" alt="">
       </div>
     </div>
+    <div class="loginBox"></div>
     <div class="loginFormContainer">
       <div class="login">
-        <div key="min-logo" class="logo" ></div>
+        <div key="min-logo" class="logo">智能视频分析平台</div>
         <p class="title">账号密码登录</p>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
           <el-form-item prop="username">
@@ -37,6 +50,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -186,46 +200,111 @@ export default {
 body {
   .leftLogo {
     position: relative;
+     .leftTop {
+      position: fixed;
+      top: -200px;
+      left: -30px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightTop {
+      position: fixed;
+      top: -74px;
+      right: -160px;
+      width: 300px;
+      height: 300px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .leftBottom {
+      position: fixed;
+      bottom: -260px;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rightBottom {
+      position: fixed;
+      bottom: -200px;
+      right: -180px;
+      width: 400px;
+      height: 400px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
     .logo {
-      position: absolute;
+      position: fixed;
       top: 20px;
       left: 40px;
-      width: 200px;
-      height: 24px;
+      width: 294px;
+      height: 32px;
       img {
         width: 100%;
         height: 100%;
       }
     }
   }
-  .loginContainer {
+  /*.loginContainer {
     width: 100%;
     height: 100%;
-    background-color: #9DB0C4;
-   /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
+    // background-color: -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
+   background:url(./images/backgroundImage.png) no-repeat center center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
+    // background-image: url("./images/backgroundImage.png");
     background-size: 100% 100%;
-    background-position: bottom center;
+    // background-repeat: no-repeat;
+    // background-position: center;
+    // background-position: bottom center;
     position: relative;
     overflow: hidden;
-    .fffmark{
-      background-color: #fff;
-      height: 220vh;
-      width:50vw;
-      position:absolute;
-      left: 0;
-      top: 0;
-      transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
-    }
-  }
+    // .fffmark{
+    //   background-color: #fff;
+    //   height: 220vh;
+    //   width:50vw;
+    //   position:absolute;
+    //   left: 0;
+    //   top: 0;
+    //   transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
+    // }
+  } */
+  .loginContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: -webkit-linear-gradient(45deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
 
+    // background-position: center center;
+  }
+  .loginBox{
+    width: 50%;
+    height: 50%;
+    position: fixed;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    background:url(./images/backgroundImage.png) no-repeat center center;
+    background-size: 100% 100%;
+  }
   .loginFormContainer {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
     flex:1;
+    // margin: 0 auto;
   }
-  .huashanBJ {
+  /*.huashanBJ {
     width: 792px;
     height: 594px;
     background-image: url(./images/huashanBJ.jpg);
@@ -239,27 +318,30 @@ body {
       top: 27px;
       left:36px;
     }
-  }
+  } */
   .login {
     background-color: #fff;
     width: 350px;
-    height: 370px;
+    height: 330px;
     padding: 20px 30px;
     border-radius: 10px;
     position: fixed;
-    top: 46%;
-    right: 6%;
+    top: 50%;
+    right: 10%;
     transform: translateY(-50%);
     flex-direction: column;
     justify-content: center;
     padding-bottom: 30px;
     box-shadow: 0 1px 20px 0 #87959E;
     .logo{
-      width:204.6px;
+      // width:204.6px;
+      font-size: 24px;
+      text-align: center;
+      margin-top: 10px;
       height: 56px;
-      background: url(./images/zglogo.png) no-repeat center;
-      background-size: 60% 60%;
-      margin-left: 43px;
+      // background: url(./images/zglogo.png) no-repeat center;
+      // background-size: 60% 60%;
+      // margin-left: 43px;
       // background-size: contain;
     }
     .title {
@@ -268,7 +350,7 @@ body {
       font-size: 14px;
       color: #333333;
       line-height: 24px;
-      margin: 18px 0;
+      margin: 5px 0;
     }
     .userName,
     .passWord {
@@ -282,7 +364,7 @@ body {
       font-family: PingFangSC-Regular;
       font-size: 16px;
       line-height: 20px;
-      margin-top: 30px;
+      margin-top: 10px;
     }
     .el-input__inner {
       text-indent: 15px;

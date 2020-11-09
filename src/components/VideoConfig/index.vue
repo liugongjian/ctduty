@@ -120,9 +120,16 @@ export default {
     canvasCloseDialog() {
       this.canvasVisable = false
     },
+
     getImgUrl(name) {
-      // return require('../../assets/icon/' + name + '.png')
-      return require('../../assets/icon/carPersonCheck.png')
+      const arr = [
+        'carPersonCheck', 'faceRecognize', 'plateRecognize', 'areaAlarm', 'stepWallCheck', 'peopleTraffic', 'plateTraffic', 'safetyHat',
+        'workingClothes', 'carTypeDetect', 'peopleCrowd', 'fightDetect', 'fallDownDetect', 'roadsideStall', 'wanderTarry'
+      ]
+      if (arr.indexOf(name) > -1) {
+        return require('../../assets/icon/algorithmIcons/' + name + '.png')
+      }
+      return require('../../assets/icon/algorithmIcons/default.png')
     },
     checkboxchange(bol, item, index, idx) {
       item.beforePickStatus = bol

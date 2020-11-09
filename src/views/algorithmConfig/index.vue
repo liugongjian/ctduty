@@ -59,15 +59,25 @@
                 :total="total"
                 :page.sync="page"
                 :limit.sync="limit"
+                :pager-count="5"
                 small
-                pager-count="5"
                 layout="prev, pager, next"
                 @pagination="pageChange"
               />
             </el-col>
             <el-col :span="17" class="algorithmConfigList totalLine">
-              <VideoConfig v-if="true" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
+              <div v-if="algorithmList.length>0">
+                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
+                <div v-show="!canvasShowStatus" class="listBtnBox">
+                  <!-- <el-button @click="applyAlgorithms(false)">取消</el-button> -->
+                  <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+                </div>
+              </div>
+              <div v-else class="nodata">
+                稍后再试
+              </div>
             </el-col>
+
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -96,6 +106,7 @@ export default {
       nameList: [],
       taskData: [],
       deviceId: '',
+      algorithmList: [],
       algorithmListTwoDim: [],
       algorithmId: '',
       activeVideoResult: 0,
@@ -104,7 +115,9 @@ export default {
       total: 0,
       page: 1,
       limit: 20,
-      queryKeyword: ''
+      queryKeyword: '',
+      canvasShowStatus: false,
+      controlShow: false
     }
   },
   watch: {
@@ -167,7 +180,7 @@ export default {
         },
         'params': [
           {
-            'field': 'address',
+            'field': 'name',
             'operator': 'LIKE',
             'value': `%${this.queryKeyword.trim()}%`
 
@@ -185,12 +198,13 @@ export default {
           this.total = res.body.page.total
           this.listLoading = false
           this.deviceId = res.body.data[0].id
-          this.total = res.body.page.total
           this.getAlgorithmList(this.deviceId)
         }
       })
     },
     changeDeviceId(id, k) {
+      this.controlShow = false
+      this.canvasShowStatus = false
       this.deviceId = id
       this.activeVideoResult = k
       this.getAlgorithmList(id)
@@ -198,20 +212,21 @@ export default {
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
       this.algorithmList = res.data
+      this.controlShow = true
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
       this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
     },
     saveUpdatePick(item) {
       if (item.isPick) {
         item['isConfigAlready'] = true
-        // item['beforePickStatus'] = true
-        // item['isCommitStatus'] = true
-        // item['originalPickStatus'] = true
+        item['beforePickStatus'] = true
+        item['isCommitStatus'] = true
+        item['originalPickStatus'] = true
       } else {
         item['isConfigAlready'] = false
-        // item['beforePickStatus'] = false
-        // item['isCommitStatus'] = false
-        // item['originalPickStatus'] = false
+        item['beforePickStatus'] = false
+        item['isCommitStatus'] = false
+        item['originalPickStatus'] = false
       }
       return item
     },
@@ -228,6 +243,99 @@ export default {
         },
         [[]]
       )
+    },
+    applyAlgorithms(flag) {
+      if (flag) {
+        console.log('调用后端接口保存标注坐标列表')
+        // 先组装参数，包含删除、增加、修改
+        // var allDatas = []
+        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
+        console.log('现在转化成一维数组', nowAlgorithmList)
+        console.log('二维数组---', this.algorithmListTwoDim)
+        var params = []
+        // var flag = true
+        for (var i = 0; i < nowAlgorithmList.length; i++) {
+          var algorithmObject = nowAlgorithmList[i]
+          var param = {
+            taskId: algorithmObject.id,
+            id: algorithmObject.id,
+            taskName: algorithmObject.name
+          }
+          if (algorithmObject.originalPickStatus && !algorithmObject.isPick) {
+            // 删除
+            param['action'] = 'delete'
+            params.push(param)
+          } else if (!algorithmObject.originalPickStatus && algorithmObject.isPick) {
+            // 增加(检查，如果该配置的没有配置需要弹窗告警)
+            param['action'] = 'add'
+            if (algorithmObject.isNeedConfig) {
+              const areas = algorithmObject['areas']
+              if (areas === undefined || areas.length === 0) {
+                alert(algorithmObject.cnName + '没有标注，请标注再提交或者取消选择')
+                flag = false
+                break
+              } else {
+                // console.log('原来的areas', algorithmObject['areas'])
+                param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
+              }
+            }
+            params.push(param)
+          } else if (algorithmObject.originalPickStatus && algorithmObject.isPick && !algorithmObject.isCommitStatus) {
+            // 修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
+            param['action'] = 'update'
+            console.log('algorithmObject', algorithmObject)
+            const areas = algorithmObject['areas']
+            if (areas === undefined || areas.length === 0) {
+              alert(algorithmObject.cnName + '没有标注，请标注再提交或者取消选择')
+              flag = false
+              break
+            }
+            console.log('原来的areas', algorithmObject['areas'])
+            param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
+            params.push(param)
+          }
+        }
+        if (flag) {
+          if (params.length > 0) {
+            // console.log('组装的参数是-----', params)
+            var finalBody = {
+              deviceId: this.deviceId,
+              taskInstParams: params
+            }
+            // console.log('最终组装的参数是-----', finalBody)
+            this.configTask(finalBody)
+          }
+          this.configVisable = false
+        }
+      } else {
+        this.configVisable = false
+      }
+    },
+    formatAreas(areas, ratiox, ratioy) {
+      var newAreas = areas.map(eachArea => {
+        var newPoints = this.formatPoints(eachArea.points, ratiox, ratioy)
+        return {
+          type: eachArea.type,
+          name: eachArea.name,
+          points: newPoints
+        }
+      })
+      return newAreas
+    },
+    formatPoints(points, ratiox, ratioy) {
+      console.log('参数值', points, ratiox, ratiox)
+      var newPoints = []
+      for (var i = 0; i < points.length; i++) {
+        newPoints.push({
+          x: parseInt(points[i].x * ratiox),
+          y: parseInt(points[i].y * ratioy)
+        })
+      }
+      return newPoints
+    },
+    async configTask(body) {
+      const res = await client.configInstance(body)
+      console.log('任务实例配置调用接口返回-----', res)
     },
     setCanvasShow(payload) {
       this.canvasShowStatus = payload
@@ -373,6 +481,10 @@ export default {
                 color: #FFFFFF;
             }
         }
+    }
+    .listBtnBox{
+        // text-align: center;
+        margin-left: 30px;
     }
     .algorithmConfigList{
         .test{
