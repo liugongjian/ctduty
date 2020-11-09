@@ -339,8 +339,8 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 6vh;
       display: flex;
+      width: calc(100% + .5px);
       padding: 0 10px;
       align-items: center;
       border: 1px solid #EBEEF5;
@@ -378,6 +378,5 @@ export default {
 }
 .screen-body {
   overflow: hidden;
-
 }
 </style>

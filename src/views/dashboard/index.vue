@@ -404,13 +404,13 @@ export default {
               }
             }
           },
-          regions: [      //对不同的区块进行着色
+          regions: [ // 对不同的区块进行着色
             {
-              name: '华阴市', //区块名称
+              name: '华阴市', // 区块名称
               itemStyle: {
-                  normal: {
-                      areaColor: '#1890FF'
-                  }
+                normal: {
+                  areaColor: '#1890FF'
+                }
               }
             }
           ],
