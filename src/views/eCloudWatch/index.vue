@@ -391,6 +391,11 @@ export default {
     ])
   },
   watch: {
+    dialogVisable(v) {
+      if (v) {
+        console.log(v)
+      }
+    },
     markers(v) {
       setTimeout(() => {
         if (document.getElementsByClassName('markerImg').length) {
@@ -1000,11 +1005,6 @@ export default {
         this.timer2 = setTimeout(() => {
           this.closeDialog()
         }, 5000)
-      } else {
-        this.dialogVisable = false
-        setTimeout(() => {
-          this.dialogVisable = true
-        }, 0)
       }
       this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
       this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0007]

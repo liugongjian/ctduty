@@ -65,6 +65,7 @@ export default {
           ctx.strokeStyle = 'red'
           ctx.textBaseline = 'top'
           ctx.font = '48px Arial'
+          console.log(Math.ceil(coor.leftTop[1]) - 80)
           this.timer = setInterval(() => {
             ctx.strokeRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]), Math.ceil(_width), Math.ceil(_height))
             ctx.fillStyle = 'red'
