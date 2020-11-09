@@ -68,10 +68,17 @@ export default {
           this.timer = setInterval(() => {
             ctx.strokeRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]), Math.ceil(_width), Math.ceil(_height))
             ctx.fillStyle = 'red'
-            ctx.strokeRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]) - 80, nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
-            ctx.fillRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]) - 80, nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
-            ctx.fillStyle = 'white'
-            ctx.fillText(name, Math.ceil(coor.leftTop[0]) + 10, Math.ceil(coor.leftTop[1]) - 65)
+            if (Math.ceil(coor.leftTop[1]) - 80 < 0) {
+              ctx.strokeRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.rightBottom[1]), nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
+              ctx.fillRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.rightBottom[1]), nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
+              ctx.fillStyle = 'white'
+              ctx.fillText(name, Math.ceil(coor.rightBottom[0]) + 10 - _width, Math.ceil(coor.rightBottom[1]) + 15)
+            } else {
+              ctx.strokeRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]) - 80, nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
+              ctx.fillRect(Math.ceil(coor.leftTop[0]), Math.ceil(coor.leftTop[1]) - 80, nameLength === '4' ? 200 : nameLength === '3' ? 160 : nameLength === '2' ? 120 : NaN, 80)
+              ctx.fillStyle = 'white'
+              ctx.fillText(name, Math.ceil(coor.leftTop[0]) + 10, Math.ceil(coor.leftTop[1]) - 65)
+            }
             setTimeout(() => {
               ctx.clearRect(0, 0, 1920, 1080)
             }, 300)
