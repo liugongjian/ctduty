@@ -52,17 +52,6 @@ export default {
     this.chart = null
   },
   methods: {
-    // 随机词云颜色 但是这种方法是每次刷新会重刷颜色 而且所有词云颜色一样
-    // createRandomItemStyle2() {
-    //   var colorArr = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
-    //   var flag = parseInt(Math.random() * 6);
-    //   return {
-    //       normal: {
-    //           fontFamily: '微软雅黑',
-    //           color:colorArr[flag]
-    //       }
-    //   };
-    // },
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
       const option = {
@@ -112,7 +101,6 @@ export default {
                 // }
               }
             },
-            // textStyle:this.createRandomItemStyle2(),
             // 位置相关设置
             // Folllowing left/top/width/height/right/bottom are used for positioning the word cloud
             // Default to be put in the center and has 75% x 80% size.

@@ -404,6 +404,16 @@ export default {
               }
             }
           },
+          regions: [      //对不同的区块进行着色
+            {
+              name: '华阴市', //区块名称
+              itemStyle: {
+                  normal: {
+                      areaColor: '#1890FF'
+                  }
+              }
+            }
+          ],
           zoom: 1.2,
           itemStyle: {
             show: false,
@@ -628,7 +638,7 @@ export default {
             fontSize: 18,
             fontFamily: 'Microsoft Yahei',
             fontWeight: 'normal',
-            color: '#fff',
+            color: '#ccc',
             rich: {
               a: {
                 fontSize: 14
