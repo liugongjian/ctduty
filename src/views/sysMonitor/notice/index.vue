@@ -332,7 +332,17 @@ export default {
       ]
     }
   },
-
+  watch: {
+    addNoticeForm() {
+      this.addcontentlength = this.addNoticeForm.content.length
+    },
+    addcontentlength() {
+      this.$message({
+        type: 'warning',
+        message: '内容长度不能大于500'
+      })
+    }
+  },
   created() {
     this.getNoticeList()
   },
