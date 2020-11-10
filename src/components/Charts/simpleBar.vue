@@ -68,7 +68,7 @@ export default {
     }
   },
   mounted() {
-    this.initChart()
+    // this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -82,6 +82,8 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id))
       const { xAxis, yAxis } = this.chartData
       console.log(this.chartData)
+      const data = yAxis.type === 'category' ? xAxis.data : yAxis.data
+      console.log('...', data)
       if (yAxis.type === 'category') {
         yAxis.axisLabel = {
           formatter: function(value, index) {
@@ -115,7 +117,7 @@ export default {
         xAxis: xAxis,
         yAxis: yAxis,
         series: [{
-          data: [120, 200, 150, 80, 70, 110, 130],
+          data,
           type: 'bar',
           barMaxWidth: '30px'
         }]
