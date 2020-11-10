@@ -60,6 +60,13 @@ export default {
       chart: null
     }
   },
+  watch: {
+    chartData: function(newValue) {
+      this.chartData = newValue
+      console.log('????', newValue)
+      this.initChart()
+    }
+  },
   mounted() {
     this.initChart()
   },
@@ -73,7 +80,18 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(document.getElementById(this.id))
-
+      const { xAxis, yAxis } = this.chartData
+      console.log(this.chartData)
+      if (yAxis.type === 'category') {
+        yAxis.axisLabel = {
+          formatter: function(value, index) {
+            // 格式化成月/日，只在第一个刻度显示年份
+            if (value.length && value.length > 6) {
+              return value.substring(0, 6) + '...'
+            } else return value
+          }
+        }
+      }
       this.chart.setOption({
         tooltip: {
           trigger: 'item'
@@ -88,14 +106,14 @@ export default {
         //   left: 62
         // },
         grid: {
-          left: 0,
+          left: 20,
           top: 50,
           bottom: 30,
           containLabel: true
         },
         color: ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
-        xAxis: this.chartData.xAxis,
-        yAxis: this.chartData.yAxis,
+        xAxis: xAxis,
+        yAxis: yAxis,
         series: [{
           data: [120, 200, 150, 80, 70, 110, 130],
           type: 'bar',

@@ -14,6 +14,7 @@ module.exports = {
                 // target: 'http://host31.880508.xyz:10000',
                 // target: 'http://36.41.71.26:8920',
                 // target: 'http://192.168.1.222:10000',
+                // target:'http://192.168.30.27:9216',
                 target:' http://59.36.77.57:8666', //宁夏
                 changeOrigin: true,
                 pathRewrite: {
@@ -52,7 +53,7 @@ module.exports = {
 
         // can be overwritten by process.env.HOST
         // if you want dev by ip, please set host: '0.0.0.0'
-        host: '127.0.0.1',
+        host: '0.0.0.0',
         port: 9528, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: true,
         errorOverlay: true,

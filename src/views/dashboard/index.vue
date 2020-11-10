@@ -42,7 +42,7 @@
       <div class="summaryBar">
         <div class="overviews-itemTitle">智能算法应用概览</div>
         <div>
-          <div><StackedBar id="summary-bar-chart" :chart-data="testData" width="600px" height="100px"/></div>
+          <div><StackedBar id="summary-bar-chart" :chart-data="taskAppliedByCameraList" width="600px" height="100px"/></div>
         </div>
       </div>
     </div>
@@ -62,20 +62,51 @@
         :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
-        <el-table-column label="摄像头名称" prop="username"></el-table-column>
-        <el-table-column label="A算法" prop="name"></el-table-column>
-        <el-table-column label="B算法" prop="phone"></el-table-column>
-        <el-table-column label="C算法" prop="post.name"></el-table-column>
+        <el-table-column label="摄像头名称" prop="cameraName" width="250"></el-table-column>
+        <el-table-column label="值更检测" >
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '值更检测') }}</template>
+        </el-table-column>
+        <el-table-column label="人脸识别">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人脸识别') }}</template>
+        </el-table-column>
+        <el-table-column label="车牌识别">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车牌识别') }}</template>
+        </el-table-column>
+        <el-table-column label="区域画线告警">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '区域画线告警') }}</template>
+        </el-table-column>
+        <el-table-column label="翻墙检测">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '翻墙检测') }}</template>
+        </el-table-column>
+        <el-table-column label="人流识别">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人流识别') }}</template>
+        </el-table-column>
+        <el-table-column label="车流识别">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车流识别') }}</template>
+        </el-table-column>
+        <el-table-column label="安全帽识别">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '安全帽识别') }}</template>
+        </el-table-column>
+        <el-table-column label="车型检测">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车型检测') }}</template>
+        </el-table-column>
+        <el-table-column label="人群聚集检测">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人群聚集检测') }}</template>
+        </el-table-column>
+        <!-- <el-table-column label="打架斗殴检测" prop="djdojc"></el-table-column>
+        <el-table-column label="摔倒检测" prop="sdjc"></el-table-column>
+        <el-table-column label="占道经营检测" prop="zdjyjc"></el-table-column>
+        <el-table-column label="人员逗留检测" prop="rydljc"></el-table-column> -->
       </el-table>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="page"
+          :limit.sync="limit"
+          @pagination="pageChange()"
+        />
       </div>
     </div>
-    <pagination
-      v-show="total > 0"
-      :total="total"
-      :page.sync="page"
-      :limit.sync="limit"
-      @pagination="pageChange()"
-    />
   </div>
 </template>
 
@@ -96,7 +127,7 @@ require('echarts/lib/chart/bar')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 import {
-  fetchAllData, fetchNowInfo
+  fetchAllData, fetchNowInfo, getAlertStatics
 } from '@/api/dashboard'
 export default {
   name: 'Dashboard',
@@ -159,66 +190,48 @@ export default {
           'percent': 40
         }
       ],
+      taskAppliedByCameraList: [],
       // 告警趋势
-      alertStatisByDayList: [
-        {
-          'calDay': '08月01日',
-          'alertCount': 11,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        },
-        {
-          'calDay': '08月02日',
-          'alertCount': 4011,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        },
-        {
-          'calDay': '08月03日',
-          'alertCount': 15834,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        }
-      ],
+      alertStatisByDayList: [],
+      // [
+      //   {
+      //     'calDay': '08月01日',
+      //     'alertCount': 11,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   },
+      //   {
+      //     'calDay': '08月02日',
+      //     'alertCount': 4011,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   },
+      //   {
+      //     'calDay': '08月03日',
+      //     'alertCount': 15834,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   }
+      // ],
       // 告警排行
-      alertStatisByCameraList: [
-        {
-          'cameraId': '1111',
-          'cameraName': 'nnn',
-          'alertCount': 11,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        },
-        {
-          'cameraId': '2222',
-          'cameraName': 'yyyy',
-          'alertCount': 10,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        },
-        {
-          'cameraId': '3333',
-          'cameraName': 'zzz',
-          'alertCount': 11,
-          'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-        }
-      ],
-      // 告警详情
-      alertDetailTale: [
-        {
-          'cameraId': '1111',
-          'cameraName': 'nnn',
-          'alertCount': 11,
-          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
-        },
-        {
-          'cameraId': '2222',
-          'cameraName': 'yyyy',
-          'alertCount': 10,
-          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
-        },
-        {
-          'cameraId': '3333',
-          'cameraName': 'zzz',
-          'alertCount': 11,
-          'taskCount': [{ 'id': 1, 'count': 1, 'name': 'suanfa1' }, { 'id': 2, 'count': 10, 'name': 'suanfa1' }]
-        }
-      ]
+      alertStatisByCameraList: []
+      // [
+      //   {
+      //     'cameraId': '1111',
+      //     'cameraName': 'nnn',
+      //     'alertCount': 11,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   },
+      //   {
+      //     'cameraId': '2222',
+      //     'cameraName': 'yyyy',
+      //     'alertCount': 10,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   },
+      //   {
+      //     'cameraId': '3333',
+      //     'cameraName': 'zzz',
+      //     'alertCount': 11,
+      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
+      //   }
+      // ],
     }
   },
   computed: {
@@ -305,6 +318,7 @@ export default {
     this.init()
     this.getRealtimeData()
     this.getChartsData()
+    this.getAlertDetailList()
     this.timer = setInterval(() => {
       this.getRealtimeData()
       // const {
@@ -321,27 +335,39 @@ export default {
       // }
     }, 3000)
   },
+  destroyed() {
+    clearInterval(this.timer)
+  },
   methods: {
+    getCountByName(taskCount, name) {
+      for (const item of taskCount) {
+        if (item.name === name) {
+          return item.count
+        }
+      }
+      return '-'
+    },
     pageChange() {
       if (this.oldSize !== this.limit) {
         this.page = 1
       }
       this.oldSize = this.limit
-      this.getgetPoliceList()
+      this.getAlertDetailList()
     },
     getAlertDetailList() {
       const query = {
         page: {
-          index: this.pagenum,
+          index: this.page,
           size: this.limit
         },
-        sorts: [{ field: 'create_time', type: 'desc' }]
+        params: {}
+        // sorts: [{ field: 'create_time', type: 'desc' }]
       }
-      // fetchUserList(query).then(response => {
-      //   if (response.code !== 0) return
-      //   this.userList = response.body.data
-      //   this.total = response.body.page.total
-      // })
+      getAlertStatics(query).then(res => {
+        if (res.code !== 0) return
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+      })
     },
     // 初始化数字
     init() {
@@ -389,16 +415,17 @@ export default {
     },
     getChartsData() {
       const params = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 20
-        },
-        params: {
-        }
+        cascade: true
       }
-      fetchAllData(params).then(res => {
-        console.log(res)
+      fetchAllData(params).then(({ body: { data }}) => {
+        const {
+          alertStatisByCameraList,
+          alertStatisByDayList,
+          taskAppliedByCameraList
+        } = data
+        this.alertStatisByCameraList = alertStatisByCameraList
+        this.alertStatisByDayList = alertStatisByDayList
+        this.taskAppliedByCameraList = taskAppliedByCameraList
       })
     }
   }

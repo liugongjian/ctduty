@@ -35,6 +35,12 @@ export default {
       chart: null
     }
   },
+  watch: {
+    chartData: function(newValue) {
+      this.chartData = newValue
+      this.initChart()
+    }
+  },
   mounted() {
     this.initChart()
   },
