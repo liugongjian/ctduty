@@ -237,7 +237,9 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
+        // 后端没时间改 暂时前端先写死 后面有时间用真实数据
+        // this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
+        this.trendText = '告警数量有所增加'
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -875,7 +877,7 @@ export default {
         },
         grid: {
           top: '15%',
-          left: '16%',
+          left: '20%',
           right: '10%',
           bottom: '18%'
         },
