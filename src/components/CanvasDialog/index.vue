@@ -60,7 +60,7 @@ export default {
           canvas.width = 1920
           canvas.height = 1080
           ctx.globalCompositeOperation = 'source-over'
-          ctx.drawImage(img, 0, 0)
+          ctx.drawImage(img, 1920, 1080)
           ctx.lineWidth = 4
           ctx.strokeStyle = 'red'
           ctx.textBaseline = 'top'

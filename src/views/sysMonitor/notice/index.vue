@@ -339,7 +339,6 @@ export default {
     }
   },
   watch: {
-
     'addNoticeForm.content'(v) {
       if (v.length > 500) {
         this.$message({
