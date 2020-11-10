@@ -24,7 +24,7 @@
             @click="resetQuery"
           >重置</button>
         </div>
-        <div class="pull-left alarmmsgpull">
+        <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
             <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
           </div>
@@ -874,7 +874,7 @@ td {
 .alarmInp input.el-input__inner {
   height: 34px !important;
 }
-.pull-left.alarmmsgpull {
+.pull-left.alarmmsgleft {
   width: 72%;
 }
 .pull-right.alarmmsgright {
@@ -887,6 +887,10 @@ td {
     border: 1px solid #ccc;
     background: none;
     border-radius: 2px;
+    outline:none;
+  }
+  .clearsearch:active {
+    background-color: rgb(243, 241, 241);
   }
 }
 .searchsure {
