@@ -345,7 +345,14 @@ export default {
           index: this.queryInfo.pagenum,
           size: this.queryInfo.pagesize
         },
-        params: {}
+        params: {
+          sorts: [
+            {
+              field: "create_time",
+              type: "desc"
+            }
+          ]
+        }
       };
 
       if (this.queryInfo.params.title.trim() !== "") {
@@ -427,6 +434,7 @@ export default {
             return this.$message.error("添加失败，请联系系统管理员");
           }
           this.$message.success("添加成功");
+
           this.total++;
           this.pagenum = Math.ceil(this.total / this.pagesize);
           this.addNoticeDialogVisible = false;
@@ -548,8 +556,8 @@ export default {
 } */
 .quill-editor {
   display: inline-block;
-  width: 700px;
-  height: 200px;
+  width: 500px;
+  height: 300px;
 }
 .el-row {
   margin-top: 20px;

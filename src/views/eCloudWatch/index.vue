@@ -329,7 +329,7 @@ export default {
       ],
       isDisableAllAlarmBtn: false,
       zoom: 13,
-      zooms: [13, 16],
+      zooms: [13, 15.5],
       hasMarker: false,
       showZwMes: true,
       center: [110.170143, 34.567009],
