@@ -186,9 +186,10 @@ export default {
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
     },
     mainWidth() {
-      console.log('变化了')
       this.isScreenChange = false
+      console.log(this.isScreenChange)
       this.isScreenChange = true
+      console.log(this.isScreenChange)
     }
   },
   async created() {
