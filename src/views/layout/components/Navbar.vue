@@ -193,6 +193,9 @@ export default {
           document.getElementsByClassName('screen')
         )
         document.getElementsByClassName('screen')[0].innerText = '退出'
+        console.log(';;;;;;;;;;;;;;;;;;', document.getElementsByClassName('bottom-left'))
+        document.getElementsByClassName('bottom-left')[0].style.height = '47vh'
+        
       } else {
         document
           .getElementsByClassName('fullscreen')[0]
@@ -201,6 +204,7 @@ export default {
           .getElementsByClassName('fullscreen')[0]
           .childNodes[2].classList.remove('texthighlight')
         document.getElementsByClassName('screen')[0].innerText = '全屏'
+        document.getElementsByClassName('bottom-left')[0].style.height = '42vh'
       }
     },
     notReadNoticeTotal(v, oldV) {

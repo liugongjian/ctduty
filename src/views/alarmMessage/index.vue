@@ -173,7 +173,7 @@
                     <el-image
                       slot="reference"
                       :src="scope.row.imageCut"
-                      class="image"
+                      class="amimage"
                       @click="openBig(scope.row.image)"
                     />
                   </el-popover>
@@ -219,11 +219,13 @@
             <el-dialog
               v-model="temp"
               :visible.sync="dialogVisable"
-              width="520px"
-              style="height:390px;"
+              class="mesdialog"
+              width="500px"
+              style="height:400px;"
               @close="closeDialog"
+              :show-close='false'
             >
-              <div style="width:500px;height:350px; padding: 10px 10px 0px">
+              <div style="width:500px;height:400px; padding: 10px 10px 0px">
                 <div :model="temp" label-position="right" label-width="100px">
                   <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
                     <img :src="temp.image" width="480" height="270" style="z-index:1;">
@@ -889,17 +891,20 @@ td {
   height: 32px !important;
   line-height: 32px !important;
 }
-.el-dialog__header {
-  padding: 0 !important;
-}
-.el-dialog .el-dialog__body {
-  padding: 0 !important;
-}
-.el-dialog__footer {
-  padding: 0 !important;
-}
-.dialog-footer {
-  padding: 10px 0 !important;
+.mesdialog {
+  .el-dialog__header {
+    padding: 0 !important;
+  }
+  .el-dialog .el-dialog__body {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  .el-dialog__footer {
+    padding: 0 !important;
+  }
+  .dialog-footer {
+    padding: 10px 0 !important;
+  }
 }
 .popfooter {
   padding-top: 4px;
@@ -921,4 +926,10 @@ td {
 .el-button--small {
   font-size: 14px;
 }
+// .el-dialog__headerbtn {
+//   // display: none;
+//   position: relative;
+//   top: 4px;
+//   left: 85%;
+// }
 </style>

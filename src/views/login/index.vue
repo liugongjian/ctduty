@@ -1,19 +1,19 @@
 <template>
-  <div class="loginContainer" style="display: flex; height: 100%;">
+  <div class="loginContainer" style="display: flex; height: 100%; over-flow:hidden">
     <div class="fffmark"></div>
     <div class="huashanBJ">
       <div class="line">
-        <img width="720px" height="540px" src="./images/line.svg" alt="">
+        <img width="720px" height="540px" src="./images/line.svg" alt />
       </div>
     </div>
     <div class="leftLogo">
       <div class="logo">
-        <img src="./images/logo.svg" alt="">
+        <img src="./images/logo.svg" alt />
       </div>
     </div>
     <div class="loginFormContainer">
       <div class="login">
-        <div key="min-logo" class="logo" ></div>
+        <div key="min-logo" class="logo"></div>
         <p class="title">账号密码登录</p>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
           <el-form-item prop="username">
@@ -22,7 +22,12 @@
           </el-form-item>
           <el-form-item :error="erroruserMsg" prop="password">
             <div class="passwordIcon"></div>
-            <el-input v-model="loginForm.password" type="password" placeholder="密码" class="passWord" ></el-input>
+            <el-input
+              v-model="loginForm.password"
+              type="password"
+              placeholder="密码"
+              class="passWord"
+            ></el-input>
           </el-form-item>
           <!-- <el-form-item :error="errorcodeMsg" class="yzm" prop="yzm">
             <div class="yzmIcon"></div>
@@ -30,7 +35,7 @@
             <div class="yzmImg" style="margin-left: 12px;height:40px;position:absolute;right:0;top:0;width:102px" @click="refreshImg">
               <img :src = "verifyImgUrl" height="40" width="102">
             </div>
-          </el-form-item> -->
+          </el-form-item>-->
         </el-form>
         <div>
           <el-button class="btn" type="warning" @click="login" @keyup.enter="login">登录</el-button>
@@ -41,56 +46,54 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
-import { encryptAes } from './js/AES'
-const Base64 = require('js-base64').Base64
-import config from '@/config'
-import { loginGetToken } from '../../api/login'
-import { fetchUser } from '../../api/user'
+import Cookies from "js-cookie";
+import { encryptAes } from "./js/AES";
+const Base64 = require("js-base64").Base64;
+import config from "@/config";
+import { loginGetToken } from "../../api/login";
+import { fetchUser } from "../../api/user";
 const {
   prefix: { userPrefix }
-} = config
+} = config;
 // const yzmImg = userPrefix + '/v1/verify'
 export default {
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
         // yzm: ''  // 验证码
       },
       // verifyImgUrl: yzmImg + '?' + new Date().getTime(),
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', message: '请输入用户名' }
+          { required: true, trigger: "blur", message: "请输入用户名" }
         ],
-        password: [
-          { required: true, trigger: 'blur', message: '请输入密码' }
-        ]
+        password: [{ required: true, trigger: "blur", message: "请输入密码" }]
         // yzm: [
         //   { required: true, trigger: 'blur', message: '请输入验证码' }
         // ]
       },
       // errorMsg: '',
-      erroruserMsg: '',
-      errorcodeMsg: '',
-      token: ''
-    }
+      erroruserMsg: "",
+      errorcodeMsg: "",
+      token: ""
+    };
   },
   created() {
-    this.setCookerTian()
-    var t = this
+    this.setCookerTian();
+    var t = this;
     document.onkeydown = function(e) {
       if (window.event == undefined) {
-        var key = e.keyCode
+        var key = e.keyCode;
       } else {
-        var key = window.event.keyCode
+        var key = window.event.keyCode;
       }
       // enter的ASCII码是13
       if (key == 13) {
-        t.login()
+        t.login();
       }
-    }
+    };
   },
   methods: {
     // 刷新验证码
@@ -100,20 +103,20 @@ export default {
     // 自动填充
     setCookerTian() {
       this.loginForm = {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
         // yzm: ''
-      }
+      };
       // 在页面加载时从cookie获取登录信息
-      const username = Cookies.get('username')
-      const password = Cookies.get('password')
+      const username = Cookies.get("username");
+      const password = Cookies.get("password");
       // 如果存在赋值给表单，并且将记住密码勾选
       if (username && password) {
-        this.loginForm.username = username
-        this.loginForm.password = Base64.decode(password)
+        this.loginForm.username = username;
+        this.loginForm.password = Base64.decode(password);
       } else {
-        this.loginForm.username = ''
-        this.loginForm.password = ''
+        this.loginForm.username = "";
+        this.loginForm.password = "";
       }
     },
     // 记住密码 则将用户名和密码保存在cookie中
@@ -126,64 +129,69 @@ export default {
     login() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          const redirect_url_front = this.$route.query.redirect_url
-          const redirect = this.$route.query.redirect
+          const redirect_url_front = this.$route.query.redirect_url;
+          const redirect = this.$route.query.redirect;
           // const passWord = Base64.encode(this.loginForm.password.trim())
           // const result = testPassword(this.loginForm.password.trim())
           // if(result === 0){
-          const passWord = this.loginForm.password.trim()
+          const passWord = this.loginForm.password.trim();
           const params = {
             username: this.loginForm.username.trim(),
             password: passWord
-          }
-          this.erroruserMsg = ''
-          this.errorcodeMsg = ''
-          loginGetToken(params).then((resp) => {
-            if (resp.code === 0) {
-              // 把token存在cookie中
-              Cookies.set('token', resp.body.data)
-              // localStorage.setItem('token', resp.body.data)
-              fetchUser().then((res) => {
-                const level = res.body.data.permissions.level
-                // localStorage.setItem('userId', res.body.data.id)
-                Cookies.set('userId', res.body.data.id)
-                Cookies.set('level', res.body.data.permissions.level)
-                Cookies.set('username', res.body.data.username)
-                if (level === 2) {
-                  this.$router.push('/ecloudwatch')
-                } else {
-                  this.$router.push('/dashboard')
-                }
-              }).catch(err => {
-                return err
-              })
-            } else {
-              // this.refreshImg()
-              if (resp.code === 'USER_WRONG') {
-                this.erroruserMsg = resp.msg
-              } else if (resp.code === 'CODE_EXPIRES') {
-                this.errorcodeMsg = resp.msg
-              } else if (resp.code === 'CODE_ERROR') {
-                this.errorcodeMsg = resp.msg
+          };
+          this.erroruserMsg = "";
+          this.errorcodeMsg = "";
+          loginGetToken(params)
+            .then(resp => {
+              if (resp.code === 0) {
+                // 把token存在cookie中
+                Cookies.set("token", resp.body.data);
+                // localStorage.setItem('token', resp.body.data)
+                fetchUser()
+                  .then(res => {
+                    const level = res.body.data.permissions.level;
+                    // localStorage.setItem('userId', res.body.data.id)
+                    Cookies.set("userId", res.body.data.id);
+                    Cookies.set("level", res.body.data.permissions.level);
+                    Cookies.set("username", res.body.data.username);
+                    if (level === 2) {
+                      this.$router.push("/ecloudwatch");
+                    } else {
+                      this.$router.push("/dashboard");
+                    }
+                  })
+                  .catch(err => {
+                    return err;
+                  });
               } else {
-                return false
+                // this.refreshImg()
+                if (resp.code === "USER_WRONG") {
+                  this.erroruserMsg = resp.msg;
+                } else if (resp.code === "CODE_EXPIRES") {
+                  this.errorcodeMsg = resp.msg;
+                } else if (resp.code === "CODE_ERROR") {
+                  this.errorcodeMsg = resp.msg;
+                } else {
+                  return false;
+                }
               }
-            }
-            // eslint-disable-next-line handle-callback-err
-          }).catch(error => {
-            // this.refreshImg()
-          })
+              // eslint-disable-next-line handle-callback-err
+            })
+            .catch(error => {
+              // this.refreshImg()
+            });
         } else {
-          return false
+          return false;
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 body {
+  overflow-y: hidden;
   .leftLogo {
     position: relative;
     .logo {
@@ -201,17 +209,17 @@ body {
   .loginContainer {
     width: 100%;
     height: 100%;
-    background-color: #9DB0C4;
-   /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
+    background-color: #9db0c4;
+    /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
     background-size: 100% 100%;
     background-position: bottom center;
     position: relative;
     overflow: hidden;
-    .fffmark{
+    .fffmark {
       background-color: #fff;
       height: 220vh;
-      width:50vw;
-      position:absolute;
+      width: 50vw;
+      position: absolute;
       left: 0;
       top: 0;
       transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
@@ -223,7 +231,7 @@ body {
     align-items: center;
     display: flex;
     flex-direction: column;
-    flex:1;
+    flex: 1;
   }
   .huashanBJ {
     width: 792px;
@@ -237,7 +245,7 @@ body {
     .line {
       position: absolute;
       top: 27px;
-      left:36px;
+      left: 36px;
     }
   }
   .login {
@@ -253,9 +261,9 @@ body {
     flex-direction: column;
     justify-content: center;
     padding-bottom: 30px;
-    box-shadow: 0 1px 20px 0 #87959E;
-    .logo{
-      width:204.6px;
+    box-shadow: 0 1px 20px 0 #87959e;
+    .logo {
+      width: 204.6px;
       height: 56px;
       background: url(./images/zglogo.png) no-repeat center;
       background-size: 60% 60%;
@@ -289,46 +297,45 @@ body {
       height: 40px;
     }
     .el-form-item.el-form-item--medium {
-        margin-bottom: 20px;
+      margin-bottom: 20px;
     }
     .el-checkbox__label {
-        font-family: PingFangSC-Regular;
-        color: #333333;
-        line-height: 22px;
-        width: 96px;
-        height: 22px;
+      font-family: PingFangSC-Regular;
+      color: #333333;
+      line-height: 22px;
+      width: 96px;
+      height: 22px;
     }
-
   }
   .accountIcon {
-      width: 10.4px;
-      height: 14px;
-      background-color: rgba(0,0,0,0.25);
-      background: url(./images/account.png) no-repeat center;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 999;
+    width: 10.4px;
+    height: 14px;
+    background-color: rgba(0, 0, 0, 0.25);
+    background: url(./images/account.png) no-repeat center;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 999;
   }
   .passwordIcon {
-      width: 10.4px;
-      height: 14px;
-      background-color: rgba(0,0,0,0.25);
-      background: url(./images/password.png) no-repeat center;
-      position: absolute;
-      top: 12px;
-      left: 10px;
-      z-index: 999;
+    width: 10.4px;
+    height: 14px;
+    background-color: rgba(0, 0, 0, 0.25);
+    background: url(./images/password.png) no-repeat center;
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    z-index: 999;
   }
   .yzmIcon {
-      width: 12px;
-      height: 15px;
-      background-color: rgba(0,0,0,0.25);
-      background: url(./images/yzm.png) no-repeat center;
-      position: absolute;
-      top: 12px;
-      left: 10px;
-      z-index: 999;
+    width: 12px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.25);
+    background: url(./images/yzm.png) no-repeat center;
+    position: absolute;
+    top: 12px;
+    left: 10px;
+    z-index: 999;
   }
   .yzm {
     .el-form-item__content {
@@ -337,7 +344,7 @@ body {
       // line-height: 68px;
       // height: 40px;
       .el-input.el-input--medium {
-        width: 258px
+        width: 258px;
       }
     }
   }

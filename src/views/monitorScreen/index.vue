@@ -8,14 +8,24 @@
               <el-image
                 v-if="item.image"
                 :src="item.image"
-                style="width:100%;height:100%;object-fit:contain;filter:blur(10px);"
+                style="width:100%;height:100%;object-fit:contain;filter:blur(6px);"
               ></el-image>
               <VideoPlayer
-                v-else
+                v-else-if="item.videoOptions.sources[0].src"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
                 :options="item.videoOptions"
               />
+              <div
+                v-else
+                style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
+              >
+                <el-image
+                  :src="nosrc"
+                  style="position:absolute;width:138px;height:30px;object-fit:contain;top:50%;left:50%;
+                  transform:translate(-50%,-50%);"
+                ></el-image>
+              </div>
             </div>
             <div class="screen-head">
               <div class="head-label">
@@ -87,6 +97,7 @@ import {
 } from "@/api/monitor";
 import { searchCameraList } from "@/api/camera";
 import fakeimg from "@/assets/images/fakeimg.png";
+import nosrc from "@/assets/images/nosrc.png";
 
 export default {
   components: { VideoPlayer },
@@ -100,6 +111,7 @@ export default {
           { required: true, message: "请选择摄像头地址", trigger: "change" }
         ]
       },
+      nosrc,
       options: [],
       deviceList: [],
       loading: false,
@@ -123,7 +135,7 @@ export default {
         res.body.data.forEach(item => {
           this.deviceList.push({
             address: item.address,
-            image: item.image ? item.image : fakeimg,
+            image: item.image ? "data:image/png;base64," + item.image : fakeimg,
             id: item.id
           });
         });
@@ -174,28 +186,26 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || [];
-        this.deviceList = data
-          .filter(i => i.rtmpuri)
-          .map(item => {
-            return {
-              ...item,
-              image: null,
-              videoOptions: {
-                autoplay: true,
-                controls: true,
-                width: 400, // 播放器宽度
-                height: 300, // 播放器高度
-                // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-                fluid: true, // 流体布局，自动充满，并保持播放其比例
-                sources: [
-                  {
-                    src: item.rtmpuri,
-                    type: this.video_type(item.rtmpuri)
-                  }
-                ]
-              }
-            };
-          });
+        this.deviceList = data.map(item => {
+          return {
+            ...item,
+            image: null,
+            videoOptions: {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: item.rtmpuri ? item.rtmpuri : "",
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri : "")
+                }
+              ]
+            }
+          };
+        });
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
@@ -309,14 +319,14 @@ export default {
   .screen {
     float: left;
     width: 33.33%;
+    height: 48%;
     .screen-inner {
       margin: 10px 10px;
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: 280px;
+      height: 41vh;
       margin: 10px;
-      margin-top: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -332,8 +342,8 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 30px;
       display: flex;
+      width: calc(100% + 0.5px);
       padding: 0 10px;
       align-items: center;
       border: 1px solid #ebeef5;
@@ -360,8 +370,7 @@ export default {
       }
     }
     .screen-body {
-      height: 250px;
-      margin-top: 20px;
+      height: 35vh;
       width: auto;
       background: #333;
     }
