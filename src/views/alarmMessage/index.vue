@@ -821,9 +821,7 @@ export default {
 }
 </script>
 
- <style lang='scss'>
- 
-
+<style lang='scss'>
 .alaMesTable {
   td {
     padding: 0 !important;

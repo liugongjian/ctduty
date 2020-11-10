@@ -3,12 +3,12 @@
     <div class="fffmark"></div>
     <div class="huashanBJ">
       <div class="line">
-        <img width="720px" height="540px" src="./images/line.svg" alt />
+        <img width="720px" height="540px" src="./images/line.svg" alt >
       </div>
     </div>
     <div class="leftLogo">
       <div class="logo">
-        <img src="./images/logo.svg" alt />
+        <img src="./images/logo.svg" alt >
       </div>
     </div>
     <div class="loginFormContainer">
@@ -46,54 +46,54 @@
 </template>
 
 <script>
-import Cookies from "js-cookie";
-import { encryptAes } from "./js/AES";
-const Base64 = require("js-base64").Base64;
-import config from "@/config";
-import { loginGetToken } from "../../api/login";
-import { fetchUser } from "../../api/user";
+import Cookies from 'js-cookie'
+import { encryptAes } from './js/AES'
+const Base64 = require('js-base64').Base64
+import config from '@/config'
+import { loginGetToken } from '../../api/login'
+import { fetchUser } from '../../api/user'
 const {
   prefix: { userPrefix }
-} = config;
+} = config
 // const yzmImg = userPrefix + '/v1/verify'
 export default {
   data() {
     return {
       loginForm: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
         // yzm: ''  // 验证码
       },
       // verifyImgUrl: yzmImg + '?' + new Date().getTime(),
       loginRules: {
         username: [
-          { required: true, trigger: "blur", message: "请输入用户名" }
+          { required: true, trigger: 'blur', message: '请输入用户名' }
         ],
-        password: [{ required: true, trigger: "blur", message: "请输入密码" }]
+        password: [{ required: true, trigger: 'blur', message: '请输入密码' }]
         // yzm: [
         //   { required: true, trigger: 'blur', message: '请输入验证码' }
         // ]
       },
       // errorMsg: '',
-      erroruserMsg: "",
-      errorcodeMsg: "",
-      token: ""
-    };
+      erroruserMsg: '',
+      errorcodeMsg: '',
+      token: ''
+    }
   },
   created() {
-    this.setCookerTian();
-    var t = this;
+    this.setCookerTian()
+    var t = this
     document.onkeydown = function(e) {
       if (window.event == undefined) {
-        var key = e.keyCode;
+        var key = e.keyCode
       } else {
-        var key = window.event.keyCode;
+        var key = window.event.keyCode
       }
       // enter的ASCII码是13
       if (key == 13) {
-        t.login();
+        t.login()
       }
-    };
+    }
   },
   methods: {
     // 刷新验证码
@@ -103,20 +103,20 @@ export default {
     // 自动填充
     setCookerTian() {
       this.loginForm = {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
         // yzm: ''
-      };
+      }
       // 在页面加载时从cookie获取登录信息
-      const username = Cookies.get("username");
-      const password = Cookies.get("password");
+      const username = Cookies.get('username')
+      const password = Cookies.get('password')
       // 如果存在赋值给表单，并且将记住密码勾选
       if (username && password) {
-        this.loginForm.username = username;
-        this.loginForm.password = Base64.decode(password);
+        this.loginForm.username = username
+        this.loginForm.password = Base64.decode(password)
       } else {
-        this.loginForm.username = "";
-        this.loginForm.password = "";
+        this.loginForm.username = ''
+        this.loginForm.password = ''
       }
     },
     // 记住密码 则将用户名和密码保存在cookie中
@@ -129,67 +129,67 @@ export default {
     login() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          const redirect_url_front = this.$route.query.redirect_url;
-          const redirect = this.$route.query.redirect;
+          const redirect_url_front = this.$route.query.redirect_url
+          const redirect = this.$route.query.redirect
           // const passWord = Base64.encode(this.loginForm.password.trim())
           // const result = testPassword(this.loginForm.password.trim())
           // if(result === 0){
-          const passWord = this.loginForm.password.trim();
+          const passWord = this.loginForm.password.trim()
           const params = {
             username: this.loginForm.username.trim(),
             password: passWord
-          };
-          this.erroruserMsg = "";
-          this.errorcodeMsg = "";
+          }
+          this.erroruserMsg = ''
+          this.errorcodeMsg = ''
           loginGetToken(params)
             .then(resp => {
               if (resp.code === 0) {
                 // 把token存在cookie中
-                Cookies.set("token", resp.body.data);
+                Cookies.set('token', resp.body.data)
                 // localStorage.setItem('token', resp.body.data)
                 fetchUser()
                   .then(res => {
-                    const level = res.body.data.permissions.level;
+                    const level = res.body.data.permissions.level
                     // localStorage.setItem('userId', res.body.data.id)
-                    Cookies.set("userId", res.body.data.id);
-                    Cookies.set("level", res.body.data.permissions.level);
-                    Cookies.set("username", res.body.data.username);
+                    Cookies.set('userId', res.body.data.id)
+                    Cookies.set('level', res.body.data.permissions.level)
+                    Cookies.set('username', res.body.data.username)
                     if (level === 2) {
-                      this.$router.push("/ecloudwatch");
+                      this.$router.push('/ecloudwatch')
                     } else {
-                      this.$router.push("/dashboard");
+                      this.$router.push('/dashboard')
                     }
                   })
                   .catch(err => {
-                    return err;
-                  });
+                    return err
+                  })
               } else {
                 // this.refreshImg()
-                if (resp.code === "USER_WRONG") {
-                  this.erroruserMsg = resp.msg;
-                } else if (resp.code === "CODE_EXPIRES") {
-                  this.errorcodeMsg = resp.msg;
-                } else if (resp.code === "CODE_ERROR") {
-                  this.errorcodeMsg = resp.msg;
+                if (resp.code === 'USER_WRONG') {
+                  this.erroruserMsg = resp.msg
+                } else if (resp.code === 'CODE_EXPIRES') {
+                  this.errorcodeMsg = resp.msg
+                } else if (resp.code === 'CODE_ERROR') {
+                  this.errorcodeMsg = resp.msg
                 } else {
-                  return false;
+                  return false
                 }
               }
               // eslint-disable-next-line handle-callback-err
             })
             .catch(error => {
               // this.refreshImg()
-            });
+            })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 body {
   overflow-y: hidden;
   .leftLogo {
