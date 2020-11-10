@@ -190,10 +190,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-input__inner {
+  padding-left:20px !important;
+  text-indent: 15px;
+  height: 40px;
+}
 body {
+  height:100%;
   overflow-y: hidden;
   .leftLogo {
-    position: relative;
+    position: fixed;
     .logo {
       position: absolute;
       top: 20px;
@@ -213,7 +219,7 @@ body {
     /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
     background-size: 100% 100%;
     background-position: bottom center;
-    position: relative;
+    position: fixed;
     overflow: hidden;
     .fffmark {
       background-color: #fff;
@@ -292,10 +298,7 @@ body {
       line-height: 20px;
       margin-top: 30px;
     }
-    .el-input__inner {
-      text-indent: 15px;
-      height: 40px;
-    }
+
     .el-form-item.el-form-item--medium {
       margin-bottom: 20px;
     }
