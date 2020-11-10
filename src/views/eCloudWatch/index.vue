@@ -329,7 +329,7 @@ export default {
       ],
       isDisableAllAlarmBtn: false,
       zoom: 13,
-      zooms: [13, 16],
+      zooms: [13, 15.5],
       hasMarker: false,
       showZwMes: true,
       center: [110.170143, 34.567009],
@@ -1000,8 +1000,8 @@ export default {
           this.closeDialog()
         }, 5000)
       }
-      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
-      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0007]
+      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006]
+      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {

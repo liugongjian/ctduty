@@ -349,6 +349,18 @@ export const getRouteTitleHandled = (route) => {
   return router
 }
 
+export const debouncefn = (fn, delay = 300) => { // 默认300毫秒
+  var timer
+  return function() {
+    var args = arguments
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, args) // this 指向vue
+    }, delay)
+  }
+}
 /**
  * 获取当前域名的主域名(我们这边带端口 80默认没有)
  * host : 127.0.0.1:8080
