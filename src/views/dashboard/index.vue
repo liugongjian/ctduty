@@ -23,7 +23,7 @@
                 <p class="overmsg">{{ processed }}次</p>
               </div>
             </div>
-            <div id="mapChart" ref="mapChart" >
+            <div v-if="isScreenChange" id="mapChart" ref="mapChart" >
             </div>
           </div>
         </div>
@@ -35,12 +35,12 @@
             <p class="trendTitle">目标评估</p>
             <p class="trenddes" style="margin-top: 8px">{{ trendText }}</p>
           </div>
-          <div id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
+          <div v-if="isScreenChange" id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
         <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
           <div class="disbox">
-            <div id="panel" :class="isFullscreen?'chartHei':''"></div>
+            <div v-if="isScreenChange" id="panel" :class="isFullscreen?'chartHei':''"></div>
           </div>
         </div>
       </el-col>
@@ -52,16 +52,16 @@
               <span style="cursor:pointer; color: #1890FF" @click="goAlarmList">更多 <i class="el-icon-arrow-right"></i></span>
             </div>
             <div id="pie">
-              <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
-              <div id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
-              <div id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
             </div>
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
           <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
-            <div id="tagbox">
+            <div v-if="isScreenChange" id="tagbox">
               <WordCloud
                 v-if="hotTag.length"
                 id="echarts05"
@@ -76,7 +76,7 @@
       <el-col id="bottomCol2" :span="6" style="margin-bottom:20px;">
         <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
-          <div id="camerarate" :class="isFullscreen?'chartHei':''"></div>
+          <div v-if="isScreenChange" id="camerarate" :class="isFullscreen?'chartHei':''"></div>
         </div>
       </el-col>
     </el-row>
@@ -99,6 +99,7 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
+import { debouncefn } from '@/utils'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
@@ -134,6 +135,7 @@ export default {
       alarmTime: '',
       processed: '',
       offCamera: '',
+      debouncefn,
       total: '',
       datay: [10, 11, 12],
       pieData: [{ value: 10, name: '嘻嘻' }],
@@ -152,7 +154,10 @@ export default {
 
       ],
       mainHeight: null,
-      rowHeight: null
+      mainWidth: null,
+      rowHeight: null,
+      isScreenChange: true,
+      timer: null
     }
   },
   watch: {
@@ -182,6 +187,20 @@ export default {
       document.getElementById('bottomCol1').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('bottomCol2').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
+    },
+    mainWidth(v, oldv) {
+      const canvas = document.getElementsByTagName('canvas')
+      const chartsBox = []
+      const allCharts = [];
+      [].forEach.call(canvas, function(item) {
+        chartsBox.push(item.parentNode.parentNode)
+      })
+      chartsBox.forEach(item => {
+        allCharts.push(this.$echarts.init(item))
+      })
+      allCharts.forEach(item => {
+        item.resize()
+      })
     }
   },
   async created() {
@@ -189,7 +208,9 @@ export default {
     await this.getList()
     registerMap()
     const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+    const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth
     this.mainHeight = mainHeight
+    this.mainWidth = mainWidth
     this.rowHeight = Math.floor(mainHeight / 12)
   },
   mounted() {
@@ -199,7 +220,9 @@ export default {
     resize() { // 当宽高变化时就会执行
       // 执行某些操作
       const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+      const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth
       this.mainHeight = mainHeight
+      this.mainWidth = mainWidth
       this.rowHeight = Math.floor(mainHeight / 12);
       [].forEach.call(document.getElementsByTagName('canvas'), function(item) {
         if (item.parentNode.parentNode.id === 'man' || item.parentNode.parentNode.id === 'car' || item.parentNode.parentNode.id === 'bicycle') {
@@ -237,7 +260,9 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
+        // 后端没时间改 暂时前端先写死 后面有时间用真实数据
+        // this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
+        this.trendText = '告警数量有所增加'
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -293,6 +318,13 @@ export default {
     },
     clickTagItem(tag) {
       // TODO
+    },
+    debounce(fn, wait) {
+      var timeout = null
+      return function() {
+        if (timeout !== null) clearTimeout(timeout)
+        timeout = setTimeout(fn, wait)
+      }
     },
     getMap(inData) {
       this.charts = echarts.init(document.getElementById('mapChart'))
@@ -875,7 +907,7 @@ export default {
         },
         grid: {
           top: '15%',
-          left: '16%',
+          left: '20%',
           right: '10%',
           bottom: '18%'
         },

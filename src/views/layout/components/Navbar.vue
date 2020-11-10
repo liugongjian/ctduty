@@ -188,13 +188,12 @@ export default {
         document
           .getElementsByClassName('fullscreen')[0]
           .childNodes[2].classList.add('texthighlight')
-        console.log(
-          'sssssssssssssss',
-          document.getElementsByClassName('screen')
-        )
+        // console.log(
+        //   'sssssssssssssss',
+        //   document.getElementsByClassName('screen')
+        // )
         document.getElementsByClassName('screen')[0].innerText = '退出'
-        console.log(';;;;;;;;;;;;;;;;;;', document.getElementsByClassName('bottom-left'))
-        document.getElementsByClassName('bottom-left')[0].style.height = '47vh'
+        document.getElementsByClassName('bottom-left')[0].style.height = '50%'
         
       } else {
         document
@@ -204,7 +203,7 @@ export default {
           .getElementsByClassName('fullscreen')[0]
           .childNodes[2].classList.remove('texthighlight')
         document.getElementsByClassName('screen')[0].innerText = '全屏'
-        document.getElementsByClassName('bottom-left')[0].style.height = '42vh'
+        document.getElementsByClassName('bottom-left')[0].style.height = '50%'
       }
     },
     notReadNoticeTotal(v, oldV) {

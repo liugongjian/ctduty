@@ -1000,8 +1000,8 @@ export default {
           this.closeDialog()
         }, 5000)
       }
-      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.002]
-      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0007]
+      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006]
+      this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
       this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -1256,7 +1256,8 @@ body {
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
-  height: calc(100vh - 50px);
+  // height: calc(100vh - 50px);
+  height: 100%;
   width: 100%;
   .map {
     height: 100%;
@@ -1266,7 +1267,7 @@ body {
     .warn {
       margin-top: 10px;
       position: absolute;
-      height: 80vh;
+      height: 80%;
       opacity: .95;
       top: 30px;
       right: 15px;
@@ -1287,7 +1288,7 @@ body {
 
       .bottom {
         width: 100%;
-        height: 55vh;
+        height: 100%;
         background-color: #ffffff;
 
         .todyW {
@@ -1298,7 +1299,7 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 42vh;
+          height: 50%;
           float: left;
           padding: 0 8px;
           overflow: auto;

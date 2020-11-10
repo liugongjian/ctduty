@@ -2,12 +2,12 @@
   <div class="list">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
-        <div class="pull-right">
+        <div class="pull-right alarmmsgright">
           <el-input
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
-            style="width: 240px; height: 32px"
+            style="width: 70%; height: 32px"
             @keyup.enter.native="searchAlarm"
           >
           </el-input>
@@ -17,14 +17,14 @@
             icon="el-icon-search"
             @click="searchAlarm"
           ></el-button>
-          <el-button
-            class="filter-item"
-            style="font-size:12px; "
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px;"
             icon="el-icon-refresh"
             @click="resetQuery"
-          >重置</el-button>
+          >重置</button>
         </div>
-        <div class="pull-left">
+        <div class="pull-left alarmmsgpull">
           <div class="block filter-item">
             <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
           </div>
@@ -216,45 +216,6 @@
               </el-table-column>
             </el-table>
 
-            <el-dialog
-              v-model="temp"
-              :visible.sync="dialogVisable"
-              class="mesdialog"
-              width="500px"
-              style="height:400px;"
-              @close="closeDialog"
-              :show-close='false'
-            >
-              <div style="width:500px;height:400px; padding: 10px 10px 0px">
-                <div :model="temp" label-position="right" label-width="100px">
-                  <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
-                    <img :src="temp.image" width="480" height="270" style="z-index:1;">
-                    <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
-                  </div>
-                  <div class="popfooter">
-                    <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
-                      <div class="popfooteraddress">
-                        <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                        <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
-                      </div>
-                    </el-tooltip>
-                    <div class="popfootertime">
-                      <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-                      <span style="width: 260px;">
-                        {{
-                          renderTime(temp.createTime)
-                        }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
-                  <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
-                  <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
-                </div>
-              </div>
-            </el-dialog>
-
             <pagination
               v-show="total>0"
               :total="total"
@@ -269,6 +230,44 @@
         </el-tabs>
       </div>
     </div>
+    <el-dialog
+      v-model="temp"
+      :visible.sync="dialogVisable"
+      :show-close="false"
+      class="mesdialog"
+      width="500px"
+      style="height:400px;"
+      @close="closeDialog"
+    >
+      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+        <div :model="temp" label-position="right" label-width="100px">
+          <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
+            <img :src="temp.image" width="480" height="270" style="z-index:1;">
+            <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+          </div>
+          <div class="popfooter">
+            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
+              <div class="popfooteraddress">
+                <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
+              </div>
+            </el-tooltip>
+            <div class="popfootertime">
+              <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
+              <span style="width: 260px;">
+                {{
+                  renderTime(temp.createTime)
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
+          <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
+          <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -430,7 +429,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.formInline.searchkey = ''
+        // this.formInline.searchkey = ''
       })
     },
     openBig(url) {
@@ -877,13 +876,26 @@ td {
 .alarmInp input.el-input__inner {
   height: 34px !important;
 }
-.pull-right {
+.pull-left.alarmmsgpull {
+  width: 72%;
+}
+.pull-right.alarmmsgright {
   position: relative;
+  width: 25%;
+  .clearsearch {
+    height: 34px;
+    width: 60px;
+    margin-left: 16px;
+    border: 1px solid #ccc;
+    background: none;
+    border-radius: 2px;
+  }
 }
 .searchsure {
   position: absolute;
   top: 1px;
-  right: 90px;
+  height: 34px;
+  right: 30%;
   // border-left: none;
   border-radius: 0 4px 4px 0;
 }
