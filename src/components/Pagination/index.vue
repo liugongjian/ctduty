@@ -1,8 +1,8 @@
 <template>
   <div :class="{'hidden':hidden}" class="pagination-container">
-    <div class="showTotal">当日告警总计：{{ total }} 条</div>
+    <div class="showTotal">{{alarmtext}}：{{ total }} 条</div>
     <!-- {{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 起止告警时间注释 -->
-    <div class="kb"> 告警总计: {{ allTotal }} 条</div>
+    <div class="kb" v-if="alarmtext === '当日告警总计'"> 告警总计: {{ allTotal }} 条</div>
     <el-pagination
       :background="background"
       :current-page.sync="currentPage"
@@ -33,6 +33,10 @@ export default {
     limit: {
       type: Number,
       default: 20
+    },
+    alarmtext: {
+      type: String,
+      default: '总计'
     },
     // tabsArr: [],
     allTotal: 0,

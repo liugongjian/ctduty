@@ -81,17 +81,24 @@ export default {
             // maskImage: maskImage,
             textStyle: {
               normal: {
-                color: function() {
-                  return (
-                    'rgb(' +
-                    Math.round(Math.random() * 255) +
-                    ', ' +
-                    Math.round(Math.random() * 255) +
-                    ', ' +
-                    Math.round(Math.random() * 255) +
-                    ')'
+                color: 
+                function () {
+                  var colors = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
+                  return(
+                    colors[parseInt(Math.random() * 6)]
                   )
                 }
+                // function() {
+                //   return (
+                //     'rgb(' +
+                //     Math.round(Math.random() * 255) +
+                //     ', ' +
+                //     Math.round(Math.random() * 255) +
+                //     ', ' +
+                //     Math.round(Math.random() * 255) +
+                //     ')'
+                //   )
+                // }
               }
             },
             // 位置相关设置

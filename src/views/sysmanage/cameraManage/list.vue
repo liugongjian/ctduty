@@ -601,5 +601,11 @@ export default {
 .app-main {
   padding-top: 50px;
 }
+.el-button--text {
+  color: #FA8334 !important;
+}
+.el-button.is-disabled {
+  color: #C0C4CC !important;
+}
 </style>
 

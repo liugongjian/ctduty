@@ -1,7 +1,7 @@
 <template>
   <div class="video-wrap">
-    <div class="fuzzyImg" v-if="false">
-      <img src="../../images/al0arm.jpg" alt="" class="fuzzy">
+    <div v-if="false" class="fuzzyImg">
+      <img src="../../images/al0arm.jpg" alt class="fuzzy" >
     </div>
     <video :ref="videoRef" :controls="false" class="video-js"></video>
   </div>
@@ -30,9 +30,13 @@ export default {
   },
   mounted() {
     console.log('this.options', this.options)
-    this.player = videojs(this.$refs[this.videoRef], this.options, function onPlayerReady() {
-      console.log('player created')
-    })
+    this.player = videojs(
+      this.$refs[this.videoRef],
+      this.options,
+      function onPlayerReady() {
+        console.log('player created')
+      }
+    )
   },
   beforeDestroy() {
     if (this.player) {
@@ -47,7 +51,6 @@ export default {
   width: 100%;
   height: 100%;
   text-align: center;
-  margin-top: 20px;
   position: relative;
   overflow: hidden;
 
@@ -70,11 +73,10 @@ export default {
 .video-js {
   // 播放器完全铺满
   width: 100%;
-  height:100%;
-  object-fit:fill !important;
+  height: 100%;
+  object-fit: fill !important;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 50px;
 }
-
 </style>

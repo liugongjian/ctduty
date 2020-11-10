@@ -33,7 +33,7 @@
           <div class="dash-title">告警趋势</div>
           <div class="trendTitleBox">
             <p class="trendTitle">目标评估</p>
-            <p class="trenddes">{{ trendText }}</p>
+            <p class="trenddes" style="margin-top: 8px">{{ trendText }}</p>
           </div>
           <div id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
@@ -49,7 +49,7 @@
           <div id="classify" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">
               各类告警占比
-              <span style="cursor:pointer;" @click="goAlarmList">更多 <svg-icon icon-class="rarrow"></svg-icon></span>
+              <span style="cursor:pointer; color: #1890FF" @click="goAlarmList">更多 <i class="el-icon-arrow-right"></i></span>
             </div>
             <div id="pie">
               <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
@@ -88,7 +88,7 @@ import echarts from 'echarts'
 // 引入水波球
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
-import huayin from '@/json/huayin.json'
+import huayin from '@/json/weinan.json'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -237,7 +237,7 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '治安案件有所降低' : res.body.data.alertAvgVariance > 0.4 ? '治安案件保持稳定' : '治安案件有所增加'
+        this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -286,7 +286,7 @@ export default {
           } else if (item.type === '2') {
             this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
           } else {
-            this.drawPie('bicycle', '非机动车', '#2FC25B', (item.typeRate * 100).toFixed(1))
+            this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
           }
         })
       })
@@ -371,12 +371,15 @@ export default {
         },
         geo: {
           map: '渭南',
-          roam: false,
-          aspectScale: 1,
+          roam: true,
           scaleLimit: {
-            min: 1,
-            max: 2
+            min: 0.55,
+            max: 0.55
           },
+          boundingCoords: [
+            [109.934181, 34.6],
+            [110.09207, 34.46]
+          ],
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
@@ -389,32 +392,46 @@ export default {
             normal: {
               show: true,
               textStyle: {
+                show: false,
                 color: '#000'
               }
             },
             emphasis: {
               show: true,
               textStyle: {
-                show: true,
+                show: false,
                 color: '#000'
               }
             }
           },
+          regions: [ // 对不同的区块进行着色
+            {
+              name: '华阴市', // 区块名称
+              itemStyle: {
+                normal: {
+                  areaColor: '#1890FF'
+                }
+              }
+            }
+          ],
           zoom: 1.2,
           itemStyle: {
-            show: true,
+            show: false,
             normal: {
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               borderColor: '#1c89cd',
-              borderWidth: 2
+              borderWidth: 2,
+              textStyle: {
+                show: false
+              }
             },
             emphasis: { // 鼠标移动上去变色
               show: false,
               opacity: 0.4,
               areaColor: 'rgba(122,193,254,0.2)',
               textStyle: {
-                show: true
+                show: false
               }
             }
           }
@@ -436,6 +453,7 @@ export default {
             normal: {
               show: false,
               textStyle: {
+                show: false,
                 color: '#000'
               },
               formatter: function(item) {
@@ -445,7 +463,7 @@ export default {
             emphasis: {
               show: false,
               textStyle: {
-                show: true,
+                show: false,
                 color: '#000'
               }
             }
@@ -456,13 +474,13 @@ export default {
               color: function(params) {
                 if (params.data.value[2]) {
                   if (params.data.value[2] < 1000) {
-                    return '#17b885'
+                    return '#1890FF'
                   }
                   if ((params.data.value[2]) >= 1000 && (params.data.value[2] <= 2000)) {
-                    return '#eec511'
+                    return '#FF9832'
                   }
                   if (params.data.value[2] > 3000) {
-                    return '#d04132'
+                    return '#52C41A'
                   }
                 }
               },
@@ -476,18 +494,37 @@ export default {
           }
         },
         {
+          // name: '香港18区人口密度',
+          type: 'map',
+          zoom: 1.25,
+          itemStyle: {
+            normal: { label: { show: false }},
+            emphasis: { label: { show: false }}
+          },
+          label: {
+            normal: {
+              textStyle: {
+                show: false,
+                fontSize: 15,
+                fontWeight: 'bold',
+                color: 'red'
+              }
+            }
+          }
+        },
+        {
           name: '小于1000',
           type: 'bar',
-          color: '#17b885'
+          color: '#1890FF'
         },
         {
           name: '小于2000',
           type: 'bar',
-          color: '#eec511'
+          color: '#FF9832'
         }, {
           name: '大于3000',
           type: 'bar',
-          color: '#d04132'
+          color: '#52C41A'
         }
         ]
       }
@@ -596,15 +633,15 @@ export default {
       // 指定图表的配置项和数据
       var option = {
         title: {
-          text: `在线率 \n ${rate}%`,
+          text: `在线率 \n \n ${rate}%`,
           textStyle: {
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: 'Microsoft Yahei',
             fontWeight: 'normal',
             color: '#ccc',
             rich: {
               a: {
-                fontSize: 28
+                fontSize: 14
               }
             }
           },
@@ -1257,7 +1294,7 @@ export default {
   padding: 0;
   overflow: hidden;
   #mapChart {
-    width: 900px;
+    width: 100%;
     display: flex;
   }
   .overv {
