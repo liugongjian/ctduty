@@ -186,10 +186,19 @@ export default {
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
     },
     mainWidth() {
-      this.isScreenChange = false
-      console.log(this.isScreenChange)
-      this.isScreenChange = true
-      console.log(this.isScreenChange)
+      clearTimeout(this.timer)
+      const canvas = document.getElementsByTagName('canvas')
+      const chartsBox = []
+      const allCharts = [];
+      [].forEach.call(canvas, function(item) {
+        chartsBox.push(item.parentNode.parentNode)
+      })
+      chartsBox.forEach(item => {
+        allCharts.push(this.$echarts.init(item))
+      })
+      allCharts.forEach(item => {
+        item.resize()
+      })
     }
   },
   async created() {
