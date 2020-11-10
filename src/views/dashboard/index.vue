@@ -193,7 +193,7 @@ export default {
       const chartsBox = []
       const allCharts = [];
       [].forEach.call(canvas, function(item) {
-        chartsBox.push(item.parentNode.parentNode)
+        if (item.parentNode.parentNode.id !== 'echarts05') chartsBox.push(item.parentNode.parentNode)
       })
       chartsBox.forEach(item => {
         allCharts.push(this.$echarts.init(item))
