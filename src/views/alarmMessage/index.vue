@@ -338,6 +338,19 @@ export default {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
         }
+      },
+      warngingKind: {
+        1: '行人',
+        2: '机动车',
+        3: '非机动车',
+        4: '翻墙',
+        5: '人员逗留',
+        6: '人员聚集',
+        7: '区域划线',
+        8: '安全帽',
+        9: '打架斗殴',
+        10: '摔倒',
+        11: '占道经营'
       }
     }
   },
@@ -390,7 +403,10 @@ export default {
       return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
     },
     formatType(row, column, cellValue) {
-      return cellValue === 1 ? '人员' : cellValue === 2 ? '机动车' : '非机动车'
+      if (this.warngingKind[cellValue]) {
+        return this.warngingKind[cellValue]
+      }
+      return '人员'
     },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
@@ -418,10 +434,10 @@ export default {
         dateList[2] = diffDay.getDate()
         dateList[1] = diffDay.getMonth() + 1
         dateList[0] = diffDay.getFullYear()
-        if (String(dateList[1]).length == 1) {
+        if (String(dateList[1]).length === 1) {
           dateList[1] = '0' + dateList[1]
         }
-        if (String(dateList[2]).length == 1) {
+        if (String(dateList[2]).length === 1) {
           dateList[2] = '0' + dateList[2]
         }
         result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
