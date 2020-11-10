@@ -2,12 +2,12 @@
   <div class="list">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
-        <div class="pull-right">
+        <div class="pull-right alarmmsgright">
           <el-input
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
-            style="width: 240px; height: 32px"
+            style="width: 70%; height: 32px"
             @keyup.enter.native="searchAlarm"
           >
           </el-input>
@@ -17,14 +17,14 @@
             icon="el-icon-search"
             @click="searchAlarm"
           ></el-button>
-          <el-button
-            class="filter-item"
-            style="font-size:12px; "
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px;"
             icon="el-icon-refresh"
             @click="resetQuery"
-          >重置</el-button>
+          >重置</button>
         </div>
-        <div class="pull-left">
+        <div class="pull-left alarmmsgpull">
           <div class="block filter-item">
             <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
           </div>
@@ -874,13 +874,26 @@ td {
 .alarmInp input.el-input__inner {
   height: 34px !important;
 }
-.pull-right {
+.pull-left.alarmmsgpull {
+  width: 72%;
+}
+.pull-right.alarmmsgright {
   position: relative;
+  width: 25%;
+  .clearsearch {
+    height: 34px;
+    width: 60px;
+    margin-left: 16px;
+    border: 1px solid #ccc;
+    background: none;
+    border-radius: 2px;
+  }
 }
 .searchsure {
   position: absolute;
   top: 1px;
-  right: 90px;
+  height: 34px;
+  right: 30%;
   // border-left: none;
   border-radius: 0 4px 4px 0;
 }
