@@ -87,17 +87,17 @@
 </template>
 
 <script>
-import VideoPlayer from "@/components/VideoPlayer";
+import VideoPlayer from '@/components/VideoPlayer'
 import {
   fetchAllMonitor,
   updateMonitor,
   addMonitor,
   delMonitor,
   loadingImg
-} from "@/api/monitor";
-import { searchCameraList } from "@/api/camera";
-import fakeimg from "@/assets/images/fakeimg.png";
-import nosrc from "@/assets/images/nosrc.png";
+} from '@/api/monitor'
+import { searchCameraList } from '@/api/camera'
+import fakeimg from '@/assets/images/fakeimg.png'
+import nosrc from '@/assets/images/nosrc.png'
 
 export default {
   components: { VideoPlayer },
@@ -108,7 +108,7 @@ export default {
       form: {},
       rules: {
         cameraId: [
-          { required: true, message: "请选择摄像头地址", trigger: "change" }
+          { required: true, message: '请选择摄像头地址', trigger: 'change' }
         ]
       },
       nosrc,
@@ -116,7 +116,7 @@ export default {
       deviceList: [],
       loading: false,
       submiting: false,
-      id: "",
+      id: '',
       videoOptions: {
         autoplay: true,
         controls: true,
@@ -126,26 +126,26 @@ export default {
         // fluid: true, // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
       }
-    };
+    }
   },
   mounted() {
-    this.getLiveList();
+    this.getLiveList()
     loadingImg().then(res => {
       if (res.body.data.length > 0) {
         res.body.data.forEach(item => {
           this.deviceList.push({
             address: item.address,
-            image: item.image ? "data:image/png;base64," + item.image : fakeimg,
+            image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
             id: item.id
-          });
-        });
+          })
+        })
       }
-    });
+    })
   },
   methods: {
     getCameraList(keyword) {
-      if (keyword !== "") {
-        this.loading = true;
+      if (keyword !== '') {
+        this.loading = true
         const params = {
           cascade: true,
           page: {
@@ -154,38 +154,38 @@ export default {
           },
           params: [
             {
-              field: "address",
-              operator: "LIKE",
+              field: 'address',
+              operator: 'LIKE',
               value: `%${keyword}%`
             },
             {
-              field: "online",
-              operator: "EQUALS",
+              field: 'online',
+              operator: 'EQUALS',
               value: 0
             }
           ]
-        };
+        }
         searchCameraList(params).then(res => {
-          let data = res.body.data || [];
+          let data = res.body.data || []
           // 已添加到九宫格的摄像头要过滤掉
           data = data.filter(
             i => !this.deviceList.find(r => r.cameraId === i.id)
-          );
+          )
           this.options = data.map(item => {
             return {
               value: item.id,
               label: item.address
-            };
-          });
-          this.loading = false;
-        });
+            }
+          })
+          this.loading = false
+        })
       } else {
-        this.options = [];
+        this.options = []
       }
     },
     getLiveList() {
       fetchAllMonitor().then(res => {
-        const data = res.body.data || [];
+        const data = res.body.data || []
         this.deviceList = data.map(item => {
           return {
             ...item,
@@ -199,59 +199,59 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri : "",
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri : "")
+                  src: item.rtmpuri ? item.rtmpuri : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri : '')
                 }
               ]
             }
-          };
-        });
+          }
+        })
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
-        );
-        this.pageLoading = false;
-      });
+        )
+        this.pageLoading = false
+      })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.address;
-      this.dialogFormVisible = true;
-      this.id = item.id;
+      this.form.cameraId = item.address
+      this.dialogFormVisible = true
+      this.id = item.id
     },
     deleteMonitor(item) {
-      this.$confirm("确认移除该摄像头?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
+      this.$confirm('确认移除该摄像头?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
       }).then(() => {
         delMonitor(item.id).then(res => {
-          this.deviceList = this.deviceList.filter(i => i.id !== item.id); // list接口响应慢，这里先过滤掉
-          this.getLiveList();
-        });
-      });
+          this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
+          this.getLiveList()
+        })
+      })
     },
     onClose() {
-      this.$refs["ruleForm"].resetFields();
-      this.submiting = false;
-      this.form = {};
-      this.dialogFormVisible = false;
-      this.id = null;
+      this.$refs['ruleForm'].resetFields()
+      this.submiting = false
+      this.form = {}
+      this.dialogFormVisible = false
+      this.id = null
     },
     addMonitorDialog() {
-      this.form = {};
-      this.dialogFormVisible = true;
+      this.form = {}
+      this.dialogFormVisible = true
     },
     saveMonitor() {
-      this.$refs["ruleForm"].validate(valid => {
+      this.$refs['ruleForm'].validate(valid => {
         if (valid) {
-          this.submiting = true;
+          this.submiting = true
           this.options.forEach(item => {
             if (item.value === this.form.cameraId) {
               this.deviceList.push({
                 address: item.label,
                 image: fakeimg
-              });
+              })
             }
-          });
+          })
           if (this.id) {
             updateMonitor({
               id: this.id,
@@ -260,11 +260,11 @@ export default {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
-              );
-              this.onClose();
-              this.getLiveList();
-              this.submiting = false;
-            });
+              )
+              this.onClose()
+              this.getLiveList()
+              this.submiting = false
+            })
           } else {
             addMonitor({
               cameraId: this.form.cameraId
@@ -272,33 +272,33 @@ export default {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
-              );
-              this.onClose();
-              this.getLiveList();
-              this.submiting = false;
-            });
+              )
+              this.onClose()
+              this.getLiveList()
+              this.submiting = false
+            })
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     video_type(_url) {
-      var url = _url.toLowerCase();
-      if (url.startsWith("rtmp")) {
-        return "rtmp/flv";
-      } else if (url.endsWith("m3u8") || url.endsWith("m3u")) {
-        return "application/x-mpegURL";
-      } else if (url.endsWith("webm")) {
-        return "video/webm";
-      } else if (url.endsWith("mp4")) {
-        return "video/mp4";
-      } else if (url.endsWith("ogv")) {
-        return "video/ogg";
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
       }
     }
   }
-};
+}
 </script>
 <style lang='scss'>
 .monitorScreen-wrap {
@@ -325,7 +325,7 @@ export default {
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: 41vh;
+      height: calc(35vh + 36.4px);
       margin: 10px;
       display: flex;
       justify-content: center;
