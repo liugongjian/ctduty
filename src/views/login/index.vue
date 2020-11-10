@@ -190,9 +190,6 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  min-height: 100%;
-}
 body {
   overflow-y: hidden;
   .leftLogo {
