@@ -14,7 +14,7 @@
     <div class="loginFormContainer">
       <div class="login">
         <div key="min-logo" class="logo"></div>
-        <p class="title" style="padding:0;border:none;">账号密码登录</p>
+        <p class="title">账号密码登录</p>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
           <el-form-item prop="username">
             <div class="accountIcon"></div>
@@ -189,7 +189,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 body {
   overflow-y: hidden;
   .leftLogo {
