@@ -1125,6 +1125,9 @@ export default {
 </script>
 
  <style lang="scss" scoped>
+ #app {
+  min-height: 759px !important;
+}
 .app-main {
   height: 100% !important;
 }
