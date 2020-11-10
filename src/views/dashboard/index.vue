@@ -99,6 +99,7 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
+import { debouncefn } from '@/utils'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
@@ -134,6 +135,7 @@ export default {
       alarmTime: '',
       processed: '',
       offCamera: '',
+      debouncefn,
       total: '',
       datay: [10, 11, 12],
       pieData: [{ value: 10, name: '嘻嘻' }],
@@ -154,7 +156,8 @@ export default {
       mainHeight: null,
       mainWidth: null,
       rowHeight: null,
-      isScreenChange: true
+      isScreenChange: true,
+      timer: null
     }
   },
   watch: {
@@ -185,8 +188,7 @@ export default {
       document.getElementById('bottomCol2').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
     },
-    mainWidth() {
-      clearTimeout(this.timer)
+    mainWidth(v, oldv) {
       const canvas = document.getElementsByTagName('canvas')
       const chartsBox = []
       const allCharts = [];
@@ -206,7 +208,7 @@ export default {
     await this.getList()
     registerMap()
     const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
-    const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth - 50
+    const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth
     this.mainHeight = mainHeight
     this.mainWidth = mainWidth
     this.rowHeight = Math.floor(mainHeight / 12)
@@ -218,7 +220,7 @@ export default {
     resize() { // 当宽高变化时就会执行
       // 执行某些操作
       const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
-      const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth - 50
+      const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth
       this.mainHeight = mainHeight
       this.mainWidth = mainWidth
       this.rowHeight = Math.floor(mainHeight / 12);
@@ -316,6 +318,13 @@ export default {
     },
     clickTagItem(tag) {
       // TODO
+    },
+    debounce(fn, wait) {
+      var timeout = null
+      return function() {
+        if (timeout !== null) clearTimeout(timeout)
+        timeout = setTimeout(fn, wait)
+      }
     },
     getMap(inData) {
       this.charts = echarts.init(document.getElementById('mapChart'))
