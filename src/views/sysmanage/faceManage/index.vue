@@ -746,8 +746,8 @@ export default {
   text-align: center;
 }
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 160px;
+  height: 220px;
   display: block;
 }
 .upload-demo {
