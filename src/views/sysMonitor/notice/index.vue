@@ -99,7 +99,7 @@
       <el-table-column :show-overflow-tooltip="true" :label="'操作'">
         <template slot-scope="row_data">
           <a
-            style="color: #FA8334; text-decoration:none;" 
+            style="color: #FA8334; text-decoration:none;"
             type="text"
             size="small"
             @click="showEditDialog(row_data.row.id,'true')"
@@ -345,7 +345,13 @@ export default {
           index: this.queryInfo.pagenum,
           size: this.queryInfo.pagesize
         },
-        params: {}
+        params: {},
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
       }
 
       if (this.queryInfo.params.title.trim() !== '') {
