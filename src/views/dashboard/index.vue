@@ -23,7 +23,7 @@
                 <p class="overmsg">{{ processed }}次</p>
               </div>
             </div>
-            <div id="mapChart" ref="mapChart" >
+            <div v-if="isScreenChange" id="mapChart" ref="mapChart" >
             </div>
           </div>
         </div>
@@ -35,12 +35,12 @@
             <p class="trendTitle">目标评估</p>
             <p class="trenddes" style="margin-top: 8px">{{ trendText }}</p>
           </div>
-          <div id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
+          <div v-if="isScreenChange" id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
         <div id="dispose" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警处理率</div>
           <div class="disbox">
-            <div id="panel" :class="isFullscreen?'chartHei':''"></div>
+            <div v-if="isScreenChange" id="panel" :class="isFullscreen?'chartHei':''"></div>
           </div>
         </div>
       </el-col>
@@ -52,16 +52,16 @@
               <span style="cursor:pointer; color: #1890FF" @click="goAlarmList">更多 <i class="el-icon-arrow-right"></i></span>
             </div>
             <div id="pie">
-              <div id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
-              <div id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
-              <div id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="man" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="car" :class="isFullscreen?'chartHei':''" class="canFu"></div>
+              <div v-if="isScreenChange" id="bicycle" :class="isFullscreen?'chartHei':''" class="canFu"></div>
             </div>
           </div>
         </el-col>
         <el-col :span="8" style="padding-right:0;">
           <div id="hotarea" :class="isFullscreen?'smaEcarts':''">
             <div class="dash-title">热门告警位置</div>
-            <div id="tagbox">
+            <div v-if="isScreenChange" id="tagbox">
               <WordCloud
                 v-if="hotTag.length"
                 id="echarts05"
@@ -76,7 +76,7 @@
       <el-col id="bottomCol2" :span="6" style="margin-bottom:20px;">
         <div id="net" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">摄像头在线率</div>
-          <div id="camerarate" :class="isFullscreen?'chartHei':''"></div>
+          <div v-if="isScreenChange" id="camerarate" :class="isFullscreen?'chartHei':''"></div>
         </div>
       </el-col>
     </el-row>
@@ -152,7 +152,9 @@ export default {
 
       ],
       mainHeight: null,
-      rowHeight: null
+      mainWidth: null,
+      rowHeight: null,
+      isScreenChange: true
     }
   },
   watch: {
@@ -182,6 +184,11 @@ export default {
       document.getElementById('bottomCol1').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('bottomCol2').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
+    },
+    mainWidth() {
+      console.log('变化了')
+      this.isScreenChange = false
+      this.isScreenChange = true
     }
   },
   async created() {
@@ -189,7 +196,9 @@ export default {
     await this.getList()
     registerMap()
     const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+    const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth - 50
     this.mainHeight = mainHeight
+    this.mainWidth = mainWidth
     this.rowHeight = Math.floor(mainHeight / 12)
   },
   mounted() {
@@ -199,7 +208,9 @@ export default {
     resize() { // 当宽高变化时就会执行
       // 执行某些操作
       const mainHeight = document.getElementsByClassName('app-main')[0].clientHeight - 50
+      const mainWidth = document.getElementsByClassName('app-main')[0].clientWidth - 50
       this.mainHeight = mainHeight
+      this.mainWidth = mainWidth
       this.rowHeight = Math.floor(mainHeight / 12);
       [].forEach.call(document.getElementsByTagName('canvas'), function(item) {
         if (item.parentNode.parentNode.id === 'man' || item.parentNode.parentNode.id === 'car' || item.parentNode.parentNode.id === 'bicycle') {

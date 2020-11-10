@@ -216,45 +216,6 @@
               </el-table-column>
             </el-table>
 
-            <el-dialog
-              v-model="temp"
-              :visible.sync="dialogVisable"
-              class="mesdialog"
-              width="500px"
-              style="height:400px;"
-              @close="closeDialog"
-              :show-close='false'
-            >
-              <div style="width:500px;height:400px; padding: 10px 10px 0px">
-                <div :model="temp" label-position="right" label-width="100px">
-                  <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
-                    <img :src="temp.image" width="480" height="270" style="z-index:1;">
-                    <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
-                  </div>
-                  <div class="popfooter">
-                    <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
-                      <div class="popfooteraddress">
-                        <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                        <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
-                      </div>
-                    </el-tooltip>
-                    <div class="popfootertime">
-                      <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-                      <span style="width: 260px;">
-                        {{
-                          renderTime(temp.createTime)
-                        }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
-                  <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
-                  <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
-                </div>
-              </div>
-            </el-dialog>
-
             <pagination
               v-show="total>0"
               :total="total"
@@ -269,6 +230,44 @@
         </el-tabs>
       </div>
     </div>
+    <el-dialog
+      v-model="temp"
+      :visible.sync="dialogVisable"
+      :show-close="false"
+      class="mesdialog"
+      width="500px"
+      style="height:400px;"
+      @close="closeDialog"
+    >
+      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+        <div :model="temp" label-position="right" label-width="100px">
+          <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
+            <img :src="temp.image" width="480" height="270" style="z-index:1;">
+            <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+          </div>
+          <div class="popfooter">
+            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
+              <div class="popfooteraddress">
+                <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
+              </div>
+            </el-tooltip>
+            <div class="popfootertime">
+              <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
+              <span style="width: 260px;">
+                {{
+                  renderTime(temp.createTime)
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
+          <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
+          <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
