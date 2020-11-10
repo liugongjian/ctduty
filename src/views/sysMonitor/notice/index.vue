@@ -126,10 +126,16 @@
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
       title="新增通知"
-      width="50%"
+      width="520px"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :rules="addFormRules" :model="addNoticeForm">
+      <el-form
+        ref="addFormRef"
+        :rules="addFormRules"
+        :model="addNoticeForm"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item label="标题" prop="title">
           <el-input v-model="addNoticeForm.title" class="input_title"></el-input>
         </el-form-item>
@@ -146,8 +152,7 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item>
-          <span>内容</span>
+        <el-form-item label="内容">
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
 
@@ -172,7 +177,7 @@
     <el-dialog
       :visible.sync="editNoticeDialogVisible"
       title="修改通知"
-      width="50%"
+      width="520px"
       @close="editDialogClosed"
     >
       <el-form
@@ -180,6 +185,8 @@
         :rules="addFormRules"
         :model="editNoticeForm"
         :disabled="modifiable==='false'"
+        label-width="80px"
+        label-position="right"
       >
         <el-form-item label="标题" prop="title">
           <el-input v-model="editNoticeForm.title" class="input_title"></el-input>
@@ -197,16 +204,14 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="modifiable==='true'">
-          <span>内容</span>
+        <el-form-item v-if="modifiable==='true'" label="内容">
           <quill-editor
             ref="myQuillEditor"
             v-model="editNoticeForm.content"
             :options="editorOption"
           ></quill-editor>
         </el-form-item>
-        <el-form-item v-if="modifiable==='false'">
-          <span>内容</span>
+        <el-form-item v-if="modifiable==='false'" label="内容">
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
@@ -230,8 +235,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="50%">
-      <span>确认删除信息{{ this.deleteNoticeTitle }}？</span>
+    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="400px">
+      <span>确认删除信息{{ deleteNoticeTitle }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteANotice">确 定</el-button>
         <el-button @click="deleteNoticeDialogVisible = false">取 消</el-button>
@@ -345,14 +350,13 @@ export default {
           index: this.queryInfo.pagenum,
           size: this.queryInfo.pagesize
         },
-        params: {
-          sorts: [
-            {
-              field: "create_time",
-              type: "desc"
-            }
-          ]
-        }
+        params: {},
+        sorts: [
+          {
+            field: "create_time",
+            type: "desc"
+          }
+        ]
       };
 
       if (this.queryInfo.params.title.trim() !== "") {
@@ -533,7 +537,7 @@ export default {
   padding: 10px 20px;
 }
 .input_title {
-  width: 390px;
+  width: 360px;
 }
 .title {
   width: 150px;
@@ -556,8 +560,8 @@ export default {
 } */
 .quill-editor {
   display: inline-block;
-  width: 500px;
-  height: 300px;
+  width: 360px;
+  height: 150px;
 }
 .el-row {
   margin-top: 20px;
