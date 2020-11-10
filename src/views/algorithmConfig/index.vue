@@ -51,7 +51,7 @@
               </div>
               <ul class="videoResult">
                 <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
-                  {{ v.name }}
+                  <div>{{ v.name }}</div>
                 </li>
               </ul>
               <pagination
@@ -77,7 +77,6 @@
                 稍后再试
               </div>
             </el-col>
-
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -205,6 +204,7 @@ export default {
     changeDeviceId(id, k) {
       this.controlShow = false
       this.canvasShowStatus = false
+      this.pageLoading = true
       this.deviceId = id
       this.activeVideoResult = k
       this.getAlgorithmList(id)
@@ -212,9 +212,10 @@ export default {
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
       this.algorithmList = res.data
-      this.controlShow = true
+      this.controlShow = TextTrackCue
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
       this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
+      this.pageLoading = false
     },
     saveUpdatePick(item) {
       if (item.isPick) {
@@ -335,7 +336,13 @@ export default {
     },
     async configTask(body) {
       const res = await client.configInstance(body)
-      console.log('任务实例配置调用接口返回-----', res)
+      //   console.log('任务实例配置调用接口返回-----', res)
+      if (res.code === 0) {
+        this.$message({
+          message: '更新成功',
+          type: 'success'
+        })
+      }
     },
     setCanvasShow(payload) {
       this.canvasShowStatus = payload
@@ -466,19 +473,24 @@ export default {
         right: 10px;
     }
     .videoResult{
-        display: flex;
-        flex-wrap: wrap;
+        // display: flex;
+        // flex-wrap: wrap;
         list-style: none;
         padding: 0 20px;
         margin: 0 0 20px;
         li{
             margin: 7px 20px 7px 10px;
-            padding: 2px 5px;
             cursor: pointer;
+            div{
+                padding: 2px 5px;
+                display: inline-block;
+            }
             &.active{
-                background: #FA8334;
-                border-radius: 2px;
-                color: #FFFFFF;
+                div{
+                    background: #FA8334;
+                    border-radius: 2px;
+                    color: #FFFFFF;
+                }
             }
         }
     }
