@@ -32,7 +32,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:250 + 'px', height: 32 + 'px'}"
+              :style="{width:178 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -44,11 +44,11 @@
             ></el-date-picker>
           </div>
           <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">开始时间:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px',height:'32px'}"
+              :style="{width:95 + 'px',height:'32px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -64,7 +64,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px', height: 32 + 'px'}"
+              :style="{width:95 + 'px', height: 32 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -77,7 +77,7 @@
 
           <el-select
             v-model="formInline.typeValue"
-            style="width:100px; margin-left:10px; margin-right: 10px"
+            style="width:95px; margin-left:10px; margin-right: 10px"
             size="mini"
             class="filter-item"
             @change="checkModel"
@@ -821,7 +821,7 @@ export default {
 }
 </script>
 
- <style lang='scss'  scoped>
+ <style lang='scss'>
  
 
 .alaMesTable {
