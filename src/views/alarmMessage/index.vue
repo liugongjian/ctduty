@@ -886,7 +886,7 @@ td {
     margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
-    border-radius: 2px;
+    border-radius: 3px;
     outline:none;
   }
   .clearsearch:active {
