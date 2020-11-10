@@ -429,7 +429,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.formInline.searchkey = ''
+        // this.formInline.searchkey = ''
       })
     },
     openBig(url) {
