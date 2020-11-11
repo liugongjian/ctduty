@@ -85,7 +85,6 @@
         </div>
       </div>
       <div>
-        <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条</div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
@@ -246,7 +245,8 @@
               :total="total"
               :page.sync="page"
               :limit.sync="limit"
-              :allTotal="allTotal"
+              :all-total="allTotal"
+              :alarmtext = "alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -281,6 +281,7 @@ export default {
   },
   data() {
     return {
+      alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
       temp: {
