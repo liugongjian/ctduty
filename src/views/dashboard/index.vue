@@ -3,23 +3,24 @@
     <div class="overviews">
       <div class="cameraPanel">
         <div class="cameraPanel-content">
-          <div class="cameraPanel-icon cameraPanel-icon-online"> <svg-icon icon-class="dashboardCamera"></svg-icon></div>
+          <div class="cameraPanel-icon cameraPanel-icon-online"> <svg-icon icon-class="dashboardCamera" class-name="cameraPanel-icon-content"></svg-icon></div>
           <div class="cameraPanel-info">
             <div class="cameraPanel-title">在线摄像头</div>
             <div class="cameraPanel-number">{{ realTimeData.onlineCameras }} 个</div>
+            <div class="cameraPanel-footer">占比 {{ cameraOnlineRateText }}</div>
           </div>
         </div>
-        <div class="cameraPanel-footer">占比 {{ cameraOnlineRateText }}</div>
       </div>
       <div class="cameraPanel">
         <div class="cameraPanel-content">
-          <div class="cameraPanel-icon"> <svg-icon icon-class="dashboardCamera"></svg-icon></div>
+          <div class="cameraPanel-icon"> <svg-icon icon-class="dashboardCamera" class-name="cameraPanel-icon-content"></svg-icon></div>
           <div class="cameraPanel-info">
             <div class="cameraPanel-title">离线摄像头</div>
             <div class="cameraPanel-number">{{ realTimeData.offlineCameras }} 个</div>
+            <div class="cameraPanel-footer">占比 {{ cameraOfflineRateText }}</div>
           </div>
         </div>
-        <div class="cameraPanel-footer">占比 {{ cameraOfflineRateText }}</div>
+        <!-- <div class="cameraPanel-footer"></div> -->
       </div>
       <div class="amount-flipper">
         <div class="overviews-itemTitle">今日告警数</div>
@@ -39,14 +40,15 @@
           <Flipper ref="digitFlag" />
         </div>
       </div>
-      <div class="summaryBar">
-        <div class="overviews-itemTitle">智能算法应用概览</div>
-        <div>
-          <div><StackedBar id="summary-bar-chart" :chart-data="taskAppliedByCameraList" width="600px" height="100px"/></div>
-        </div>
-      </div>
     </div>
     <div class="charts">
+      <div class="summaryBar">
+        <div class="chart-title">智能算法应用概览</div>
+        <DoughntPie id="algorith-pie" key="algorith-pie" :chart-data="taskAppliedByCameraList"/>
+        <!-- <div>
+          <div><StackedBar id="summary-bar-chart" :chart-data="taskAppliedByCameraList" width="600px" height="100px"/></div>
+        </div> -->
+      </div>
       <div class="chart1">
         <div class="chart-title">告警排行</div>
         <SimpleBar id="times-bar" key="times-bar" :chart-data="alertStatisByCameraChartData"/>
@@ -62,41 +64,56 @@
         :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
-        <el-table-column label="摄像头名称" prop="cameraName" width="250"></el-table-column>
-        <el-table-column label="值更检测" >
+        <!-- <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" style="text-align: center" prop="code">
+          <template slot-scope="scope">
+            <span>{{ scope.row.code }}</span>
+          </template>
+        </el-table-column> -->
+        <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
+          <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
+        </el-table-column>
+        <el-table-column label="值更检测" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '值更检测') }}</template>
         </el-table-column>
-        <el-table-column label="人脸识别">
+        <el-table-column label="人脸识别" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人脸识别') }}</template>
         </el-table-column>
-        <el-table-column label="车牌识别">
+        <el-table-column label="车牌识别" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车牌识别') }}</template>
         </el-table-column>
-        <el-table-column label="区域画线告警">
+        <el-table-column label="区域画线告警" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '区域画线告警') }}</template>
         </el-table-column>
-        <el-table-column label="翻墙检测">
+        <el-table-column label="翻墙检测" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '翻墙检测') }}</template>
         </el-table-column>
-        <el-table-column label="人流识别">
+        <el-table-column label="人流识别" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人流识别') }}</template>
         </el-table-column>
-        <el-table-column label="车流识别">
+        <el-table-column label="车流识别" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车流识别') }}</template>
         </el-table-column>
-        <el-table-column label="安全帽识别">
+        <el-table-column label="安全帽识别" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '安全帽识别') }}</template>
         </el-table-column>
-        <el-table-column label="车型检测">
+        <el-table-column label="车型检测" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车型检测') }}</template>
         </el-table-column>
-        <el-table-column label="人群聚集检测">
+        <el-table-column label="人群聚集检测" align="center" min-width="125">
           <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人群聚集检测') }}</template>
         </el-table-column>
-        <!-- <el-table-column label="打架斗殴检测" prop="djdojc"></el-table-column>
-        <el-table-column label="摔倒检测" prop="sdjc"></el-table-column>
-        <el-table-column label="占道经营检测" prop="zdjyjc"></el-table-column>
-        <el-table-column label="人员逗留检测" prop="rydljc"></el-table-column> -->
+        <el-table-column label="打架斗殴检测" align="center" min-width="125">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '打架斗殴检测') }}</template>
+        </el-table-column>
+        <el-table-column label="摔倒检测" align="center" min-width="125">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '摔倒检测') }}</template>
+        </el-table-column>
+        <el-table-column label="占道经营检测" align="center" min-width="125">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '占道经营检测') }}</template>
+        </el-table-column>
+        <el-table-column label="人员逗留检测" align="center" min-width="125">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人员逗留检测') }}</template>
+        </el-table-column>
       </el-table>
         <pagination
           v-show="total > 0"
@@ -158,90 +175,21 @@ export default {
         todayAlerts: 0
       },
       tableData: [],
-      testData: [
-        {
-          'id': 1,
-          'name': '智能侦测 ',
-          'data': 320,
-          'percent': 10
-        },
-        {
-          'id': 2,
-          'name': '算法A',
-          'data': 310,
-          'percent': 20
-        },
-        {
-          'id': 3,
-          'name': '算法B',
-          'data': 100,
-          'percent': 15
-        },
-        {
-          'id': 4,
-          'name': '算法C',
-          'data': 130,
-          'percent': 15
-        },
-        {
-          'id': 5,
-          'name': '其它',
-          'data': 333,
-          'percent': 40
-        }
-      ],
       taskAppliedByCameraList: [],
       // 告警趋势
       alertStatisByDayList: [],
-      // [
-      //   {
-      //     'calDay': '08月01日',
-      //     'alertCount': 11,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   },
-      //   {
-      //     'calDay': '08月02日',
-      //     'alertCount': 4011,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   },
-      //   {
-      //     'calDay': '08月03日',
-      //     'alertCount': 15834,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   }
-      // ],
       // 告警排行
       alertStatisByCameraList: []
-      // [
-      //   {
-      //     'cameraId': '1111',
-      //     'cameraName': 'nnn',
-      //     'alertCount': 11,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   },
-      //   {
-      //     'cameraId': '2222',
-      //     'cameraName': 'yyyy',
-      //     'alertCount': 10,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   },
-      //   {
-      //     'cameraId': '3333',
-      //     'cameraName': 'zzz',
-      //     'alertCount': 11,
-      //     'typeCount': [{ 'type': 1, 'count': 1 }, { 'type': 2, 'count': 10 }]
-      //   }
-      // ],
     }
   },
   computed: {
     cameraOnlineRateText() {
       const { cameraOnlineRate } = this.realTimeData
-      return cameraOnlineRate ? (cameraOnlineRate * 100).toFixed(2) + '%' : '-'
+      return cameraOnlineRate || cameraOnlineRate === 0 ? (cameraOnlineRate * 100).toFixed(2) + '%' : '-'
     },
     cameraOfflineRateText() {
       const { cameraOnlineRate } = this.realTimeData
-      return cameraOnlineRate ? ((1 - cameraOnlineRate) * 100).toFixed(2) + '%' : '-'
+      return cameraOnlineRate || cameraOnlineRate === 0 ? ((1 - cameraOnlineRate) * 100).toFixed(2) + '%' : '-'
     },
     alertStatisByDayChartData() {
       const categoryData = []
@@ -269,11 +217,11 @@ export default {
         valueData.push(alertCount)
       })
       return {
-        yAxis: {
+        xAxis: {
           type: 'category',
           data: categoryData
         },
-        xAxis: {
+        yAxis: {
           type: 'value',
           data: valueData
         }
@@ -434,15 +382,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$iconHeight: 65px;
+$iconHeight: 80px;
 $cameraWidth: 220px;
-$flipperWidth: 350px;
+$flipperWidth: 320px;
 $summaryBarWidth: 600px;
 .dashboard-container{
   padding:20px;
   background-color:#F0F2F5;
   min-height: 100%;
-  min-width: 2 * $cameraWidth + $flipperWidth + $summaryBarWidth + 20px * 5;
+  // min-width: 2 * $cameraWidth + $flipperWidth + $summaryBarWidth + 20px * 5;
   .span5px{
     display:inline-block;
     width: 3px;
@@ -468,36 +416,47 @@ $summaryBarWidth: 600px;
     height: 147px;
     justify-content: space-between;
     &-itemTitle{
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
+      font-family: PingFangSC-Medium; //PingFangSC-Regular;
+      font-size: 16px;
       color: #333333;
       margin-bottom: 20px;
     }
     .cameraPanel{
-      flex-grow:0.5;
+      flex-grow:1;
       margin-right: 20px;
+      width:200px;
       border-radius: 2px;
-      width: $cameraWidth;
+      // width: $cameraWidth;
       background-color: white;
       padding:20px;
       &-content{
-        height: $iconHeight+20px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #E8E8E8;
+        height: 107px;
+        width:300px;
+        margin: 0 auto;
+        // padding-bottom: 20px;
+        // border-bottom: 1px solid #E8E8E8;
       }
       &-icon{
+        // margin-left: 15%;
         width: $iconHeight;
         height: $iconHeight;
-        line-height: $iconHeight;
-        font-size: 50px;
+        line-height: 107px;
+        font-size: $iconHeight;
         display: inline-block;
         color: #999;
         vertical-align: top;
+        &-content{
+          // width:100%;
+          margin: 0 auto;
+          height: 100%;
+          width: 100%;
+        }
         &-online{
           color:#1890FF;
         }
       }
       &-info{
+        margin-left: 15%;
         height: $iconHeight;
         display: inline-block;
       }
@@ -506,7 +465,7 @@ $summaryBarWidth: 600px;
         font-size: 14px;
         color: #666666;
         line-height: 22px;
-        padding-top: 5px;
+        padding-top: 13px;
       }
       &-number{
         font-family: HelveticaNeue;
@@ -514,9 +473,10 @@ $summaryBarWidth: 600px;
         color: rgba(0,0,0,0.85);
         line-height: 38px;
         height:38px;
+        margin-bottom: 5px;
       }
       &-footer{
-        margin-top:10px;
+        margin-top: 5px;
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: rgba(0,0,0,0.65);
@@ -526,34 +486,38 @@ $summaryBarWidth: 600px;
     .amount-flipper{
       flex-grow:1;
       border-radius: 2px;
-      width:$flipperWidth;
+      // width:$flipperWidth;
+      width:200px;
       background-color:white;
       padding:20px;
-      margin-right: 20px;
       .flip-container{
         margin: 10px auto;
         width:$flipperWidth;
       }
     }
-    .summaryBar{
-      flex-grow:0.5;
-      border-radius: 2px;
-      width:$summaryBarWidth;
-      background-color:white;
-      padding:20px;
-    }
   }
   .charts{
-    height: 420px;
+    height: 370px;
     margin: 20px 0;
     display: flex;
+    .summaryBar{
+      flex-grow:1;
+      border-radius: 2px;
+      width:200px;
+      background-color:white;
+      padding:20px;
+      margin-right: 10px;
+    }
     .chart1, .chart2{
-      width:50%;
+      flex-grow:1;
+      // width:50%;
+      width:200px;
       padding:20px;
       background-color: white;
       border-radius: 2px;
     }
     .chart1{
+       margin-left: 10px;
       margin-right: 10px;
     }
      .chart2{
@@ -567,6 +531,10 @@ $summaryBarWidth: 600px;
     &-table{
       margin-top: 20px;
     }
+  }
+  .pagination-container{
+    position: relative;
+
   }
 }
 </style>
