@@ -189,7 +189,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-input__inner {
   padding-left:20px !important;
   text-indent: 15px;
