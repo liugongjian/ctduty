@@ -37,25 +37,33 @@
               v-if=" videoWithConfig && videoWithConfig.length > 0 "
               :data="videoWithConfig"
               :header-cell-class-name="'tableRowClassHeader'"
-              style="width: 100%">
+              style="width: 100%"
+              fit>
               <el-table-column
                 prop="id"
                 label="设备号"
-                align="center"
+                min-width="25%"
+                class-name="facilicyId"
               >
               </el-table-column>
               <el-table-column
                 prop="name"
                 label="设备名称"
-                align="center"
+                min-width="35%"
+                class-name="facilicyName"
               >
               </el-table-column>
               <el-table-column
                 prop="online"
                 label="设备状态"
-                align="center"
-                width="80">
-                <template slot-scope="scope"> {{ getStatus(scope.row.online) }}</template>
+                class-name="facilicy-status"
+                min-width="10%"
+              >
+                <template slot-scope="scope">
+                  <svg-icon v-if="scope.row.online" style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="offline" />
+                  <svg-icon v-else style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="online" />
+                  <span>{{ scope.row.online ? "离线":"在线" }}</span>
+                </template>
               </el-table-column>
               <!-- <el-table-column
                 prop="online"
@@ -65,7 +73,9 @@
               <el-table-column
                 prop="address"
                 label="设备地址"
-                align="center">
+                min-width="30%"
+                class-name="facilicyAddress"
+              >
               </el-table-column>
             </el-table>
             <div v-else class="nodata">
@@ -179,6 +189,7 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
+      this.pageLoading = true
       if (tab.index === 0) {
         this.getTaskList()
       } else {
@@ -432,6 +443,7 @@ export default {
     }
     .tabCon{
         padding: 0 22px;
+        min-width: 1000px;
         p{
             font-size: 16px;
             color: #333333;
@@ -439,6 +451,8 @@ export default {
         .btnBox{
             padding-bottom: 10px;
             border-bottom: 1px dashed #E9E9E9;
+            width: 100%;
+
         }
         .tabBox{
             margin-top: 20px;
@@ -448,11 +462,13 @@ export default {
             font-size: 14px;
             color: rgba(0,0,0,0.65);
             cursor: pointer;
-            margin: 10px 40px 10px 0;
+            width: 12%;
+            margin: 0.3%;
+            text-align: center;
+            padding: 5px;
             &.active{
                 background: #FA8334;
-                padding: 2px 5px;
-                border-radius: 2px;
+                border-radius: 5px;
                 color: #FFFFFF;
             }
         }
@@ -490,6 +506,13 @@ export default {
             // border-radius: 5px;
             border-top-right-radius: 7px;
             border-top-left-radius: 7px;
+        }
+        .facilicyId{
+            // width: 25%;
+            padding-left: 15px;
+        }
+        .facilicyName{
+            // width: 30%;
         }
     }
     .videoInfo{
