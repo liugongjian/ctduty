@@ -120,6 +120,7 @@
           :total="total"
           :page.sync="page"
           :limit.sync="limit"
+          :auto-scroll="false"
           @pagination="pageChange()"
         />
       </div>
@@ -205,8 +206,12 @@ export default {
         },
         yAxis: {
           type: 'value',
-          data: valueData
-        }
+          data: valueData,
+          nameTextStyle: {
+            color: '#9B9B9B'
+          }
+        },
+        unit: '次'
       }
     },
     alertStatisByCameraChartData() {
@@ -224,8 +229,8 @@ export default {
         yAxis: {
           type: 'value',
           data: valueData
-        }
-
+        },
+        unit: '次'
       }
     }
   },
@@ -269,18 +274,6 @@ export default {
     this.getAlertDetailList()
     this.timer = setInterval(() => {
       this.getRealtimeData()
-      // const {
-      //   cameraOnlineRate = 0.1,
-      //   offlineCameras = 0,
-      //   onlineCameras = 0,
-      //   todayAlerts = 0
-      // } = this.realTimeData
-      // this.realTimeData = {
-      //   cameraOnlineRate: cameraOnlineRate + 0.1,
-      //   offlineCameras: offlineCameras + 1,
-      //   onlineCameras: onlineCameras + 1,
-      //   todayAlerts: todayAlerts + 123
-      // }
     }, 3000)
   },
   destroyed() {
@@ -349,16 +342,6 @@ export default {
       fetchNowInfo(params).then(res => {
         const { body: { data }} = res
         this.realTimeData = data
-        // const { body: { data: {
-        //   cameraOnlineRate,
-        //   offlineCameras,
-        //   onlineCameras,
-        //   todayAlerts
-        // }}} = res
-        // this.cameraOnlineRate = cameraOnlineRate
-        // this.offlineCameras = offlineCameras
-        // this.onlineCameras = onlineCameras
-        // this.todayAlerts = todayAlerts
       })
     },
     getChartsData() {
@@ -479,7 +462,7 @@ $summaryBarWidth: 600px;
         margin-top: 5px;
         font-family: PingFangSC-Regular;
         font-size: 14px;
-        color: rgba(0,0,0,0.65);
+        color: #9B9B9B;
         line-height: 22px;
       }
     }

@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     initChart() {
-      const { xAxis, yAxis } = this.chartData
+      const { xAxis, yAxis, unit } = this.chartData
       const data = yAxis.data
       let color = ['#36CBCB']
       if (this.id === 'times-bar') {
@@ -74,7 +74,8 @@ export default {
             if (value.length && value.length > 5) {
               return value.substring(0, 5) + '...'
             } else return value
-          }
+          },
+          color: '#333'
         }
       }
       this.chart.setOption({
@@ -88,8 +89,39 @@ export default {
           containLabel: true
         },
         color, // ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
-        xAxis: xAxis,
-        yAxis: yAxis,
+        xAxis: {
+          axisLine: {
+            lineStyle: {
+              color: '#BFBFBF'
+            }
+          },
+          axisLabel: {
+            color: '#333'
+          },
+          ...xAxis
+        },
+        yAxis: {
+          axisLine: {
+            lineStyle: {
+              color: '#BFBFBF'
+            }
+          },
+          axisLabel: {
+            color: '#333'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#E8E8E8',
+              type: 'dotted'
+            }
+          },
+          name: `单位/${unit}`,
+          nameTextStyle: {
+            color: '#9B9B9B'
+          },
+
+          ...yAxis
+        },
         series: [{
           data,
           type: 'bar',
