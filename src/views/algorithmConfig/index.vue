@@ -462,8 +462,8 @@ export default {
             font-size: 14px;
             color: rgba(0,0,0,0.65);
             cursor: pointer;
-            width: 10%;
-            margin: 0.2%;
+            width: 12%;
+            margin: 0.3%;
             text-align: center;
             padding: 5px;
             &.active{

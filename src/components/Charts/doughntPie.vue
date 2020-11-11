@@ -57,7 +57,7 @@ export default {
       const option = {
         tooltip: {
           trigger: 'item',
-          formatter: '{b}: {c} ({d}%)'
+          formatter: '{b}: {c}个 ({d}%)'
         },
         legend: {
           orient: 'horizontal',
@@ -76,7 +76,7 @@ export default {
         color: ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#36CBCB'],
         series: [
           {
-            name: '访问来源',
+            name: '智能算法应用概览n',
             type: 'pie',
             radius: ['50%', '70%'],
             center: ['50%', '40%'],
@@ -84,7 +84,7 @@ export default {
             label: {
               show: false,
               position: 'center',
-              formatter: '{b}\n{c}个({d}%)',
+              formatter: '{b}\n已配置摄像头{c}个\n({d}%)',
               fontSize: 12,
               color: '#333'
             },
