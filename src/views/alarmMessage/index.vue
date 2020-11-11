@@ -181,7 +181,7 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
                     <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
                   </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
+                  <el-image :src="scope.row.imageCompress" style="width:68.4px; height:39px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -489,8 +489,8 @@ export default {
         params = {
           cascade: true,
           page: {
-              index: this.page,
-              size: this.limit
+            index: this.page,
+            size: this.limit
           },
           params: [
             {
@@ -913,7 +913,7 @@ export default {
 }
 .alaMesTable {
   td {
-    padding: 5px 0 !important;
+    padding: 2px 0 !important;
   }
 }
 
