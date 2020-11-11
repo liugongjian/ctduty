@@ -5,7 +5,7 @@
         <div class="pull-right alarmmsgright">
           <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入摄像头地址"
+            placeholder="请输入..."
             class="filter-item alarmInp"
             style="width: 70%; height: 32px"
             @keyup.enter.native="searchAlarm"
@@ -181,21 +181,17 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
                     <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
                   </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
+                  <el-image :src="scope.row.imageCompress" style="width:68.4px; height:39px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'算法名称'"
+                :formatter="formattername"
                 align="center"
                 min-width="5%"
                 prop="taskId"
               >
-                <template slot-scope="scope">
-                  <span
-                    style="text-indent:30px"
-                  >{{ scope.row.taskId ? scope.row.taskId:'-' }}</span>
-                </template>
               </el-table-column>
               <!--    <el-table-column
                 :show-overflow-tooltip="true"
@@ -280,6 +276,53 @@
         </el-tabs>
       </div>
     </div>
+    <el-dialog
+      :visible.sync="dialogVisable"
+      title="报警显示"
+      width="750px"
+      @close="closeDialog"
+    >
+      <el-form v-model="temp" label-position="right" label-width="100px">
+        <el-form-item label="摄像头地址：" prop="camera.address">
+          <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
+        </el-form-item>
+        <el-form-item label="监控时间：" prop="createTime">
+          <span style="width: 300px;"></span>
+          {{ renderTime(temp.createTime) }}
+        </el-form-item>
+        <el-form-item label="原始照片：" prop="image">
+          <el-image
+            :src="temp.imageCompress"
+            style="width:525px; height:300px"
+            @click="()=>{openBig(temp.image)}"
+          ></el-image>
+        </el-form-item>
+        <el-form-item label="结构化照片：" prop="imageCut">
+          <el-image :src="temp.imageCut"></el-image>
+        </el-form-item>
+        <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
+          <span v-if="temp.type === 1">人员</span>
+          <span v-else-if="temp.type === 2">机动车</span>
+        </el-form-item>
+        <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
+          <span v-if="temp.label === 1">白名单</span>
+          <span v-else-if="temp.label === 2">黑名单</span>
+          <span v-else>其他</span>
+        </el-form-item>
+        <!-- 车牌 -->
+        <el-form-item v-if="temp.license" label="车牌:" prop="license">
+          <span>{{ temp.license }}</span>
+        </el-form-item>
+        <!-- 人员 -->
+        <el-form-item v-if="temp.username" label="姓名:" prop="username">
+          <span>{{ temp.username }}</span>
+        </el-form-item>
+      </el-form>
+      <!-- <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogConfirm">正 常</el-button>
+        <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
+      </div> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -317,6 +360,7 @@ export default {
         image: '',
         imageCut: ''
       },
+      points: [],
       rowId: 0,
       defaultTab: '',
       state: '',
@@ -378,6 +422,26 @@ export default {
         9: '打架斗殴',
         10: '摔倒',
         11: '占道经营'
+      },
+      warngingname: {
+        1: '值更检测',
+        2: '人脸识别',
+        3: '车牌识别',
+        4: '人脸比对',
+        5: '人脸属性',
+        6: '区域划线告警',
+        7: '翻墙检测',
+        8: '人流识别',
+        9: '车流识别',
+        10: '安全帽识别',
+        11: '工服识别',
+        12: '车型检测',
+        13: '人群聚集检测',
+        14: '打架斗殴检测',
+        15: '摔倒检测',
+        16: '占道经营检测',
+        17: '人员逗留检测',
+        18: '推流任务'
       }
     }
   },
@@ -413,6 +477,60 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
+    searchAlarm() {
+      // console.log('ccccccccccccc', this.formInline.searchkey)
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
+      //  + ' ' + this.startTime + ':00'
+      let params
+      this.page = 1
+      this.limit = 10
+      if (isNaN(this.formInline.searchkey)) {
+        params = {
+          cascade: true,
+          page: {
+            index: this.page,
+            size: this.limit
+          },
+          params: [
+            {
+              field: 'camera.address',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
+            },
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            }
+          ],
+          sorts: [
+            {
+              field: 'create_Time',
+              type: 'desc'
+            }
+          ]
+        }
+      } else {
+        params = {
+          cascade: true,
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: this.formInline.searchkey
+            }
+
+          ]
+        }
+      }
+      getAlertInfos(params).then(response => {
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
+        // this.formInline.searchkey = ''
+      })
+    },
     openBig(url) {
       window.open(url)
     },
@@ -427,7 +545,7 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      // return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      // YYYY-MM-DD
       return moment(cellValue).format('HH:mm:SS')
     },
     formatType(row, column, cellValue) {
@@ -435,6 +553,12 @@ export default {
         return this.warngingKind[cellValue]
       }
       return '人员'
+    },
+    formattername(row, column, cellValue) {
+      if (this.warngingname[cellValue]) {
+        return this.warngingname[cellValue]
+      }
+      return '值更检测'
     },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
@@ -462,10 +586,10 @@ export default {
         dateList[2] = diffDay.getDate()
         dateList[1] = diffDay.getMonth() + 1
         dateList[0] = diffDay.getFullYear()
-        if (String(dateList[1]).length === 1) {
+        if (String(dateList[1]).length == 1) {
           dateList[1] = '0' + dateList[1]
         }
-        if (String(dateList[2]).length === 1) {
+        if (String(dateList[2]).length == 1) {
           dateList[2] = '0' + dateList[2]
         }
         result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
@@ -480,74 +604,34 @@ export default {
 
       return result
     },
-    searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'camera.address',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
-              operator: 'EQUALS',
-              value: this.formInline.searchkey
-            }
-
-          ]
-        }
-      }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
-    },
-
+    // 重置搜索
+    // 重置
     resetQuery() {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
       this.getList()
     },
+    // 重置起止时间的搜索
     // onClear() {
     //   (this.value1 = [
     //     new Date(new Date().setDate(new Date().getDate() - 29)),
     //     new Date(new Date().setDate(new Date().getDate()))
     //   ]),
-    //   (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
-    //   this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
-    //   (this.value1 = ''),
+    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
+    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
+    //   (this.value1 = ""),
     //   (this.page = 1),
-    //   // this.startTime = '02:00'
-    //   // this.endTime = '05:00'
-    //   (this.formInline.typeValue = 'all')
+    //     // this.startTime = '02:00'
+    //     // this.endTime = '05:00'
+    //   (this.formInline.typeValue = "all");
     //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     //   // this.defaultTab=this.endDate
     //   // this.getList(s1, end1, h1)
-    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    //   this.defaultTab = this.tabsArr[0]
-    //   this.currentTab = this.defaultTab
-    //   this.getPushSetTime()
+    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
+    //   this.defaultTab = this.tabsArr[0];
+    //   this.currentTab = this.defaultTab;
+    //   this.getPushSetTime();
     //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     //   // const h = this.formInline.typeValue
@@ -582,8 +666,14 @@ export default {
     },
 
     editDialog(v) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.temp = Object.assign({}, v)
-      this.dialogVisable = true
+      this.points = JSON.parse(this.temp.box)
     },
     editCloseDialog() {
       this.editVisable = false
@@ -618,11 +708,11 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      /* const s = this.currentTab + ' ' + this.startTime + ':00'
+      const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
       this.oldSize = this.limit
-      this.getList(s, end, h) */
+      this.getList(s, end, h)
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
@@ -689,6 +779,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      // console.log('se', s , e)
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -700,24 +791,41 @@ export default {
         operator: oper,
         value: 'null'
       }
-      const param = h == 'all' ? [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': s || '', 'end': e || '' }
-      }, {
-        field: 'username',
-        operator: 'NULL'
-      }
-      ] : [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': s || '', 'end': e || '' }
-      }, {
-        field: 'username',
-        operator: 'NULL'
-      },
-      ss
-      ]
+      const param =
+        h == 'all'
+          ? [
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            },
+            {
+              field: 'username',
+              operator: 'NULL'
+            },
+            {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            }
+          ]
+          : [
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            },
+            {
+              field: 'username',
+              operator: 'NULL'
+            },
+            {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            },
+            ss
+          ]
       const params = {
         cascade: true,
         page: {
@@ -740,6 +848,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1
@@ -799,12 +908,12 @@ export default {
 </script>
 
 <style lang='scss'>
- .el-input__inner {
+.el-input__inner {
   text-indent: 0px;
 }
 .alaMesTable {
   td {
-    padding: 5px 0 !important;
+    padding: 2px 0 !important;
   }
 }
 
@@ -922,4 +1031,10 @@ td {
 .el-button--small {
   font-size: 14px;
 }
+// .el-dialog__headerbtn {
+//   // display: none;
+//   position: relative;
+//   top: 4px;
+//   left: 85%;
+// }
 </style>
