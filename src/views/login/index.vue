@@ -14,7 +14,7 @@
     <div class="loginFormContainer">
       <div class="login">
         <div key="min-logo" class="logo"></div>
-        <p class="title">账号密码登录</p>
+        <p class="title" style="border:none;padding-left:0;">账号密码登录</p>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules">
           <el-form-item prop="username">
             <div class="accountIcon"></div>
@@ -191,7 +191,6 @@ export default {
 
 <style lang="scss">
 .el-input__inner {
-  padding-left:20px !important;
   text-indent: 15px;
   height: 40px;
 }
