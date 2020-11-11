@@ -829,7 +829,7 @@ warngingKind: {
 }
 .alaMesTable {
   td {
-    padding: 0 !important;
+    padding: 5px 0 !important;
   }
 }
 

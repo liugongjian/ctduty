@@ -5,22 +5,6 @@
 <script>
 import echarts from 'echarts'
 import resize from './mixins/resize'
-/**
- * option = {
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    },
-    yAxis: {
-        type: 'value'
-    },
-    series: [{
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'bar'
-    }]
-};
-
- */
 export default {
   mixins: [resize],
   props: {
@@ -63,12 +47,12 @@ export default {
   watch: {
     chartData: function(newValue) {
       this.chartData = newValue
-      console.log('????', newValue)
       this.initChart()
     }
   },
   mounted() {
     // this.initChart()
+    this.chart = echarts.init(document.getElementById(this.id))
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -79,17 +63,16 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(document.getElementById(this.id))
       const { xAxis, yAxis } = this.chartData
-      console.log(this.chartData)
-      const data = yAxis.type === 'category' ? xAxis.data : yAxis.data
-      console.log('...', data)
-      if (yAxis.type === 'category') {
-        yAxis.axisLabel = {
+      const data = yAxis.data
+      let color = ['#36CBCB']
+      if (this.id === 'times-bar') {
+        color = ['#3AA0FF']
+        xAxis.axisLabel = {
           formatter: function(value, index) {
             // 格式化成月/日，只在第一个刻度显示年份
-            if (value.length && value.length > 6) {
-              return value.substring(0, 6) + '...'
+            if (value.length && value.length > 5) {
+              return value.substring(0, 5) + '...'
             } else return value
           }
         }
@@ -98,22 +81,13 @@ export default {
         tooltip: {
           trigger: 'item'
         },
-        // legend: {
-        //   data: this.chartData.map((item, idx) => `${idx}`),
-        //   formatter: idx => {
-        //     const item = this.chartData[idx]
-        //     return `${item.name} ${item.data}个 ${item.percent}%`
-        //   },
-        //   bottom: 20,
-        //   left: 62
-        // },
         grid: {
           left: 20,
           top: 50,
           bottom: 30,
           containLabel: true
         },
-        color: ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
+        color, // ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
         xAxis: xAxis,
         yAxis: yAxis,
         series: [{
