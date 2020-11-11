@@ -30,7 +30,7 @@
             <div class="screen-head">
               <div class="head-label">
                 <!-- <i class="el-icon-location-information"></i> -->
-                <span :title="item.address">{{ item.address }}</span>
+                <span :title="item.name">{{ item.name }}</span>
               </div>
               <div class="head-btn">
                 <div class="btn" @click="updateMonitorDialog(item)">
@@ -60,7 +60,7 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
+        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
@@ -72,10 +72,10 @@
             <el-option
               v-for="item in options"
               :key="item.value"
-              :label="item.label"
+              :label="item.name"
               :value="item.value"
-            ></el-option>
-          </el-select>
+            >
+          </el-option></el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,7 +108,7 @@ export default {
       form: {},
       rules: {
         cameraId: [
-          { required: true, message: '请选择摄像头地址', trigger: 'change' }
+          { required: true, message: '请选择设备名称', trigger: 'change' }
         ]
       },
       nosrc,
@@ -182,7 +182,7 @@ export default {
           },
           params: [
             {
-              field: 'address',
+              field: 'name',
               operator: 'LIKE',
               value: `%${keyword}%`
             },
@@ -202,7 +202,8 @@ export default {
           this.options = data.map(item => {
             return {
               value: item.id,
-              label: item.address
+              label: item.address,
+              name: item.name
             }
           })
           this.loading = false
@@ -242,7 +243,7 @@ export default {
       })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.address
+      this.form.cameraId = item.name
       this.dialogFormVisible = true
       this.id = item.id
     },
