@@ -166,12 +166,12 @@
       <el-row v-if="tableData.length>0">
         <el-col
           v-for="(item,index) in tableData"
-          :span="4"
+          :span="3"
           :key="index"
           :index="index"
           class="face-col"
         >
-          <el-card :body-style="{ padding: '0px' }" class="face-card">
+          <el-card :body-style="{ padding: '0px' }" class="face-card" shadow="never">
             <el-checkbox
               :key="item.id"
               class="face-checkbox"
@@ -761,8 +761,8 @@ export default {
   z-index: 9999999999999999999999 !important;
 }
 .face-col {
-  width: 19%;
-  margin: 10px 0.5%;
+  width: 11.2%;
+  margin: 10px 2.6%;
 }
 .face-card {
   position: relative;
@@ -801,7 +801,6 @@ export default {
     height: 200px;
     img {
       object-fit: contain; //cover;
-      background-color: rgb(245, 247, 250);
     }
   }
 }
