@@ -189,6 +189,7 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
+      this.pageLoading = true
       if (tab.index === 0) {
         this.getTaskList()
       } else {
