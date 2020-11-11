@@ -15,17 +15,18 @@
           ></el-input>
           <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
           <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
-          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
         </div>
         <div class="pull-right">
-          <el-button class="filter-item" type="success" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
-          <el-button class="filter-item" type="danger" @click="gohistory ">{{ '历史抓拍' }}</el-button>
           <el-button
             class="filter-item"
             type="warning"
             icon="el-icon-plus"
             @click="addFace"
           >{{ '新增人脸数据' }}</el-button>
+          <el-button class="filter-item" @click="bulkimport ">{{ '导入人脸数据' }}</el-button>
+          <el-button class="filter-item" @click="gohistory ">{{ '历史抓拍' }}</el-button>
+
+          <el-button type="text" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
         </div>
         <el-dialog
           :visible="bulkimportVisble"
@@ -165,28 +166,28 @@
 
       <el-row v-if="tableData.length>0">
         <el-col
-          :span="4"
           v-for="(item,index) in tableData"
+          :span="4"
           :key="index"
           :index="index"
           class="face-col"
         >
-          <el-card class="face-card" :body-style="{ padding: '0px' }">
+          <el-card :body-style="{ padding: '0px' }" class="face-card">
             <el-checkbox
               :key="item.id"
-              @change="checked=>checkboxchange(checked,item)"
               class="face-checkbox"
+              @change="checked=>checkboxchange(checked,item)"
             ></el-checkbox>
             <el-image :src="item.image" class="image" />
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" alt=""> -->
-            <div class="face-info">
+            <!-- <div class="face-info">
               <div class="face-name">姓名：{{item.name}}</div>
               <div
                 class="face-kind"
               >其他标签：{{item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他"}}</div>
-            </div>             
-              <div class="bottom clearfix">               
-                <el-button
+            </div>-->
+            <!-- <div class="bottom clearfix">
+              <el-button
                 icon="el-icon-edit"
                 size="mini"
                 type="primary"
@@ -200,26 +201,62 @@
                 size="mini"
                 @click="delAlert(item.id)"
               ></el-button>
+            </div>-->
+            <div class="face-info">
+              <div style="display:flex;">
+                <el-tooltip
+                  :content="item.name"
+                  :disabled="item.name.length <4"
+                  placement="bottom-start"
+                >
+                  <div
+                    class="face-name"
+                  >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                </el-tooltip>
+                <el-tag
+                  :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
+                  style="margin-top:3px;"
+                  size="mini"
+                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
               </div>
-          
-
-            <div class="btn-box">
-              <!-- <el-button
+              <div class="btn-box">
+                <el-button
+                  type="text"
+                  icon="el-icon-edit-outline"
+                  style="width:10px;height:10px;color: #898989; margin-right: 4px;"
+                  size="mini"
+                  @click="editDialog(item)"
+                ></el-button>
+                <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
+                  <div
+                    style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9; margin-right: 4px;"
+                  ></div>
+                </div>
+                <el-button
+                  type="text"
+                  icon="el-icon-delete"
+                  style="width:10px;height:10px;color: #a6a6a6;"
+                  size="mini"
+                  @click="delAlert(item.id)"
+                ></el-button>
+              </div>
+            </div>
+            <!-- <div class="btn-box"> -->
+            <!-- <el-button
                 icon="el-icon-edit"
                 size="mini"
                 type="primary"
                 circle
                 @click="editDialog(item)"
-              ></el-button> -->
-              <!-- <el-button
+            ></el-button>-->
+            <!-- <el-button
                 type="danger"
                 icon="el-icon-delete"
                 circle
                 size="mini"
                 @click="delAlert(item.id)"
-              ></el-button> -->
-            </div>
-            
+            ></el-button>-->
+            <!-- </div> -->
           </el-card>
         </el-col>
       </el-row>
@@ -772,43 +809,72 @@ export default {
   img {
     width: 100%;
   }
+  // .face-info {
+  //   font-size: 14px;
+  //   padding: 14px;
+  //   float: left;
+  // }
   .face-info {
     font-size: 14px;
-    padding: 14px; 
-    float: left;
+    height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fafafa;
   }
 
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-    float: right;
-  }
+  // .bottom {
+  //   margin-top: 13px;
+  //   line-height: 12px;
+  //   float: right;
+  // }
+  // .face-name {
+  //   padding: 5px 0;
+  // }
+  // .btn-box {
+  //   display: none;
+  // }
+  // .image {
+  //   width: 100%;
+  //   max-width: 250px;
+  //   height: 200px;
+  //   margin-top: 20px;
+  //   img {
+  //     object-fit: contain; //cover;
+  //     background-color: rgb(245, 247, 250);
+  //   }
+  // }
+  // &:hover .btn-box {
+  //   display: inline-block;
+  //   position: absolute;
+  //   top: 25px;
+  //   right: 5px;
+  //   z-index: 99;
+  // }
   .face-name {
     padding: 5px 0;
-    
+    font-size: 12px;
+    margin-right: 5px;
+  }
+  .face-kind {
+    font-size: 12px;
   }
   .btn-box {
-    display: none;
- 
+    width: 30px;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    margin-bottom: 5px;
   }
-  .image{
-    
+  .image {
     width: 100%;
     // max-width: 250px;
-    height:200px;
-    margin-top:20px;
-    img{
-        object-fit: contain;//cover;
-          background-color: rgb(245, 247, 250);
+    height: 200px;
+    img {
+      object-fit: contain; //cover;
+      background-color: rgb(245, 247, 250);
     }
-        
-  }
-  &:hover .btn-box {
-    display: inline-block;
-    position: absolute;
-    top: 25px;
-    right: 5px;
-    z-index: 99;
   }
 }
 .face-nodata {

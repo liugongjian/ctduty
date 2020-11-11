@@ -10,11 +10,11 @@
                 {{ v.cnName }}
               </span>
             </div>
-            <div class="tabBox">
+            <!-- <div class="tabBox">
               <div v-for="(v,k) in taskData" :key="`${k}_${k}`" :class="activeAlgorithm === k ? 'btnCon on' : 'btnCon'">
                 {{ v.description }}
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="videoList">
             <!-- <div class="videoInfo">
@@ -28,14 +28,59 @@
                 (已配置视频数：0路，已配置视频数占比：0%)
               </span>
             </div> -->
-            <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
+            <!-- <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
               <li v-for="(v,k) in videoWithConfig" :key="k" >
                 {{ v.name }}
               </li>
-            </ul>
+            </ul> -->
+            <el-table
+              v-if=" videoWithConfig && videoWithConfig.length > 0 "
+              :data="videoWithConfig"
+              :header-cell-class-name="'tableRowClassHeader'"
+              style="width: 100%">
+              <el-table-column
+                prop="id"
+                label="设备号"
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="设备名称"
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="online"
+                label="设备状态"
+                align="center"
+                width="80">
+                <template slot-scope="scope"> {{ getStatus(scope.row.online) }}</template>
+              </el-table-column>
+              <!-- <el-table-column
+                prop="online"
+                label="负责人"
+                align="center">
+              </el-table-column> -->
+              <el-table-column
+                prop="address"
+                label="设备地址"
+                align="center">
+              </el-table-column>
+            </el-table>
             <div v-else class="nodata">
               暂无已配置视频
             </div>
+            <pagination
+              v-show="listtotal>0"
+              :total="listtotal"
+              :page.sync="listpage"
+              :limit.sync="listlimit"
+              :pager-count="5"
+              small
+              layout="prev, pager, next"
+              @pagination="listpageChange"
+            />
           </div>
         </el-tab-pane>
         <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
@@ -115,13 +160,17 @@ export default {
       limit: 20,
       queryKeyword: '',
       canvasShowStatus: false,
-      controlShow: false
+      controlShow: false,
+      listtotal: 0,
+      listpage: 1,
+      listlimit: 10
     }
   },
   watch: {
     limit() {
       this.page = 1
       this.pageChange()
+      this.listpageChange()
     }
   },
   mounted() {},
@@ -145,8 +194,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: 1,
-          size: 9999999
+          index: this.listpage,
+          size: this.listlimit
         },
         params: {}
       }
@@ -167,6 +216,7 @@ export default {
           this.pageLoading = false
           this.videoWithConfig = res.body.data.configCameras
           this.totalCameras = res.body.data.totalCameras
+          this.listtotal = res.body.data.configCameras ? res.body.data.configCameras.length : 0
         }
       })
     },
@@ -349,6 +399,13 @@ export default {
     pageChange(obj) {
       this.page = obj.page
       this.getList()
+    },
+    listpageChange(obj) {
+      this.listpageChange = obj.page
+      this.getTaskList()
+    },
+    getStatus(status) {
+      return status === 1 ? '在线' : '离线'
     }
   }
 }
@@ -429,6 +486,11 @@ export default {
     .videoList{
         margin-top: 20px;
         padding: 0 22px;
+        /deep/.el-table__header-wrapper{
+            // border-radius: 5px;
+            border-top-right-radius: 7px;
+            border-top-left-radius: 7px;
+        }
     }
     .videoInfo{
         .infoName{
@@ -451,27 +513,21 @@ export default {
     .videoQueryBox{
         position: relative;
     }
-    // /deep/.el-tabs__header{
-    //     margin: 0;
-    // }
-    // /deep/.pagination-container{
-    //     margin: 5px 0 0;
-    // }
-    /deep/.pagination-container{
-        margin: 5px 0 0;
+    .videoQueryBox{
+        /deep/.pagination-container .showTotal{
+            display: none;
+        }
+        /deep/.pagination-container{
+            margin: 5px 0 0;
+        }
     }
-    /deep/.pagination-container .showTotal{
-        display: none;
-    }
+
     /deep/.pagination-container .el-pagination{
         position: inherit;
         // float:right;
         margin-left:auto;
     }
-    // /deep/.el-input--medium .el-input__inner{
-    //     height: 30px;
-    //     line-height: 30px;
-    // }
+
     .videoTotalBox{
         padding:10px;
     }
