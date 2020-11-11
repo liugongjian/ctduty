@@ -1,0 +1,508 @@
+<template>
+  <div v-loading="pageLoading" class="algorithmConfigWrap" element-loading-text="拼命加载中">
+    <div class="algorithmConfig">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="配置详情" name="first">
+          <div class="tabCon">
+            <p>智能算法</p>
+            <div class="btnBox">
+              <span v-for="(v,k) in taskData" :key="k" :class="activeAlgorithm === k ? 'btnTab active' : 'btnTab'" @click="changeActive(k,v.id)">
+                {{ v.cnName }}
+              </span>
+            </div>
+            <div class="tabBox">
+              <div v-for="(v,k) in taskData" :key="`${k}_${k}`" :class="activeAlgorithm === k ? 'btnCon on' : 'btnCon'">
+                {{ v.description }}
+              </div>
+            </div>
+          </div>
+          <div class="videoList">
+            <div class="videoInfo">
+              <span class="infoName">
+                已配置视频列表
+              </span>
+              <span v-if="videoWithConfig && videoWithConfig.length > 0" class="infoDetail">
+                (已配置视频数：{{ videoWithConfig.length }}路，已配置视频数占比：{{ (videoWithConfig.length/totalCameras*100).toFixed(2) }}%)
+              </span>
+              <span v-else class="infoDetail">
+                (已配置视频数：0路，已配置视频数占比：0%)
+              </span>
+            </div>
+            <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
+              <li v-for="(v,k) in videoWithConfig" :key="k" >
+                {{ v.name }}
+              </li>
+            </ul>
+            <div v-else class="nodata">
+              暂无已配置视频
+            </div>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
+          <el-row>
+            <el-col :span="7" class="videoQueryBox">
+              <div class="videoTotalBox">
+                <div class="videoTotal">
+                  <span class="videoTotalText">视频列表</span>
+                  <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
+                </div>
+                <el-input v-model="queryKeyword" placeholder="请输入关键字" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
+
+              </div>
+              <ul class="videoResult">
+                <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
+                  <div>{{ v.name }}</div>
+                </li>
+              </ul>
+              <pagination
+                v-show="total>0"
+                :total="total"
+                :page.sync="page"
+                :limit.sync="limit"
+                :pager-count="5"
+                small
+                layout="prev, pager, next"
+                @pagination="pageChange"
+              />
+            </el-col>
+            <el-col :span="17" class="algorithmConfigList totalLine">
+              <div v-if="algorithmList.length>0">
+                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
+                <div v-show="!canvasShowStatus" class="listBtnBox">
+                  <!-- <el-button @click="applyAlgorithms(false)">取消</el-button> -->
+                  <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+                </div>
+              </div>
+              <div v-else class="nodata">
+                稍后再试
+              </div>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+// import VideoPlayer from '@/components/VideoPlayer'
+import Pagination from '@/components/Pagination'
+import VideoPlayer from '@/components/VideoPlayer'
+import VideoConfig from '@/components/VideoConfig'
+import client from '@/api/vedioAlgo'
+import {
+  taskList, videoListByAlgorithmId, getCameraList
+} from '@/api/algorithm'
+
+export default {
+  components: { Pagination, VideoPlayer, VideoConfig },
+  data() {
+    return {
+      activeName: 'first',
+      pageLoading: true,
+      activeAlgorithm: 0,
+      videoWithConfig: [],
+      nameList: [],
+      taskData: [],
+      deviceId: '',
+      algorithmList: [],
+      algorithmListTwoDim: [],
+      algorithmId: '',
+      activeVideoResult: 0,
+      totalCameras: 0,
+      cameraListByQuery: [],
+      total: 0,
+      page: 1,
+      limit: 20,
+      queryKeyword: '',
+      canvasShowStatus: false,
+      controlShow: false
+    }
+  },
+  watch: {
+    limit() {
+      this.page = 1
+      this.pageChange()
+    }
+  },
+  mounted() {},
+  async created() {
+    await this.getTaskList()
+  },
+  methods: {
+    handleClick(tab, event) {
+      if (tab.index === 0) {
+        this.getTaskList()
+      } else {
+        this.getList()
+      }
+    },
+    changeActive(k, id) {
+      this.activeAlgorithm = k
+      this.pageLoading = true
+      this.getVideoList(id)
+    },
+    getTaskList() {
+      const query = {
+        cascade: true,
+        page: {
+          index: 1,
+          size: 9999999
+        },
+        params: {}
+      }
+      taskList(query).then(res => {
+        if (res.code === 0) {
+          this.taskData = res.body.data
+          //   this.algorithmId = res.body.data[0].id
+          this.listLoading = false
+          const id = res.body.data[0].id
+          this.taskName = res.body.data[0].name
+          this.getVideoList(id)
+        }
+      })
+    },
+    getVideoList(id) {
+      videoListByAlgorithmId(id).then(res => {
+        if (res.code === 0) {
+          this.pageLoading = false
+          this.videoWithConfig = res.body.data.configCameras
+          this.totalCameras = res.body.data.totalCameras
+        }
+      })
+    },
+    getList() {
+      const query = this.queryKeyword ? {
+        'page': {
+          'index': this.page,
+          'size': this.limit
+        },
+        'params': [
+          {
+            'field': 'name',
+            'operator': 'LIKE',
+            'value': `%${this.queryKeyword.trim()}%`
+
+          }]
+      } : {
+        'page': {
+          'index': this.page,
+          'size': this.limit
+        },
+        'params': []
+      }
+      getCameraList(query).then(res => {
+        if (res.code === 0) {
+          this.nameList = res.body.data
+          this.total = res.body.page.total
+          this.listLoading = false
+          this.deviceId = res.body.data[0].id
+          this.getAlgorithmList(this.deviceId)
+        }
+      })
+    },
+    changeDeviceId(id, k) {
+      this.controlShow = false
+      this.canvasShowStatus = false
+      this.pageLoading = true
+      this.deviceId = id
+      this.activeVideoResult = k
+      this.getAlgorithmList(id)
+    },
+    async getAlgorithmList(deviceId) {
+      const { body: res } = await client.getInstanceList(deviceId)
+      this.algorithmList = res.data
+      this.controlShow = TextTrackCue
+      this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
+      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
+      this.pageLoading = false
+    },
+    saveUpdatePick(item) {
+      if (item.isPick) {
+        item['isConfigAlready'] = true
+        item['beforePickStatus'] = true
+        item['isCommitStatus'] = true
+        item['originalPickStatus'] = true
+      } else {
+        item['isConfigAlready'] = false
+        item['beforePickStatus'] = false
+        item['isCommitStatus'] = false
+        item['originalPickStatus'] = false
+      }
+      return item
+    },
+    changeToTwoDiArray(dataList, num) {
+      return dataList.reduce(
+        (prev, next, idx) => {
+          const inner = prev[~~(idx / num)]
+          if (inner !== undefined) {
+            inner.push(next)
+          } else {
+            prev.push([next])
+          }
+          return prev
+        },
+        [[]]
+      )
+    },
+    applyAlgorithms(flag) {
+      if (flag) {
+        console.log('调用后端接口保存标注坐标列表')
+        // 先组装参数，包含删除、增加、修改
+        // var allDatas = []
+        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
+        console.log('现在转化成一维数组', nowAlgorithmList)
+        console.log('二维数组---', this.algorithmListTwoDim)
+        var params = []
+        // var flag = true
+        for (var i = 0; i < nowAlgorithmList.length; i++) {
+          var algorithmObject = nowAlgorithmList[i]
+          var param = {
+            taskId: algorithmObject.id,
+            id: algorithmObject.id,
+            taskName: algorithmObject.name
+          }
+          if (algorithmObject.originalPickStatus && !algorithmObject.isPick) {
+            // 删除
+            param['action'] = 'delete'
+            params.push(param)
+          } else if (!algorithmObject.originalPickStatus && algorithmObject.isPick) {
+            // 增加(检查，如果该配置的没有配置需要弹窗告警)
+            param['action'] = 'add'
+            if (algorithmObject.isNeedConfig) {
+              const areas = algorithmObject['areas']
+              if (areas === undefined || areas.length === 0) {
+                alert(algorithmObject.cnName + '没有标注，请标注再提交或者取消选择')
+                flag = false
+                break
+              } else {
+                // console.log('原来的areas', algorithmObject['areas'])
+                param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
+              }
+            }
+            params.push(param)
+          } else if (algorithmObject.originalPickStatus && algorithmObject.isPick && !algorithmObject.isCommitStatus) {
+            // 修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
+            param['action'] = 'update'
+            console.log('algorithmObject', algorithmObject)
+            const areas = algorithmObject['areas']
+            if (areas === undefined || areas.length === 0) {
+              alert(algorithmObject.cnName + '没有标注，请标注再提交或者取消选择')
+              flag = false
+              break
+            }
+            console.log('原来的areas', algorithmObject['areas'])
+            param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
+            params.push(param)
+          }
+        }
+        if (flag) {
+          if (params.length > 0) {
+            // console.log('组装的参数是-----', params)
+            var finalBody = {
+              deviceId: this.deviceId,
+              taskInstParams: params
+            }
+            // console.log('最终组装的参数是-----', finalBody)
+            this.configTask(finalBody)
+          }
+          this.configVisable = false
+        }
+      } else {
+        this.configVisable = false
+      }
+    },
+    formatAreas(areas, ratiox, ratioy) {
+      var newAreas = areas.map(eachArea => {
+        var newPoints = this.formatPoints(eachArea.points, ratiox, ratioy)
+        return {
+          type: eachArea.type,
+          name: eachArea.name,
+          points: newPoints
+        }
+      })
+      return newAreas
+    },
+    formatPoints(points, ratiox, ratioy) {
+      console.log('参数值', points, ratiox, ratiox)
+      var newPoints = []
+      for (var i = 0; i < points.length; i++) {
+        newPoints.push({
+          x: parseInt(points[i].x * ratiox),
+          y: parseInt(points[i].y * ratioy)
+        })
+      }
+      return newPoints
+    },
+    async configTask(body) {
+      const res = await client.configInstance(body)
+      //   console.log('任务实例配置调用接口返回-----', res)
+      if (res.code === 0) {
+        this.$message({
+          message: '更新成功',
+          type: 'success'
+        })
+      }
+    },
+    setCanvasShow(payload) {
+      this.canvasShowStatus = payload
+    },
+    pageChange(obj) {
+      this.page = obj.page
+      this.getList()
+    }
+  }
+}
+</script>
+<style lang='scss'>
+.algorithmConfigWrap{
+    padding: 20px;
+    background: #F0F2F5;
+    // height: 100%;
+    .algorithmConfig{
+        background: #fff;
+        // height: 100%;
+    }
+    // /deep/.el-tabs__header{
+    //     margin: 0 0 5px;
+    // }
+    // /deep/.el-tabs__item{
+    //     height: 40px;
+    //     line-height: 40px;
+    // }
+    /deep/.el-tabs__content{
+        overflow: auto;
+    }
+    .tabCon{
+        padding: 0 22px;
+        p{
+            font-size: 16px;
+            color: #333333;
+        }
+        .btnBox{
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #E9E9E9;
+        }
+        .tabBox{
+            margin-top: 20px;
+        }
+        .btnTab{
+            display: inline-block;
+            font-size: 14px;
+            color: rgba(0,0,0,0.65);
+            cursor: pointer;
+            margin: 10px 40px 10px 0;
+            &.active{
+                background: #FA8334;
+                padding: 2px 5px;
+                border-radius: 2px;
+                color: #FFFFFF;
+            }
+        }
+        .btnCon{
+            display: none;
+            &.on{
+                display: block;
+            }
+        }
+    }
+    .nameList{
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+        border: 1px solid #EEE;
+        li{
+            margin: 10px 20px 10px 10px;
+        }
+    }
+    .nodata{
+        font-size: 16px;
+        color: #333;
+        border: 1px solid #EEE;
+        margin: 20px 0;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
+    .videoList{
+        margin-top: 20px;
+        padding: 0 22px;
+    }
+    .videoInfo{
+        .infoName{
+            font-size: 16px;
+            color: #333333;
+        }
+        .infoDetail{
+            font-size: 12px;
+            color: #666666;
+        }
+    }
+    //算法配置
+    .videoContainerBox{
+        margin-bottom: 15px;
+    }
+    .totalLine{
+        border-left: 1px solid #EEE;
+    }
+    .videoQueryBox{
+        position: relative;
+    }
+    /deep/.pagination-container .showTotal{
+        display: none;
+    }
+    .videoTotalBox{
+        padding:20px;
+    }
+    .videoTotal{
+        position: relative;
+        margin-bottom: 10px;
+    }
+    .videoTotalText{
+        font-size: 16px;
+        color: #333;
+        font-weight: bolder;
+    }
+    .videoTotalNum{
+        font-size: 12px;
+        color: #666666;
+        position: absolute;
+        top:4px;
+        right: 10px;
+    }
+    .videoResult{
+        // display: flex;
+        // flex-wrap: wrap;
+        list-style: none;
+        padding: 0 20px;
+        margin: 0 0 20px;
+        li{
+            margin: 7px 20px 7px 10px;
+            cursor: pointer;
+            div{
+                padding: 2px 5px;
+                display: inline-block;
+            }
+            &.active{
+                div{
+                    background: #FA8334;
+                    border-radius: 2px;
+                    color: #FFFFFF;
+                }
+            }
+        }
+    }
+    .listBtnBox{
+        // text-align: center;
+        margin-left: 30px;
+    }
+    .algorithmConfigList{
+        .test{
+            width: 828px;
+            margin: 0 auto 20px;
+        }
+    }
+}
+</style>

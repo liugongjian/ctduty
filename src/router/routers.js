@@ -44,25 +44,44 @@ export const asyncRouterMap = [
       }
     ]
   },
-  /*   {
-    path: '/ecloudwatch',
-    component: Layout,
-    redirect: '/ecloudwatch',
-    hidden: false,
-    children: [
-      {
-        path: '/ecloudwatch',
-        component: () => import('@/views/eCloudWatch/index'),
-        name: 'eCloudWatch',
-        meta: {
-          title: 'eCloudWatch',
-          icon: 'ecloudwatch',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  }, */
+  // {
+  //   path: '/ecloudwatch',
+  //   component: Layout,
+  //   redirect: '/ecloudwatch',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: '/ecloudwatch',
+  //       component: () => import('@/views/eCloudWatch/index'),
+  //       name: 'eCloudWatch',
+  //       meta: {
+  //         title: 'eCloudWatch',
+  //         icon: 'ecloudwatch',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/videomonitor',
+  //   component: Layout,
+  //   redirect: '/videomonitor',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: '/videomonitor',
+  //       component: () => import('@/views/videoMonitor/index'),
+  //       name: 'videoMonitor',
+  //       meta: {
+  //         title: 'videoMonitor',
+  //         icon: 'monitor',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/monitorScreen',
     component: Layout,
@@ -76,6 +95,25 @@ export const asyncRouterMap = [
         meta: {
           title: 'monitorScreen',
           icon: 'monitor',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/algorithmconfig',
+    component: Layout,
+    redirect: '/algorithmconfig',
+    hidden: false,
+    children: [
+      {
+        path: '/algorithmconfig',
+        component: () => import('@/views/algorithmConfig/index'),
+        name: 'algorithmConfig',
+        meta: {
+          title: 'algorithmConfig',
+          icon: 'algorithmconfig',
           noCache: true,
           affix: true
         }

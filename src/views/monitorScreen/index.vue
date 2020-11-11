@@ -3,6 +3,9 @@
     <div class="monitorScreen">
       <div v-for="item in deviceList" :key="item.id" class="screen">
         <div class="screen-inner">
+          <div class="screen-body">
+            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
+          </div>
           <div class="screen-head">
             <div class="head-label">
               <i class="el-icon-location-information"></i>
@@ -12,9 +15,6 @@
               <div class="btn" @click="updateMonitorDialog(item)"><i class="el-icon-setting"></i></div>
               <div class="btn" @click="deleteMonitor(item)"><i class="el-icon-delete"></i></div>
             </div>
-          </div>
-          <div class="screen-body">
-            <VideoPlayer :video-ref="item.cameraId" :key="item.cameraId" :options="item.videoOptions"/>
           </div>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default {
               width: 400, // 播放器宽度
               height: 300, // 播放器高度
               // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-              // fluid: true, // 流体布局，自动充满，并保持播放其比例
+              fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
                   src: item.rtmpuri,
@@ -287,10 +287,12 @@ export default {
     width: 33.33%;
     .screen-inner {
       margin: 10px 10px;
+      border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: 340px;
+      height: 280px;
       margin: 10px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -306,16 +308,16 @@ export default {
     }
     .screen-head {
       position: relative;
-      height: 40px;
+      height: 30px;
       display: flex;
       padding: 0 10px;
       align-items: center;
       border: 1px solid #9b9da0;
-      border-radius: 5px 5px 0 0;
+      border-radius:0 0 3px 3px;
       .head-label {
         flex: 1;
-        font-size: 18px;
-        line-height: 40px;
+        font-size: 14px;
+        line-height: 30px;
         color: #333;
         white-space: nowrap;
         overflow: hidden;
@@ -326,13 +328,14 @@ export default {
         .btn {
           flex: 1;
           cursor: pointer;
-          font-size: 20px;
+          font-size: 16px;
           padding: 8px;
         }
       }
     }
     .screen-body {
-      height: 300px;
+      height: 250px;
+      width: auto;
       background: #333;
     }
   }

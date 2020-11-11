@@ -45,6 +45,7 @@
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
             <el-button type="text" size="small" @click="algDialog(scope.row.id)">{{ '算法' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+
           </template>
         </el-table-column>
       </el-table>
@@ -110,6 +111,7 @@
 import { Message } from 'element-ui'
 import Cookies from 'js-cookie'
 import Pagination from '@/components/Pagination'
+import VideoConfig from '@/components/VideoConfig'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import {
@@ -117,7 +119,7 @@ import {
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 export default {
-  components: { Pagination },
+  components: { Pagination, VideoConfig },
   data() {
     return {
       algorithmValue: null,

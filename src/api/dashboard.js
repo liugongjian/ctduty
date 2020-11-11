@@ -24,3 +24,11 @@ export function fetchSinMan(query) {
     params: query
   })
 }
+
+export function getAlertStatics(query) {
+  return request({
+    url: `/nvsapi/Statis/getAlertStatis`,
+    method: 'post',
+    data: query
+  })
+}

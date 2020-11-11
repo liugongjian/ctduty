@@ -1,13 +1,6 @@
 <template>
   <div id="alarmInfo" class="alarmInfo" @click="watchClick">
     <div class="map">
-      <div class="switch">
-        <el-switch
-          v-model="isHint"
-          inactive-text="告警提示音"
-        >
-        </el-switch>
-      </div>
       <el-amap
         :amap-manager="amapManager"
         :center="center"
@@ -25,46 +18,54 @@
           :position="marker.position"
           :vid="index"
           :content="marker.content"
+          :ext-data="marker.extData"
           @click="markerClick"
         ></el-amap-marker>
       </el-amap>
       <div class="warn">
-        <div class="dispose" style="opacity:1;margin-bottom:20px;">
-          <div class="watchtitle">
-            <div :class="[{'active': showActive}, 'alarm', 'dash-title']" @click="alarmRate">告警处理率</div>
-            <div :class="[{'active': alarmActive}, 'alarmMonitoring', 'dash-title']" @click="monitoring">实时监控</div>
-          </div>
-          <div v-show="showAlarm === 'rate'" class="disbox" style="height: 100%; width:100% margin-bottom: 16px;">
-            <div id="panel" style="height: 80%; width:100%"></div>
-          </div>
-          <div v-if="showAlarm === 'monitoring'" class="videoBox" style="height: 100%; width:100%;border-bottom:1px solid #ccc;">
-            <div style="height: 90%; width:100%;border-bottom:1px solid #ccc;">
-              <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
-              <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                {{ cameraState }}
+        <el-tabs v-model="showAlarm" style="background-color:#fff;border-bottom:1px solid #ccc;" @tab-click="handleClick">
+          <el-tab-pane label="告警处理率" name="rate">
+            <div class="disbox" style="height: 180px; width:100%">
+              <div id="panel" style="height: 100%; width:100%"></div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="实时监控" name="monitoring">
+            <div class="videoBox" style="height: 180px; width:100%;">
+              <div style="height: 100%; width:100%;">
+                <VideoPlayer v-if="hasUrl" :options="videoOptions"/>
+                <div v-if="cameraId === null" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                  {{ cameraState }}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="bottom" style="opacity:1;background:#fff;margin-top: 13px;">
+          </el-tab-pane>
+        </el-tabs>
+        <div class="bottom" style="opacity:1;background:#fff;">
           <div class="dash-title todayAlarm">
             今日告警
+            <span class="switch">
+              <el-switch
+                v-model="isHint"
+                inactive-text="告警提示音"
+              >
+              </el-switch>
+            </span>
           </div>
           <div class="bottom-left">
-            <div style="width:100%; height:35px;">
-              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
+            <div style="width:100%; height:26px;">
+              <div :style="{'border-color':showTabValue === 'all'? '#1890ff':'#D9D9D9'}" class="zuo" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="allTab">
                 <p :style="{'color':showTabValue === 'all'? '#1890ff':'#333'}">
                   全部(<span>{{ todayAlerts > 9999 ? `${999 + '+'}` : todayAlerts }}</span>)
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
+              <div :style="{'border-color':showTabValue === 'y'? '#1890ff':'#D9D9D9', width: '28%'}" class="zhong" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="yTab">
                 <p :style="{'color':showTabValue === 'y'? '#1890ff':'#333'}">
-                  已处理(<span style="color:#A3CB38;">{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>)
+                  已处理（<span>{{ todayHandleds > 9999 ? `${999 + '+'}` : todayHandleds }}</span>）
                 </p>
               </div>
-              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 30px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
+              <div :style="{'border-color':showTabValue === 'w'? '#1890ff':'#D9D9D9', width: '28%'}" class="you" style="line-height: 26px;border: 1px solid #D9D9D9;text-align:center;" @click="wTab">
                 <p :style="{'color':showTabValue === 'w'? '#1890ff':'#333'}">
-                  未处理(<span style="color:red;">{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>)
+                  未处理（<span>{{ todayUndeal > 9999 ? `${999 + '+'}` : todayUndeal }}</span>）
                 </p>
               </div>
               <div class="bottom-right">
@@ -75,7 +76,7 @@
                 </ul>
               </div>
             </div>
-            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:10px 20px;">
+            <div v-if="stepsData.length" class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
               <div v-if="showTabValue === 'all'">
                 <div v-if="hasData">
                   <div :class="{'not-allowed': isDisableAllAlarmBtn}">
@@ -87,7 +88,7 @@
                         v-for="(item, index) in stepsData"
                         :key="index"
                         class="stepword"
-                        @click="showDialogFather(item)"
+                        @click="showDialog(item)"
                       >
                         <div style="height:32px; width:32px; float:left" class="lefticon">
                           <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -128,7 +129,7 @@
                     v-for="(item, index) in yData"
                     :key="index"
                     class="stepword"
-                    @click="showDialogFather(item)"
+                    @click="showDialog(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -164,7 +165,7 @@
                     v-for="(item, index) in xData"
                     :key="index"
                     class="stepword"
-                    @click="showDialogFather(item)"
+                    @click="showDialog(item)"
                   >
                     <div style="height:32px; width:32px; float:left" class="lefticon">
                       <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
@@ -195,22 +196,32 @@
                 </template>
               </div>
             </div>
-            <div v-else class="zuoContent" style="width:100%; height:35vh;overflow: auto;padding:20px;">
-              <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                暂无数据
+            <div v-else class="zuoContent" style="width:100%; height:40vh;overflow: auto;">
+              <div v-if="loading">
+                <div v-if="showTabValue === 'all'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中...</span>
+                </div>
+                <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                </div>
+                <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:24px;font-weight:700;color:#1890ff;vertical-align:middle;">
+                  <i class="el-icon-loading loading"></i>
+                  <span style="display:inline-block;font-size:13px;line-height:24px;color:#1890ff;padding-bottom:5px;font-weight:500;">拼命加载中</span>
+                </div>
               </div>
-              <div v-if="showTabValue === 'y'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                暂无数据
-              </div>
-              <div v-if="showTabValue === 'w'" style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
-                暂无数据
+              <div v-else>
+                <div style="text-align:center;padding-top:20%;font-size:20px;font-weight:700;color:#95afc0;">
+                  暂无数据
+                </div>
               </div>
             </div>
           </div>
           <el-dialog
             v-model="temp"
             :visible="dialogVisable"
-            title="报警显示"
+            title="告警显示"
             width="750px"
             @close="closeDialog"
           >
@@ -321,6 +332,7 @@ export default {
       },
       yData: [
       ],
+      loading: true,
       // TabLan: all,
       dialogVisable: false,
       activeName: 'first',
@@ -347,9 +359,6 @@ export default {
       limit: 10,
       timer2: '',
       isOnlyCameraData: false,
-      events: {
-        click: a => {}
-      },
       renderTime,
       isPush: null,
       timer3: '',
@@ -363,14 +372,25 @@ export default {
       cameraId: null,
       hasUrl: null,
       todayAlerts: null,
-      // 当天已处理
       todayHandleds: null,
-      // 当天未处理
       todayUndeal: null,
+      nowShowCameraId: null,
       allXDataCameraIDEQU: null,
       hasCameraDom: false,
       cameraAlarmObj: {
 
+      },
+      isFirDom: null,
+      events: {
+        click: info => {
+          this.form = info.target.G.extData
+          this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+          const markers = document.getElementsByClassName('markerImg');
+          [].forEach.call(markers, function(item) {
+            item.classList.remove('clickgif')
+            item.classList.remove('markerClickImg')
+          })
+        }
       }
     }
   },
@@ -389,7 +409,7 @@ export default {
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0) {
-            that.center = [JSON.parse(item.attributes[1].nodeValue).longitude, JSON.parse(item.attributes[1].nodeValue).latitude]
+            that.center = [that.form.longitude, that.form.latitude]
             that.zoom = 15
             that.showZwMes = false
           }
@@ -410,7 +430,7 @@ export default {
             cascade: true,
             page: {
               index: 1,
-              size: 300
+              size: 99999
             },
             params: [
               {
@@ -420,6 +440,11 @@ export default {
                   start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
                   end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -432,9 +457,59 @@ export default {
           }
           fetchalarmList(params).then(response => {
             if (response.body.data.length) {
-              window.clearTimeout(this.timer2)
-              this.getalarmList()
+              this.nowShowCameraId = response.body.data[0].camera.id
               this.showDialog(response.body.data[0], true)
+              this.getCameraList()
+              const params = {
+                cascade: true,
+                page: {
+                  index: 1,
+                  size: 99999
+                },
+                params: [
+                  {
+                    field: 'create_time',
+                    operator: 'BETWEEN',
+                    value: { start: moment(Date.now()).format(
+                      'YYYY-MM-DD 00:00:00'
+                    ),
+                    end: moment().format('YYYY-MM-DD HH:mm:ss')
+                    }
+                  },
+                  {
+                    field: 'camera.inChargeId',
+                    operator: 'EQUALS',
+                    value: this.userId
+                  }
+                ],
+                sorts: [
+                  {
+                    field: 'create_time',
+                    type: 'desc'
+                  }
+                ]
+              }
+              fetchalarmList(params).then(response => {
+                this.loading = true
+                setTimeout(() => {
+                  this.loading = false
+                }, 10 * 1000)
+                if (response.body.data.length) {
+                  this.getPanelList()
+                  if (!this.isOnlyCameraData) {
+                    this.stepsData = response.body.data
+                  }
+                  this.yData = []
+                  this.xData = []
+                  response.body.data.forEach(item => {
+                    if (item.handlerId !== null) {
+                      this.yData.push(item)
+                    } else {
+                      this.xData.push(item)
+                    }
+                  })
+                }
+              })
             }
           })
         }, 5000)
@@ -442,43 +517,6 @@ export default {
         setTimeout(() => {
           this.getalarmList()
         }, 300000)
-      }
-    },
-    async xData(v) {
-      const that = this
-      const firXdataCameraID = v[0].camera.id
-      const allXDataCameraIDEQU = v.every(item => item.camera.id === firXdataCameraID)
-      if (allXDataCameraIDEQU === false) {
-        that.allXDataCameraIDEQU = allXDataCameraIDEQU
-      } else {
-        that.allXDataCameraIDEQU = null
-      }
-      await that.getCameraList()
-      await that.timers.forEach(item => {
-        window.clearInterval(item)
-      })
-      if (that.allXDataCameraIDEQU === false) {
-        that.cameraAlarmObj = {}
-        v.forEach((item, index) => {
-          if (item.camera.id in that.cameraAlarmObj) {
-            that.cameraAlarmObj[item.camera.id] = that.cameraAlarmObj[item.camera.id] + 1
-          } else {
-            that.cameraAlarmObj[item.camera.id] = 1
-          }
-          setTimeout(() => {
-            [].forEach.call(document.getElementsByClassName('markerImg'), function(dom, i) {
-              if (item.camera.id === JSON.parse(dom.attributes[1].nodeValue).id) {
-                window.clearInterval(that.timer6)
-                that.timers[i] = setInterval(() => {
-                  dom.classList.add('markerClickImg')
-                  dom.timer6 = setTimeout(() => {
-                    dom.classList.remove('markerClickImg')
-                  }, 500)
-                }, 1000)
-              }
-            })
-          }, 300)
-        })
       }
     }
   },
@@ -488,13 +526,6 @@ export default {
     await this.getalarmList()
     await this.getPanelList()
     await this.getCameraList()
-  },
-  mounted() {
-    const that = this
-    that.getPush()
-    that.getalarmList()
-    that.getPanelList()
-    that.getPanel()
   },
   updated() {
     if (document.getElementsByClassName('markerImg').length) {
@@ -525,9 +556,6 @@ export default {
       } else if (url.endsWith('ogv')) {
         return 'video/ogg'
       }
-    },
-    showDialogFather(item) {
-      this.showDialog(item)
     },
     openBig(url) {
       window.open(url)
@@ -565,32 +593,67 @@ export default {
           index: 1,
           size: 100000
         },
-        params: {}
+        params: {
+          inChargeId: this.userId
+        }
       }
       fetchAllCameraList(params).then(res => {
         this.formInfo = res.body.data
         this.markers = []
         this.showZwMes = true
-        if (document.getElementsByClassName('markerClickImg').length) {
-          document
-            .getElementsByClassName('markerClickImg')[0]
-            .classList.remove('markerClickImg')
-        }
-        this.formInfo.forEach((item) => {
-          this.markers.push({
-            position: [
-              item.longitude,
-              item.latitude
-            ],
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}" data=${JSON.stringify(item)}
+        this.formInfo.forEach((item, index) => {
+          if (this.isFirDom === null) {
+            this.isFirDom = true
+          } else {
+            this.isFirDom = false
+          }
+          if (index === 0 && this.isFirDom) {
+            this.form = item
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            this.center = [item.longitude, item.latitude]
+            this.zoom = 15
+          }
+          if (item.undealSum === '0') {
+            this.markers.push({
+              position: [
+                item.longitude,
+                item.latitude
+              ],
+              extData: item,
+              content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon markerImg ${item.online === 1 ? 'offline' : ''}"}  id=${item.id}
                 t="1599121043094" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>
-                <span v-if='${item.state === null}' style='display: ${this.cameraAlarmObj[item.id] ? 'inline-block' : 'none'};width: 20px;height: 15px;font-size: 12px;line-height: 15px;text-align: center;color: #fff;position: absolute;border-radius: 5px 5px 5px 0;background-color: red;top: -10px;right: 20px;'>${this.cameraAlarmObj[item.id]}</span>`
-          })
+                `
+            })
+          } else if (item.online !== 1) {
+            this.markers.push({
+              position: [
+                item.longitude,
+                item.latitude
+              ],
+              extData: item,
+              content: `<div class='gifbox'><img style='width:${this.nowShowCameraId === item.id ? '50px' : '40px'};height:${this.nowShowCameraId === item.id ? '50px' : '40px'};' id=${item.id} class="icon markergif markerImg"}   src='data:image/gif;base64,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' />
+              <span v-if='${item.state === null}' style='display: ${item.undealSum ? 'inline-block' : 'none'};padding:0 5px;height: 15px;font-size: 12px;line-height: 15px;text-align: center;color: #fff;position: absolute;border-radius: 5px 5px 5px 0;background-color: red;top: -10px;right: ${item.undealSum.length === 1 ? '-5px' : item.undealSum.length === 2 ? '-10px' : item.undealSum.length === 3 ? '-18px' : '-23px'};'>${item.undealSum}</span>
+              </div>`
+            })
+          } else if (item.online === 1) {
+            this.markers.push({
+              position: [
+                item.longitude,
+                item.latitude
+              ],
+              extData: item,
+              content: `<div class='gifbox'><img style='width:${this.nowShowCameraId === item.id ? '50px' : '40px'};height:${this.nowShowCameraId === item.id ? '50px' : '40px'};' id=${item.id} class="icon markergif markerImg"}   src='data:image/gif;base64,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' />
+              <span v-if='${item.state === null}' style='display: ${item.undealSum ? 'inline-block' : 'none'};padding:0 5px;height: 15px;font-size: 12px;line-height: 15px;text-align: center;color: #fff;position: absolute;border-radius: 5px 5px 5px 0;background-color: red;top: -10px;right: ${item.undealSum.length === 1 ? '-5px' : item.undealSum.length === 2 ? '-10px' : item.undealSum.length === 3 ? '-18px' : '-23px'};'>${item.undealSum}</span>
+              </div>`
+            })
+          }
         })
       })
     },
     allTab() {
       this.showTabValue = 'all'
+      this.getalarmList()
+      this.isDisableAllAlarmBtn = true
     },
     yTab() {
       this.showTabValue = 'y'
@@ -614,7 +677,7 @@ export default {
         cascade: true,
         page: {
           index: 1,
-          size: 300
+          size: 99999
         },
         params: [
           {
@@ -625,6 +688,11 @@ export default {
             ),
             end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
+          },
+          {
+            field: 'camera.inChargeId',
+            operator: 'EQUALS',
+            value: this.userId
           }
         ],
         sorts: [
@@ -635,8 +703,13 @@ export default {
         ]
       }
       fetchalarmList(params).then(response => {
+        this.loading = true
+        setTimeout(() => {
+          this.loading = false
+        }, 10 * 1000)
         if (response.body.data.length) {
           this.getPanelList()
+
           this.stepsData = response.body.data
           this.isOnlyCameraData = false
           this.isDisableAllAlarmBtn = false
@@ -656,9 +729,14 @@ export default {
       if (!e.path.some(item => item.className === 'amap-marker-content')) {
         return
       }
-      const marImgs = document.getElementsByClassName('markerImg');
-      [].forEach.call(marImgs, function(item) {
+      const markers = document.getElementsByClassName('markerImg');
+      [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
+        item.classList.remove('clickgif')
+        if (item.classList.contains('markergif')) {
+          item.style.width = '40px'
+          item.style.height = '40px'
+        }
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
       })
@@ -667,21 +745,12 @@ export default {
           this.hasUrl = null
           this.cameraId = null
         }
-        if (item.className === 'amap-marker-content') {
-          // this.getCameraList()
+        if (item.className === 'gifbox') {
           this.hasUrl = null
           this.showAlarm = 'monitoring'
           this.showActive = false
           this.alarmActive = true
-          if (!item.childNodes[1].classList.contains('offline')) {
-            item.childNodes[1].classList.add('markerClickImg')
-          }
-          item.childNodes[1].setAttribute('width', 50)
-          item.childNodes[1].setAttribute('height', 50)
-          this.form = JSON.parse(item.childNodes[1].attributes[1].nodeValue)
-          this.form.createTime = moment(this.form.createTime).format(
-            'YYYY-MM-DD HH:mm:SS'
-          )
+          item.childNodes[0].classList.add('clickgif')
           if (this.form.online !== 1) {
             // this.cameraState = '请选择要查看的摄像头'
             if (this.currentcameraId === this.form.id && this.videoOpen) {
@@ -715,12 +784,13 @@ export default {
             this.cameraState = '此摄像头已离线'
           }
           this.center = [this.form.longitude, this.form.latitude]
+          this.zoom = 15
           this.showZwMes = false
           const params = {
             cascade: true,
             page: {
               index: 1,
-              size: 300
+              size: 99999
             },
             params: [
               {
@@ -736,6 +806,122 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
+              }
+            ],
+            sorts: [
+              {
+                field: 'create_time',
+                type: 'desc'
+              }
+            ]
+          }
+          fetchalarmList(params).then(response => {
+            if (!response.body.data.length) {
+              this.hasData = false
+              this.getalarmList()
+              setTimeout(() => {
+                this.hasData = true
+              }, 3000)
+            } else {
+              this.loading = true
+              setTimeout(() => {
+                this.loading = false
+              }, 10 * 1000)
+              this.getPanelList()
+              this.stepsData = response.body.data || []
+              this.hasData = true
+              this.yData = []
+              this.xData = []
+              response.body.data.forEach(item => {
+                if (item.handlerId !== null) {
+                  this.yData.push(item)
+                } else {
+                  [...this.timers].forEach((item, index) => {
+                    this.timers.splice(index, 1)
+                  })
+                  this.xData.push(item)
+                }
+              })
+              this.isOnlyCameraData = true
+            }
+          })
+          return
+        }
+        if (item.className === 'amap-marker-content') {
+          this.hasUrl = null
+          this.showAlarm = 'monitoring'
+          this.showActive = false
+          this.alarmActive = true
+          if (!item.childNodes[1].classList.contains('offline')) {
+            item.childNodes[1].classList.add('markerClickImg')
+          }
+          item.childNodes[1].setAttribute('width', 50)
+          item.childNodes[1].setAttribute('height', 50)
+          if (this.form.online !== 1) {
+            // this.cameraState = '请选择要查看的摄像头'
+            if (this.currentcameraId === this.form.id && this.videoOpen) {
+              this.hasUrl = null
+              this.videoOpen = false
+            } else if (this.form.online !== 1) {
+              this.cameraState = '正在加载直播流...'
+              play(this.form.id).then(res => {
+                this.hasUrl = true
+                this.cameraId = this.form.id
+                this.currentcameraId = this.form.id
+                this.videoOpen = true
+                this.videoOptions = {
+                  autoplay: true,
+                  controls: true,
+                  width: 400, // 播放器宽度
+                  height: 300, // 播放器高度
+                  // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+                  // fluid: true, // 流体布局，自动充满，并保持播放 其比例
+                  // m3u8uri
+                  sources: [
+                    {
+                      src: res.body.data.rtmpuri,
+                      type: this.video_type(res.body.data.rtmpuri)
+                    }
+                  ]
+                }
+              })
+            }
+          } else {
+            this.cameraState = '此摄像头已离线'
+          }
+          this.zoom = 15
+          this.center = [this.form.longitude, this.form.latitude]
+          this.showZwMes = false
+          const params = {
+            cascade: true,
+            page: {
+              index: 1,
+              size: 99999
+            },
+            params: [
+              {
+                field: 'cameraId',
+                operator: 'EQUALS',
+                value: this.form.id
+              },
+              {
+                field: 'create_time',
+                operator: 'BETWEEN',
+                value: { start: moment(Date.now()).format(
+                  'YYYY-MM-DD 00:00:00'
+                ),
+                end: moment().format('YYYY-MM-DD HH:mm:ss')
+                }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
             ],
             sorts: [
@@ -749,11 +935,15 @@ export default {
           fetchalarmList(params).then(response => {
             if (!response.body.data.length) {
               this.hasData = false
+              this.getalarmList()
               setTimeout(() => {
-                this.getalarmList()
                 this.hasData = true
               }, 3000)
             } else {
+              this.loading = true
+              setTimeout(() => {
+                this.loading = false
+              }, 10 * 1000)
               this.getPanelList()
               this.stepsData = response.body.data || []
               this.hasData = true
@@ -764,7 +954,6 @@ export default {
                   this.yData.push(item)
                 } else {
                   [...this.timers].forEach((item, index) => {
-                    window.clearInterval(item)
                     this.timers.splice(index, 1)
                   })
                   this.xData.push(item)
@@ -772,9 +961,6 @@ export default {
               })
               // 两分钟后自动恢复默认全部列表
               this.isOnlyCameraData = true
-              /*  setTimeout(() => {
-                this.getalarmList()
-              }, 120000) */
             }
           })
         }
@@ -783,17 +969,11 @@ export default {
     markerClick() {
 
     },
-    blink(dom) {
-      window.clearInterval(this.timer4)
-      this.timer3 = setInterval(() => {
-        dom.classList.add('markerClickImg')
-        this.timer4 = setTimeout(() => {
-          dom.classList.remove('markerClickImg')
-        }, 500)
-      }, 1000)
-    },
     showDialog(cameraInfo, isAlert) {
       this.dataDia = cameraInfo
+      setTimeout(() => {
+        document.getElementsByClassName('el-dialog__body')[0].scrollTop = 0
+      }, 0)
       this.dialogVisable = true
       if (isAlert) {
         if (this.isHint) {
@@ -805,15 +985,25 @@ export default {
         }, 5000)
       }
       this.center = [cameraInfo.camera.longitude, cameraInfo.camera.latitude]
+      this.zoom = 15
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
+        item.classList.remove('clickgif')
+        if (item.classList.contains('markergif')) {
+          item.style.width = '40px'
+          item.style.height = '40px'
+        }
         item.setAttribute('width', 40)
         item.setAttribute('height', 40)
-        if (JSON.parse(item.attributes[1].nodeValue).id === cameraInfo.camera.id) {
-          item.setAttribute('width', 50)
-          item.setAttribute('height', 50)
-          item.classList.add('markerClickImg')
+        if (item.id === cameraInfo.camera.id) {
+          if (item.classList.contains('markergif')) {
+            item.classList.add('clickgif')
+          } else {
+            item.setAttribute('width', 50)
+            item.setAttribute('height', 50)
+            item.classList.add('markerClickImg')
+          }
         }
       })
     },
@@ -970,6 +1160,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+body {
+  margin: 0;
+}
+.clickgif {
+  width:50px;
+  height:50px;
+}
 .num {
   width: 80%;
   height: 30px;
@@ -995,9 +1192,11 @@ export default {
   box-sizing: content-box !important;
 }
 .warn {
-  height:78vh !important;
+  height:83vh !important;
   margin-bottom: 20px;
   overflow: hidden;
+  border-radius: 5px;
+  background-color: #f1f2f6;
 }
 .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
     margin-right: 20px;
@@ -1043,15 +1242,13 @@ export default {
   .map {
     height: 100%;
     width: 100%;
-    // background-color: #000;
     position: relative;
     overflow: hidden;
     .warn {
       margin-top: 10px;
       position: absolute;
-      top: 70px;
-      right: 10px;
-      // background-color: #ffffff;
+      top: 30px;
+      right: 15px;
       width: 320px;
       height: 100%;
       .top {
@@ -1090,14 +1287,15 @@ export default {
           .zuo {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
+            line-height: 26px;
             background-color: #ffffff;
             p {
               color: #676767;
               font-size: 12px;
             }
             .zuoContent {
-              background-color: pink;
+              padding-right: 50px;
             }
           }
           .zuo:hover {
@@ -1124,7 +1322,7 @@ export default {
           .zhong {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
             border: #1890ff;
             background-color: #ffffff;
             p {
@@ -1135,7 +1333,7 @@ export default {
           .you {
             float: left;
             width: 25%;
-            height: 32px;
+            height: 26px;
             border: #1890ff;
             background-color: #ffffff;
             p {
@@ -1184,11 +1382,10 @@ export default {
 }
 .dizhi {
   width: 100%;
-  font-size: 15px;
+  font-size: 13px;
   color: #000000;
   font-weight: 300;
-  // margin-left: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 #panel {
   position: absolute;
@@ -1253,13 +1450,8 @@ export default {
   color: #FF9832;
 }
 .switch {
-  height: 50px;
+  font-size: 12px;
   padding: 0 30px;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  justify-content:flex-end;
-  align-items: center;
-  box-shadow: 0 1px 4px 0;
 }
 .offline {
   fill: #95afc0 !important;

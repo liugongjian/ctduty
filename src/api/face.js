@@ -58,7 +58,7 @@ export function fetchSearchFace(query) {
   })
 }
 
-//历史抓拍 
+// 历史抓拍
 export function gethistoryList(query) {
   return request({
     url: '/nvsapi/Alert/QueryFilter',

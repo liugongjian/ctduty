@@ -125,8 +125,11 @@ import {
   fetchAllCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
+import VideoConfig from '@/components/VideoConfig'
+import client from '@/api/vedioAlgo'
+
 export default {
-  components: { Pagination },
+  components: { Pagination, VideoConfig },
   data() {
     return {
       dialogForm: {
