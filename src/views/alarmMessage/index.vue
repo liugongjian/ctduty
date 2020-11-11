@@ -883,7 +883,7 @@ td {
   .clearsearch {
     height: 34px;
     width: 60px;
-    margin-left: 16px;
+    // margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
     border-radius: 3px;
