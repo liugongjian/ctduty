@@ -122,7 +122,7 @@
                 :formatter="formatTime"
                 :label="'时间'"
                 align="center"
-                min-width="10%"
+                min-width="4%"
                 prop="createTime"
               ></el-table-column>
               <el-table-column
@@ -130,7 +130,7 @@
                 :formatter="formatType"
                 :label="'事件'"
                 align="center"
-                min-width="8%"
+                min-width="5%"
                 prop="type"
                 width="100"
               ></el-table-column>
@@ -150,8 +150,7 @@
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
                 align="center"
-                min-width="8%"
-                width="100"
+                min-width="4%"
               >
                 <template slot-scope="scope">
                   <el-tag
@@ -161,40 +160,40 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头'"
+                :label="'摄像头地址'"
                 align="center"
-                min-width="18%"
+                min-width="8%"
                 prop="camera.address"
-              ></el-table-column>
-              <el-table-column :label="'图片'" align="center" min-width="12%">
+              >
                 <template slot-scope="scope">
-                  <el-popover placement="left" trigger="hover">
-                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
-                    <el-image
-                      slot="reference"
-                      :src="scope.row.imageCut"
-                      class="amimage"
-                      @click="openBig(scope.row.image)"
-                    />
-                  </el-popover>
-                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
+                  <span
+                    style="text-indent:30px"
+                  >{{ scope.row.camera ? scope.row.camera.address:'-' }}</span>
+                </template>
+              </el-table-column>
+              <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
+              <el-table-column :label="'图片'" align="center" min-width="6%">
+                <template slot-scope="scope">
+                  <!-- <el-popover
+                    placement="left"
+                    trigger="hover"
+                  >
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
+                    <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
+                  </el-popover> -->
+                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'处理人'"
+                :label="'算法名称'"
+                :formatter="formattername"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
-                width="100"
+                prop="taskId"
               >
-                <template slot-scope="scope">
-                  <span
-                    style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
-                </template>
               </el-table-column>
-              <el-table-column
+              <!--    <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理结果'"
                 align="center"
@@ -207,30 +206,16 @@
                   <svg-icon v-else class="untreated" icon-class="untreated2" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template>
-              </el-table-column>
-              <el-table-column min-width="12%" align="center" label="操作">
+              </el-table-column> -->
+              <el-table-column min-width="4%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="editDialog(scope.row)">处理</el-button>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">详情</el-button>
                   <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
 
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :tabs-arr="tabsArr"
-              :all-total="allTotal"
-              :limit.sync="limit"
-              :alarmtext = "alarmtext"
-              @pagination="pageChange()"
-            />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </div>
-    <el-dialog
+            <el-dialog
               :visible.sync="dialogVisable"
               title="报警显示"
               width="750px"
@@ -277,6 +262,67 @@
                 <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
               </div> -->
             </el-dialog>
+
+            <pagination
+              v-show="total>0"
+              :total="total"
+              :page.sync="page"
+              :limit.sync="limit"
+              :all-total="allTotal"
+              :alarmtext = "alarmtext"
+              @pagination="pageChange()"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+    <el-dialog
+      :visible.sync="dialogVisable"
+      title="报警显示"
+      width="750px"
+      @close="closeDialog"
+    >
+      <el-form v-model="temp" label-position="right" label-width="100px">
+        <el-form-item label="摄像头地址：" prop="camera.address">
+          <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
+        </el-form-item>
+        <el-form-item label="监控时间：" prop="createTime">
+          <span style="width: 300px;"></span>
+          {{ renderTime(temp.createTime) }}
+        </el-form-item>
+        <el-form-item label="原始照片：" prop="image">
+          <el-image
+            :src="temp.imageCompress"
+            style="width:525px; height:300px"
+            @click="()=>{openBig(temp.image)}"
+          ></el-image>
+        </el-form-item>
+        <el-form-item label="结构化照片：" prop="imageCut">
+          <el-image :src="temp.imageCut"></el-image>
+        </el-form-item>
+        <el-form-item v-if="temp.type === 1 || temp.type === 2" label="触发事件:" prop="type">
+          <span v-if="temp.type === 1">人员</span>
+          <span v-else-if="temp.type === 2">机动车</span>
+        </el-form-item>
+        <el-form-item v-if="temp.label || temp.label === null" label="布控标签:" prop="label">
+          <span v-if="temp.label === 1">白名单</span>
+          <span v-else-if="temp.label === 2">黑名单</span>
+          <span v-else>其他</span>
+        </el-form-item>
+        <!-- 车牌 -->
+        <el-form-item v-if="temp.license" label="车牌:" prop="license">
+          <span>{{ temp.license }}</span>
+        </el-form-item>
+        <!-- 人员 -->
+        <el-form-item v-if="temp.username" label="姓名:" prop="username">
+          <span>{{ temp.username }}</span>
+        </el-form-item>
+      </el-form>
+      <!-- <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogConfirm">正 常</el-button>
+        <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
+      </div> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -364,7 +410,7 @@ export default {
           return time.getTime() > Date.now() - 8.64e6
         }
       },
-warngingKind: {
+      warngingKind: {
         1: '行人',
         2: '机动车',
         3: '非机动车',
@@ -376,6 +422,26 @@ warngingKind: {
         9: '打架斗殴',
         10: '摔倒',
         11: '占道经营'
+      },
+      warngingname: {
+        1: '值更检测',
+        2: '人脸识别',
+        3: '车牌识别',
+        4: '人脸比对',
+        5: '人脸属性',
+        6: '区域划线告警',
+        7: '翻墙检测',
+        8: '人流识别',
+        9: '车流识别',
+        10: '安全帽识别',
+        11: '工服识别',
+        12: '车型检测',
+        13: '人群聚集检测',
+        14: '打架斗殴检测',
+        15: '摔倒检测',
+        16: '占道经营检测',
+        17: '人员逗留检测',
+        18: '推流任务'
       }
     }
   },
@@ -417,9 +483,15 @@ warngingKind: {
       const e = this.currentTab + ' ' + this.endTime + ':00'
       //  + ' ' + this.startTime + ':00'
       let params
+      this.page = 1
+      this.limit = 10
       if (isNaN(this.formInline.searchkey)) {
         params = {
           cascade: true,
+          page: {
+              index: this.page,
+              size: this.limit
+          },
           params: [
             {
               field: 'camera.address',
@@ -430,6 +502,12 @@ warngingKind: {
               field: 'createTime',
               operator: 'BETWEEN',
               value: { start: s || '', end: e || '' }
+            }
+          ],
+          sorts: [
+            {
+              field: 'create_Time',
+              type: 'desc'
             }
           ]
         }
@@ -475,6 +553,12 @@ warngingKind: {
         return this.warngingKind[cellValue]
       }
       return '人员'
+    },
+    formattername(row, column, cellValue) {
+      if (this.warngingname[cellValue]) {
+        return this.warngingname[cellValue]
+      }
+      return '值更检测'
     },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
