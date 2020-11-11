@@ -190,7 +190,7 @@
               >
                 <template slot-scope="scope">
                   <span
-                    style="text-indent:30px"
+                    style="text-indent:10px"
                   >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
                 </template>
               </el-table-column>
