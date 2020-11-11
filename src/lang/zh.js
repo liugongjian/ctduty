@@ -47,7 +47,7 @@ export default {
     cameraManage: '摄像头管理',
     areaManage: '区域管理',
     eCloudWatch: '智能视频',
-    alarmMessage: '告警信息',
+    alarmMessage: '识别结果',
     sysMonitor: '系统监控',
     notice: '通知公告',
     onlineUser: '在线用户',

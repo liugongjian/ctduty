@@ -54,6 +54,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" prop="name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
           <template slot-scope="scope">
+            <svg-icon v-if="scope.row.online" style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="offline" />
+            <svg-icon v-else style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="online" />
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>
@@ -62,14 +64,14 @@
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
+        <!--  <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
             <svg-icon v-if="scope.row.isDeal" class="deal" icon-class="deal" />
             <svg-icon v-else class="untreated" icon-class="untreated" />
             <span>{{ scope.row.isDeal ? "已处理":"未处理" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
