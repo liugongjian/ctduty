@@ -32,13 +32,13 @@
       :data="userList"
       :header-cell-style="{ background: '#ecedee', color: '#717171' }"
     >
-      <el-table-column label="用户名" prop="username"></el-table-column>
-      <el-table-column label="姓名" prop="name"></el-table-column>
-      <el-table-column label="手机号码" prop="phone"></el-table-column>
+      <el-table-column align="center" label="用户名" prop="username"></el-table-column>
+      <el-table-column align="center" label="姓名" prop="name"></el-table-column>
+      <el-table-column align="center" label="手机号码" prop="phone"></el-table-column>
       <!-- <el-table-column label="岗位" prop="post.name"></el-table-column> -->
       <!-- <el-table-column label="区域/部门" prop="department.name"></el-table-column> -->
-      <el-table-column label="权限" prop="permissions.name"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column align="center" label="权限" prop="permissions.name"></el-table-column>
+      <el-table-column align="center" label="操作">
         <template slot-scope="row_data">
           <el-button
             type="text"
