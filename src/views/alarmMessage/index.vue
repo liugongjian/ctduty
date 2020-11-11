@@ -145,7 +145,7 @@
                 </template>
               </el-table-column>
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
-              <el-table-column :label="'图片'" min-width="6%">
+              <el-table-column :label="'图片'" align="center" min-width="6%">
                 <template slot-scope="scope">
                   <!-- <el-popover
                     placement="left"
@@ -154,10 +154,10 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
                     <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
                   </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)" />
+                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
-              <el-table-column
+              <!--    <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理人'"
                 align="center"
@@ -183,10 +183,10 @@
                   <svg-icon v-else class="untreated" icon-class="untreated2" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column min-width="6%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
+                  <el-link type="primary" @click="editDialog(scope.row)">详情</el-link>
                   <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
                 </template>
               </el-table-column>
@@ -774,10 +774,6 @@ export default {
   .kb{
     margin-block-end: 14px;
   }
-  td {
-    padding: 0 !important;
-  }
-
 .title {
   width: 100%;
   height: 50px;
@@ -816,6 +812,7 @@ export default {
   margin-block-end: 14px;
 }
 td {
+  padding: 0 3px;
   .el-image {
     vertical-align: middle;
   }
