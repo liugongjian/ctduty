@@ -618,11 +618,11 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      const s = this.currentTab + ' ' + this.startTime + ':00'
+      /* const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
       const h = this.formInline.typeValue
       this.oldSize = this.limit
-      this.getList(s, end, h)
+      this.getList(s, end, h) */
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
