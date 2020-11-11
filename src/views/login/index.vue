@@ -192,7 +192,6 @@ export default {
 <style lang="scss">
 .el-input__inner {
   text-indent: 15px;
-  height: 40px;
 }
 body {
   height:100%;

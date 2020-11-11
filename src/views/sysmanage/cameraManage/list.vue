@@ -53,6 +53,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
           <template slot-scope="scope">
+            <svg-icon v-if="scope.row.online" style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="offline" />
+            <svg-icon v-else style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="online" />
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>

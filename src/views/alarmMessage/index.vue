@@ -822,6 +822,9 @@ export default {
 </script>
 
 <style lang='scss'>
+.el-input__inner {
+  text-indent: 0px;
+}
 .alaMesTable {
   td {
     padding: 0 !important;
@@ -872,6 +875,7 @@ td {
   height: 32px;
 }
 .alarmInp input.el-input__inner {
+  text-indent: 0px;
   height: 34px !important;
 }
 .pull-left.alarmmsgleft {
@@ -903,6 +907,7 @@ td {
 }
 .el-input--mini .el-input__inner {
   height: 32px !important;
+  text-indent: 0px;
   line-height: 32px !important;
 }
 .mesdialog {
