@@ -2,10 +2,10 @@
   <el-scrollbar wrap-class="scrollbar-wrapper">
     <el-menu
       :show-timeout="200"
-      :unique-opened="true"
+      :unique-opened="false"
       :default-active="$route.path"
       :collapse="isCollapse"
-      :default-openeds="['4','5']"
+      :default-openeds="['/sysMonitor','/sysmanage']"
       mode="vertical"
       background-color="#304156"
       text-color="#bfcbd9"
@@ -18,7 +18,7 @@
         <img v-show="!isCollapse" key="max-logo" :src="maxLogo" class="max-logo" @click="toHome">
         <img v-show="isCollapse" key="min-logo" :src="minLogo" class="min-logo" >
       </div>
-      <sidebar-item v-for="route in permission_routers" :key="route.path" :item="route" :base-path="route.path"/>
+      <sidebar-item v-for="route in permission_routers" :key="route.path" :item="route" :base-path="route.path" />
     </el-menu>
   </el-scrollbar>
 </template>

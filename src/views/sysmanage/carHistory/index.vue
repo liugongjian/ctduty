@@ -125,7 +125,7 @@
         <div v-loading="listLoading">
           <div v-if="tableData && tableData.length > 0" class="card-wrapper">
             <el-card
-              v-for="(item, index) in tableData"
+              v-for="item in tableData"
               :body-style="{ padding: '0px' }"
               :key="item.id"
               class="card"
@@ -137,7 +137,6 @@
                   <span>{{
                     item.plateType ? `${item.plateType}车牌` : ""
                   }}</span>
-                  <!-- <span>{{ item.label? listType[item.label] : '' }}</span> -->
                   <el-tag
                     :type="
                       item.label === '1'
@@ -152,10 +151,17 @@
                   >
                 </span>
                 <div class="bottom clearfix">
-                  <!-- <div class="location">
-                    <i class="el-icon-map-location" />
-                    <span>{{ item.camera && item.camera.address || '未知' }}</span>
-                  </div> -->
+                  <el-tooltip
+                    :content="item.camera ? item.camera.address : ''"
+                    placement="top-start"
+                  >
+                    <div class="location">
+                      <i class="el-icon-map-location" />
+                      <span class="locationtext">{{
+                        (item.camera && item.camera.address) || "未知"
+                      }}</span>
+                    </div>
+                  </el-tooltip>
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{
@@ -384,7 +390,6 @@ export default {
       };
     },
     pageChange(e) {
-      console.log("change");
       //   this.currentTab = e.label
       //   const s = e.label + ' ' + this.startTime + ':00'
       //   const end = e.label + ' ' + this.endTime + ':00'
@@ -504,37 +509,42 @@ export default {
           background-color: rgb(245, 247, 250);
         }
       }
-      .card-desp {
-        padding: 10px;
-        &-title {
-          font-size: 14px;
-          & > span {
-            display: inline-block;
-          }
+    }
+    .card-desp {
+      padding: 10px;
+      &-title {
+        font-size: 14px;
+        & > span {
+          display: inline-block;
         }
-        .button {
-          font-size: 16px;
-          float: right;
-          padding: 0;
-        }
-        .bottom {
-          margin-top: 13px;
-          line-height: 20px;
-          font-size: 13px;
-          color: #999;
-        }
-        .clearfix:before,
-        .clearfix:after {
-          display: table;
-          content: "";
-        }
-        .clearfix:after {
-          clear: both;
-        }
+      }
+      .button {
+        font-size: 16px;
+        float: right;
+        padding: 0;
+      }
+      .bottom {
+        margin-top: 13px;
+        line-height: 20px;
+        font-size: 13px;
+        color: #999;
+      }
+      .clearfix:before,
+      .clearfix:after {
+        display: table;
+        content: "";
+      }
+      .clearfix:after {
+        clear: both;
       }
     }
   }
-  //   overflow: auto !important;
-  //   min-height: calc(100vh - 90px) !important;
 }
+.location {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+//   overflow: auto !important;
+//   min-height: calc(100vh - 90px) !important;
 </style>
