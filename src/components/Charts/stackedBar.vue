@@ -68,7 +68,7 @@ export default {
           data: this.chartData.map((item, idx) => `${idx}`),
           formatter: idx => {
             const item = this.chartData[idx]
-            return `${item.name} ${item.data}个 ${item.percent.toFixed(3) * 100}%`
+            return `${item.name} ${item.data}个 ${(item.percent * 100).toFixed(2)}%`
           },
           bottom: 20,
           left: 62
@@ -108,7 +108,7 @@ export default {
             // },
             tooltip: {
               formatter: () => {
-                return `${item.name} ${item.data}个 ${item.percent.toFixed(3) * 100}%`
+                return `${item.name} ${item.data}个 ${(item.percent * 100).toFixed(2)}%`
               }
             },
             data: [item.data]

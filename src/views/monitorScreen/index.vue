@@ -148,7 +148,8 @@ export default {
           this.deviceList.push({
             address: item.address,
             image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
-            id: item.id
+            id: item.id,
+            name: item.name
           })
         })
       }

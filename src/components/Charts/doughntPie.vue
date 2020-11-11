@@ -23,6 +23,11 @@ export default {
     height: {
       type: String,
       default: '100%'
+    },
+    chartData: {
+      type: Array,
+      // eslint-disable-next-line vue/require-valid-default-prop
+      default: []
     }
   },
   data() {
@@ -30,8 +35,15 @@ export default {
       chart: null
     }
   },
+  watch: {
+    chartData: function(newValue) {
+      this.chartData = newValue
+      console.log('newValue', newValue)
+      this.initChart()
+    }
+  },
   mounted() {
-    this.initChart()
+    this.chart = echarts.init(document.getElementById(this.id))
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -42,32 +54,54 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(document.getElementById(this.id))
       const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'horizontal',
+          // right: 0,
+          // x: 0, // '80%',
+          // y: 0, // '50%',
+          bottom: 20,
+          icon: 'circle',
+          iconSize: 10,
+          data: this.chartData.map(({ name }) => name),
+          textStyle: {
+            fontSize: 10,
+            color: '#9b9b9b'
+          }
+        },
+        color: ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#36CBCB'],
         series: [
           {
             name: '访问来源',
             type: 'pie',
             radius: ['50%', '70%'],
+            center: ['50%', '40%'],
             avoidLabelOverlap: false,
             label: {
               show: false,
-              position: 'center'
+              position: 'center',
+              formatter: '{b}\n{c}个({d}%)',
+              fontSize: 12,
+              color: '#333'
             },
             emphasis: {
               label: {
                 show: true,
-                fontSize: '30',
+                fontSize: '16',
                 fontWeight: 'bold'
               }
             },
             labelLine: {
-              show: false
+              show: true
             },
-            data: [
-              { value: 335, name: '直接访问' },
-              { value: 310, name: '邮件营销' }
-            ]
+            data: this.chartData.map(({ data, name }) => ({
+              value: data,
+              name
+            }))
           }
         ]
       }
