@@ -66,7 +66,7 @@
     </div>
     <div class="configBtnBox">
       <el-button class="configCancleBtn" plain @click="cancleAlgorithm()">取消</el-button>
-      <el-button class="configBtn " type="success" plain @click="saveAlgorithm()">保存</el-button>
+      <el-button class="configBtn " type="primary" plain @click="saveAlgorithm()">保存</el-button>
     </div>
   </div>
 </template>

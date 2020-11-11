@@ -10,14 +10,14 @@
                 {{ v.cnName }}
               </span>
             </div>
-            <div class="tabBox">
+            <!-- <div class="tabBox">
               <div v-for="(v,k) in taskData" :key="`${k}_${k}`" :class="activeAlgorithm === k ? 'btnCon on' : 'btnCon'">
                 {{ v.description }}
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="videoList">
-            <div class="videoInfo">
+            <!-- <div class="videoInfo">
               <span class="infoName">
                 已配置视频列表
               </span>
@@ -27,26 +27,71 @@
               <span v-else class="infoDetail">
                 (已配置视频数：0路，已配置视频数占比：0%)
               </span>
-            </div>
-            <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
+            </div> -->
+            <!-- <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
               <li v-for="(v,k) in videoWithConfig" :key="k" >
                 {{ v.name }}
               </li>
-            </ul>
+            </ul> -->
+            <el-table
+              v-if=" videoWithConfig && videoWithConfig.length > 0 "
+              :data="videoWithConfig"
+              :header-cell-class-name="'tableRowClassHeader'"
+              style="width: 100%">
+              <el-table-column
+                prop="id"
+                label="设备号"
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="设备名称"
+                align="center"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="online"
+                label="设备状态"
+                align="center"
+                width="80">
+                <template slot-scope="scope"> {{ getStatus(scope.row.online) }}</template>
+              </el-table-column>
+              <!-- <el-table-column
+                prop="online"
+                label="负责人"
+                align="center">
+              </el-table-column> -->
+              <el-table-column
+                prop="address"
+                label="设备地址"
+                align="center">
+              </el-table-column>
+            </el-table>
             <div v-else class="nodata">
               暂无已配置视频
             </div>
+            <pagination
+              v-show="listtotal>0"
+              :total="listtotal"
+              :page.sync="listpage"
+              :limit.sync="listlimit"
+              :pager-count="5"
+              small
+              layout="prev, pager, next"
+              @pagination="listpageChange"
+            />
           </div>
         </el-tab-pane>
         <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
           <el-row>
-            <el-col :span="7" class="videoQueryBox">
+            <el-col :span="6" class="videoQueryBox">
               <div class="videoTotalBox">
                 <div class="videoTotal">
                   <span class="videoTotalText">视频列表</span>
                   <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
                 </div>
-                <el-input v-model="queryKeyword" placeholder="请输入关键字" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
+                <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
 
               </div>
               <ul class="videoResult">
@@ -66,10 +111,9 @@
               />
             </el-col>
             <el-col :span="17" class="algorithmConfigList totalLine">
-              <div v-if="algorithmList.length>0">
-                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
+              <div v-if="algorithmList.length>0" class="algorithmBox">
+                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
                 <div v-show="!canvasShowStatus" class="listBtnBox">
-                  <!-- <el-button @click="applyAlgorithms(false)">取消</el-button> -->
                   <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
                 </div>
               </div>
@@ -116,13 +160,17 @@ export default {
       limit: 20,
       queryKeyword: '',
       canvasShowStatus: false,
-      controlShow: false
+      controlShow: false,
+      listtotal: 0,
+      listpage: 1,
+      listlimit: 10
     }
   },
   watch: {
     limit() {
       this.page = 1
       this.pageChange()
+      this.listpageChange()
     }
   },
   mounted() {},
@@ -146,8 +194,8 @@ export default {
       const query = {
         cascade: true,
         page: {
-          index: 1,
-          size: 9999999
+          index: this.listpage,
+          size: this.listlimit
         },
         params: {}
       }
@@ -168,6 +216,7 @@ export default {
           this.pageLoading = false
           this.videoWithConfig = res.body.data.configCameras
           this.totalCameras = res.body.data.totalCameras
+          this.listtotal = res.body.data.configCameras ? res.body.data.configCameras.length : 0
         }
       })
     },
@@ -214,7 +263,7 @@ export default {
       this.algorithmList = res.data
       this.controlShow = TextTrackCue
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
-      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
+      //   this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
       this.pageLoading = false
     },
     saveUpdatePick(item) {
@@ -255,8 +304,8 @@ export default {
         console.log('二维数组---', this.algorithmListTwoDim)
         var params = []
         // var flag = true
-        for (var i = 0; i < nowAlgorithmList.length; i++) {
-          var algorithmObject = nowAlgorithmList[i]
+        for (var i = 0; i < this.algorithmList.length; i++) {
+          var algorithmObject = this.algorithmList[i]
           var param = {
             taskId: algorithmObject.id,
             id: algorithmObject.id,
@@ -350,6 +399,13 @@ export default {
     pageChange(obj) {
       this.page = obj.page
       this.getList()
+    },
+    listpageChange(obj) {
+      this.listpageChange = obj.page
+      this.getTaskList()
+    },
+    getStatus(status) {
+      return status === 1 ? '在线' : '离线'
     }
   }
 }
@@ -358,13 +414,14 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    // height: 100%;
+    height: 100%;
     .algorithmConfig{
         background: #fff;
-        // height: 100%;
+        height: 100%;
+        overflow: auto;
     }
     // /deep/.el-tabs__header{
-    //     margin: 0 0 5px;
+    //     margin: 5px 0 5px;
     // }
     // /deep/.el-tabs__item{
     //     height: 40px;
@@ -429,6 +486,11 @@ export default {
     .videoList{
         margin-top: 20px;
         padding: 0 22px;
+        /deep/.el-table__header-wrapper{
+            // border-radius: 5px;
+            border-top-right-radius: 7px;
+            border-top-left-radius: 7px;
+        }
     }
     .videoInfo{
         .infoName{
@@ -443,6 +505,7 @@ export default {
     //算法配置
     .videoContainerBox{
         margin-bottom: 15px;
+        position: relative;
     }
     .totalLine{
         border-left: 1px solid #EEE;
@@ -450,11 +513,23 @@ export default {
     .videoQueryBox{
         position: relative;
     }
-    /deep/.pagination-container .showTotal{
-        display: none;
+    .videoQueryBox{
+        /deep/.pagination-container .showTotal{
+            display: none;
+        }
+        /deep/.pagination-container{
+            margin: 5px 0 0;
+        }
     }
+
+    /deep/.pagination-container .el-pagination{
+        position: inherit;
+        // float:right;
+        margin-left:auto;
+    }
+
     .videoTotalBox{
-        padding:20px;
+        padding:10px;
     }
     .videoTotal{
         position: relative;
@@ -477,7 +552,7 @@ export default {
         // flex-wrap: wrap;
         list-style: none;
         padding: 0 20px;
-        margin: 0 0 20px;
+        margin: 0 0 5px;
         li{
             margin: 7px 20px 7px 10px;
             cursor: pointer;
@@ -499,9 +574,23 @@ export default {
         margin-left: 30px;
     }
     .algorithmConfigList{
+        margin-left: 2.083335%;
+        padding-left: 2.083335%;
         .test{
-            width: 828px;
-            margin: 0 auto 20px;
+            // padding-left: 5px;
+        }
+        .configBox{
+            display: inline-block;
+        }
+        .config-info{
+            // display:inline-block;
+            min-width: 840px;
+            // margin: 0 auto;
+            // font-size: 0;
+            // padding: 10px;
+        }
+        .configchangebox{
+             margin: 20px auto;
         }
     }
 }

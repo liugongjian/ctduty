@@ -2,15 +2,29 @@
   <div class="list">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
-        <div class="pull-right">
+        <div class="pull-right alarmmsgright">
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="请输入摄像头地址"
+            class="filter-item alarmInp"
+            style="width: 70%; height: 32px"
+            @keyup.enter.native="searchAlarm"
+          >
+          </el-input>
           <el-button
-            class="filter-item"
-            style="font-size:12px"
+            class="filter-item searchsure"
+            style="font-size:12px; "
+            icon="el-icon-search"
+            @click="searchAlarm"
+          ></el-button>
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px;"
             icon="el-icon-refresh"
-            @click="onClear"
-          >重置</el-button>
+            @click="resetQuery"
+          >重置</button>
         </div>
-        <div class="pull-left">
+        <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
             <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
           </div>
@@ -18,7 +32,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:250 + 'px'}"
+              :style="{width:178 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -30,11 +44,11 @@
             ></el-date-picker>
           </div>
           <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">开始时间:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px',height:'10px'}"
+              :style="{width:95 + 'px',height:'32px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -50,7 +64,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px'}"
+              :style="{width:95 + 'px', height: 32 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -63,7 +77,7 @@
 
           <el-select
             v-model="formInline.typeValue"
-            style="width:100px; margin-left:10px; margin-right: 10px"
+            style="width:95px; margin-left:10px; margin-right: 10px"
             size="mini"
             class="filter-item"
             @change="checkModel"
@@ -77,15 +91,14 @@
           </el-select>
           <el-button
             v-waves
-            class="filter-item"
+            class="filter-item sureItem"
             size="mini"
             type="warning"
             @click="onSearch"
-          >{{ '搜索' }}</el-button>
+          >{{ '确定' }}</el-button>
         </div>
       </div>
       <div>
-        <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条</div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
@@ -97,19 +110,19 @@
               fit
               @selection-change="handleSelectionChange"
             >
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'告警ID'"
                 align="center"
                 min-width="7.5%"
                 prop="id"
-              ></el-table-column>
+              ></el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
                 :label="'时间'"
                 align="center"
-                min-width="7.5%"
+                min-width="4%"
                 prop="createTime"
               ></el-table-column>
               <el-table-column
@@ -121,7 +134,7 @@
                 prop="type"
                 width="100"
               ></el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'内容'"
                 align="center"
@@ -132,13 +145,12 @@
                 <template slot-scope="scope">
                   <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
                 align="center"
-                min-width="5%"
-                width="100"
+                min-width="4%"
               >
                 <template slot-scope="scope">
                   <el-tag
@@ -146,8 +158,21 @@
                   >{{ scope.row.label === 1 ? '白名单':scope.row.label === 2? '黑名单':'其他' }}</el-tag>
                 </template>
               </el-table-column>
+              <el-table-column
+                :show-overflow-tooltip="true"
+                :label="'摄像头地址'"
+                align="center"
+                min-width="8%"
+                prop="camera.address"
+              >
+                <template slot-scope="scope">
+                  <span
+                    style="text-indent:30px"
+                  >{{ scope.row.camera ? scope.row.camera.address:'-' }}</span>
+                </template>
+              </el-table-column>
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
-              <el-table-column :label="'图片'" min-width="10%">
+              <el-table-column :label="'图片'" align="center" min-width="6%">
                 <template slot-scope="scope">
                   <!-- <el-popover
                     placement="left"
@@ -156,24 +181,23 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
                     <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
                   </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)" />
+                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'处理人'"
+                :label="'算法名称'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
-                width="100"
+                prop="taskId"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:30px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.taskId ? scope.row.taskId:'-' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column
+              <!--    <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理结果'"
                 align="center"
@@ -186,11 +210,11 @@
                   <svg-icon v-else class="untreated" icon-class="untreated2" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template>
-              </el-table-column>
-              <el-table-column min-width="12%" align="center" label="操作">
+              </el-table-column> -->
+              <el-table-column min-width="4%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
-                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">详情</el-button>
+                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -237,10 +261,10 @@
                   <span>{{ temp.username }}</span>
                 </el-form-item>
               </el-form>
-              <div slot="footer" class="dialog-footer">
+              <!-- <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogConfirm">正 常</el-button>
                 <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
-              </div>
+              </div> -->
             </el-dialog>
 
             <pagination
@@ -248,6 +272,8 @@
               :total="total"
               :page.sync="page"
               :limit.sync="limit"
+              :all-total="allTotal"
+              :alarmtext = "alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -282,6 +308,7 @@ export default {
   },
   data() {
     return {
+      alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
       temp: {
@@ -400,7 +427,8 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      // return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('HH:mm:SS')
     },
     formatType(row, column, cellValue) {
       if (this.warngingKind[cellValue]) {
@@ -452,34 +480,83 @@ export default {
 
       return result
     },
-    onClear() {
-      (this.value1 = [
-        new Date(new Date().setDate(new Date().getDate() - 29)),
-        new Date(new Date().setDate(new Date().getDate()))
-      ]),
-      (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
-      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
-      (this.value1 = ''),
-      (this.page = 1),
-      // this.startTime = '02:00'
-      // this.endTime = '05:00'
-      (this.formInline.typeValue = 'all')
-      // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-      // this.defaultTab=this.endDate
-      // this.getList(s1, end1, h1)
-      this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
-      this.defaultTab = this.tabsArr[0]
-      this.currentTab = this.defaultTab
-      this.getPushSetTime()
-      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-      // const h = this.formInline.typeValue
-      // this.getList(s, e, h)
+    searchAlarm() {
+      // console.log('ccccccccccccc', this.formInline.searchkey)
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
+      //  + ' ' + this.startTime + ':00'
+      let params
+      if (isNaN(this.formInline.searchkey)) {
+        params = {
+          cascade: true,
+          params: [
+            {
+              field: 'camera.address',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
+            },
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            }
+          ]
+        }
+      } else {
+        params = {
+          cascade: true,
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: this.formInline.searchkey
+            }
 
-      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-      // this.getTimeAllTotal(s1, e1, h)
+          ]
+        }
+      }
+      getAlertInfos(params).then(response => {
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
+        // this.formInline.searchkey = ''
+      })
     },
+
+    resetQuery() {
+      this.formInline.searchkey = ''
+      this.page = 1
+      this.limit = 10
+      this.getList()
+    },
+    // onClear() {
+    //   (this.value1 = [
+    //     new Date(new Date().setDate(new Date().getDate() - 29)),
+    //     new Date(new Date().setDate(new Date().getDate()))
+    //   ]),
+    //   (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
+    //   this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
+    //   (this.value1 = ''),
+    //   (this.page = 1),
+    //   // this.startTime = '02:00'
+    //   // this.endTime = '05:00'
+    //   (this.formInline.typeValue = 'all')
+    //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+    //   // this.defaultTab=this.endDate
+    //   // this.getList(s1, end1, h1)
+    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
+    //   this.defaultTab = this.tabsArr[0]
+    //   this.currentTab = this.defaultTab
+    //   this.getPushSetTime()
+    //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+    //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+    //   // const h = this.formInline.typeValue
+    //   // this.getList(s, e, h)
+
+    //   // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+    //   // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+    //   // this.getTimeAllTotal(s1, e1, h)
+    // },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
       // this.tabsArr = this.tabsDateArr
@@ -722,60 +799,14 @@ export default {
 </script>
 
 <style lang='scss'>
- /*  td {
-    padding:0 !important;
-    text-align: center;
-  } */
- .image {
-    width:100%;
-    height:39px;
-    img{
-     object-fit: contain;//cover;
-    // background-color: rgb(245, 247, 250);
-    }
-  }
- .title {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    font-family: MicrosoftYaHei;
-    font-size: 22px;
-    color: #333333;
-    font-weight: 500;
-    border-bottom: 1px solid #ccc;
-    background: #FFF;
-    padding: 0 20px;
-  }
-  .el-date-editor{
-    height: 28px !important;
-  }
-  .el-range-separator{
-
-    width: 30px !important;
-  }
-  .el-select-dropdown__item {
-      font-size: 12px !important;
-
-  }
-  .deal {
-    fill: #44bd32 !important;
-  }
-  .untreated{
-    fill: #E6A23C  !important;
-  }
-  .v-modal{
-    z-index: 999  !important;
-  }
-  .buttonText{
-    color: #409EFF;
-    text-decoration:underline;
-  }
-  .kb{
-    margin-block-end: 14px;
-  }
+ .el-input__inner {
+  text-indent: 0px;
+}
+.alaMesTable {
   td {
     padding: 0 !important;
   }
+}
 
 .title {
   width: 100%;
@@ -790,7 +821,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 32px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -802,7 +833,7 @@ export default {
   fill: #44bd32 !important;
 }
 .untreated {
-  fill: #e6a23c !important;
+  fill: #FF9832 !important;
 }
 .v-modal {
   z-index: 999 !important;
@@ -811,12 +842,84 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-.kb {
-  margin-block-end: 14px;
-}
+
 td {
   .el-image {
     vertical-align: middle;
   }
+}
+.sureItem {
+  height: 32px;
+}
+.alarmInp input.el-input__inner {
+  text-indent: 0px;
+  height: 34px !important;
+}
+.pull-left.alarmmsgleft {
+  width: 72%;
+}
+.pull-right.alarmmsgright {
+  position: relative;
+  width: 25%;
+  .clearsearch {
+    height: 34px;
+    width: 60px;
+    // margin-left: 16px;
+    border: 1px solid #ccc;
+    background: none;
+    border-radius: 3px;
+    outline:none;
+  }
+  .clearsearch:active {
+    background-color: rgb(243, 241, 241);
+  }
+}
+.searchsure {
+  position: absolute;
+  top: 1px;
+  height: 34px;
+  right: 30%;
+  // border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+.el-input--mini .el-input__inner {
+  height: 32px !important;
+  text-indent: 0px;
+  line-height: 32px !important;
+}
+.mesdialog {
+  .el-dialog__header {
+    padding: 0 !important;
+  }
+  .el-dialog .el-dialog__body {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  .el-dialog__footer {
+    padding: 0 !important;
+  }
+  .dialog-footer {
+    padding: 10px 0 !important;
+  }
+}
+.popfooter {
+  padding-top: 4px;
+  padding-left: 4px;
+  display: flex;
+  .popfooteraddress {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    width: 330px;
+  }
+  .popfootertime {
+    width: 150px;
+  }
+}
+.el-button--text {
+  color: #FA8334 !important;
+}
+.el-button--small {
+  font-size: 14px;
 }
 </style>

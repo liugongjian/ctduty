@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="canvasVisable==false" class="test">
-      <div v-for="(val, idx) in arr2" :key="idx" class="config-box">
-        <div class="config-info">
-          <div v-for="(item, index) in val" :key="item.id" class="aiConfigBox">
+    <div v-if="canvasVisable==false" class="test configBox">
+      <div class="config-info">
+        <div v-for="(item, index) in arr2" :key="item.id" class="config-box">
+          <div class="aiConfigBox">
             <div style="margin: 10px; vertical-align: middle">
               <span>
                 <el-image :src="getImgUrl(item.name)" class="iconBox" >
@@ -20,7 +20,7 @@
                 <el-checkbox
                   v-model="item.isPick"
                   @change="
-                    (checked) => checkboxchange(checked, item, index, idx)
+                    (checked) => checkboxchange(checked, item, index)
                   "
                 >
                   <span
@@ -48,7 +48,7 @@
                     item.isConfigAlready == false
                 "
                 size="small"
-                @click="operateCanvas(item, idx)"
+                @click="operateCanvas(item)"
               >待配置</el-button
               >
               <el-button
@@ -58,7 +58,7 @@
                     item.isConfigAlready == true
                 "
                 size="small"
-                @click="operateCanvas(item, idx)"
+                @click="operateCanvas(item)"
               >已配置,修改</el-button
               >
             </div>
@@ -131,7 +131,7 @@ export default {
       }
       return require('../../assets/icon/algorithmIcons/default.png')
     },
-    checkboxchange(bol, item, index, idx) {
+    checkboxchange(bol, item, index) {
       item.beforePickStatus = bol
 
       // 刚开始选择后来不选择,由true->false的转变
@@ -159,9 +159,9 @@ export default {
       }
       return item
     },
-    operateCanvas(item, idx) {
+    operateCanvas(item) {
       this.currentItem = item
-      this.currentNum = idx
+      // this.currentNum = idx
       this.currentId = item.id
       this.timer = new Date().getTime()
       this.canvasVisable = true
@@ -225,9 +225,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.config-info {
+
+.config-info{
   display: flex;
   flex-wrap: wrap;
+  // justify-content:space-around;
+  // flex-direction:row;
+  // justify-content:space-evenly;
+  // align-content:space-around;
+  align-content:space-around;
+  align-items:flex-start;
+}
+.config-box {
+  // flex:1;
+  margin: 10px;
 }
 .configchangebox {
   border-style: solid;
@@ -241,8 +252,9 @@ export default {
   border-style: solid;
   border-width: 1px;
   border-color: #d3d3d3;
+  border-radius: 4px;
   //   display: inline-block;
-  margin: 8px;
+  // margin: 8px;
   position: relative;
   .config-btn {
     position: absolute;
