@@ -186,8 +186,8 @@
               </el-table-column> -->
               <el-table-column min-width="6%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">详情</el-link>
-                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">处理</el-button>
+                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -816,5 +816,11 @@ td {
   .el-image {
     vertical-align: middle;
   }
+}
+.el-button--text {
+  color: #FA8334 !important;
+}
+.el-button--small {
+  font-size: 14px;
 }
 </style>
