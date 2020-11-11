@@ -17,7 +17,7 @@
             </div>
           </div>
           <div class="videoList">
-            <div class="videoInfo">
+            <!-- <div class="videoInfo">
               <span class="infoName">
                 已配置视频列表
               </span>
@@ -27,7 +27,7 @@
               <span v-else class="infoDetail">
                 (已配置视频数：0路，已配置视频数占比：0%)
               </span>
-            </div>
+            </div> -->
             <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
               <li v-for="(v,k) in videoWithConfig" :key="k" >
                 {{ v.name }}
@@ -40,13 +40,13 @@
         </el-tab-pane>
         <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
           <el-row>
-            <el-col :span="7" class="videoQueryBox">
+            <el-col :span="6" class="videoQueryBox">
               <div class="videoTotalBox">
                 <div class="videoTotal">
                   <span class="videoTotalText">视频列表</span>
                   <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
                 </div>
-                <el-input v-model="queryKeyword" placeholder="请输入关键字" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
+                <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
 
               </div>
               <ul class="videoResult">
@@ -66,10 +66,9 @@
               />
             </el-col>
             <el-col :span="17" class="algorithmConfigList totalLine">
-              <div v-if="algorithmList.length>0">
-                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmListTwoDim" @canvasShow="setCanvasShow"></VideoConfig>
+              <div v-if="algorithmList.length>0" class="algorithmBox">
+                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
                 <div v-show="!canvasShowStatus" class="listBtnBox">
-                  <!-- <el-button @click="applyAlgorithms(false)">取消</el-button> -->
                   <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
                 </div>
               </div>
@@ -214,7 +213,7 @@ export default {
       this.algorithmList = res.data
       this.controlShow = TextTrackCue
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
-      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
+      //   this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
       this.pageLoading = false
     },
     saveUpdatePick(item) {
@@ -255,8 +254,8 @@ export default {
         console.log('二维数组---', this.algorithmListTwoDim)
         var params = []
         // var flag = true
-        for (var i = 0; i < nowAlgorithmList.length; i++) {
-          var algorithmObject = nowAlgorithmList[i]
+        for (var i = 0; i < this.algorithmList.length; i++) {
+          var algorithmObject = this.algorithmList[i]
           var param = {
             taskId: algorithmObject.id,
             id: algorithmObject.id,
@@ -358,13 +357,14 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    // height: 100%;
+    height: 100%;
     .algorithmConfig{
         background: #fff;
-        // height: 100%;
+        height: 100%;
+        overflow: auto;
     }
     // /deep/.el-tabs__header{
-    //     margin: 0 0 5px;
+    //     margin: 5px 0 5px;
     // }
     // /deep/.el-tabs__item{
     //     height: 40px;
@@ -443,6 +443,7 @@ export default {
     //算法配置
     .videoContainerBox{
         margin-bottom: 15px;
+        position: relative;
     }
     .totalLine{
         border-left: 1px solid #EEE;
@@ -450,11 +451,29 @@ export default {
     .videoQueryBox{
         position: relative;
     }
+    // /deep/.el-tabs__header{
+    //     margin: 0;
+    // }
+    // /deep/.pagination-container{
+    //     margin: 5px 0 0;
+    // }
+    /deep/.pagination-container{
+        margin: 5px 0 0;
+    }
     /deep/.pagination-container .showTotal{
         display: none;
     }
+    /deep/.pagination-container .el-pagination{
+        position: inherit;
+        // float:right;
+        margin-left:auto;
+    }
+    // /deep/.el-input--medium .el-input__inner{
+    //     height: 30px;
+    //     line-height: 30px;
+    // }
     .videoTotalBox{
-        padding:20px;
+        padding:10px;
     }
     .videoTotal{
         position: relative;
@@ -477,7 +496,7 @@ export default {
         // flex-wrap: wrap;
         list-style: none;
         padding: 0 20px;
-        margin: 0 0 20px;
+        margin: 0 0 5px;
         li{
             margin: 7px 20px 7px 10px;
             cursor: pointer;
@@ -499,9 +518,23 @@ export default {
         margin-left: 30px;
     }
     .algorithmConfigList{
+        margin-left: 2.083335%;
+        padding-left: 2.083335%;
         .test{
-            width: 828px;
-            margin: 0 auto 20px;
+            // padding-left: 5px;
+        }
+        .configBox{
+            display: inline-block;
+        }
+        .config-info{
+            // display:inline-block;
+            min-width: 840px;
+            // margin: 0 auto;
+            // font-size: 0;
+            // padding: 10px;
+        }
+        .configchangebox{
+             margin: 20px auto;
         }
     }
 }
