@@ -749,8 +749,8 @@ export default {
   text-align: center;
 }
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 130px;
+  height: 180px;
   display: block;
 }
 .upload-demo {
@@ -794,7 +794,7 @@ export default {
   .image{
     
     width: 100%;
-    max-width: 250px;
+    // max-width: 250px;
     height:200px;
     margin-top:20px;
     img{
