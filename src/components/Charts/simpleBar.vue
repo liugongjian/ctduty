@@ -75,7 +75,7 @@ export default {
               return value.substring(0, 5) + '...'
             } else return value
           },
-          color: '#333'
+          color: '#4a4a4a'
         }
       }
       this.chart.setOption({
@@ -96,7 +96,7 @@ export default {
             }
           },
           axisLabel: {
-            color: '#333'
+            color: '#4a4a4a'
           },
           ...xAxis
         },
@@ -107,7 +107,7 @@ export default {
             }
           },
           axisLabel: {
-            color: '#333'
+            color: '#4a4a4a'
           },
           splitLine: {
             lineStyle: {
@@ -117,7 +117,7 @@ export default {
           },
           name: `单位/${unit}`,
           nameTextStyle: {
-            color: '#9B9B9B'
+            color: '#BFBFBF'
           },
 
           ...yAxis
