@@ -252,6 +252,7 @@ export default {
   border-style: solid;
   border-width: 1px;
   border-color: #d3d3d3;
+  border-radius: 4px;
   //   display: inline-block;
   // margin: 8px;
   position: relative;
