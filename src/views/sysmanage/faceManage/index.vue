@@ -187,7 +187,7 @@
                 >
                   <div
                     class="face-name"
-                  >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                  >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
                 </el-tooltip>
                 <el-tag
                   :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
@@ -761,12 +761,17 @@ export default {
   z-index: 9999999999999999999999 !important;
 }
 .face-col {
-  width: 11.2%;
-  margin: 10px 2.6%;
+  width: 14.8%;
+  margin: 10px 0.8%;
+}
+.face-card:hover {
+  .face-checkbox {
+    display: block;
+  }
 }
 .face-card {
   position: relative;
-  border-radius: 4%;
+  border-radius: 4px;
   img {
     width: 100%;
   }
@@ -811,9 +816,13 @@ export default {
   text-align: center;
 }
 .face-checkbox {
+  display: none;
   position: absolute;
   top: 4px;
   right: 5px;
+}
+.face-checkbox:active {
+  display: block;
 }
 </style>
 
