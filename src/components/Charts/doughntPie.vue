@@ -66,9 +66,11 @@ export default {
           // y: 0, // '50%',
           bottom: 20,
           icon: 'circle',
+          iconSize: 10,
           data: this.chartData.map(({ name }) => name),
           textStyle: {
-            fontSize: 10
+            fontSize: 10,
+            color: '#9b9b9b'
           }
         },
         color: ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#36CBCB'],
