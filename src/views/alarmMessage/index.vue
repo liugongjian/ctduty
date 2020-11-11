@@ -85,7 +85,6 @@
         </div>
       </div>
       <div>
-        <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条</div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
@@ -97,19 +96,19 @@
               fit
               @selection-change="handleSelectionChange"
             >
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'告警ID'"
                 align="center"
                 min-width="7.5%"
                 prop="id"
-              ></el-table-column>
+              ></el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
                 :label="'时间'"
                 align="center"
-                min-width="7.5%"
+                min-width="5%"
                 prop="createTime"
               ></el-table-column>
               <el-table-column
@@ -121,7 +120,7 @@
                 prop="type"
                 width="100"
               ></el-table-column>
-              <el-table-column
+              <!-- <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'内容'"
                 align="center"
@@ -132,13 +131,12 @@
                 <template slot-scope="scope">
                   <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
                 align="center"
                 min-width="5%"
-                width="100"
               >
                 <template slot-scope="scope">
                   <el-tag
@@ -147,7 +145,7 @@
                 </template>
               </el-table-column>
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
-              <el-table-column :label="'图片'" min-width="10%">
+              <el-table-column :label="'图片'" align="center" min-width="6%">
                 <template slot-scope="scope">
                   <!-- <el-popover
                     placement="left"
@@ -156,16 +154,15 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
                     <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
                   </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)" />
+                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
                 </template>
               </el-table-column>
-              <el-table-column
+              <!--    <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
                 prop="handler.username"
-                width="100"
               >
                 <template slot-scope="scope">
                   <span
@@ -186,11 +183,11 @@
                   <svg-icon v-else class="untreated" icon-class="untreated2" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template>
-              </el-table-column>
-              <el-table-column min-width="12%" align="center" label="操作">
+              </el-table-column> -->
+              <el-table-column min-width="6%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="editDialog(scope.row)">处理</el-link>
-                  <el-link type="primary" @click="delAlert(scope.row.id)">删除</el-link>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">处理</el-button>
+                  <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -248,6 +245,8 @@
               :total="total"
               :page.sync="page"
               :limit.sync="limit"
+              :all-total="allTotal"
+              :alarmtext = "alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -282,6 +281,7 @@ export default {
   },
   data() {
     return {
+      alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
       temp: {
@@ -400,7 +400,8 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      // return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('HH:mm:SS')
     },
     formatType(row, column, cellValue) {
       if (this.warngingKind[cellValue]) {
@@ -773,10 +774,6 @@ export default {
   .kb{
     margin-block-end: 14px;
   }
-  td {
-    padding: 0 !important;
-  }
-
 .title {
   width: 100%;
   height: 50px;
@@ -815,8 +812,15 @@ export default {
   margin-block-end: 14px;
 }
 td {
+  padding: 0 3px;
   .el-image {
     vertical-align: middle;
   }
+}
+.el-button--text {
+  color: #FA8334 !important;
+}
+.el-button--small {
+  font-size: 14px;
 }
 </style>
