@@ -815,13 +815,13 @@ export default {
   line-height: 50px;
   text-align: center;
 }
-.face-checkbox {
+.el-checkbox {
   display: none;
   position: absolute;
   top: 4px;
   right: 5px;
 }
-.face-checkbox:active {
+.is-checked {
   display: block;
 }
 </style>
