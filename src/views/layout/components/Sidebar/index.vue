@@ -40,7 +40,7 @@ export default {
     return {
       minLogo,
       maxLogo,
-      openeds: ['4', '5']
+      openeds: ['/sysMonitor', '/sysmanage']
     }
   },
   computed: {
