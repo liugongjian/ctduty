@@ -5,6 +5,7 @@
       :unique-opened="true"
       :default-active="$route.path"
       :collapse="isCollapse"
+      :default-openeds="['4','5']"
       mode="vertical"
       background-color="#304156"
       text-color="#bfcbd9"
