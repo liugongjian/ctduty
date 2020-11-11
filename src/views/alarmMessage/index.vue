@@ -5,7 +5,7 @@
         <div class="pull-right alarmmsgright">
           <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入摄像头地址"
+            placeholder="请输入..."
             class="filter-item alarmInp"
             style="width: 70%; height: 32px"
             @keyup.enter.native="searchAlarm"
@@ -122,7 +122,7 @@
                 :formatter="formatTime"
                 :label="'时间'"
                 align="center"
-                min-width="4%"
+                min-width="10%"
                 prop="createTime"
               ></el-table-column>
               <el-table-column
@@ -130,7 +130,7 @@
                 :formatter="formatType"
                 :label="'事件'"
                 align="center"
-                min-width="5%"
+                min-width="8%"
                 prop="type"
                 width="100"
               ></el-table-column>
@@ -150,7 +150,8 @@
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
                 align="center"
-                min-width="4%"
+                min-width="8%"
+                width="100"
               >
                 <template slot-scope="scope">
                   <el-tag
@@ -160,44 +161,40 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头地址'"
+                :label="'摄像头'"
                 align="center"
-                min-width="8%"
+                min-width="18%"
                 prop="camera.address"
-              >
+              ></el-table-column>
+              <el-table-column :label="'图片'" align="center" min-width="12%">
                 <template slot-scope="scope">
-                  <span
-                    style="text-indent:30px"
-                  >{{ scope.row.camera ? scope.row.camera.address:'-' }}</span>
-                </template>
-              </el-table-column>
-              <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.address"></el-table-column> -->
-              <el-table-column :label="'图片'" align="center" min-width="6%">
-                <template slot-scope="scope">
-                  <!-- <el-popover
-                    placement="left"
-                    trigger="hover"
-                  >
-                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
-                    <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
-                  </el-popover> -->
-                  <el-image :src="scope.row.imageCompress" style="width:112.2px; height:64px;" @click="openBig(scope.row.image)" />
+                  <el-popover placement="left" trigger="hover">
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
+                    <el-image
+                      slot="reference"
+                      :src="scope.row.imageCut"
+                      class="amimage"
+                      @click="openBig(scope.row.image)"
+                    />
+                  </el-popover>
+                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
                 </template>
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'算法名称'"
+                :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="taskId"
+                prop="handler.username"
+                width="100"
               >
                 <template slot-scope="scope">
                   <span
-                    style="text-indent:30px"
-                  >{{ scope.row.taskId ? scope.row.taskId:'-' }}</span>
+                    style="text-indent:10px"
+                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
                 </template>
               </el-table-column>
-              <!--    <el-table-column
+              <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理结果'"
                 align="center"
@@ -210,16 +207,30 @@
                   <svg-icon v-else class="untreated" icon-class="untreated2" />
                   <span>{{ scope.row.handlerId ? "已处理":"未处理" }}</span>
                 </template>
-              </el-table-column> -->
-              <el-table-column min-width="4%" align="center" label="操作">
+              </el-table-column>
+              <el-table-column min-width="12%" align="center" label="操作">
                 <template slot-scope="scope">
-                  <el-button type="text" size="small" @click="editDialog(scope.row)">详情</el-button>
+                  <el-button type="text" size="small" @click="editDialog(scope.row)">处理</el-button>
                   <el-button type="text" size="small" @click="delAlert(scope.row.id)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
 
-            <el-dialog
+            <pagination
+              v-show="total>0"
+              :total="total"
+              :page.sync="page"
+              :tabs-arr="tabsArr"
+              :all-total="allTotal"
+              :limit.sync="limit"
+              :alarmtext = "alarmtext"
+              @pagination="pageChange()"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
+    <el-dialog
               :visible.sync="dialogVisable"
               title="报警显示"
               width="750px"
@@ -266,20 +277,6 @@
                 <el-button type="warning" @click="dialogQuxiao">异 常</el-button>
               </div> -->
             </el-dialog>
-
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              :all-total="allTotal"
-              :alarmtext = "alarmtext"
-              @pagination="pageChange()"
-            />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -299,7 +296,7 @@ import {
   getAllTotal
 } from '@/api/alarm'
 export default {
-  components: { Pagination },
+  components: { Pagination},
   filters: {
     formatNull: function(val) {
       if (!val) return '无'
@@ -317,6 +314,7 @@ export default {
         image: '',
         imageCut: ''
       },
+      points: [],
       rowId: 0,
       defaultTab: '',
       state: '',
@@ -366,7 +364,7 @@ export default {
           return time.getTime() > Date.now() - 8.64e6
         }
       },
-      warngingKind: {
+warngingKind: {
         1: '行人',
         2: '机动车',
         3: '非机动车',
@@ -413,73 +411,6 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
-    openBig(url) {
-      window.open(url)
-    },
-    delAlert(d) {
-      this.rowId = d
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteAlert()
-      })
-    },
-    formatTime: function(row, column, cellValue) {
-      // return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
-      return moment(cellValue).format('HH:mm:SS')
-    },
-    formatType(row, column, cellValue) {
-      if (this.warngingKind[cellValue]) {
-        return this.warngingKind[cellValue]
-      }
-      return '人员'
-    },
-    timeChange() {
-      this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
-      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
-      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    },
-    getDayAll(start, end) {
-      var result = []
-      if (start === end) {
-        result.push(start)
-        return result
-      }
-      var beginDay = start.split('-')
-      var endDay = end.split('-')
-      var diffDay = new Date()
-      var dateList = new Array()
-      var i = 0
-      diffDay.setDate(beginDay[2])
-      diffDay.setMonth(beginDay[1] - 1)
-      diffDay.setFullYear(beginDay[0])
-      result.push(start)
-      while (i == 0) {
-        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000
-        diffDay.setTime(countDay)
-        dateList[2] = diffDay.getDate()
-        dateList[1] = diffDay.getMonth() + 1
-        dateList[0] = diffDay.getFullYear()
-        if (String(dateList[1]).length === 1) {
-          dateList[1] = '0' + dateList[1]
-        }
-        if (String(dateList[2]).length === 1) {
-          dateList[2] = '0' + dateList[2]
-        }
-        result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
-        if (
-          dateList[0] == endDay[0] &&
-          dateList[1] == endDay[1] &&
-          dateList[2] == endDay[2]
-        ) {
-          i = 1
-        }
-      }
-
-      return result
-    },
     searchAlarm() {
       // console.log('ccccccccccccc', this.formInline.searchkey)
       const s = this.currentTab + ' ' + this.startTime + ':00'
@@ -522,32 +453,101 @@ export default {
         // this.formInline.searchkey = ''
       })
     },
+    openBig(url) {
+      window.open(url)
+    },
+    delAlert(d) {
+      this.rowId = d
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteAlert()
+      })
+    },
+    formatTime: function(row, column, cellValue) {
+      // YYYY-MM-DD
+      return moment(cellValue).format('HH:mm:SS')
+    },
+    formatType(row, column, cellValue) {
+      if (this.warngingKind[cellValue]) {
+        return this.warngingKind[cellValue]
+      }
+      return '人员'
+    },
+    timeChange() {
+      this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
+      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
+      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+    },
+    getDayAll(start, end) {
+      var result = []
+      if (start === end) {
+        result.push(start)
+        return result
+      }
+      var beginDay = start.split('-')
+      var endDay = end.split('-')
+      var diffDay = new Date()
+      var dateList = new Array()
+      var i = 0
+      diffDay.setDate(beginDay[2])
+      diffDay.setMonth(beginDay[1] - 1)
+      diffDay.setFullYear(beginDay[0])
+      result.push(start)
+      while (i == 0) {
+        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000
+        diffDay.setTime(countDay)
+        dateList[2] = diffDay.getDate()
+        dateList[1] = diffDay.getMonth() + 1
+        dateList[0] = diffDay.getFullYear()
+        if (String(dateList[1]).length == 1) {
+          dateList[1] = '0' + dateList[1]
+        }
+        if (String(dateList[2]).length == 1) {
+          dateList[2] = '0' + dateList[2]
+        }
+        result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
+        if (
+          dateList[0] == endDay[0] &&
+          dateList[1] == endDay[1] &&
+          dateList[2] == endDay[2]
+        ) {
+          i = 1
+        }
+      }
 
+      return result
+    },
+    // 重置搜索
+    // 重置
     resetQuery() {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
       this.getList()
     },
+    // 重置起止时间的搜索
     // onClear() {
     //   (this.value1 = [
     //     new Date(new Date().setDate(new Date().getDate() - 29)),
     //     new Date(new Date().setDate(new Date().getDate()))
     //   ]),
-    //   (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
-    //   this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
-    //   (this.value1 = ''),
+    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
+    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
+    //   (this.value1 = ""),
     //   (this.page = 1),
-    //   // this.startTime = '02:00'
-    //   // this.endTime = '05:00'
-    //   (this.formInline.typeValue = 'all')
+    //     // this.startTime = '02:00'
+    //     // this.endTime = '05:00'
+    //   (this.formInline.typeValue = "all");
     //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     //   // this.defaultTab=this.endDate
     //   // this.getList(s1, end1, h1)
-    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    //   this.defaultTab = this.tabsArr[0]
-    //   this.currentTab = this.defaultTab
-    //   this.getPushSetTime()
+    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
+    //   this.defaultTab = this.tabsArr[0];
+    //   this.currentTab = this.defaultTab;
+    //   this.getPushSetTime();
     //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     //   // const h = this.formInline.typeValue
@@ -582,8 +582,14 @@ export default {
     },
 
     editDialog(v) {
+      setTimeout(() => {
+        this.closeDialog()
+      }, 0)
+      setTimeout(() => {
+        this.dialogVisable = true
+      }, 1)
       this.temp = Object.assign({}, v)
-      this.dialogVisable = true
+      this.points = JSON.parse(this.temp.box)
     },
     editCloseDialog() {
       this.editVisable = false
@@ -689,6 +695,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      // console.log('se', s , e)
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -700,24 +707,41 @@ export default {
         operator: oper,
         value: 'null'
       }
-      const param = h == 'all' ? [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': s || '', 'end': e || '' }
-      }, {
-        field: 'username',
-        operator: 'NULL'
-      }
-      ] : [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': s || '', 'end': e || '' }
-      }, {
-        field: 'username',
-        operator: 'NULL'
-      },
-      ss
-      ]
+      const param =
+        h == 'all'
+          ? [
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            },
+            {
+              field: 'username',
+              operator: 'NULL'
+            },
+            {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            }
+          ]
+          : [
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            },
+            {
+              field: 'username',
+              operator: 'NULL'
+            },
+            {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            },
+            ss
+          ]
       const params = {
         cascade: true,
         page: {
@@ -740,6 +764,7 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
+      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1
@@ -799,7 +824,7 @@ export default {
 </script>
 
 <style lang='scss'>
- .el-input__inner {
+.el-input__inner {
   text-indent: 0px;
 }
 .alaMesTable {
@@ -922,4 +947,10 @@ td {
 .el-button--small {
   font-size: 14px;
 }
+// .el-dialog__headerbtn {
+//   // display: none;
+//   position: relative;
+//   top: 4px;
+//   left: 85%;
+// }
 </style>
