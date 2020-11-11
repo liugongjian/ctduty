@@ -15,7 +15,8 @@ module.exports = {
                 // target: 'http://36.41.71.26:8920',
                 // target: 'http://192.168.1.222:10000',
                 // target:'http://192.168.30.27:9216',
-                target:' http://59.36.77.57:8666', //宁夏
+                // target:'http://59.36.77.57:8666', //宁夏生产环境
+                target: 'http://host31.880508.xyz:8666', //宁夏测试环境
                 changeOrigin: true,
                 pathRewrite: {
                     '^/nvsapi': ''
