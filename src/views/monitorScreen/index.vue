@@ -160,6 +160,11 @@ export default {
       }
     },
     getLiveList() {
+      /*  setTimeout(() => {
+        if (!this.deviceList.length) {
+          this.pageLoading = false
+        }
+      }, 40 * 1000) */
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
         this.deviceList = data.filter(i => i.rtmpuri).map(item => {
