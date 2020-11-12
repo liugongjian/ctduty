@@ -65,7 +65,14 @@ export default {
     initChart() {
       let { xAxis, yAxis } = this.chartData
       const { unit, series, tooltip } = this.chartData
-      const data = xAxis.type === 'value' ? xAxis.data : yAxis.data
+      let data
+      if (xAxis.type === 'value') {
+        data = xAxis.data
+        xAxis.minInterval = 1
+      } else if (yAxis.type === 'value') {
+        data = yAxis.data
+        yAxis.minInterval = 1
+      }
       let color = ['#36CBCB']
       if (this.id === 'times-bar') {
         color = ['#3AA0FF']
@@ -103,7 +110,7 @@ export default {
         },
         grid: {
           left: 20,
-          top: 50,
+          top: 20,
           bottom: 30,
           containLabel: true
         },
@@ -143,7 +150,7 @@ export default {
           // axisPointer: {
           //   show: true
           // },
-          name: `单位/${unit}`,
+          // name: `单位/${unit}`,
           nameTextStyle: {
             color: '#BFBFBF'
           },
