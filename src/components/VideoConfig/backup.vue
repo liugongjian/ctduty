@@ -4,54 +4,64 @@
       <div class="config-info">
         <div v-for="(item, index) in arr2" :key="item.id" class="config-box">
           <div class="aiConfigBox">
-            <div>
-              <el-checkbox
-                v-model="item.isPick"
-                @change="
-                  (checked) => checkboxchange(checked, item, index)
+            <div style="margin: 10px; vertical-align: middle">
+              <span>
+                <el-image :src="getImgUrl(item.name)" class="iconBox" >
+              </el-image></span>
+              <span style="font-weight: bold">{{ item.cnName }}</span>
+              <span
+                style="
+                  margin-right: 10px;
+                  vertical-align: middle;
+                  text-align: right;
+                  float:right;
                 "
               >
-                <span class="configName configGlobal">{{ item.cnName }}</span>
-              </el-checkbox>
-              <span class="configImg  configGlobal">
-                <el-image :src="getImgUrl(item.name)" class="iconBox" ></el-image>
-              </span>
-              <span class="configDesc configGlobal">
-                {{ item.description }}
-              </span>
-              <span class="config-btn">
-                <el-button
-                  v-show="item.isPick == true && item.isNeedConfig == false"
-                  size="small"
-                  class="changeBtn"
-                  disabled
-                >无需配置</el-button
-                >
-                <el-button
-                  v-show="
-                    item.isPick == true &&
-                      item.isNeedConfig == true &&
-                      item.isConfigAlready == false
+                <el-checkbox
+                  v-model="item.isPick"
+                  @change="
+                    (checked) => checkboxchange(checked, item, index)
                   "
-                  size="small"
-                  class="hasChange changeBtn"
-                  @click="operateCanvas(item)"
-                >待配置</el-button
                 >
-                <el-button
-                  v-show="
-                    item.isPick == true &&
-                      item.isNeedConfig == true &&
-                      item.isConfigAlready == true
-                  "
-                  size="small"
-                  class="hasChange changeBtn"
-                  @click="operateCanvas(item)"
-                >修改</el-button
-                >
+                  <span
+                    v-if="item.isPick == false || item.isPick == null"
+                  >未选择</span
+                  >
+                  <span v-else>已选择</span>
+                </el-checkbox>
               </span>
             </div>
-
+            <div style="margin: 20px 10px 20px 10px">
+              {{ item.description }}
+            </div>
+            <div class="config-btn">
+              <el-button
+                v-show="item.isPick == true && item.isNeedConfig == false"
+                size="small"
+                disabled
+              >无需配置</el-button
+              >
+              <el-button
+                v-show="
+                  item.isPick == true &&
+                    item.isNeedConfig == true &&
+                    item.isConfigAlready == false
+                "
+                size="small"
+                @click="operateCanvas(item)"
+              >待配置</el-button
+              >
+              <el-button
+                v-show="
+                  item.isPick == true &&
+                    item.isNeedConfig == true &&
+                    item.isConfigAlready == true
+                "
+                size="small"
+                @click="operateCanvas(item)"
+              >已配置,修改</el-button
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -59,6 +69,12 @@
     <div v-if="canvasVisable" class="configchangebox">
       <CanvasDraw :if-show="canvasVisable" :current-pick-device-id="deviceId" :current-pick-algorithm="currentItem" @saveAlgorithm="closeCanvas"></CanvasDraw>
     </div>
+    <!-- <el-dialog
+      :title="`${currentItem.cnName}配置`"
+      :visible.sync="canvasVisable"
+    >
+      <CanvasDraw :current-pick-device-id="deviceId" :current-pick-algorithm="currentItem" @saveAlgorithm="closeCanvas"></CanvasDraw>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -217,12 +233,25 @@ export default {
 <style lang="scss" scoped>
 
 .config-info{
-
+  display: flex;
+  flex-wrap: wrap;
+  // justify-content:space-around;
+  // flex-direction:row;
+  // justify-content:space-evenly;
+  // align-content:space-around;
+  align-content:space-around;
+  align-items:flex-start;
 }
 .config-box {
   // flex:1;
-  border-bottom: 1px solid #d3d3d3;
+  margin: 10px;
 }
+// .configchangebox {
+//   border-style: solid;
+//   border-width: 1px;
+//   width: 800px;
+//   margin: 10px 14px;
+// }
 .configchangebox{
   /deep/.el-dialog{
     width: 730px;
@@ -232,32 +261,19 @@ export default {
   }
 }
 .aiConfigBox {
-  height: 50px;
-  line-height: 50px;
+  width: 260px;
+  height: 140px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d3d3d3;
+  border-radius: 4px;
+  //   display: inline-block;
+  // margin: 8px;
   position: relative;
-  .configGlobal{
-    display: inline-block;
-  }
-  .configName{
-    width: 100px;
-    margin: 0 10px;
-    font-weight: bold;
-  }
-  .configDesc{
-    color: #666666;
-  }
   .config-btn {
     position: absolute;
-    right: 7px;
-    .changeBtn{
-      width: 66px;
-      text-align: center;
-      border-radius: 5px;
-    }
-    .hasChange{
-      border: 1px solid #FF9832;
-      color: #FF9832;
-    }
+    right: 5px;
+    bottom: 5px;
   }
 }
 

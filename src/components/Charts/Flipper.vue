@@ -96,7 +96,7 @@ export default {
   position: relative;
   max-width: 48px;
   min-width: 28px;
-  width:18%;
+  width:10%;
   height: 48px;
   line-height: 48px;
   border: solid 1px #3AA0FF;
@@ -104,7 +104,7 @@ export default {
   background: #fff;
   font-size: 36px;
   color: #fff;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.5); */
   text-align: center;
   font-family: 'Helvetica Neue';
 }

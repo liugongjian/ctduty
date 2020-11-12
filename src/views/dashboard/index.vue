@@ -20,7 +20,6 @@
             <div class="cameraPanel-footer">占比 {{ cameraOfflineRateText }}</div>
           </div>
         </div>
-        <!-- <div class="cameraPanel-footer"></div> -->
       </div>
       <div class="amount-flipper">
         <div class="overviews-itemTitle">今日检测结果统计</div>
@@ -41,10 +40,6 @@
       <div class="summaryBar">
         <div class="chart-title">智能算法应用概览</div>
         <SimpleBar id="algorith-pie" key="algorith-pie" :chart-data="taskAppliedByCameraListChartData"/>
-        <!-- <DoughntPie id="algorith-pie" key="algorith-pie" :chart-data="taskAppliedByCameraList"/> -->
-        <!-- <div>
-          <div><StackedBar id="summary-bar-chart" :chart-data="taskAppliedByCameraList" width="600px" height="100px"/></div>
-        </div> -->
       </div>
       <div class="chart1">
         <div class="chart-title">检测排行</div>
@@ -61,11 +56,6 @@
         :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
-        <!-- <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" style="text-align: center" prop="code">
-          <template slot-scope="scope">
-            <span>{{ scope.row.code }}</span>
-          </template>
-        </el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
           <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
         </el-table-column>
@@ -126,22 +116,12 @@
 </template>
 
 <script>
-import echarts from 'echarts'
 import Pagination from '@/components/Pagination'
 import Flipper from '@/components/Charts/Flipper'
 import StackedBar from '@/components/Charts/stackedBar'
 import SimpleBar from '@/components/Charts/simpleBar'
 import LineChart from '@/components/Charts/lineChart'
 import DoughntPie from '@/components/Charts/doughntPie'
-// 引入水波球
-import 'echarts-liquidfill'
-// 引入基本模板
-// const echarts = require('echarts/lib/echarts')
-// 引入柱状图组件
-require('echarts/lib/chart/bar')
-// 引入提示框和title组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo, getAlertStatics
 } from '@/api/dashboard'

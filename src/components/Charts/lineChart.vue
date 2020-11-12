@@ -76,7 +76,7 @@ export default {
           bottom: 30,
           containLabel: true
         },
-        color: ['#36CBCB'],
+        color: ['#2FC25B'],
         xAxis: {
           axisLine: {
             lineStyle: {
@@ -121,7 +121,11 @@ export default {
         series: [{
           data,
           type: 'line',
-          barMaxWidth: '30px'
+          smooth: true,
+          areaStyle: {
+            color: '#2FC25B',
+            opacity: 0.3
+          }
         }]
       })
     }
