@@ -38,8 +38,8 @@
       style="width: 120vw"
       @filter-change="filerStatus"
     >
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column label="公告标题">
+      <el-table-column align="center" type="index" label="序号"></el-table-column>
+      <el-table-column align="center" label="公告标题">
         <template slot-scope="row_data">
           <el-link
             type="primary"
@@ -47,15 +47,15 @@
           >{{ row_data.row.title }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="公告类型" prop="type">
+      <el-table-column align="center" label="公告类型" prop="type">
         <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
       </el-table-column>
-      <el-table-column label="状态" prop="state">
+      <el-table-column align="center" label="状态" prop="state">
         <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
       </el-table-column>
-      <el-table-column label="创建者" prop="creator.username"></el-table-column>
-      <el-table-column label="创建时间" prop="createTime"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+      <el-table-column align="center" label="创建者" prop="creator.username"></el-table-column>
+      <el-table-column align="center" label="创建时间" prop="createTime"></el-table-column>
+      <el-table-column align="center" :show-overflow-tooltip="true" :label="'操作'">
         <template slot-scope="row_data">
           <el-button
             type="text"
