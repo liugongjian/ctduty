@@ -237,7 +237,7 @@
       v-model="temp"
       :show-close="false"
       class="mesdialog"
-      style="height:360px;"
+      style="height:350px;"
     >
       <div style="width:500px;height:400px; padding: 10px 10px 0px">
         <div :model="temp" label-position="right" label-width="100px">
