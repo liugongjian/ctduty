@@ -74,7 +74,7 @@ export default {
         yAxis.minInterval = 1
       }
       let color = ['#36CBCB']
-      if (this.id === 'times-bar') {
+      if (this.id !== 'times-bar') {
         color = ['#3AA0FF']
       }
       const categoryProps = {
