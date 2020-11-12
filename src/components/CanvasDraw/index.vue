@@ -1,5 +1,9 @@
 <template>
-  <el-dialog :visible.sync="ifShow" :title="`${currentPickAlgorithm.cnName}配置`">
+  <el-dialog
+    :visible.sync="ifShow"
+    :title="`${currentPickAlgorithm.cnName}配置`"
+    :before-close="cancleAlgorithm"
+  >
     <div class="box">
       <!-- <h3 style="text-align:center;">{{ currentPickAlgorithm.cnName }}配置</h3> -->
       <div class="buttoninfo">
