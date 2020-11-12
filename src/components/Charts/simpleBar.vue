@@ -152,7 +152,7 @@ export default {
         series: [{
           data,
           type: 'bar',
-          barMaxWidth: '30px',
+          barMaxWidth: '22px',
           ...series
         }]
       })

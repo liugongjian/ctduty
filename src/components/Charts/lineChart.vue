@@ -121,7 +121,11 @@ export default {
         series: [{
           data,
           type: 'line',
-          barMaxWidth: '30px'
+          smooth: true,
+          areaStyle: {
+            color: '#36CBCB',
+            opacity: 0.5
+          }
         }]
       })
     }
