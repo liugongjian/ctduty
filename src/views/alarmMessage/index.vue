@@ -12,13 +12,13 @@
           ></el-input>
           <el-button
             class="filter-item searchsure"
-            style="font-size:12px; "
+            style="font-size:12px; width: 16%"
             icon="el-icon-search"
             @click="searchAlarm"
           ></el-button>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px;"
+            style="font-size:12px; width: 20%"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -972,6 +972,11 @@ td {
 .sureItem {
   height: 32px;
 }
+.alarmInp {
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
 .alarmInp input.el-input__inner {
   text-indent: 0px;
   height: 34px !important;
@@ -1002,7 +1007,7 @@ td {
   position: absolute;
   top: 1px;
   height: 34px;
-  right: 21%;
+  right: 22%;
   // border-left: none;
   border-radius: 4px;
 }
