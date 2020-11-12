@@ -92,9 +92,11 @@ export default {
 
 <style>
 .M-Flipper {
-  display: inline-block;
+  /* display: inline-block; */
   position: relative;
-  width: 34px;
+  max-width: 48px;
+  min-width: 28px;
+  width:18%;
   height: 48px;
   line-height: 48px;
   border: solid 1px #3AA0FF;
