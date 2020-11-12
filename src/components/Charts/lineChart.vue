@@ -63,51 +63,20 @@ export default {
   },
   methods: {
     initChart() {
-      let { xAxis, yAxis } = this.chartData
-      const { unit, series, tooltip } = this.chartData
-      const data = xAxis.type === 'value' ? xAxis.data : yAxis.data
-      let color = ['#36CBCB']
-      if (this.id === 'times-bar') {
-        color = ['#3AA0FF']
-      }
-      const categoryProps = {
-        boundaryGap: true,
-        axisTick: {
-          alignWithLabel: true
-        },
-        axisLabel: {
-          formatter: function(value, index) {
-            if (value.length && value.length > 6) {
-              return value.substring(0, 4) + '...'
-            } else return value
-          },
-          color: '#4a4a4a'
-        }
-      }
-      if (xAxis.type === 'category') {
-        xAxis = {
-          ...categoryProps,
-          ...xAxis
-        }
-      } else if (yAxis.type === 'category') {
-        yAxis = {
-          ...categoryProps,
-          ...yAxis
-        }
-      }
+      const { xAxis, yAxis, unit } = this.chartData
+      const data = yAxis.data
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{b0}: {c0}' + unit,
-          ...tooltip
+          formatter: '{b0}: {c0}' + unit
         },
         grid: {
-          left: 20,
+          left: 0,
           top: 50,
           bottom: 30,
           containLabel: true
         },
-        color, // ['#1890FF', '#69C0FF', '#BAE7FF', '#DEF3FF'], // '#0050B3'
+        color: ['#36CBCB'],
         xAxis: {
           axisLine: {
             lineStyle: {
@@ -116,12 +85,15 @@ export default {
           },
           axisLabel: {
             color: '#4a4a4a'
+            // rotate: 30
           },
-          splitLine: {
-            lineStyle: {
-              color: '#E8E8E8',
-              type: 'dotted'
-            }
+          axisPointer: {
+            show: true,
+            type: 'line'
+          },
+          boundaryGap: false,
+          axisTick: {
+            alignWithLabel: true
           },
           ...xAxis
         },
@@ -140,9 +112,6 @@ export default {
               type: 'dotted'
             }
           },
-          // axisPointer: {
-          //   show: true
-          // },
           name: `单位/${unit}`,
           nameTextStyle: {
             color: '#BFBFBF'
@@ -151,9 +120,8 @@ export default {
         },
         series: [{
           data,
-          type: 'bar',
-          barMaxWidth: '30px',
-          ...series
+          type: 'line',
+          barMaxWidth: '30px'
         }]
       })
     }
