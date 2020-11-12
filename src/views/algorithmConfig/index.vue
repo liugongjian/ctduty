@@ -4,7 +4,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="配置详情" name="first">
           <div class="tabCon">
-            <p>智能算法</p>
+            <!-- <p>智能算法</p> -->
             <div class="btnBox">
               <span v-for="(v,k) in taskData" :key="k" :class="activeAlgorithm === k ? 'btnTab active' : 'btnTab'" @click="changeActive(k,v.id)">
                 {{ v.cnName }}
@@ -310,9 +310,9 @@ export default {
         console.log('调用后端接口保存标注坐标列表')
         // 先组装参数，包含删除、增加、修改
         // var allDatas = []
-        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
-        console.log('现在转化成一维数组', nowAlgorithmList)
-        console.log('二维数组---', this.algorithmListTwoDim)
+        // var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
+        // console.log('现在转化成一维数组', nowAlgorithmList)
+        // console.log('二维数组---', this.algorithmListTwoDim)
         var params = []
         // var flag = true
         for (var i = 0; i < this.algorithmList.length; i++) {
@@ -364,6 +364,7 @@ export default {
               taskInstParams: params
             }
             // console.log('最终组装的参数是-----', finalBody)
+            this.pageLoading = true
             this.configTask(finalBody)
           }
           this.configVisable = false
@@ -398,6 +399,7 @@ export default {
       const res = await client.configInstance(body)
       //   console.log('任务实例配置调用接口返回-----', res)
       if (res.code === 0) {
+        this.pageLoading = false
         this.$message({
           message: '更新成功',
           type: 'success'
@@ -438,12 +440,15 @@ export default {
     //     height: 40px;
     //     line-height: 40px;
     // }
+    // ::-webkit-scrollbar {
+    //     display: none;
+    // }
     /deep/.el-tabs__content{
         overflow: auto;
     }
     .tabCon{
         padding: 0 22px;
-        min-width: 1000px;
+        min-width: 900px;
         p{
             font-size: 16px;
             color: #333333;
@@ -582,6 +587,9 @@ export default {
             div{
                 padding: 2px 5px;
                 display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             &.active{
                 div{

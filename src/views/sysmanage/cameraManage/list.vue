@@ -48,22 +48,23 @@
       <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
-          width="55">
+          width="55"
+          align="center">
         </el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" prop="name"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" prop="online">
+        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" align="center" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头状态'" align="center" prop="online">
           <template slot-scope="scope">
             <svg-icon v-if="scope.row.online" style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="offline" />
             <svg-icon v-else style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="online" />
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" align="center" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" align="center" prop="longitude"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" align="center" prop="latitude"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" prop="createTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :formatter="formatTime" :label="'添加时间'" align="center" prop="createTime"></el-table-column>
         <!--  <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
             <svg-icon v-if="scope.row.isDeal" class="deal" icon-class="deal" />
@@ -72,7 +73,7 @@
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
             <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
