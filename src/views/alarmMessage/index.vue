@@ -686,6 +686,9 @@ export default {
       }, 1);
       this.temp = Object.assign({}, v);
       this.points = JSON.parse(this.temp.box);
+      if (this.temp.box == null) {
+        this.points = "";
+      }
     },
     editCloseDialog() {
       this.editVisable = false;
