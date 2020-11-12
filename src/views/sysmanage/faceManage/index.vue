@@ -747,7 +747,7 @@ export default {
 }
 .avatar {
   width: 160px;
-  height: 220px;
+  height: 210px;
   display: block;
 }
 .upload-demo {

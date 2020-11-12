@@ -7,7 +7,7 @@
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
-            style="width: 70%; height: 32px"
+            style="width: 60%; height: 32px"
             @keyup.enter.native="searchAlarm"
           >
           </el-input>
@@ -32,7 +32,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:178 + 'px', height: 32 + 'px'}"
+              :style="{width:170 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -75,7 +75,7 @@
             ></el-time-picker>
           </div>
 
-          <el-select
+          <!-- <el-select
             v-model="formInline.typeValue"
             style="width:95px; margin-left:10px; margin-right: 10px"
             size="mini"
@@ -88,7 +88,7 @@
               :label="item.name"
               :value="item._id"
             ></el-option>
-          </el-select>
+          </el-select> -->
           <el-button
             v-waves
             class="filter-item sureItem"
@@ -342,7 +342,7 @@ import {
   getAllTotal
 } from '@/api/alarm'
 export default {
-  components: { Pagination },
+  components: { Pagination},
   filters: {
     formatNull: function(val) {
       if (!val) return '无'
@@ -379,11 +379,11 @@ export default {
         searchkey: '',
         typeValue: 'all'
       },
-      typeOptions: [
-        { name: '所有警告', _id: 'all' },
-        { name: '已处理', _id: 'settled' },
-        { name: '未处理', _id: 'unsettled' }
-      ],
+      // typeOptions: [
+      //   { name: '所有警告', _id: 'all' },
+      //   { name: '已处理', _id: 'settled' },
+      //   { name: '未处理', _id: 'unsettled' }
+      // ],
 
       listLoading: false,
       filteredValue: [],
@@ -757,18 +757,18 @@ export default {
 
     // 获取多天告警总数
     getTimeAllTotal(s, e, h) {
-      let oper
-      if (h === 'settled') {
-        oper = false
-      } else if (h === 'unsettled') {
-        oper = true
-      } else if (h === 'all') {
-        oper = null
-      }
+      // let oper
+      // if (h === 'settled') {
+      //   oper = false
+      // } else if (h === 'unsettled') {
+      //   oper = true
+      // } else if (h === 'all') {
+      //   oper = null
+      // }
       const params = {
         start: s,
         end: e,
-        null: oper
+        null: null
       }
 
       getAllTotal(params).then(response => {
@@ -965,12 +965,15 @@ td {
   height: 34px !important;
 }
 .pull-left.alarmmsgleft {
-  width: 72%;
+  width: 75%;
 }
 .pull-right.alarmmsgright {
   position: relative;
   width: 25%;
   .clearsearch {
+    position: absolute;
+    top: 0px;
+    right: 0px;
     height: 34px;
     width: 60px;
     // margin-left: 16px;
@@ -987,14 +990,17 @@ td {
   position: absolute;
   top: 1px;
   height: 34px;
-  right: 30%;
+  right: 21%;
   // border-left: none;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
 }
 .el-input--mini .el-input__inner {
   height: 32px !important;
   text-indent: 0px;
   line-height: 32px !important;
+}
+.el-range-editor.el-input__inner {
+  padding: 5px 5px;
 }
 .mesdialog {
   .el-dialog__header {

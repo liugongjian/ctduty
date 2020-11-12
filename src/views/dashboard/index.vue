@@ -26,17 +26,13 @@
         <div class="overviews-itemTitle">今日检测结果统计</div>
         <div class="flip-container">
           <Flipper ref="millionFlag" />
-          <span class="number-split" />
+          <div class="number-split" />
           <Flipper ref="thousand100" />
-          <span class="span5px" />
           <Flipper ref="thousand10" />
-          <span class="span5px" />
           <Flipper ref="thousand" />
-          <span class="number-split" />
+          <div class="number-split" />
           <Flipper ref="hundred" />
-          <span class="span5px" />
           <Flipper ref="tenFlag" />
-          <span class="span5px" />
           <Flipper ref="digitFlag" />
         </div>
       </div>
@@ -415,7 +411,7 @@ export default {
 <style lang="scss" scoped>
 $iconHeight: 80px;
 $cameraWidth: 220px;
-$flipperWidth: 320px;
+$flipperWidth: 280px;
 $summaryBarWidth: 600px;
 .dashboard-container{
   padding:20px;
@@ -425,10 +421,6 @@ $summaryBarWidth: 600px;
   .span5px{
     display:inline-block;
     width: 3px;
-  }
-  .number-split{
-    display:inline-block;
-    width: 7px;
   }
   .number-split::before{
     content: ",";
@@ -523,7 +515,15 @@ $summaryBarWidth: 600px;
       padding:20px;
       .flip-container{
         margin: 10px auto;
-        width:$flipperWidth;
+        // width:$flipperWidth;
+        width:100%;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        .M-Flipper{
+          flex-shrink: 1;
+          margin:0 5px;
+        }
       }
     }
   }
