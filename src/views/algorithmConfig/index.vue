@@ -122,8 +122,9 @@
             </el-col>
             <el-col :span="17" class="algorithmConfigList totalLine">
               <div v-if="algorithmList.length>0" class="algorithmBox">
-                <VideoConfig v-if="controlShow" :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
-                <div v-show="!canvasShowStatus" class="listBtnBox">
+                <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
+                <div class="listBtnBox">
+                  <span class="totalNum">算法总计：{{ algorithmList.length }}</span>
                   <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
                 </div>
               </div>
@@ -272,7 +273,7 @@ export default {
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
       this.algorithmList = res.data
-      this.controlShow = TextTrackCue
+      this.controlShow = true
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
       //   this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
       this.pageLoading = false
@@ -472,7 +473,7 @@ export default {
             text-align: center;
             padding: 5px;
             &.active{
-                background: #FA8334;
+                background:#FF9832;
                 border-radius: 5px;
                 color: #FFFFFF;
             }
@@ -585,7 +586,7 @@ export default {
             margin: 7px 20px 7px 10px;
             cursor: pointer;
             div{
-                padding: 2px 5px;
+                padding: 5px 7px;
                 display: inline-block;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -593,7 +594,7 @@ export default {
             }
             &.active{
                 div{
-                    background: #FA8334;
+                    background: #FF9832;
                     border-radius: 2px;
                     color: #FFFFFF;
                 }
@@ -601,8 +602,20 @@ export default {
         }
     }
     .listBtnBox{
-        // text-align: center;
-        margin-left: 30px;
+        // text-align: right;
+        position: relative;
+        margin-top: 20px;
+        .totalNum{
+            color: #666666;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        button{
+            position: absolute;
+            right: 10px;
+            width: 78px;
+        }
     }
     .algorithmConfigList{
         margin-left: 2.083335%;
@@ -611,11 +624,11 @@ export default {
             // padding-left: 5px;
         }
         .configBox{
-            display: inline-block;
+            // display: inline-block;
         }
         .config-info{
             // display:inline-block;
-            min-width: 840px;
+            // min-width: 840px;
             // margin: 0 auto;
             // font-size: 0;
             // padding: 10px;

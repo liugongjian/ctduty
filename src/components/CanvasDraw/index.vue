@@ -1,80 +1,86 @@
 <template>
-  <div class="box">
-    <h3 style="text-align:center;">{{ currentPickAlgorithm.cnName }}配置</h3>
-    <div class="buttoninfo">
-      <el-tooltip v-show="lineFlag" content="画直线">
-        <el-button :disabled="type == 1" class="buttonSize" @click="choose(1)">
-          <img src="../../assets/images/line.png" class="imageStyle" >
-        </el-button>
-      </el-tooltip>
-      <el-tooltip v-show="areaFlag" content="画矩形">
-        <el-button :disabled="type == 2" class="buttonSize" style="margin-left:0;" @click="choose(2)">
-          <img src="../../assets/images/rect.png" class="imageStyle" >
-        </el-button>
-      </el-tooltip>
-      <el-tooltip v-show="areaFlag" content="画多边形">
-        <el-button :disabled="type == 3" class="buttonSize" @click="choose(3)">
-          <img src="../../assets/images/polygon.png" class="imageStyle" >
-        </el-button>
-      </el-tooltip>
-
-      <span v-show="type!=1 && stepWallCheckShow" style="vertical-align:top" >
-        请选择标记类型
-        <el-select v-model="value">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </span>
-      <span>
-        <el-tooltip content="撤销上一个标记" style="margin-left: 10px">
-          <!-- <el-button @click="revoke"> 撤销 </el-button> -->
-          <el-button class="buttonSize" @click="revoke">
-            <img src="../../assets/images/revoke.png" class="imageStyle" >
-          </el-button>
-
-        </el-tooltip>
-        <el-tooltip content="清除画布" style="margin-left: 10px">
-          <!-- <el-button @click="resetTemp"> 清除 </el-button> -->
-          <el-button class="buttonSize" @click="resetTemp">
-            <img src="../../assets/images/clear.png" class="imageStyle" >
+  <el-dialog :visible.sync="ifShow" :title="`${currentPickAlgorithm.cnName}配置`">
+    <div class="box">
+      <!-- <h3 style="text-align:center;">{{ currentPickAlgorithm.cnName }}配置</h3> -->
+      <div class="buttoninfo">
+        <el-tooltip v-show="lineFlag" content="画直线">
+          <el-button :disabled="type == 1" class="buttonSize" @click="choose(1)">
+            <img src="../../assets/images/line.png" class="imageStyle" >
           </el-button>
         </el-tooltip>
-      </span>
-    </div>
-    <div class="canvas-box">
-      <canvas
-        id="myCanvas"
-        width="640px"
-        height="360px"
-        @mousedown="function (event) {
+        <el-tooltip v-show="areaFlag" content="画矩形">
+          <el-button :disabled="type == 2" class="buttonSize" style="margin-left:0;" @click="choose(2)">
+            <img src="../../assets/images/rect.png" class="imageStyle" >
+          </el-button>
+        </el-tooltip>
+        <el-tooltip v-show="areaFlag" content="画多边形">
+          <el-button :disabled="type == 3" class="buttonSize" @click="choose(3)">
+            <img src="../../assets/images/polygon.png" class="imageStyle" >
+          </el-button>
+        </el-tooltip>
+
+        <span v-show="type!=1 && stepWallCheckShow" style="vertical-align:top" class="chooseType">
+          请选择标记类型：
+          <el-select v-model="value">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </span>
+        <span class="handlebtn">
+          <el-tooltip content="撤销上一个标记">
+            <!-- <el-button @click="revoke"> 撤销 </el-button> -->
+            <el-button class="buttonSize" @click="revoke">
+              <!-- <img src="../../assets/images/revoke.png" class="imageStyle" > -->
+              <svg-icon icon-class="recall" class="svgBtn"/>
+            </el-button>
+
+          </el-tooltip>
+          <el-tooltip content="清除画布">
+            <!-- <el-button @click="resetTemp"> 清除 </el-button> -->
+            <el-button class="buttonSize" @click="resetTemp">
+              <!-- <img src="../../assets/images/clear.png" class="imageStyle" > -->
+              <svg-icon icon-class="delete" class="svgBtn"/>
+            </el-button>
+          </el-tooltip>
+        </span>
+      </div>
+      <div class="canvas-box">
+        <canvas
+          id="myCanvas"
+          width="640px"
+          height="360px"
+          @mousedown="function (event) {
                 mousedown(event);
                 }
             "
-        @mousemove="function (event) {
+          @mousemove="function (event) {
                 mousemove(event);
                 }
             "
-        @click="chooseAreaGraph"
-      ></canvas>
+          @click="chooseAreaGraph"
+        ></canvas>
+      </div>
+      <div v-if="tempChoosePoint.length>0" >
+        <h6 style="margin-left:72px;">当前选中坐标: {{ tempChoosePoint }}</h6>
+      </div>
+      <div class="configBtnBox">
+        <el-button class="configCancleBtn" @click="cancleAlgorithm()">取消</el-button>
+        <el-button class="configBtn" type="warning" @click="saveAlgorithm()">保存</el-button>
+      </div>
     </div>
-    <div v-if="tempChoosePoint.length>0" >
-      <h6 style="margin-left:72px;">当前选中坐标: {{ tempChoosePoint }}</h6>
-    </div>
-    <div class="configBtnBox">
-      <el-button class="configCancleBtn" plain @click="cancleAlgorithm()">取消</el-button>
-      <el-button class="configBtn " type="primary" plain @click="saveAlgorithm()">保存</el-button>
-    </div>
-  </div>
+  </el-dialog>
+
 </template>
 <script>
 import client from '@/api/vedioAlgo'
 import store from '@/store'
+import SvgIcon from '@/components/SvgIcon'
 export default {
-  props: ['currentPickDeviceId', 'currentPickAlgorithm'],
+  props: ['ifShow', 'currentPickDeviceId', 'currentPickAlgorithm'],
   data() {
     return {
       start_x: '',
@@ -132,7 +138,7 @@ export default {
     }
   },
   async mounted() {
-    this.initCanvas()
+    this.$nextTick(() => { this.initCanvas() })
   },
   created() {
     // 页面没有渲染之前
@@ -141,11 +147,11 @@ export default {
   methods: {
     async initCanvas() {
       var algoName = this.currentPickAlgorithm.name
-      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name == algoName)
-      if (algo[0].name == 'stepWallCheck') {
+      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name === algoName)
+      if (algo[0].name === 'stepWallCheck') {
         this.stepWallCheckShow = true
       }
-      if (algo[0].need == 'line') {
+      if (algo[0].need === 'line') {
         this.lineFlag = true
       } else {
         this.areaFlag = true
@@ -818,15 +824,31 @@ export default {
 .box {
   width: 100%;
   height: 100%;
-  padding: 5px;
   position: relative;
 }
 .buttoninfo {
-  padding-left: 76px;
-  width: 100%;
+  position: relative;
+  width: 640px;
   height: 40px;
-  left: 50px;
-  margin-bottom: 5px;
+  margin:10px auto 5px;
+  .chooseType{
+    margin: 0 10px 0 30px;
+  }
+  .handlebtn{
+    position: absolute;
+    right: 0;
+    .svgBtn{
+      font-size: 20px;
+      color:#9b9b9b
+    }
+    .buttonSize{
+      border: none;
+    }
+    /deep/.el-button+.el-button{
+      margin-left: 0;
+    }
+  }
+
 }
 .buttonSize {
   width: 48px;
@@ -853,17 +875,9 @@ canvas {
   border: 1px solid red;
 }
 .configBtnBox{
-    position: relative;
-    margin-top: 2px;
+    margin-top: 15px;
     height: 36px;
-    .configBtn{
-        position: absolute;
-        right: 320px;
-    }
-    .configCancleBtn{
-        position: absolute;
-        right: 400px;
-    }
+    text-align: center;
 }
 
 </style>
