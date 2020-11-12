@@ -20,23 +20,18 @@
             <div class="cameraPanel-footer">占比 {{ cameraOfflineRateText }}</div>
           </div>
         </div>
-        <!-- <div class="cameraPanel-footer"></div> -->
       </div>
       <div class="amount-flipper">
-        <div class="overviews-itemTitle">今日告警数</div>
+        <div class="overviews-itemTitle">今日检测结果统计</div>
         <div class="flip-container">
           <Flipper ref="millionFlag" />
-          <span class="number-split" />
+          <div class="number-split" />
           <Flipper ref="thousand100" />
-          <span class="span5px" />
           <Flipper ref="thousand10" />
-          <span class="span5px" />
           <Flipper ref="thousand" />
-          <span class="number-split" />
+          <div class="number-split" />
           <Flipper ref="hundred" />
-          <span class="span5px" />
           <Flipper ref="tenFlag" />
-          <span class="span5px" />
           <Flipper ref="digitFlag" />
         </div>
       </div>
@@ -44,31 +39,23 @@
     <div class="charts">
       <div class="summaryBar">
         <div class="chart-title">智能算法应用概览</div>
-        <DoughntPie id="algorith-pie" key="algorith-pie" :chart-data="taskAppliedByCameraList"/>
-        <!-- <div>
-          <div><StackedBar id="summary-bar-chart" :chart-data="taskAppliedByCameraList" width="600px" height="100px"/></div>
-        </div> -->
+        <SimpleBar id="algorith-pie" key="algorith-pie" :chart-data="taskAppliedByCameraListChartData"/>
       </div>
       <div class="chart1">
-        <div class="chart-title">告警排行</div>
+        <div class="chart-title">检测排行</div>
         <SimpleBar id="times-bar" key="times-bar" :chart-data="alertStatisByCameraChartData"/>
       </div>
       <div class="chart2">
-        <div class="chart-title">告警趋势</div>
-        <SimpleBar id="trend-bar" key="trend-bar" :chart-data="alertStatisByDayChartData"/>
+        <div class="chart-title">检测趋势</div>
+        <LineChart id="trend-bar" key="trend-bar" :chart-data="alertStatisByDayChartData"/>
       </div>
     </div>
     <div class="alarm-detail">
-      <div class="chart-title">告警详情</div>
+      <div class="chart-title">检测详情</div>
       <div class="alarm-detail-table"><el-table
         :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
-        <!-- <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" style="text-align: center" prop="code">
-          <template slot-scope="scope">
-            <span>{{ scope.row.code }}</span>
-          </template>
-        </el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
           <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
         </el-table-column>
@@ -129,21 +116,12 @@
 </template>
 
 <script>
-import echarts from 'echarts'
 import Pagination from '@/components/Pagination'
 import Flipper from '@/components/Charts/Flipper'
 import StackedBar from '@/components/Charts/stackedBar'
 import SimpleBar from '@/components/Charts/simpleBar'
+import LineChart from '@/components/Charts/lineChart'
 import DoughntPie from '@/components/Charts/doughntPie'
-// 引入水波球
-import 'echarts-liquidfill'
-// 引入基本模板
-// const echarts = require('echarts/lib/echarts')
-// 引入柱状图组件
-require('echarts/lib/chart/bar')
-// 引入提示框和title组件
-require('echarts/lib/component/tooltip')
-require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo, getAlertStatics
 } from '@/api/dashboard'
@@ -155,7 +133,8 @@ export default {
     StackedBar,
     SimpleBar,
     DoughntPie,
-    Pagination
+    Pagination,
+    LineChart
   },
   data() {
     return {
@@ -192,6 +171,44 @@ export default {
       const { cameraOnlineRate } = this.realTimeData
       return cameraOnlineRate || cameraOnlineRate === 0 ? ((1 - cameraOnlineRate) * 100).toFixed(2) + '%' : '-'
     },
+    taskAppliedByCameraListChartData() {
+      const categoryData = []
+      const valueData = []
+      const ranking = [...this.taskAppliedByCameraList].reverse()
+      ranking.forEach(({ name, data, percent }) => {
+        categoryData.push(name)
+        valueData.push({
+          value: data,
+          percent
+        })
+      })
+      return {
+        yAxis: {
+          type: 'category',
+          data: categoryData,
+          name: '已配置摄像头数/路'
+        },
+        xAxis: {
+          type: 'value',
+          data: valueData
+        },
+        unit: '路',
+        tooltip: {
+          formatter: ({ name, data }) => {
+            return `${name}<br/>已配置摄像头数: ${data.value}路<br/>已配置占比: ${(data.percent * 100).toFixed(2)}%`
+          }
+        },
+        series: {
+          label: {
+            show: true,
+            position: 'insideLeft',
+            formatter: ({ data }) => {
+              return `${data.value}路(${(data.percent * 100).toFixed(2)}%)`
+            }
+          }
+        }
+      }
+    },
     alertStatisByDayChartData() {
       const categoryData = []
       const valueData = []
@@ -206,10 +223,7 @@ export default {
         },
         yAxis: {
           type: 'value',
-          data: valueData,
-          nameTextStyle: {
-            color: '#9B9B9B'
-          }
+          data: valueData
         },
         unit: '次'
       }
@@ -217,20 +231,30 @@ export default {
     alertStatisByCameraChartData() {
       const categoryData = []
       const valueData = []
-      this.alertStatisByCameraList.forEach(({ cameraName, alertCount }) => {
+      const ranking = [...this.alertStatisByCameraList].reverse()
+      ranking.forEach(({ cameraName, alertCount }) => {
         categoryData.push(cameraName)
         valueData.push(alertCount)
       })
       return {
-        xAxis: {
+        yAxis: {
           type: 'category',
           data: categoryData
         },
-        yAxis: {
+        xAxis: {
           type: 'value',
           data: valueData
         },
-        unit: '次'
+        unit: '次',
+        series: {
+          label: {
+            show: true,
+            position: 'insideLeft',
+            formatter: ({ data }) => {
+              return `${data}次`
+            }
+          }
+        }
       }
     }
   },
@@ -367,7 +391,7 @@ export default {
 <style lang="scss" scoped>
 $iconHeight: 80px;
 $cameraWidth: 220px;
-$flipperWidth: 320px;
+$flipperWidth: 280px;
 $summaryBarWidth: 600px;
 .dashboard-container{
   padding:20px;
@@ -377,10 +401,6 @@ $summaryBarWidth: 600px;
   .span5px{
     display:inline-block;
     width: 3px;
-  }
-  .number-split{
-    display:inline-block;
-    width: 7px;
   }
   .number-split::before{
     content: ",";
@@ -475,7 +495,15 @@ $summaryBarWidth: 600px;
       padding:20px;
       .flip-container{
         margin: 10px auto;
-        width:$flipperWidth;
+        // width:$flipperWidth;
+        width:100%;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        .M-Flipper{
+          flex-shrink: 1;
+          margin:0 5px;
+        }
       }
     }
   }
