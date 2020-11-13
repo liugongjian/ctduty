@@ -684,6 +684,7 @@ export default {
         // margin-left: 2.083335%;
         // padding-left: 2.083335%;
         padding: 0 20px;
+        margin: 10px 0 10px;
         .algorithmBox{
             padding-bottom: 20px;
         }

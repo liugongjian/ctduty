@@ -216,12 +216,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-.config-info{
-
+.configBox{
+  border: 1px solid #e9e9e9;
 }
 .config-box {
   // flex:1;
-  border-bottom: 1px solid #d3d3d3;
+  border-bottom: 1px solid #e9e9e9;
+  &:last-child{
+    border-bottom: none;
+  }
 }
 .configchangebox{
   /deep/.el-dialog{
@@ -234,6 +237,7 @@ export default {
 .aiConfigBox {
   height: 50px;
   line-height: 50px;
+  padding-left: 20px;
   position: relative;
   .configGlobal{
     display: inline-block;
