@@ -875,9 +875,7 @@ export default {
     width: 640px;
     margin: 0 auto;
 }
-canvas {
-  border: 1px solid red;
-}
+
 .configBtnBox{
     margin-top: 15px;
     height: 36px;
