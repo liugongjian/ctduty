@@ -1,9 +1,9 @@
 <template>
   <div class="list">
-    <div class="app-container" style="padding: 20px">
+    <div class="app-container" style="padding: 20px; height: 100%">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <el-input
+          <!-- <el-input
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
@@ -15,7 +15,14 @@
             style="font-size:12px; width: 16%"
             icon="el-icon-search"
             @click="searchAlarm"
-          ></el-button>
+          ></el-button> -->
+
+          <el-input v-model="formInline.searchkey"
+            placeholder="请输入..."
+            class="searchinp"
+            @keyup.enter.native="searchAlarm">
+            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
+          </el-input>
           <button
             class="filter-item clearsearch"
             style="font-size:12px; width: 20%"
@@ -31,7 +38,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:170 + 'px', height: 32 + 'px'}"
+              :style="{width:210 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -975,15 +982,15 @@ td {
 .sureItem {
   height: 32px;
 }
-.alarmInp {
-  position: relative;
-  top: 0px;
-  left: 0px;
-}
-.alarmInp input.el-input__inner {
-  text-indent: 0px;
-  height: 34px !important;
-}
+// .alarmInp {
+//   position: relative;
+//   top: 0px;
+//   left: 0px;
+// }
+// .alarmInp input.el-input__inner {
+//   text-indent: 0px;
+//   height: 34px !important;
+// }
 .pull-left.alarmmsgleft {
   width: 75%;
 }
@@ -1056,6 +1063,15 @@ td {
 }
 .el-button--small {
   font-size: 14px;
+}
+.el-dialog__wrapper {
+  top: 20%;
+}
+.searchinp {
+  width: 75%;
+}
+.list {
+  height: 100%;
 }
 // .el-dialog__headerbtn {
 //   // display: none;
