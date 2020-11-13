@@ -130,7 +130,20 @@ export default {
           type: 'line',
           smooth: true,
           areaStyle: {
-            color: '#2FC25B',
+            // color: '#2FC25B',
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              colorStops: [{
+                offset: 0, color: '#2FC25B' // 0% 处的颜色
+              }, {
+                offset: 1, color: 'white' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            },
             opacity: 0.3
           }
         }]

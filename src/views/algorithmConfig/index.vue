@@ -431,8 +431,11 @@ export default {
     height: 100%;
     .algorithmConfig{
         background: #fff;
-        height: 100%;
-        overflow: auto;
+        // height: 100%;
+        min-height: 100%;
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
     // /deep/.el-tabs__header{
     //     margin: 5px 0 5px;
@@ -441,11 +444,9 @@ export default {
     //     height: 40px;
     //     line-height: 40px;
     // }
-    // ::-webkit-scrollbar {
-    //     display: none;
-    // }
+
     /deep/.el-tabs__content{
-        overflow: auto;
+        // overflow: auto;
     }
     .tabCon{
         padding: 0 22px;
@@ -595,7 +596,7 @@ export default {
             &.active{
                 div{
                     background: #FF9832;
-                    border-radius: 2px;
+                    border-radius: 5px;
                     color: #FFFFFF;
                 }
             }
