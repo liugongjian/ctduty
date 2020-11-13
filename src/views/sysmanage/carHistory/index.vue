@@ -73,7 +73,7 @@
             }
           }"
           type="daterange"
-          range-separator="～"
+          range-separator="to"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         >
