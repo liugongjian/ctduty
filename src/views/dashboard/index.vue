@@ -185,8 +185,8 @@ export default {
       return {
         yAxis: {
           type: 'category',
-          data: categoryData,
-          name: '已配置摄像头数/路'
+          data: categoryData
+          // name: '已配置摄像头数/路'
         },
         xAxis: {
           type: 'value',
@@ -390,9 +390,12 @@ export default {
 
 <style lang="scss" scoped>
 $iconHeight: 80px;
-$cameraWidth: 220px;
-$flipperWidth: 280px;
-$summaryBarWidth: 600px;
+// $cameraWidth: 220px;
+// $flipperWidth: 280px;
+// $summaryBarWidth: 600px;
+$chartsHeight:370px;
+$overviewsHeight:147px;
+
 .dashboard-container{
   padding:20px;
   background-color:#F0F2F5;
@@ -416,7 +419,7 @@ $summaryBarWidth: 600px;
   }
   .overviews{
     display:flex;
-    height: 147px;
+    height: $overviewsHeight;
     justify-content: space-between;
     &-itemTitle{
       font-family: PingFangSC-Medium; //PingFangSC-Regular;
@@ -508,7 +511,7 @@ $summaryBarWidth: 600px;
     }
   }
   .charts{
-    height: 370px;
+    height: $chartsHeight;
     margin: 20px 0;
     display: flex;
     .summaryBar{

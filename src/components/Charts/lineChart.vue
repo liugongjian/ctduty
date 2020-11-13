@@ -64,7 +64,14 @@ export default {
   methods: {
     initChart() {
       const { xAxis, yAxis, unit } = this.chartData
-      const data = yAxis.data
+      let data
+      if (xAxis.type === 'value') {
+        data = xAxis.data
+        xAxis.minInterval = 1
+      } else if (yAxis.type === 'value') {
+        data = yAxis.data
+        yAxis.minInterval = 1
+      }
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
@@ -72,7 +79,7 @@ export default {
         },
         grid: {
           left: 0,
-          top: 50,
+          top: 20,
           bottom: 30,
           containLabel: true
         },
@@ -112,7 +119,7 @@ export default {
               type: 'dotted'
             }
           },
-          name: `单位/${unit}`,
+          // name: `单位/${unit}`,
           nameTextStyle: {
             color: '#BFBFBF'
           },

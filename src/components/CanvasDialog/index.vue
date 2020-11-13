@@ -50,17 +50,18 @@ export default {
         }
         var _width = coor.rightBottom[0] - coor.leftTop[0]
         var _height = coor.rightBottom[1] - coor.leftTop[1]
+        console.log('_width', _width, '_height', _height)
         var ctx = canvas.getContext('2d')
         img.src = this.imgUrl
         var name = this.name
         var nameLength = this.nameLength
         img.onload = function() {
-          this.width = 1920
-          this.height = 1080
-          canvas.width = 1920
-          canvas.height = 1080
+          this.width = 1280
+          this.height = 720
+          canvas.width = 1280
+          canvas.height = 720
           ctx.globalCompositeOperation = 'source-over'
-          ctx.drawImage(img, 1920, 1080)
+          ctx.drawImage(img, 1280, 720)
           ctx.lineWidth = 4
           ctx.strokeStyle = 'red'
           ctx.textBaseline = 'top'
