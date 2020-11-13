@@ -683,7 +683,7 @@ export default {
     .algorithmConfigList{
         // margin-left: 2.083335%;
         // padding-left: 2.083335%;
-        padding-left: 20px;
+        padding: 0 20px;
         .algorithmBox{
             padding-bottom: 20px;
         }
