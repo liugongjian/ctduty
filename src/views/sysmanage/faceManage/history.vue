@@ -6,7 +6,6 @@
           <el-button
             v-waves
             class="filter-item"
-            size="mini"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
