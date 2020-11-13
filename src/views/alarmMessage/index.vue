@@ -38,7 +38,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:210 + 'px', height: 32 + 'px'}"
+              :style="{width:210 + 'px', height: 28 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -54,7 +54,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px',height:'32px'}"
+              :style="{width:95 + 'px',height:'28px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -70,7 +70,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px', height: 32 + 'px'}"
+              :style="{width:95 + 'px', height: 28 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -244,9 +244,9 @@
       v-model="temp"
       :show-close="false"
       class="mesdialog"
-      style="height:350px;"
+      style="height:100%;"
     >
-      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+      <div style="width:500px;height:320px; padding: 10px 10px 0px">
         <div :model="temp" label-position="right" label-width="100px">
           <div
             prop="image"
@@ -952,7 +952,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 32px !important;
+  // height: 32px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -980,17 +980,8 @@ td {
   }
 }
 .sureItem {
-  height: 32px;
+  height: 28px;
 }
-// .alarmInp {
-//   position: relative;
-//   top: 0px;
-//   left: 0px;
-// }
-// .alarmInp input.el-input__inner {
-//   text-indent: 0px;
-//   height: 34px !important;
-// }
 .pull-left.alarmmsgleft {
   width: 75%;
 }
@@ -1021,11 +1012,9 @@ td {
   // border-left: none;
   border-radius: 4px;
 }
-.el-input--mini .el-input__inner {
-  height: 32px !important;
-  text-indent: 0px;
-  line-height: 32px !important;
-}
+// .el-input--mini .el-input__inner {
+//   text-indent: 0px;
+// }
 .el-range-editor.el-input__inner {
   padding: 5px 5px;
 }
@@ -1063,9 +1052,6 @@ td {
 }
 .el-button--small {
   font-size: 14px;
-}
-.el-dialog__wrapper {
-  top: 20%;
 }
 .searchinp {
   width: 75%;
