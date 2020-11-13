@@ -95,21 +95,24 @@
         </el-tab-pane>
         <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
           <el-row>
-            <el-col :span="6" class="videoQueryBox">
+            <el-col :span="7" class="videoQueryBox">
               <div class="videoTotalBox">
                 <div class="videoTotal">
                   <span class="videoTotalText">视频列表</span>
                   <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
                 </div>
-                <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="getList"><el-button slot="append" icon="el-icon-search" @click="getList"></el-button></el-input>
+                <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
+                  <el-button slot="append" icon="el-icon-search" @click="searchList"></el-button>
+                </el-input>
 
               </div>
-              <ul class="videoResult">
+              <ul v-if="nameList.length>0" class="videoResult" @scroll="listenScroll">
                 <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
                   <div>{{ v.name }}</div>
                 </li>
               </ul>
-              <pagination
+              <div v-else class="noResult">暂无视频</div>
+              <!-- <pagination
                 v-show="total>0"
                 :total="total"
                 :page.sync="page"
@@ -118,21 +121,21 @@
                 small
                 layout="prev, pager, next"
                 @pagination="pageChange"
-              />
+              /> -->
             </el-col>
             <el-col :span="17" class="algorithmConfigList totalLine">
               <div v-if="algorithmList.length>0" class="algorithmBox">
                 <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
-                <div class="listBtnBox">
-                  <span class="totalNum">算法总计：{{ algorithmList.length }}</span>
-                  <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
-                </div>
+                <div class="totalNum">算法总计：{{ algorithmList.length }}</div>
               </div>
               <div v-else class="nodata">
                 稍后再试
               </div>
             </el-col>
           </el-row>
+          <div class="listBtnBox">
+            <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+          </div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -174,7 +177,11 @@ export default {
       controlShow: false,
       listtotal: 0,
       listpage: 1,
-      listlimit: 10
+      listlimit: 10,
+      winHeight: '',
+      styleObj: {
+        height: ''
+      }
     }
   },
   watch: {
@@ -184,7 +191,9 @@ export default {
       this.listpageChange()
     }
   },
-  mounted() {},
+  mounted() {
+
+  },
   async created() {
     await this.getTaskList()
   },
@@ -196,6 +205,11 @@ export default {
       } else {
         this.getList()
       }
+    },
+    getSomeHeight() {
+      this.winHeight = document.querySelector('.videoContainerBox').clientHeight
+      const topH = document.querySelector('.videoTotalBox').offsetHeight
+      this.styleObj.height = (this.winHeight - topH) + 'px'
     },
     changeActive(k, id) {
       this.activeAlgorithm = k
@@ -232,6 +246,21 @@ export default {
         }
       })
     },
+    listenScroll(e) {
+      const ele = e.srcElement ? e.srcElement : e.target
+      if (ele.scrollTop + ele.offsetHeight > ele.scrollHeight - 100) {
+        if (this.nameList.length >= this.total) {
+          return false
+        }
+        ++this.page
+        this.getList()
+      }
+    },
+    searchList() {
+      this.page = 1
+      this.nameList = []
+      this.getList()
+    },
     getList() {
       const query = this.queryKeyword ? {
         'page': {
@@ -254,11 +283,24 @@ export default {
       }
       getCameraList(query).then(res => {
         if (res.code === 0) {
-          this.nameList = res.body.data
+          if (this.queryKeyword) {
+            const dataList = res.body.data
+            for (const val in dataList) {
+              this.nameList.push(dataList[val])
+            }
+          } else {
+            const dataList = res.body.data
+            for (const val in dataList) {
+              this.nameList.push(dataList[val])
+            }
+          }
+
+          //   this.nameList.push(res.body.data)
           this.total = res.body.page.total
           this.listLoading = false
-          this.deviceId = res.body.data[0].id
-          this.getAlgorithmList(this.deviceId)
+          this.deviceId = this.deviceId ? this.deviceId : res.body.data[0].id
+          const getId = this.nameList[this.activeVideoResult] ? this.nameList[this.activeVideoResult].id : ''
+          getId && this.getAlgorithmList(getId)
         }
       })
     },
@@ -277,6 +319,8 @@ export default {
       this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
       //   this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
       this.pageLoading = false
+
+      this.getSomeHeight()
     },
     saveUpdatePick(item) {
       if (item.isPick) {
@@ -411,7 +455,6 @@ export default {
       this.canvasShowStatus = payload
     },
     pageChange(obj) {
-      this.page = obj.page
       this.getList()
     },
     listpageChange(obj) {
@@ -428,14 +471,12 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    height: 100%;
+    // height: 100%;
     .algorithmConfig{
         background: #fff;
         // height: 100%;
-        min-height: 100%;
-        &::-webkit-scrollbar {
-            display: none;
-        }
+        // min-height: 100%;
+
     }
     // /deep/.el-tabs__header{
     //     margin: 5px 0 5px;
@@ -446,7 +487,10 @@ export default {
     // }
 
     /deep/.el-tabs__content{
-        // overflow: auto;
+        overflow:inherit;
+         &::-webkit-scrollbar {
+            display: none;
+        }
     }
     .tabCon{
         padding: 0 22px;
@@ -542,6 +586,16 @@ export default {
     }
     .videoQueryBox{
         position: relative;
+        padding: 0 10px;
+        .noResult{
+            font-size: 16px;
+            color: #333;
+            border: 1px solid #EEE;
+            margin: 20px 10px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+        }
     }
     .videoQueryBox{
         /deep/.pagination-container .showTotal{
@@ -581,14 +635,20 @@ export default {
         // display: flex;
         // flex-wrap: wrap;
         list-style: none;
-        padding: 0 20px;
+        padding: 0 10px;
         margin: 0 0 5px;
+        height: 575px;
+        overflow: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
         li{
-            margin: 7px 20px 7px 10px;
+            margin: 5px 0;
             cursor: pointer;
+            font-size: 13px;
             div{
                 padding: 5px 7px;
-                display: inline-block;
+                // display: inline-block;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -602,25 +662,31 @@ export default {
             }
         }
     }
+    .totalNum{
+        color: #666666;
+        margin: 30px 0;
+    }
     .listBtnBox{
         // text-align: right;
-        position: relative;
-        margin-top: 20px;
-        .totalNum{
-            color: #666666;
-            position: absolute;
-            left: 10px;
-            top: 10px;
-        }
-        button{
-            position: absolute;
-            right: 10px;
-            width: 78px;
-        }
+        height: 60px;
+        line-height: 60px;
+        width: 100%;
+        box-shadow: 0 -2px 4px 0 rgba(0,0,0,0.07);
+        background: #fff;
+        position: fixed;
+        z-index: 99;
+        bottom: 0;
+        left: 0;
+        text-align: right;
+        padding-right: 20px;
     }
     .algorithmConfigList{
-        margin-left: 2.083335%;
-        padding-left: 2.083335%;
+        // margin-left: 2.083335%;
+        // padding-left: 2.083335%;
+        padding-left: 20px;
+        .algorithmBox{
+            padding-bottom: 20px;
+        }
         .test{
             // padding-left: 5px;
         }

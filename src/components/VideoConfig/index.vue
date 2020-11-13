@@ -240,15 +240,16 @@ export default {
   }
   .configName{
     width: 100px;
-    margin: 0 10px;
+    margin: 0 20px 0 10px;
     font-weight: bold;
   }
   .configDesc{
     color: #666666;
+    margin-left: 10px;
   }
   .config-btn {
     position: absolute;
-    right: 7px;
+    right: 14px;
     .changeBtn{
       width: 66px;
       text-align: center;
@@ -262,8 +263,8 @@ export default {
 }
 
 .iconBox {
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   display: inline-block;
   vertical-align: middle;
   margin-right: 13px;
