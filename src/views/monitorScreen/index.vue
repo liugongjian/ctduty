@@ -1,8 +1,8 @@
 <template>
-  <div class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <template v-for="(item,index) in deviceList">
-        <div v-if="index < 6" :key="item.id" class="screen">
+        <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
           <div class="screen-inner">
             <div class="screen-body">
               <el-image
@@ -16,6 +16,11 @@
                 :key="item.cameraId"
                 :options="item.videoOptions"
               />
+              <!-- <VideoFlv
+                v-else-if="item.flvSrc"
+                :video-ref="item.cameraId"
+                :key="item.cameraId"
+                :flv="item.flvSrc"/> -->
               <div
                 v-else
                 style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
@@ -88,6 +93,7 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
+import VideoFlv from '@/components/VideoFlv'
 import {
   fetchAllMonitor,
   updateMonitor,
@@ -100,7 +106,7 @@ import fakeimg from '@/assets/images/fakeimg.png'
 import nosrc from '@/assets/images/nosrc.png'
 
 export default {
-  components: { VideoPlayer },
+  components: { VideoPlayer, VideoFlv },
   data() {
     return {
       pageLoading: true,
@@ -125,7 +131,8 @@ export default {
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
         // fluid: true, // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
-      }
+      },
+      allCameraList: []
     }
   },
   watch: {
@@ -140,22 +147,27 @@ export default {
     }
   },
   async mounted() {
+    await this.loadFakeImg()
     await this.getAllCamera()
     await this.getLiveList()
-    loadingImg().then(res => {
-      if (res.body.data.length > 0) {
-        res.body.data.forEach(item => {
-          this.deviceList.push({
-            address: item.address,
-            image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
-            id: item.id,
-            name: item.name
-          })
-        })
-      }
-    })
   },
   methods: {
+    loadFakeImg() {
+      this.pageLoading = true
+      loadingImg().then(res => {
+        if (res.body.data.length > 0) {
+          res.body.data.forEach(item => {
+            this.deviceList.push({
+              address: item.address,
+              image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
+              id: item.id,
+              name: item.name
+            })
+          })
+          this.pageLoading = false
+        }
+      })
+    },
     getAllCamera() {
       const params = {
         cascade: true,
@@ -220,6 +232,7 @@ export default {
           return {
             ...item,
             image: null,
+            flvSrc: item.rtmpuri,
             videoOptions: {
               autoplay: true,
               controls: true,
@@ -229,9 +242,13 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri : '')
+                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
+                // {
+                //   src: item.rtmpuri,
+                //   type: 'application/x-mpegURL'
+                // }
               ]
             }
           }
@@ -337,6 +354,8 @@ export default {
         return 'video/mp4'
       } else if (url.endsWith('ogv')) {
         return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
       }
     }
   }
@@ -347,27 +366,34 @@ export default {
   padding: 20px;
   height: 100%;
   background: #f0f2f5;
-  .el-input__inner {
+  /deep/.el-input__inner {
     width: 360px;
   }
-  .el-form-item__content {
+  /deep/.el-form-item__content {
     margin-left: 90px;
   }
 }
 .monitorScreen {
-  overflow: hidden;
+  overflow: auto;
   padding: 10px 10px;
   background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  justify-content: center;
+
   .screen {
     float: left;
     width: 33.33%;
     height: 48%;
+    min-width: 420px;
     .screen-inner {
       margin: 10px 10px;
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: calc(35vh + 36.4px);
+      // height: calc(35vh + 36.4px);
+      height: 210px;
       margin: 10px;
       display: flex;
       justify-content: center;
@@ -412,9 +438,14 @@ export default {
       }
     }
     .screen-body {
-      height: 35vh;
-      width: auto;
+      // height: 35vh;
+      height: 300px;
+      width: 400px;
       background: #333;
+      .video-wrap{
+         min-width: 400px;
+         min-height: 300px;
+      }
     }
     .el-icon-plus {
       font-size: 14px !important;
