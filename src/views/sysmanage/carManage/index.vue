@@ -354,10 +354,11 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        'http://36.41.71.26:8920/CarLicense/Template',
+        'http://59.36.77.57:8666/CarLicense/Template',
         '车牌数据导入模板'
       )
       dlTemplate().then(res => {
+        if (res.code === 50000) return
         this.$message({
           message: '模板文件下载成功',
           type: 'success'
