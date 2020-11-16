@@ -27,9 +27,50 @@
           <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
         </div>
       </div>
+      <el-table
+        :data="noticeList"
+        :header-cell-class-name="tableRowClassHeader"
+        class="amountdetailTable"
+        tooltip-effect="dark"
+        fit
+        style="width: 120vw"
+        @filter-change="filerStatus"
+      >
+        <el-table-column type="index" label="序号"></el-table-column>
+        <el-table-column label="公告标题">
+          <template slot-scope="row_data">
+            <el-link
+              type="primary"
+              @click="showEditDialog(row_data.row.id,'false')"
+            >{{ row_data.row.title }}</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column label="公告类型" prop="type">
+          <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
+        </el-table-column>
+        <el-table-column label="状态" prop="state">
+          <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
+        </el-table-column>
+        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建时间" prop="createTime"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+          <template slot-scope="row_data">
+            <el-button
+              type="text"
+              size="small"
+              @click="showEditDialog(row_data.row.id,'true')"
+            >{{ '编辑' }}</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
+            >{{ '删除' }}</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
 
-    <el-table
+    <!-- <el-table
       :data="noticeList"
       :header-cell-class-name="tableRowClassHeader"
       class="amountdetailTable"
@@ -38,8 +79,8 @@
       style="width: 120vw"
       @filter-change="filerStatus"
     >
-      <el-table-column align="center" type="index" label="序号"></el-table-column>
-      <el-table-column align="center" label="公告标题">
+      <el-table-column type="index" label="序号"></el-table-column>
+      <el-table-column label="公告标题">
         <template slot-scope="row_data">
           <el-link
             type="primary"
@@ -47,21 +88,22 @@
           >{{ row_data.row.title }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="公告类型" prop="type">
+      <el-table-column label="公告类型" prop="type">
         <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
       </el-table-column>
-      <el-table-column align="center" label="状态" prop="state">
+      <el-table-column label="状态" prop="state">
         <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
       </el-table-column>
-      <el-table-column align="center" label="创建者" prop="creator.username"></el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime"></el-table-column>
-      <el-table-column align="center" :show-overflow-tooltip="true" :label="'操作'">
+      <el-table-column label="创建者" prop="creator.username"></el-table-column>
+      <el-table-column label="创建时间" prop="createTime"></el-table-column>
+      <el-table-column :show-overflow-tooltip="true" :label="'操作'">
         <template slot-scope="row_data">
-          <el-button
+          <a
+            style="color: #FA8334; text-decoration:none;"
             type="text"
             size="small"
             @click="showEditDialog(row_data.row.id,'true')"
-          >{{ '编辑' }}</el-button>
+          >{{ '编辑' }}</a>
           <el-button
             type="text"
             size="small"
@@ -69,7 +111,7 @@
           >{{ '删除' }}</el-button>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table>-->
 
     <el-pagination
       :current-page="queryInfo.pagenum"
@@ -84,10 +126,16 @@
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
       title="新增通知"
-      width="50%"
+      width="520px"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :rules="addFormRules" :model="addNoticeForm">
+      <el-form
+        ref="addFormRef"
+        :rules="addFormRules"
+        :model="addNoticeForm"
+        label-width="80px"
+        label-position="right"
+      >
         <el-form-item label="标题" prop="title">
           <el-input v-model="addNoticeForm.title" class="input_title"></el-input>
         </el-form-item>
@@ -104,13 +152,13 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item>
-          <span>内容</span>
+        <el-form-item label="内容">
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
 
-        <!-- <el-form-item class="select" label="签名档">
+        <el-form-item class="select" label="签名档">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
+            <!-- <el-option value="1" label="1"></el-option> -->
             <el-option
               v-for="(item,key) in departmentInfo"
               :key="key"
@@ -118,8 +166,7 @@
               :value="item.departmentId"
             ></el-option>
           </el-select>
-        </el-form-item> -->
-
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -130,7 +177,7 @@
     <el-dialog
       :visible.sync="editNoticeDialogVisible"
       title="修改通知"
-      width="50%"
+      width="520px"
       @close="editDialogClosed"
     >
       <el-form
@@ -138,6 +185,8 @@
         :rules="addFormRules"
         :model="editNoticeForm"
         :disabled="modifiable==='false'"
+        label-width="80px"
+        label-position="right"
       >
         <el-form-item label="标题" prop="title">
           <el-input v-model="editNoticeForm.title" class="input_title"></el-input>
@@ -155,16 +204,14 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="modifiable==='true'">
-          <span>内容</span>
+        <el-form-item v-if="modifiable==='true'" label="内容">
           <quill-editor
             ref="myQuillEditor"
             v-model="editNoticeForm.content"
             :options="editorOption"
           ></quill-editor>
         </el-form-item>
-        <el-form-item v-if="modifiable==='false'">
-          <span>内容</span>
+        <el-form-item v-if="modifiable==='false'" label="内容">
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
@@ -188,8 +235,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="50%">
-      <span>确认删除信息{{ this.deleteNoticeTitle }}？</span>
+    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="400px">
+      <span>确认删除信息{{ deleteNoticeTitle }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteANotice">确 定</el-button>
         <el-button @click="deleteNoticeDialogVisible = false">取 消</el-button>
@@ -291,7 +338,24 @@ export default {
       ]
     }
   },
-
+  watch: {
+    'addNoticeForm.content'(v) {
+      if (v.length > 500) {
+        this.$message({
+          type: 'warning',
+          message: '内容长度不能大于500!'
+        })
+      }
+    },
+    'editNoticeForm.content'(v) {
+      if (v.length > 500) {
+        this.$message({
+          type: 'warning',
+          message: '内容长度不能大于500!'
+        })
+      }
+    }
+  },
   created() {
     this.getNoticeList()
   },
@@ -303,7 +367,13 @@ export default {
           index: this.queryInfo.pagenum,
           size: this.queryInfo.pagesize
         },
-        params: {}
+        params: {},
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
       }
 
       if (this.queryInfo.params.title.trim() !== '') {
@@ -385,6 +455,9 @@ export default {
             return this.$message.error('添加失败，请联系系统管理员')
           }
           this.$message.success('添加成功')
+
+          this.total++
+          this.pagenum = Math.ceil(this.total / this.pagesize)
           this.addNoticeDialogVisible = false
           this.getNoticeList()
           const params = {
@@ -481,7 +554,7 @@ export default {
   padding: 10px 20px;
 }
 .input_title {
-  width: 390px;
+  width: 360px;
 }
 .title {
   width: 150px;
@@ -499,13 +572,13 @@ export default {
 .searchinput {
   width: 250px;
 }
-.addNotice {
+/* .addNotice {
   float: right;
-}
+} */
 .quill-editor {
   display: inline-block;
-  width: 700px;
-  height: 200px;
+  width: 360px;
+  height: 150px;
 }
 .el-row {
   margin-top: 20px;
