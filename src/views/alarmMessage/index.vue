@@ -21,12 +21,13 @@
             v-model="formInline.searchkey"
             placeholder="设备名称"
             class="searchinp"
+            size="mini"
             @keyup.enter.native="searchAlarm">
             <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%"
+            style="font-size:12px; width: 20%;height:27px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
