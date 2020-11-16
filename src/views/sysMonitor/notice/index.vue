@@ -367,8 +367,9 @@ export default {
         })
       }
     },
-    limit() {
+    limit(v) {
       this.page = 1
+      this.limit = v
       this.pageChange()
     }
   },
