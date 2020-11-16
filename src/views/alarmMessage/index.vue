@@ -818,6 +818,11 @@ export default {
         h == 'all'
           ? [
             {
+              field: 'camera.name',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
+            },
+            {
               field: 'createTime',
               operator: 'BETWEEN',
               value: { start: s || '', end: e || '' }
@@ -833,6 +838,11 @@ export default {
             }
           ]
           : [
+            {
+              field: 'camera.name',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
+            },
             {
               field: 'createTime',
               operator: 'BETWEEN',
