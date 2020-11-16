@@ -396,12 +396,18 @@ export default {
       const e = this.currentTab + ' ' + this.endTime + ':00'
       //  + ' ' + this.startTime + ':00'
       let params
+      this.page = 1
+      this.limit = 10
       if (isNaN(this.formInline.searchkey)) {
         params = {
           cascade: true,
+          page: {
+            index: this.page,
+            size: this.limit
+          },
           params: [
             {
-              field: 'camera.address',
+              field: 'camera.name',
               operator: 'LIKE',
               value: `%${this.formInline.searchkey}%`
             },
@@ -409,6 +415,12 @@ export default {
               field: 'createTime',
               operator: 'BETWEEN',
               value: { start: s || '', end: e || '' }
+            }
+          ],
+          sorts: [
+            {
+              field: 'create_Time',
+              type: 'desc'
             }
           ]
         }
@@ -421,7 +433,6 @@ export default {
               operator: 'EQUALS',
               value: this.formInline.searchkey
             }
-
           ]
         }
       }
