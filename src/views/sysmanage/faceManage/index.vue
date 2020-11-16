@@ -187,10 +187,10 @@
                   >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
                 </el-tooltip>
                 <el-tag
-                  :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
+                  :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
                   style="margin-top:3px;"
                   size="mini"
-                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
+                >{{ item.nameList === 1 ? "白名单" : item.nameList === 2 ? "黑名单" : "其他" }}</el-tag>
               </div>
               <div class="btn-box">
                 <el-button
