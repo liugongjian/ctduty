@@ -16,7 +16,6 @@
             icon="el-icon-search"
             @click="searchAlarm"
           ></el-button> -->
-
           <el-input
             v-model="formInline.searchkey"
             placeholder="设备名称"

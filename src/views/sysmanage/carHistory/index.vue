@@ -142,12 +142,12 @@
                       item.label === '1'
                         ? 'success'
                         : item.label === '2'
-                        ? 'danger'
-                        : ''
+                          ? 'danger'
+                          : ''
                     "
                     style="margin-left:-8px;"
                     size="mini"
-                    >{{ item.label ? listType[item.label] : "" }}</el-tag
+                  >{{ item.label ? listType[item.label] : "" }}</el-tag
                   >
                 </span>
                 <div class="bottom clearfix">
@@ -206,23 +206,23 @@
   </div>
 </template>
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
-import { downLoadByUrl } from "@/utils";
-import { getAlertInfos } from "@/api/alarm";
-import { addCarData } from "@/api/dm";
-import {} from "@/api/dm";
-const token = Cookies.get("token");
-const timeFormate = "HH:mm:ss";
-const dateFormat = "YYYY-MM-DD";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
+import { downLoadByUrl } from '@/utils'
+import { getAlertInfos } from '@/api/alarm'
+import { addCarData } from '@/api/dm'
+import {} from '@/api/dm'
+const token = Cookies.get('token')
+const timeFormate = 'HH:mm:ss'
+const dateFormat = 'YYYY-MM-DD'
 const initialFilterProps = {
-  dateRange: [moment().subtract(7, "days"), moment()],
-  startTime: moment("02:00:00", timeFormate),
-  endTime: moment("22:00:00", timeFormate)
-};
+  dateRange: [moment().subtract(7, 'days'), moment()],
+  startTime: moment('02:00:00', timeFormate),
+  endTime: moment('22:00:00', timeFormate)
+}
 export default {
   components: { Pagination },
   data() {
@@ -233,13 +233,13 @@ export default {
       ...initialFilterProps,
       dialogVisible: false,
       carEdit: {
-        licenseNo: "",
-        type: "",
-        color: ""
+        licenseNo: '',
+        type: '',
+        color: ''
       },
       tabsArr: [],
-      defaultTab: "",
-      currentTab: "",
+      defaultTab: '',
+      currentTab: '',
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       allTotal: 0,
       page: 1,
@@ -247,147 +247,147 @@ export default {
       listLoading: true,
       tableData: [],
       listType: {
-        1: "白名单",
-        2: "黑名单",
-        3: "其他"
+        1: '白名单',
+        2: '黑名单',
+        3: '其他'
       },
       colorList: [
         {
-          value: "黑色",
-          label: "黑色"
+          value: '黑色',
+          label: '黑色'
         },
         {
-          value: "白色",
-          label: "白色"
+          value: '白色',
+          label: '白色'
         },
         {
-          value: "蓝色",
-          label: "蓝色"
+          value: '蓝色',
+          label: '蓝色'
         },
         {
-          value: "绿色",
-          label: "绿色"
+          value: '绿色',
+          label: '绿色'
         }
       ],
       subordinateList: [
         {
-          value: "白名单",
-          label: "白名单"
+          value: '白名单',
+          label: '白名单'
         },
         {
-          value: "黑名单",
-          label: "黑名单"
+          value: '黑名单',
+          label: '黑名单'
         },
         {
-          value: "其他",
-          label: "其他"
+          value: '其他',
+          label: '其他'
         }
       ]
-    };
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   created() {
-    this.onSearch();
+    this.onSearch()
   },
   methods: {
     onClear() {
       Object.keys(initialFilterProps).forEach(key => {
-        this[key] = initialFilterProps[key];
-      });
-      this.onSearch();
+        this[key] = initialFilterProps[key]
+      })
+      this.onSearch()
     },
     onSearch() {
-      console.log(this.dateRange);
-      const [startDate, endDate] = this.dateRange;
-      console.log(this.startTime);
+      console.log(this.dateRange)
+      const [startDate, endDate] = this.dateRange
+      console.log(this.startTime)
       this.tabsArr = this.getDayAll(
         moment(startDate).format(dateFormat),
         moment(endDate).format(dateFormat)
-      ).reverse();
+      ).reverse()
       // this.tabsArr = this.tabsDateArr
       // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
       // this.value1=[this.startDate,this.endDate]
       if (this.tabsArr.indexOf(this.currentTab) === -1) {
-        this.defaultTab = this.tabsArr[0];
-        this.currentTab = this.defaultTab;
+        this.defaultTab = this.tabsArr[0]
+        this.currentTab = this.defaultTab
       }
-      this.page = 1;
-      this.getList();
+      this.page = 1
+      this.getList()
     },
     tabChangeQuery(e) {
-      this.currentTab = e.label;
-      this.page = 1;
-      this.getList();
+      this.currentTab = e.label
+      this.page = 1
+      this.getList()
     },
     getDayAll(start, end) {
-      var result = [];
+      var result = []
       if (start === end) {
-        result.push(start);
-        return result;
+        result.push(start)
+        return result
       }
-      var beginDay = start.split("-");
-      var endDay = end.split("-");
-      var diffDay = new Date();
-      var dateList = new Array();
-      var i = 0;
-      diffDay.setDate(beginDay[2]);
-      diffDay.setMonth(beginDay[1] - 1);
-      diffDay.setFullYear(beginDay[0]);
-      result.push(start);
+      var beginDay = start.split('-')
+      var endDay = end.split('-')
+      var diffDay = new Date()
+      var dateList = new Array()
+      var i = 0
+      diffDay.setDate(beginDay[2])
+      diffDay.setMonth(beginDay[1] - 1)
+      diffDay.setFullYear(beginDay[0])
+      result.push(start)
       while (i == 0) {
-        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000;
-        diffDay.setTime(countDay);
-        dateList[2] = diffDay.getDate();
-        dateList[1] = diffDay.getMonth() + 1;
-        dateList[0] = diffDay.getFullYear();
+        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000
+        diffDay.setTime(countDay)
+        dateList[2] = diffDay.getDate()
+        dateList[1] = diffDay.getMonth() + 1
+        dateList[0] = diffDay.getFullYear()
         if (String(dateList[1]).length == 1) {
-          dateList[1] = "0" + dateList[1];
+          dateList[1] = '0' + dateList[1]
         }
         if (String(dateList[2]).length == 1) {
-          dateList[2] = "0" + dateList[2];
+          dateList[2] = '0' + dateList[2]
         }
-        result.push(dateList[0] + "-" + dateList[1] + "-" + dateList[2]);
+        result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
         if (
           dateList[0] == endDay[0] &&
           dateList[1] == endDay[1] &&
           dateList[2] == endDay[2]
         ) {
-          i = 1;
+          i = 1
         }
       }
 
-      return result;
+      return result
     },
     onAddCar() {
-      this.$refs["carEdit"].validate(valid => {
+      this.$refs['carEdit'].validate(valid => {
         if (valid) {
-          const params = [this.carEdit];
+          const params = [this.carEdit]
           addCarData(params)
             .then(res => {
-              this.dialogVisible = false;
+              this.dialogVisible = false
               this.$message({
-                message: "添加成功",
-                type: "success"
-              });
+                message: '添加成功',
+                type: 'success'
+              })
             })
-            .catch(err => {});
+            .catch(err => {})
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     onImportCar(licenseNo, color, type) {
-      this.dialogVisible = true;
+      this.dialogVisible = true
       this.carEdit = {
         licenseNo,
         type,
         color
-      };
+      }
     },
     pageChange(e) {
       //   this.currentTab = e.label
@@ -395,34 +395,34 @@ export default {
       //   const end = e.label + ' ' + this.endTime + ':00'
       //   const h = this.formInline.typeValue
       //   this.page = 1
-      this.getList();
+      this.getList()
     },
     getDateTimeStr(time) {
-      return moment(time).format("YYYY-MM-DD HH:mm:ss");
+      return moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       const param = [
         {
-          field: "createTime",
-          operator: "BETWEEN",
+          field: 'createTime',
+          operator: 'BETWEEN',
           value: {
             start:
               `${this.currentTab} ${moment(this.startTime).format(
                 timeFormate
-              )}` || "",
+              )}` || '',
             end:
               `${this.currentTab} ${moment(this.endTime).format(
                 timeFormate
-              )}` || ""
+              )}` || ''
           }
         },
         {
-          field: "type",
-          operator: "EQUALS",
+          field: 'type',
+          operator: 'EQUALS',
           value: 2
         }
-      ];
+      ]
       const params = {
         cascade: true,
         page: {
@@ -432,11 +432,11 @@ export default {
         params: param,
         sorts: [
           {
-            field: "create_Time",
-            type: "desc"
+            field: 'create_Time',
+            type: 'desc'
           }
         ]
-      };
+      }
       getAlertInfos(params)
         .then(res => {
           const {
@@ -444,17 +444,17 @@ export default {
               data,
               page: { total, size, index }
             }
-          } = res;
-          this.tableData = data;
-          this.total = total;
-          this.listLoading = false;
+          } = res
+          this.tableData = data
+          this.total = total
+          this.listLoading = false
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

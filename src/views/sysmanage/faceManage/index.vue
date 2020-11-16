@@ -1,8 +1,5 @@
 <template>
   <div class="list">
-    <!--  <div class="title">
-      摄像头管理
-    </div>-->
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -509,21 +506,28 @@ export default {
       })
     },
     batchesDel() {
-      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const params = [...this.delIDArr]
-        fetchDeleteFace(params)
-          .then(response => {
-            this.getfaceList()
-            this.delIDArr = []
-          })
-          .catch(() => {
-            this.delIDArr = []
-          })
-      })
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
+        })
+      } else {
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = [...this.delIDArr]
+          fetchDeleteFace(params)
+            .then(response => {
+              this.getfaceList()
+              this.delIDArr = []
+            })
+            .catch(() => {
+              this.delIDArr = []
+            })
+        })
+      }
     },
     delAlert(d) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -723,7 +727,6 @@ export default {
 <style lang='scss'>
 .list {
   overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
 }
 .app-main {
   padding-top: 50px;
@@ -825,6 +828,5 @@ export default {
   line-height: 50px;
   text-align: center;
 }
-
 </style>
 

@@ -36,7 +36,7 @@
         style="width: 120vw"
         @filter-change="filerStatus"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
+        <!-- <el-table-column type="index" label="序号"></el-table-column> -->
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
             <el-link
@@ -113,7 +113,7 @@
       </el-table-column>
     </el-table>-->
 
-    <el-pagination
+    <!-- <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
       :page-size="queryInfo.pagesize"
@@ -121,7 +121,14 @@
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    ></el-pagination>
+    ></el-pagination> -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryInfo.pagenum"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
@@ -156,7 +163,7 @@
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
 
-        <el-form-item class="select" label="签名档">
+        <el-form-item class="select" label="签名档" style="margin-top:1px;">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
             <el-option
@@ -253,11 +260,16 @@ import {
   updateANotice,
   deleteNotices
 } from '@/api/notice'
+import Pagination from '@/components/Pagination'
 import { fetchUserList } from '@/api/users'
 import { notReadNotices } from '@/api/notice'
 export default {
+  components: { Pagination },
   data() {
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       searchName: '',
       searchUserIds: [],
       addFormRules: {
@@ -305,7 +317,7 @@ export default {
           type: null
         }
       },
-      totalnum: 0,
+      total: 0,
       addNoticeDialogVisible: false,
       addNoticeForm: {
         content: '',
@@ -354,6 +366,11 @@ export default {
           message: '内容长度不能大于500!'
         })
       }
+    },
+    limit(v) {
+      this.page = 1
+      this.limit = v
+      this.pageChange()
     }
   },
   created() {
@@ -365,7 +382,7 @@ export default {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          size: this.limit
         },
         params: {},
         sorts: [
@@ -398,8 +415,15 @@ export default {
         this.noticeList.map(item => {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
         })
-        this.totalnum = response.body.page.total
+        this.total = response.body.page.total
       })
+    },
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getNoticeList()
     },
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
@@ -549,7 +573,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .notice {
   padding: 10px 20px;
 }

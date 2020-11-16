@@ -28,9 +28,9 @@
 
         <el-dialog
           :visible="bulkimportVisble"
+          :width="isBatchSuccess ? '50%':'36%'"
           class="carDialog"
           title="导入车牌数据"
-          width="50vw"
           height="80vh"
           @close="closebulkimportDialog"
         >
@@ -354,10 +354,11 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        'http://36.41.71.26:8920/CarLicense/Template',
+        'http://59.36.77.57:8666/CarLicense/Template',
         '车牌数据导入模板'
       )
       dlTemplate().then(res => {
+        if (res.code === 50000) return
         this.$message({
           message: '模板文件下载成功',
           type: 'success'
@@ -438,21 +439,28 @@ export default {
       this.imSuccessData = []
     },
     batchesDel() {
-      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const params = [...this.delIDArr]
-        deleteCarData(params)
-          .then(response => {
-            this.getList()
-            this.delIDArr = []
-          })
-          .catch(() => {
-            this.delIDArr = []
-          })
-      })
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
+        })
+      } else {
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = [...this.delIDArr]
+          deleteCarData(params)
+            .then(response => {
+              this.getList()
+              this.delIDArr = []
+            })
+            .catch(() => {
+              this.delIDArr = []
+            })
+        })
+      }
     },
     delAlert(d) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
@@ -630,12 +638,9 @@ export default {
     color: #409eff;
   }
 }
-.el-dialog__body {
-  margin: 0 auto;
-}
+
 .list {
   overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
 }
 .app-main {
   padding-top: 50px;
@@ -666,30 +671,12 @@ export default {
 .carDialog {
   margin: 0 auto;
 }
-.el-dialog__body {
-  width: 100%;
-}
 .carInput {
   height: 36.8px !important;
-}
-.el-form-item__content {
-  display: flex;
-  /*   .el-select--medium {
-    width: 134px !important;
-    margin-left: 10px;
-    margin-right: 10px;
-  } */
-
-  .xuanze {
-    width: 20vw !important;
-  }
 }
 .upload-demo {
   width: 360px;
   margin: 0 auto;
-}
-.el-form-item {
-  margin-bottom: 30px !important;
 }
 </style>
 
