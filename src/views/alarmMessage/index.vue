@@ -3,23 +3,30 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <el-input
+          <!-- <el-input
             v-model="formInline.searchkey"
             placeholder="请输入..."
             class="filter-item alarmInp"
-            style="width: 70%; height: 32px"
+            style="width: 60%; height: 32px"
             @keyup.enter.native="searchAlarm"
-          >
-          </el-input>
+          ></el-input>
           <el-button
             class="filter-item searchsure"
-            style="font-size:12px; "
+            style="font-size:12px; width: 16%"
             icon="el-icon-search"
             @click="searchAlarm"
-          ></el-button>
+          ></el-button> -->
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="设备名称"
+            class="searchinp"
+            size="mini"
+            @keyup.enter.native="searchAlarm">
+            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
+          </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px;"
+            style="font-size:12px; width: 20%;height:27px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -840,7 +847,7 @@ export default {
 }
 .alaMesTable {
   td {
-    padding: 0 !important;
+    padding: 2px 0 !important;
   }
 }
 
@@ -857,7 +864,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 32px !important;
+  // height: 32px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -869,7 +876,7 @@ export default {
   fill: #44bd32 !important;
 }
 .untreated {
-  fill: #FF9832 !important;
+  fill: #ff9832 !important;
 }
 .v-modal {
   z-index: 999 !important;
@@ -885,26 +892,25 @@ td {
   }
 }
 .sureItem {
-  height: 32px;
-}
-.alarmInp input.el-input__inner {
-  text-indent: 0px;
-  height: 34px !important;
+  height: 28px;
 }
 .pull-left.alarmmsgleft {
-  width: 72%;
+  width: 75%;
 }
 .pull-right.alarmmsgright {
   position: relative;
   width: 25%;
   .clearsearch {
+    position: absolute;
+    top: 0px;
+    right: 0px;
     height: 34px;
     width: 60px;
     // margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
     border-radius: 3px;
-    outline:none;
+    outline: none;
   }
   .clearsearch:active {
     background-color: rgb(243, 241, 241);
@@ -914,18 +920,15 @@ td {
   position: absolute;
   top: 1px;
   height: 34px;
-  right: 30%;
+  right: 22%;
   // border-left: none;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
 }
-.el-input--mini .el-input__inner {
-  height: 32px !important;
-  text-indent: 0px;
-  line-height: 32px !important;
-}
-.el-input--mini .el-input__icon {
-  line-height: 32px !important;
-
+// .el-input--mini .el-input__inner {
+//   text-indent: 0px;
+// }
+.el-range-editor.el-input__inner {
+  padding: 5px 5px;
 }
 .mesdialog {
   .el-dialog__header {
@@ -948,7 +951,7 @@ td {
   display: flex;
   .popfooteraddress {
     overflow: hidden;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
     width: 330px;
   }
@@ -957,15 +960,17 @@ td {
   }
 }
 .el-button--text {
-  color: #FA8334 !important;
+  color: #fa8334 !important;
 }
 .el-button--small {
   font-size: 14px;
 }
+.searchinp {
+  width: 75%;
+}
 .list {
   height: 100%;
 }
-
 // .el-dialog__headerbtn {
 //   // display: none;
 //   position: relative;

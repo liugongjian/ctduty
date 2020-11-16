@@ -598,7 +598,6 @@ export default {
 <style lang='scss'>
 .list {
   overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
 }
 .app-main {
   padding-top: 50px;

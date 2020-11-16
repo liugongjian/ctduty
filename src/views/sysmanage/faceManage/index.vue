@@ -729,7 +729,6 @@ export default {
 <style lang='scss'>
 .list {
   overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
 }
 .app-main {
   padding-top: 50px;
@@ -754,7 +753,7 @@ export default {
 }
 .avatar {
   width: 160px;
-  height: 220px;
+  height: 210px;
   display: block;
 }
 .upload-demo {
@@ -768,12 +767,17 @@ export default {
   z-index: 9999999999999999999999 !important;
 }
 .face-col {
-  width: 19%;
-  margin: 10px 0.5%;
+  width: 14.8%;
+  margin: 10px 0.8%;
+}
+.face-card:hover {
+  .face-checkbox {
+    display: block;
+  }
 }
 .face-card {
   position: relative;
-  border-radius: 4%;
+  border-radius: 4px;
   img {
     width: 100%;
   }
@@ -808,7 +812,6 @@ export default {
     height: 200px;
     img {
       object-fit: contain; //cover;
-      background-color: rgb(245, 247, 250);
     }
   }
 }
@@ -818,10 +821,14 @@ export default {
   line-height: 50px;
   text-align: center;
 }
-.face-checkbox {
+.el-checkbox {
+  display: none;
   position: absolute;
   top: 4px;
   right: 5px;
+}
+.is-checked {
+  display: inline-block;
 }
 </style>
 
