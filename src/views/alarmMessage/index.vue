@@ -19,7 +19,7 @@
 
           <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入..."
+            placeholder="设备名称"
             class="searchinp"
             @keyup.enter.native="searchAlarm">
             <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
