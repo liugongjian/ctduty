@@ -49,6 +49,7 @@ export default {
       return !this.sidebar.opened
     }
   },
+
   methods: {
     // toggleSideBar() {
     //   this.$store.dispatch('toggleSideBar')
