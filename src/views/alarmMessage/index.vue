@@ -167,7 +167,7 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头地址'"
+                :label="'设备名称'"
                 align="center"
                 min-width="8%"
                 prop="camera.name"
@@ -307,7 +307,7 @@
         </el-button>-->
 
         <!-- >
-            <el-form-item label="摄像头地址：" prop="camera.name">
+            <el-form-item label="设备名称：" prop="camera.name">
               <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
             </el-form-item>
             <el-form-item label="监控时间：" prop="createTime">
@@ -565,7 +565,7 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       // YYYY-MM-DD
-      return moment(cellValue).format('HH:mm:SS')
+      return moment(cellValue).format('HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       if (this.warngingKind[cellValue]) {
@@ -627,19 +627,10 @@ export default {
     // 重置搜索
     // 重置
     resetQuery() {
-<<<<<<< HEAD
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
       this.getList()
-=======
-      this.formInline.searchkey = "";
-      this.page = 1;
-      this.limit = 10;
-      const s = this.currentTab + " " + this.startTime + ":00";
-      const e = this.currentTab + " " + this.endTime + ":00";
-      this.getList(s, e, 'all');
->>>>>>> c33d5f17fc84a20bb047f08bde7de92def769437
     },
     // 重置起止时间的搜索
     // onClear() {
