@@ -59,47 +59,9 @@
         <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
           <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
         </el-table-column>
-        <el-table-column label="值更检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '值更检测') }}</template>
-        </el-table-column>
-        <el-table-column label="人脸识别" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人脸识别') }}</template>
-        </el-table-column>
-        <el-table-column label="车牌识别" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车牌识别') }}</template>
-        </el-table-column>
-        <el-table-column label="区域画线告警" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '区域画线告警') }}</template>
-        </el-table-column>
-        <el-table-column label="翻墙检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '翻墙检测') }}</template>
-        </el-table-column>
-        <el-table-column label="人流识别" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人流识别') }}</template>
-        </el-table-column>
-        <el-table-column label="车流识别" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车流识别') }}</template>
-        </el-table-column>
-        <el-table-column label="安全帽识别" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '安全帽识别') }}</template>
-        </el-table-column>
-        <el-table-column label="车型检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '车型检测') }}</template>
-        </el-table-column>
-        <el-table-column label="人群聚集检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人群聚集检测') }}</template>
-        </el-table-column>
-        <el-table-column label="打架斗殴检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '打架斗殴检测') }}</template>
-        </el-table-column>
-        <el-table-column label="摔倒检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '摔倒检测') }}</template>
-        </el-table-column>
-        <el-table-column label="占道经营检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '占道经营检测') }}</template>
-        </el-table-column>
-        <el-table-column label="人员逗留检测" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, '人员逗留检测') }}</template>
+        <!-- 根据返回算法渲染列 -->
+        <el-table-column v-for="item in tableColumn" :key="item.id" :label="item.name" align="center" min-width="125">
+          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template>
         </el-table-column>
       </el-table>
         <pagination
@@ -155,6 +117,7 @@ export default {
         todayAlerts: 0
       },
       tableData: [],
+      tableColumn: [],
       taskAppliedByCameraList: [],
       // 告警趋势
       alertStatisByDayList: [],
@@ -331,6 +294,7 @@ export default {
       getAlertStatics(query).then(res => {
         if (res.code !== 0) return
         this.tableData = res.body.data
+        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
         this.total = res.body.page.total
       })
     },
