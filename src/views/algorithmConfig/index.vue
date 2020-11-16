@@ -545,18 +545,21 @@ export default {
         font-size: 16px;
         color: #333;
         border: 1px solid #EEE;
-        margin: 20px 0;
+        margin: 5px 0;
         height: 50px;
         line-height: 50px;
         text-align: center;
     }
     .videoList{
-        margin-top: 20px;
-        padding: 0 22px;
+        // margin-top: 20px;
+        padding: 20px 22px;
         /deep/.el-table__header-wrapper{
             // border-radius: 5px;
             border-top-right-radius: 7px;
             border-top-left-radius: 7px;
+        }
+        /deep/.pagination-container{
+          margin-top: 20px;
         }
         .facilicyId{
             // width: 25%;

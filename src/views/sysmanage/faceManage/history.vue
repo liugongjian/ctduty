@@ -258,7 +258,7 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       return cellValue === 1 ? '人员' : cellValue === 2 ? '机动车' : '非机动车'
