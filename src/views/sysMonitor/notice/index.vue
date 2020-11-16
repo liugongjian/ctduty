@@ -113,7 +113,7 @@
       </el-table-column>
     </el-table>-->
 
-    <el-pagination
+    <!-- <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
       :page-size="queryInfo.pagesize"
@@ -121,7 +121,14 @@
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    ></el-pagination>
+    ></el-pagination> -->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryInfo.pagenum"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
@@ -253,11 +260,16 @@ import {
   updateANotice,
   deleteNotices
 } from '@/api/notice'
+import Pagination from '@/components/Pagination'
 import { fetchUserList } from '@/api/users'
 import { notReadNotices } from '@/api/notice'
 export default {
+  components: { Pagination },
   data() {
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       searchName: '',
       searchUserIds: [],
       addFormRules: {
@@ -305,7 +317,7 @@ export default {
           type: null
         }
       },
-      totalnum: 0,
+      total: 0,
       addNoticeDialogVisible: false,
       addNoticeForm: {
         content: '',
@@ -354,6 +366,10 @@ export default {
           message: '内容长度不能大于500!'
         })
       }
+    },
+    limit() {
+      this.page = 1
+      this.pageChange()
     }
   },
   created() {
@@ -398,8 +414,15 @@ export default {
         this.noticeList.map(item => {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
         })
-        this.totalnum = response.body.page.total
+        this.total = response.body.page.total
       })
+    },
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getNoticeList()
     },
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
