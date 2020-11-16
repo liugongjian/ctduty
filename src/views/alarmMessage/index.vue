@@ -19,7 +19,7 @@
 
           <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入..."
+            placeholder="设备名称"
             class="searchinp"
             @keyup.enter.native="searchAlarm">
             <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
@@ -565,7 +565,7 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       // YYYY-MM-DD
-      return moment(cellValue).format("HH:mm:ss");
+      return moment(cellValue).format('HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       if (this.warngingKind[cellValue]) {
@@ -630,8 +630,8 @@ export default {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + " " + this.startTime + ":00"
-      const e = this.currentTab + " " + this.endTime + ":00"
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
     },
     // 重置起止时间的搜索
