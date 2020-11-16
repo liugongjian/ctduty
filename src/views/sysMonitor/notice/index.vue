@@ -572,7 +572,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .notice {
   padding: 10px 20px;
 }

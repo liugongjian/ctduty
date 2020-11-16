@@ -288,7 +288,7 @@ export default {
           } */
         ],
         permissionId: [
-          { required: true, message: '权限不能为空', trigger: 'blur' }
+          { required: true, message: '权限不能为空', trigger: 'change' }
         ]
       },
       addUserForm: {
@@ -475,7 +475,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
 }
