@@ -88,7 +88,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="area">
+        <el-form-item label="区域/部门" prop="departmentId">
           <el-select
             v-model="addUserForm.departmentId"
             placeholder="请选择区域/部门"
@@ -152,7 +152,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="area">
+        <el-form-item label="区域/部门" prop="departmentId">
           <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
           <el-select
             v-model="editUserForm.departmentId"
@@ -260,7 +260,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        area: [{
+        departmentId: [{
           required: true,
           message: '请选择部门',
           trigger: 'change'
@@ -288,7 +288,7 @@ export default {
           } */
         ],
         permissionId: [
-          { required: true, message: '权限不能为空', trigger: 'blur' }
+          { required: true, message: '权限不能为空', trigger: 'change' }
         ]
       },
       addUserForm: {
