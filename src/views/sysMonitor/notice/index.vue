@@ -163,7 +163,7 @@
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
 
-        <el-form-item class="select" label="签名档">
+        <el-form-item class="select" label="签名档" style="margin-top:1px;">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
             <el-option
