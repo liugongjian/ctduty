@@ -366,14 +366,14 @@ body {
       line-height: 20px;
       margin-top: 10px;
     }
-    .el-input__inner {
+    /deep/.el-input__inner {
       text-indent: 15px;
       height: 40px;
     }
-    .el-form-item.el-form-item--medium {
+    /deep/.el-form-item.el-form-item--medium {
         margin-bottom: 20px;
     }
-    .el-checkbox__label {
+    /deep/.el-checkbox__label {
         font-family: PingFangSC-Regular;
         color: #333333;
         line-height: 22px;

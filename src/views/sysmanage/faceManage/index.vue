@@ -809,6 +809,15 @@ export default {
       object-fit: contain; //cover;
     }
   }
+  /deep/.el-checkbox {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 5px;
+  }
+  /deep/.is-checked {
+    display: block;
+  }
 }
 .face-nodata {
   width: 100%;
@@ -816,14 +825,6 @@ export default {
   line-height: 50px;
   text-align: center;
 }
-.el-checkbox {
-  display: none;
-  position: absolute;
-  top: 4px;
-  right: 5px;
-}
-.is-checked {
-  display: block;
-}
+
 </style>
 
