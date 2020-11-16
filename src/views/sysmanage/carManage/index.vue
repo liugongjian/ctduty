@@ -439,21 +439,28 @@ export default {
       this.imSuccessData = []
     },
     batchesDel() {
-      this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        const params = [...this.delIDArr]
-        deleteCarData(params)
-          .then(response => {
-            this.getList()
-            this.delIDArr = []
-          })
-          .catch(() => {
-            this.delIDArr = []
-          })
-      })
+      if (!this.delIDArr.length) {
+        this.$message({
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
+        })
+      } else {
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const params = [...this.delIDArr]
+          deleteCarData(params)
+            .then(response => {
+              this.getList()
+              this.delIDArr = []
+            })
+            .catch(() => {
+              this.delIDArr = []
+            })
+        })
+      }
     },
     delAlert(d) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
