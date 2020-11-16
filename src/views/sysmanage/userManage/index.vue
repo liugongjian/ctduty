@@ -360,12 +360,6 @@ export default {
       this.pageChange()
     }
   },
-  watch: {
-    limit() {
-      this.page = 1
-      this.pageChange()
-    }
-  },
   created() {
     this.getUserList()
   },
