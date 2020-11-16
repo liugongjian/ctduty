@@ -447,7 +447,7 @@ export default {
     },
     formatTime: function(row, column, cellValue) {
       // YYYY-MM-DD
-      return moment(cellValue).format('HH:mm:SS')
+      return moment(cellValue).format('HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       if (cellValue === 1) {
