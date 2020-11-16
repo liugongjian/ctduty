@@ -310,6 +310,7 @@
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
+        :page-sizes="[12,24,36,48]"
         @pagination="pageChange()"
       />
     </div>
@@ -390,7 +391,7 @@ export default {
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
-      limit: 10,
+      limit: 12,
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 10,
@@ -706,7 +707,7 @@ export default {
     resetQuery() {
       this.addFaceForm.searchkey = ''
       this.page = 1
-      this.limit = 10
+      this.limit = 12
       this.getfaceList()
     },
     gohistory() {
