@@ -200,7 +200,7 @@ export default {
   methods: {
     handleClick(tab, event) {
       this.pageLoading = true
-      if (tab.index === 0) {
+      if (tab.index === '0' || tab.index === 0) {
         this.getTaskList()
       } else {
         this.getList()

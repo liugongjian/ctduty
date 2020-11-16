@@ -627,10 +627,19 @@ export default {
     // 重置搜索
     // 重置
     resetQuery() {
+<<<<<<< HEAD
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
       this.getList()
+=======
+      this.formInline.searchkey = "";
+      this.page = 1;
+      this.limit = 10;
+      const s = this.currentTab + " " + this.startTime + ":00";
+      const e = this.currentTab + " " + this.endTime + ":00";
+      this.getList(s, e, 'all');
+>>>>>>> c33d5f17fc84a20bb047f08bde7de92def769437
     },
     // 重置起止时间的搜索
     // onClear() {

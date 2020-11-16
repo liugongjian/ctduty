@@ -149,13 +149,13 @@ export default {
   async mounted() {
     await this.loadFakeImg()
     await this.getAllCamera()
-    await this.getLiveList()
   },
   methods: {
     loadFakeImg() {
       this.pageLoading = true
       loadingImg().then(res => {
         if (res.body.data.length > 0) {
+          // const staticImg = []
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
@@ -164,6 +164,13 @@ export default {
               name: item.name
             })
           })
+          // const a = staticImg.filter((item, index) => {
+          //   this.deviceList.find(val => item.id !== val.id)
+          // })
+          // if (a.length > 1) {
+          //   this.deviceList.push(a)
+          // }
+          this.getLiveList()
           this.pageLoading = false
         }
       })
@@ -253,6 +260,7 @@ export default {
             }
           }
         })
+        console.log('device-------->', this.deviceList)
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
@@ -395,6 +403,8 @@ export default {
       // height: calc(35vh + 36.4px);
       height: 210px;
       margin: 10px;
+      width: 400px;
+      height: 330px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -411,7 +421,8 @@ export default {
     .screen-head {
       position: relative;
       display: flex;
-      width: calc(100% + 0.5px);
+      // width: calc(100% + 0.5px);
+      width: 400px;
       padding: 0 10px;
       align-items: center;
       border: 1px solid #ebeef5;
