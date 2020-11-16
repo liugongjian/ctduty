@@ -823,7 +823,7 @@ export default {
   right: 5px;
 }
 .is-checked {
-  display: block;
+  display: inline-block;
 }
 </style>
 
