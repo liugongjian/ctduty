@@ -392,7 +392,7 @@ export default {
 
   .screen {
     float: left;
-    width: 33.33%;
+    // width: 33.33%;
     height: 48%;
     min-width: 420px;
     .screen-inner {
