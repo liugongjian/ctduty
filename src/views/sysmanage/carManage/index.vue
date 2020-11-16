@@ -28,9 +28,9 @@
 
         <el-dialog
           :visible="bulkimportVisble"
+          :width="isBatchSuccess ? '50%':'36%'"
           class="carDialog"
           title="导入车牌数据"
-          width="50vw"
           height="80vh"
           @close="closebulkimportDialog"
         >
