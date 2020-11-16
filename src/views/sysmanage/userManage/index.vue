@@ -88,7 +88,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门">
+        <el-form-item label="区域/部门" prop="area">
           <el-select
             v-model="addUserForm.departmentId"
             placeholder="请选择区域/部门"
@@ -101,7 +101,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="岗位">
+        <el-form-item label="岗位" prop="postId">
           <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
             <el-option
               v-for="item in postInfo"
@@ -152,7 +152,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门">
+        <el-form-item label="区域/部门" prop="area">
           <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
           <el-select
             v-model="editUserForm.departmentId"
@@ -167,7 +167,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="岗位">
+        <el-form-item label="岗位" prop="postId">
           <el-select
             v-model="editUserForm.postId"
             :value="editUserForm.postId"
@@ -260,6 +260,16 @@ export default {
             trigger: 'blur'
           }
         ],
+        area: [{
+          required: true,
+          message: '请选择部门',
+          trigger: 'change'
+        }],
+        postId: [{
+          required: true,
+          message: '请选择岗位',
+          trigger: 'change'
+        }],
         phone: [
           {
             required: true,
@@ -352,12 +362,6 @@ export default {
           post: '监控中心'
         }
       ]
-    }
-  },
-  watch: {
-    limit() {
-      this.page = 1
-      this.pageChange()
     }
   },
   watch: {
