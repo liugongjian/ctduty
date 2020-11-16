@@ -381,7 +381,7 @@ export default {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          size: this.limit
         },
         params: {},
         sorts: [
