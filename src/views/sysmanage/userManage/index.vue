@@ -370,18 +370,11 @@ export default {
     this.getUserList()
   },
   methods: {
-    pageChange() {
-      if (this.oldSize !== this.limit) {
-        this.page = 1
-      }
-      this.oldSize = this.limit
-      this.getgetPoliceList()
-    },
     getUserList() {
       const query = {
         cascade: true,
         page: {
-          index: this.pagenum,
+          index: this.page,
           size: this.limit
         },
         params: {}
