@@ -336,7 +336,7 @@ export default {
     },
 
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {

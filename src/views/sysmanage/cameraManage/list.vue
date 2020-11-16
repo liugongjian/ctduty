@@ -282,7 +282,7 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     editDialog(v) {
       this.editForm.id = v.id
@@ -433,10 +433,6 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
-  overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
-}
 .app-main {
   padding-top: 50px;
 }

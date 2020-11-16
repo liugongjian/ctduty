@@ -67,7 +67,7 @@
     <el-dialog
       :visible.sync="addUserDialogVisible"
       title="新增用户"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
@@ -131,7 +131,7 @@
     <el-dialog
       :visible.sync="editUserDialogVisible"
       title="修改用户"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
       <el-form
@@ -160,7 +160,7 @@
             placeholder="请选择区域/部门"
           >
             <el-option
-              v-for="item in this.departmentInfo"
+              v-for="item in departmentInfo"
               :value="item.departmentId"
               :label="item.department"
               :key="item.departmentId"
@@ -174,7 +174,7 @@
             placeholder="请选择岗位"
           >
             <el-option
-              v-for="item in this.postInfo"
+              v-for="item in postInfo"
               :value="item.postId"
               :label="item.post"
               :key="item.postId"
@@ -201,9 +201,9 @@
     <el-dialog
       :visible.sync="deleteUserDialogVisible"
       title="删除用户"
-      width="50%"
+      width="30%"
     >
-      <span>确认删除用户{{ this.deleteUserName }}？</span>
+      <span>确认删除用户{{ deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
         <el-button @click="deleteUserDialogVisible = false">取 消</el-button>

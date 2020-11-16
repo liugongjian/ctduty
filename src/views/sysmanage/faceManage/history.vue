@@ -6,16 +6,17 @@
           <el-button
             v-waves
             class="filter-item"
-            size="mini"
-            type="warning"
+            type="primary"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
+            type=""
             style="font-size:12px"
             icon="el-icon-refresh"
             @click="onClear"
           >重置</el-button>
+          <!-- <el-button type="" @click="onClear">重置</el-button> -->
         </div>
         <div class="pull-left">
           <div class="block filter-item">
@@ -257,7 +258,7 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       return cellValue === 1 ? '人员' : cellValue === 2 ? '机动车' : '非机动车'

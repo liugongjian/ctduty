@@ -555,6 +555,8 @@ export default {
         return 'video/mp4'
       } else if (url.endsWith('ogv')) {
         return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
       }
     },
     openBig(url) {
@@ -773,8 +775,8 @@ export default {
                   // m3u8uri
                   sources: [
                     {
-                      src: res.body.data.rtmpuri,
-                      type: this.video_type(res.body.data.rtmpuri)
+                      src: res.body.data.rtmpuri + '&a.flv',
+                      type: this.video_type(res.body.data.rtmpuri + '&a.flv')
                     }
                   ]
                 }

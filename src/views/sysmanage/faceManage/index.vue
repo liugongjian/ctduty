@@ -190,10 +190,10 @@
                   >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
                 </el-tooltip>
                 <el-tag
-                  :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
+                  :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
                   style="margin-top:3px;"
                   size="mini"
-                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
+                >{{ item.nameList === 1 ? "白名单" : item.nameList === 2 ? "黑名单" : "其他" }}</el-tag>
               </div>
               <div class="btn-box">
                 <el-button
@@ -313,6 +313,7 @@
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
+        :page-sizes="[12,24,36,48]"
         @pagination="pageChange()"
       />
     </div>
@@ -393,7 +394,7 @@ export default {
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
-      limit: 10,
+      limit: 12,
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 10,
@@ -709,7 +710,7 @@ export default {
     resetQuery() {
       this.addFaceForm.searchkey = ''
       this.page = 1
-      this.limit = 10
+      this.limit = 12
       this.getfaceList()
     },
     gohistory() {

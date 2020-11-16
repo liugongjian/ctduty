@@ -33,6 +33,12 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      canvasWidth: '',
+      canvasHeight: ''
+    }
+  },
   created() {
     this.step1()
   },
@@ -50,18 +56,17 @@ export default {
         }
         var _width = coor.rightBottom[0] - coor.leftTop[0]
         var _height = coor.rightBottom[1] - coor.leftTop[1]
-        console.log('_width', _width, '_height', _height)
         var ctx = canvas.getContext('2d')
         img.src = this.imgUrl
         var name = this.name
         var nameLength = this.nameLength
         img.onload = function() {
-          this.width = 1280
-          this.height = 720
-          canvas.width = 1280
-          canvas.height = 720
+          this.canvasWidth = img.width
+          this.canvasHeight = img.height
+          canvas.width = img.width
+          canvas.height = img.height
           ctx.globalCompositeOperation = 'source-over'
-          ctx.drawImage(img, 1280, 720)
+          // ctx.drawImage(img, 0, 0,this.canvasWidth,this.canvasHeight)
           ctx.lineWidth = 4
           ctx.strokeStyle = 'red'
           ctx.textBaseline = 'top'
@@ -81,7 +86,7 @@ export default {
               ctx.fillText(name, Math.ceil(coor.leftTop[0]) + 10, Math.ceil(coor.leftTop[1]) - 65)
             }
             setTimeout(() => {
-              ctx.clearRect(0, 0, 1920, 1080)
+              ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight)
             }, 300)
           }, 600)
         }

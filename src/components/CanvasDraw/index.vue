@@ -108,6 +108,7 @@ export default {
       wallCount: 1,
       forbCount: 1,
       lineCount: 1,
+      areaCount: 1,
       markName: '',
       tempChoosePoint: [],
       needConfigAlgorithms: [
@@ -190,8 +191,10 @@ export default {
           this.wallCount = parseInt(nameList[1]) + 1
         } else if (lastHisArea.name.startsWith('forb')) {
           this.forbCount = parseInt(nameList[1]) + 1
-        } else {
+        } else if (lastHisArea.name.startsWith('line')){
           this.lineCount = parseInt(nameList[1]) + 1
+        } else{
+          this.areaCount = parseInt(nameList[1]) + 1
         }
       }
       // 加载完成执行
@@ -349,6 +352,7 @@ export default {
       this.lineCount = 1
       this.wallCount = 1
       this.forbCount = 1
+      this.areaCount = 1
       this.markName = ''
       this.historyPoints = []
       this.clearCanvas()
@@ -368,9 +372,12 @@ export default {
         this.wallCount--
       } else if (revokeArea.name.startsWith('forb')) {
         this.forbCount--
-      } else {
+      } else if (revokeArea.name.startsWith('line')){
         this.lineCount--
+      } else {
+        this.areaCount--
       }
+	  
       this.drawAll()
     },
     // 从后端获取的点坐标格式化
@@ -609,10 +616,14 @@ export default {
         name = 'line-' + (this.lineCount++)
         return name
       }
-      if (this.value == 1) {
-        name = 'wall-' + (this.wallCount++)
-      } else {
-        name = 'forb-' + (this.forbCount++)
+      if (this.currentPickAlgorithm.name=="stepWallCheck"){
+        if (this.value == 1) {
+          name = 'wall-' + (this.wallCount++)
+        } else {
+          name = 'forb-' + (this.forbCount++)
+        }
+      }else{
+        name = 'area-' + (this.areaCount++)
       }
       return name
     },
