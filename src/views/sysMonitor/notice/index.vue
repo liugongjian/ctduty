@@ -36,7 +36,7 @@
         style="width: 120vw"
         @filter-change="filerStatus"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
+        <!-- <el-table-column type="index" label="序号"></el-table-column> -->
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
             <el-link
