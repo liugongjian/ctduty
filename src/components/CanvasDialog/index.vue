@@ -7,12 +7,6 @@
 <script>
 
 export default {
-  data() {
-    return {
-      canvasWidth:'',
-      canvasHeight:''
-    }
-  },
   props: {
     imgUrl: {
       type: String,
@@ -37,6 +31,12 @@ export default {
       default: () => {
         return []
       }
+    }
+  },
+  data() {
+    return {
+      canvasWidth: '',
+      canvasHeight: ''
     }
   },
   created() {
