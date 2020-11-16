@@ -475,7 +475,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
 }
