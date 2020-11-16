@@ -236,7 +236,7 @@
       :show-close="false"
       class="mesdialog"
       width="500px"
-      style="height:400px;"
+      style="height:100%;"
       @close="closeDialog"
     >
       <div style="width:500px;height:400px; padding: 10px 10px 0px">
@@ -912,6 +912,10 @@ td {
   text-indent: 0px;
   line-height: 32px !important;
 }
+.el-input--mini .el-input__icon {
+  line-height: 32px !important;
+
+}
 .mesdialog {
   .el-dialog__header {
     padding: 0 !important;
@@ -947,6 +951,10 @@ td {
 .el-button--small {
   font-size: 14px;
 }
+.list {
+  height: 100%;
+}
+
 // .el-dialog__headerbtn {
 //   // display: none;
 //   position: relative;
