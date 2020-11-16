@@ -4,7 +4,7 @@
       <template v-for="(item,index) in deviceList">
         <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
           <div class="screen-inner">
-            <div class="screen-body">
+            <div :style="{height: heightByAuto}" class="screen-body">
               <el-image
                 v-if="item.image"
                 :src="item.image"
@@ -126,13 +126,15 @@ export default {
       videoOptions: {
         autoplay: true,
         controls: true,
+        autoDisable: true,
         width: 960, // 播放器宽度
         height: 480 // 播放器高度
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-        // fluid: true, // 流体布局，自动充满，并保持播放其比例
+        // fluid: true // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
       },
-      allCameraList: []
+      allCameraList: [],
+      heightByAuto: ''
     }
   },
   watch: {
@@ -143,6 +145,20 @@ export default {
             item.name = one.name
           }
         })
+      })
+      this.$nextTick(() => {
+        const boxWidth = document.querySelector('.screen-body').offsetWidth
+        // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
+        const windowWidth = window.innerWidth
+        // const windowHeight = window.innerHeight
+        // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
+        if (windowWidth > 1440) {
+          this.heightByAuto = boxWidth / 1.3 + 'px'
+        } else if (windowWidth <= 1440 && windowWidth > 1300) {
+          this.heightByAuto = boxWidth / 1.366 + 'px'
+        } else {
+          this.heightByAuto = boxWidth / 1.45 + 'px'
+        }
       })
     }
   },
@@ -260,7 +276,6 @@ export default {
             }
           }
         })
-        console.log('device-------->', this.deviceList)
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
@@ -388,23 +403,24 @@ export default {
   display: flex;
   flex-wrap: wrap;
   flex-direction:row;
-  justify-content: center;
+  // justify-content: center;
 
   .screen {
     float: left;
-    // width: 33.33%;
-    height: 48%;
+    width: 50%;
+    // height: 48%;
+    height: auto;
     min-width: 420px;
     .screen-inner {
       margin: 10px 10px;
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      // height: calc(35vh + 36.4px);
-      height: 210px;
+      height: calc(35vh + 36.4px);
+      // height: 210px;
       margin: 10px;
-      width: 400px;
-      height: 330px;
+      // width: 100%;
+      // height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -421,8 +437,8 @@ export default {
     .screen-head {
       position: relative;
       display: flex;
-      // width: calc(100% + 0.5px);
-      width: 400px;
+      width: calc(100% + 0.5px);
+      // width: 400px;
       padding: 0 10px;
       align-items: center;
       border: 1px solid #ebeef5;
@@ -450,13 +466,8 @@ export default {
     }
     .screen-body {
       // height: 35vh;
-      height: 300px;
-      width: 400px;
+      width: auto;
       background: #333;
-      .video-wrap{
-         min-width: 400px;
-         min-height: 300px;
-      }
     }
     .el-icon-plus {
       font-size: 14px !important;
