@@ -376,7 +376,7 @@ export default {
       })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format('YYYY-MM-DD HH:mm:SS')
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     getAloneTask(id) {
       getTask(id).then(res => {
