@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="～"
+          range-separator="to"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -80,7 +80,7 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="开始时间">
         </el-time-picker>
       </span>
@@ -92,7 +92,7 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="结束时间">
         </el-time-picker>
       </span>
@@ -471,6 +471,15 @@ export default {
   }
   .location {
     overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+  }
+  .el-input--suffix .el-input__inner {
+    padding-right: 0px;
+  }
+  .el-date-editor--daterange.el-input__inner {
+    width: 300px;
+  }
+  .el-date-editor .el-range-separator {
+    width: 6%;
   }
 //   overflow: auto !important;
 //   min-height: calc(100vh - 90px) !important;
