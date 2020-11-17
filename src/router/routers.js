@@ -140,6 +140,44 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/carHistory',
+    component: Layout,
+    redirect: '/carHistory',
+    hidden: false,
+    children: [
+      {
+        path: '/carHistory',
+        component: () => import('@/views/sysmanage/carHistory/index'),
+        name: 'carHistory',
+        meta: {
+          title: 'carHistory',
+          icon: 'license',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/faceHistory',
+    component: Layout,
+    redirect: '/faceHistory',
+    hidden: false,
+    children: [
+      {
+        path: '/faceHistory',
+        component: () => import('@/views/sysmanage/faceManage/history'),
+        name: 'sysFaceHistory',
+        meta: {
+          title: 'faceHistory',
+          icon: 'face',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+  {
     path: '/sysMonitor',
     component: Layout,
     alwaysShow: true, // willalwaysshowtherootmenu
@@ -274,6 +312,7 @@ export const asyncRouterMap = [
           noCache: false
         }
       },
+
       {
         path: 'carManage',
         // component: () => import('@/views/sysmanage/carManage/index'),
@@ -294,17 +333,6 @@ export const asyncRouterMap = [
             hidden: true,
             meta: {
               title: 'carManage',
-              icon: 'license',
-              noCache: false
-            }
-          },
-          {
-            path: 'carHistory',
-            name: 'carHistory',
-            component: () => import('@/views/sysmanage/carHistory/index'),
-            hidden: true,
-            meta: {
-              title: 'carHistory',
               icon: 'license',
               noCache: false
             }
@@ -331,18 +359,8 @@ export const asyncRouterMap = [
               icon: 'face',
               noCache: false
             }
-          },
-          {
-            path: 'faceHistory',
-            component: () => import('@/views/sysmanage/faceManage/history'),
-            name: 'sysFaceHistory',
-            hidden: true,
-            meta: {
-              title: 'faceHistory',
-              icon: 'face',
-              noCache: false
-            }
           }
+
         ]
       }
     ]
