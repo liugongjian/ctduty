@@ -822,6 +822,11 @@ export default {
   line-height: 50px;
   text-align: center;
 }
+.face-card {
+  label {
+    width: 15px;
+  }
+}
 .el-checkbox {
   display: none;
   position: absolute;
