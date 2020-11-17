@@ -111,6 +111,7 @@
             <el-table
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
+              :height="tableHeight"
               class="alaMesTable"
               style="width: 100%"
               tooltip-effect="dark"
@@ -416,6 +417,7 @@ export default {
       userId: '',
       originCode: '',
       oldSize: 10,
+      tableHeight: null,
       editVisable: false,
       editForm: {
         id: '',
@@ -477,6 +479,8 @@ export default {
     }
   },
   created() {
+    this.tableHeight = document.body.clientHeight - 270
+    console.log(this.tableHeight)
     this.userId = Cookies.get('userId');
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
