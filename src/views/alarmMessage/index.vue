@@ -18,7 +18,7 @@
           ></el-button> -->
           <el-input
             v-model="formInline.searchkey"
-            placeholder="设备名称"
+            placeholder="摄像头地址"
             class="searchinp"
             size="mini"
             @keyup.enter.native="searchAlarm">
