@@ -573,7 +573,6 @@ export default {
       }
       return '人员'
     },
-
     formattername(row, column, cellValue) {
       if (this.warngingname[cellValue]) {
         return this.warngingname[cellValue]

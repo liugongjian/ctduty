@@ -86,7 +86,7 @@
           </el-form-item>
           <el-form-item label="负责人：">
             <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" style="width:300px;" placeholder="请选择负责人">
-              <el-option v-for="item in userList" :value="item.id" :label="item.username" :key="item.id">
+              <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
               </el-option>
             </el-select>
           </el-form-item>
