@@ -246,7 +246,7 @@
       style="height:100%;"
       @close="closeDialog"
     >
-      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+      <div style="width:500px;height:360px; padding: 10px 10px 0px">
         <div :model="temp" label-position="right" label-width="100px">
           <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
             <img :src="temp.image" width="480" height="270" style="z-index:1;">
@@ -542,8 +542,8 @@ export default {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + " " + this.startTime + ":00"
-      const e = this.currentTab + " " + this.endTime + ":00"
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
     },
     // 重置起止时间的搜索

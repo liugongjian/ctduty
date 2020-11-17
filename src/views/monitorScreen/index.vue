@@ -225,6 +225,10 @@ export default {
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
           this.getLiveList()
         })
       })
@@ -244,14 +248,6 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          this.options.forEach(item => {
-            if (item.value === this.form.cameraId) {
-              this.deviceList.push({
-                address: item.label,
-                image: fakeimg
-              })
-            }
-          })
           if (this.id) {
             updateMonitor({
               id: this.id,
@@ -261,11 +257,23 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
               this.onClose()
               this.getLiveList()
               this.submiting = false
             })
           } else {
+            this.options.forEach(item => {
+              if (item.value === this.form.cameraId) {
+                this.deviceList.push({
+                  address: item.label,
+                  image: fakeimg
+                })
+              }
+            })
             addMonitor({
               cameraId: this.form.cameraId
             }).then(res => {
@@ -273,6 +281,10 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
+              this.$message({
+                type: 'success',
+                message: '添加成功'
+              })
               this.onClose()
               this.getLiveList()
               this.submiting = false

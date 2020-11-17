@@ -166,12 +166,12 @@
       <el-row v-if="tableData.length>0">
         <el-col
           v-for="(item,index) in tableData"
-          :span="4"
+          :span="3"
           :key="index"
           :index="index"
           class="face-col"
         >
-          <el-card :body-style="{ padding: '0px' }" class="face-card">
+          <el-card :body-style="{ padding: '0px' }" class="face-card" shadow="never">
             <el-checkbox
               :key="item.id"
               class="face-checkbox"
@@ -187,7 +187,7 @@
                 >
                   <div
                     class="face-name"
-                  >姓名：{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                  >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
                 </el-tooltip>
                 <el-tag
                   :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
@@ -310,6 +310,7 @@
       </el-dialog>
       <pagination
         v-show="total>0"
+        :page-sizes="[12,24,36,48]"
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
@@ -393,7 +394,7 @@ export default {
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
-      limit: 10,
+      limit: 12,
       userId: Cookies.get('userId'),
       originCode: '',
       oldSize: 10,
@@ -716,7 +717,7 @@ export default {
     resetQuery() {
       this.addFaceForm.searchkey = ''
       this.page = 1
-      this.limit = 10
+      this.limit = 12
       this.getfaceList()
     },
     gohistory() {
