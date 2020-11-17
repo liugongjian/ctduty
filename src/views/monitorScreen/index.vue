@@ -53,7 +53,7 @@
         </div>
       </template>
       <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
-        <div class="screen-add" @click="addMonitorDialog">
+        <div :style="{height: `${parseInt(heightByAuto,10)+36}px`}" class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
