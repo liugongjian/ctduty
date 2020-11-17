@@ -812,21 +812,21 @@ export default {
       object-fit: contain; //cover;
     }
   }
+  /deep/.el-checkbox {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 5px;
+  }
+  /deep/.is-checked {
+    display: block;
+  }
 }
 .face-nodata {
   width: 100%;
   height: 50px;
   line-height: 50px;
   text-align: center;
-}
-.el-checkbox {
-  display: none;
-  position: absolute;
-  top: 4px;
-  right: 5px;
-}
-.is-checked {
-  display: inline-block;
 }
 </style>
 

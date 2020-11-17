@@ -29,7 +29,7 @@ import SidebarItem from './SidebarItem'
 import store from '@/store'
 // import minLogo from '@/assets/images/logo-minnew.png'
 // import maxLogo from '@/assets/images/logo-max.png'
-import minLogo from '@/assets/images/ctyun-logo.png'
+import minLogo from '@/assets/images/ctyun-logo-min.png'
 import maxLogo from '@/assets/images/logo-cloud.png'
 export default {
   components: { SidebarItem },
@@ -74,8 +74,8 @@ export default {
       margin: 0 auto;
     }
     .min-logo {
-      width: 38px;
-      height: 20px !important;
+      width: 39px;
+      height: 24px !important;
       display: block;
       // margin: auto;
     }
