@@ -82,7 +82,7 @@
           :show-overflow-tooltip="true"
           :label="'负责人'"
           align="center"
-          prop="inCharge.username"
+          prop="inCharge.name"
         ></el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
@@ -135,8 +135,8 @@
           </el-form-item>
           <el-form-item label="负责人：">
             <el-select
-              v-model="editForm.inChargeId"
-              :value="editForm.inChargeId"
+              v-model="editForm.inChargeName"
+              :value="editForm.inChargeName"
               style="width:300px;"
               placeholder="请选择负责人"
             >
@@ -284,6 +284,7 @@ export default {
       editForm: {
         id: "",
         inChargeId: "",
+        inChargeName:"",
         longitude: "",
         latitude: "",
         address: "",
@@ -370,11 +371,13 @@ export default {
       this.editForm.id = v.id;
       this.editForm.creatorId = v.creatorId;
       this.editForm.inChargeId = v.inChargeId;
+      this.editForm.inChargeName = v.inCharge.name;
       this.editForm.longitude = v.longitude;
       this.editForm.latitude = v.latitude;
       this.editForm.address = v.address;
       this.editForm.name = v.name;
       this.editForm.url = v.url;
+      console.log(v);
       this.editVisable = true;
     },
     editCloseDialog() {
