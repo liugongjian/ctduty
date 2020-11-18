@@ -143,7 +143,7 @@
               <el-option
                 v-for="item in userList"
                 :value="item.id"
-                :label="item.username"
+                :label="item.name"
                 :key="item.id"
               ></el-option>
             </el-select>
@@ -306,6 +306,7 @@ export default {
     await Message.closeAll();
     await this.getUserList();
     await this.getList();
+    
   },
   methods: {
     getUserList() {
@@ -325,6 +326,7 @@ export default {
             this.creatorName = item.name;
           }
         });
+    
       });
     },
     batchesDel() {
