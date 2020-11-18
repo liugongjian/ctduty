@@ -158,11 +158,9 @@
             <el-radio :label="1">紧急</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="内容">
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
-
         <el-form-item class="select" label="签名档" style="margin-top:1px;">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
@@ -327,7 +325,9 @@ export default {
         signatureId: null,
         creatorId: ''
       },
-      editNoticeForm: {},
+      editNoticeForm: {
+        content: ''
+      },
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
       deleteNoticeTitle: '',
@@ -353,6 +353,7 @@ export default {
   watch: {
     'addNoticeForm.content'(v) {
       if (v.length > 500) {
+        this.addNoticeForm.content = v.slice(0, 499)
         this.$message({
           type: 'warning',
           message: '内容长度不能大于500!'
@@ -361,6 +362,7 @@ export default {
     },
     'editNoticeForm.content'(v) {
       if (v.length > 500) {
+        this.editNoticeForm.content = v.slice(0, 499)
         this.$message({
           type: 'warning',
           message: '内容长度不能大于500!'

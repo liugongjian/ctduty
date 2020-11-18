@@ -479,8 +479,7 @@ export default {
     }
   },
   created() {
-    this.tableHeight = document.body.clientHeight - 270
-    console.log(this.tableHeight)
+    this.tableHeight = document.body.clientHeight - 280
     this.userId = Cookies.get('userId');
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
@@ -499,6 +498,9 @@ export default {
     // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
+  },
+  mounted() {
+    // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
     searchAlarm() {
@@ -882,6 +884,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        console.log(document.getElementsByTagName('td'))
       })
     },
     handleSelectionChange(val) {
