@@ -320,15 +320,15 @@ code {
 }
 
 .v-modal {
-    z-index: 999 !important;
+    z-index: 99999999 !important;
 }
 
 .el-dialog__wrapper {
-    z-index: 1000 !important;
+    z-index: 100000000 !important;
 }
 
 .el-select-dropdown {
-    z-index: 99999 !important;
+    z-index: 9999999999 !important;
 }
 
 .el-dialog__body::-webkit-scrollbar {
