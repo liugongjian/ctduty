@@ -479,8 +479,8 @@ export default {
     }
   },
   created() {
-    this.tableHeight = document.body.clientHeight - 270
-    console.log(this.tableHeight)
+    // this.tableHeight = document.body.clientHeight - 270
+    // console.log(this.tableHeight)
     this.userId = Cookies.get('userId');
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
@@ -949,11 +949,11 @@ export default {
 .el-input__inner {
   text-indent: 0px;
 }
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
-  }
-}
+// .alaMesTable {
+//   td {
+//     padding: 2px 0 !important;
+//   }
+// }
 
 .title {
   width: 100%;
