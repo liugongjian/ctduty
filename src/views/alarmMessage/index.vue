@@ -888,10 +888,12 @@ export default {
           var trArr = document.getElementsByClassName('el-table__row')
           var arr = Array.from(trArr)
           arr.forEach(item => {
-            console.log(document.getElementsByTagName('html')[0].clientHeight, this.tableHeight, this.tableHeight / 11, item.style.height)
-            item.style.height = this.tableHeight / 11 + 'px'
-            item.style.padding = 'none'
-            this.hasTdHeight = true
+            var child = Array.from(item.children)
+            child.forEach(dom => {
+              dom.style.height = this.tableHeight / 11 + 'px'
+              dom.style.padding = 'none'
+              this.hasTdHeight = true
+            })
           })
         }, 300)
       })

@@ -105,6 +105,7 @@
         </div>
       </el-dialog>
     </div>
+    <div v-if="isShowMark" class="mark"></div>
   </div>
 </template>
 
@@ -155,6 +156,7 @@ export default {
       username: '',
       notReadNotice: [],
       notReadNoticeTotal: '',
+      isShowMark: false,
       departmentInfo: [
         {
           departmentId: 3275699862611970,
@@ -228,10 +230,12 @@ export default {
     },
     dialogVisable(v) {
       if (v) {
+        this.isShowMark = true
         setTimeout(() => {
-          document.getElementsByClassName('el-dialog__wrapper')[0].style.zIndex = '100000000'
-          document.getElementsByClassName('v-modal')[0].style.zIndex = '99999999'
+          document.getElementsByClassName('v-modal')[0].style.display = 'none'
         }, 300)
+      } else {
+        this.isShowMark = false
       }
     }
   },
@@ -512,5 +516,15 @@ label {
 }
 .noticeDrop {
   border: none !important;
+}
+.mark {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .5;
+  background: #000;
+  z-index: 99999999 !important;
 }
 </style>
