@@ -326,7 +326,9 @@ code {
 .el-dialog__wrapper {
     z-index: 100000000 !important;
 }
-
+.el-message-box__wrapper {
+    z-index: 100000000 !important;
+}
 .el-select-dropdown {
     z-index: 9999999999 !important;
 }
@@ -398,10 +400,6 @@ html {
 
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
-}
-
-.el-message-box__wrapper {
-    z-index: 1000 !important;
 }
 
 .disable {

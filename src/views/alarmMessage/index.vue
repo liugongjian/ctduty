@@ -993,9 +993,6 @@ export default {
 .untreated {
   fill: #ff9832 !important;
 }
-.v-modal {
-  z-index: 999 !important;
-}
 .buttonText {
   color: #409eff;
   text-decoration: underline;
