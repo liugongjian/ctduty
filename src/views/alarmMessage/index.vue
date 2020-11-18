@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="app-container" style="padding: 20px; height: 100%">
+    <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
           <!-- <el-input
@@ -97,6 +97,37 @@
               :value="item._id"
             ></el-option>
           </el-select>-->
+          <el-select
+            v-model="algorithmList.typeValue"
+            multiple
+            placeholder="请选择事件名称"
+            min-width="300px"
+            :multiple-limit='2'
+            @change="checkModel"
+          >
+            <el-option
+              v-for="item in algorithm"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select>
+          <!-- <el-select
+            v-model="algorithmNameList.typeValue"
+            multiple
+            placeholder="请选择算法名称"
+            min-width="350px"
+            :multiple-limit='2'
+            @change="algorithmCheck"
+          >
+            <el-option
+              v-for="item in algorithmName"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select> -->
+
           <el-button
             v-waves
             class="filter-item sureItem"
@@ -404,7 +435,47 @@ export default {
         { name: '已处理', _id: 'settled' },
         { name: '未处理', _id: 'unsettled' }
       ],
-
+      algorithmList: {
+        searchkey: '',
+        typeValue: '行人'
+      },
+      algorithm: [
+        { name: '行人', _id: 1 },
+        { name: '机动车', _id: 2 },
+        { name: '非机动车', _id: 3 },
+        { name: '翻墙', _id: 4 },
+        { name: '人员逗留', _id: 5 },
+        { name: '人员聚集', _id: 6 },
+        { name: '区域划线', _id: 7 },
+        { name: '安全帽', _id: 8 },
+        { name: '打架斗殴', _id: 9 },
+        { name: '摔倒', _id: 10 },
+        { name: '占道经营', _id: 11 }
+      ],
+      algorithmNameList: {
+        searchkey: '',
+        typeValue: '值更检测'
+      },
+      algorithmName: [
+        { name: '值更检测', _id: 1 },
+        { name: '人脸识别', _id: 2 },
+        { name: '车牌识别', _id: 3 },
+        { name: '人脸对比', _id: 4 },
+        { name: '人脸属性', _id: 5 },
+        { name: '区域划线告警', _id: 6 },
+        { name: '翻墙检测', _id: 7 },
+        { name: '人流识别', _id: 8 },
+        { name: '车流识别', _id: 9 },
+        { name: '安全帽识别', _id: 10 },
+        { name: '工服识别', _id: 11 },
+        { name: '车型检测', _id: 12 },
+        { name: '人群聚集检测', _id: 13 },
+        { name: '打架斗殴检测', _id: 14 },
+        { name: '摔倒检测', _id: 15 },
+        { name: '占道经营检测', _id: 16 },
+        { name: '人员逗留检测', _id: 17 },
+        { name: '推流任务', _id: 18 }
+      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -467,11 +538,6 @@ export default {
       }
     }
   },
-  // computed: {
-  //   ...mapGetters([
-  //     'userId'
-  //   ])
-  // },
   watch: {
     limit() {
       this.page = 1
@@ -503,7 +569,6 @@ export default {
   },
   methods: {
     searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const e = this.currentTab + ' ' + this.endTime + ':00'
       //  + ' ' + this.startTime + ':00'
@@ -678,7 +743,8 @@ export default {
       }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      console.log('h1sssssssssssssssssssss', h1)
       this.oldSize = this.limit
       this.getList(s1, end1, h1)
       // 调用后续得到allTotal接口在created和onClear都要写
@@ -730,7 +796,13 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      this.$emit('getdata', this.formInline.typeValue)
+      console.log('ssssssssssss', this.algorithmList.typeValue)
+      this.$emit('getdata', this.algorithmList.typeValue)
+    },
+    algorithmCheck() {
+      console.log('ccccccccccccccc', this.algorithmNameList.typeValue)
+      this.$emit('getdata', this.algorithmNameList.typeValue)
+
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
@@ -808,21 +880,8 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      // console.log('se', s , e)
-      let oper
-      if (h === 'settled') {
-        oper = 'NOT_NULL'
-      } else if (h === 'unsettled') {
-        oper = 'NULL'
-      }
-      const ss = {
-        field: 'handlerId',
-        operator: oper,
-        value: 'null'
-      }
-      const param =
-        h == 'all'
-          ? [
+      console.log('hhhhhhhhhhhhhhh', h)
+      const param =[
             {
               field: 'camera.name',
               operator: 'LIKE',
@@ -841,29 +900,12 @@ export default {
               field: 'camera.inChargeId',
               operator: 'EQUALS',
               value: this.userId
+            },
+            {
+              field: 'type',
+              operator: 'IN',
+              value: h
             }
-          ]
-          : [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            ss
           ]
       const params = {
         cascade: true,
@@ -897,10 +939,6 @@ export default {
           })
         }, 300)
       })
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1
@@ -1083,9 +1121,9 @@ td {
 .searchinp {
   width: 75%;
 }
-.list {
-  height: 100%;
-}
+// .list {
+//   height: 100%;
+// }
 // .el-dialog__headerbtn {
 //   // display: none;
 //   position: relative;
