@@ -39,10 +39,15 @@
         <!-- <el-table-column type="index" label="序号"></el-table-column> -->
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
+
             <el-link
               type="primary"
               @click="showEditDialog(row_data.row.id,'false')"
-            >{{ row_data.row.title }}</el-link>
+            >
+              <el-tooltip :content="row_data.row.title" :disabled="row_data.row.title.length<8" class="item" effect="dark" placement="top">
+                <span>{{ row_data.row.title.length>8? row_data.row.title.slice(0,7)+'...':row_data.row.title }}</span>
+              </el-tooltip>
+            </el-link>
           </template>
         </el-table-column>
         <el-table-column label="公告类型" prop="type">

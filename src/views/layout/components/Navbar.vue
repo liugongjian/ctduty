@@ -46,7 +46,7 @@
             :key="item.id"
             :command="item"
           >
-            <el-tooltip v-if="item.title.length>8" :content="item.title" :disabled="item.title.length>8" class="item" effect="dark" placement="top">
+            <el-tooltip v-if="item.title.length>8" :content="item.title" :disabled="item.title.length<8" class="item" effect="dark" placement="top">
               <span> {{ '公告: '+ item.title.slice(0,7)+ '...' }}</span>
             </el-tooltip>
             <span v-else> {{ '公告: ' + item.title }}</span>
