@@ -109,9 +109,9 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-show="hasTdHeight"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
-              :height="tableHeight"
               class="alaMesTable"
               style="width: 100%"
               tooltip-effect="dark"
@@ -419,6 +419,7 @@ export default {
       oldSize: 10,
       tableHeight: null,
       editVisable: false,
+      hasTdHeight: false,
       editForm: {
         id: '',
         inCharge: '',
@@ -479,7 +480,6 @@ export default {
     }
   },
   created() {
-    this.tableHeight = document.body.clientHeight - 280
     this.userId = Cookies.get('userId');
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
@@ -884,7 +884,16 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        console.log(document.getElementsByTagName('td'))
+        this.tableHeight = document.body.clientHeight - 280
+        this.hasTdHeight = true
+        setTimeout(() => {
+          const tdArr = document.getElementsByTagName('td')
+          console.log(tdArr);
+          [].forEach.apply(tdArr, function(item) {
+            console.log(item)
+            item.style.height = this.tableHeight / 10 + 'px'
+          })
+        }, 300)
       })
     },
     handleSelectionChange(val) {

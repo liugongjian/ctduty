@@ -459,27 +459,27 @@ export default {
     beforeAvatarUpload(file) {
       this.upSingleData.name = file.name.split('.')[0]
       const isJPG = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt1M = file.size / 1024 / 1024 < 1
       if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传人脸图片大小不能超过 2MB!')
+      if (!isLt1M) {
+        this.$message.error('上传人脸图片大小不能超过 1MB!')
       }
-      return isJPG && isLt2M
+      return isJPG && isLt1M
     },
     beforeMulUpload(file) {
       const isJPG = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt1M = file.size / 1024 / 1024 < 1
       if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
-      } else if (!isLt2M) {
-        this.$message.error('上传人脸图片大小不能超过 2MB!')
+      } else if (!isLt1M) {
+        this.$message.error('上传人脸图片大小不能超过 1MB!')
       } else {
         this.mulUpData.name = file.name.split('.')[0]
         this.isBatchSuccess = true
       }
-      return isJPG && isLt2M
+      return isJPG && isLt1M
     },
     bulkimport() {
       this.bulkimportVisble = true
