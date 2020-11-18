@@ -104,7 +104,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
+              <el-input v-model="addCarForm.carWord" class="carinp" style="width:126px;" placeholder="请输入车牌号"></el-input>
             </el-form-item>
             <el-form-item label="所属名单：" prop="carlist">
               <el-select
@@ -460,7 +460,7 @@ export default {
                 message: '批量删除成功',
                 type: 'success',
                 duration: 2000
-              })    
+              })
             })
             .catch(() => {
               this.delIDArr = []
@@ -679,10 +679,16 @@ export default {
 }
 .carInput {
   height: 36.8px !important;
+  label {
+    padding-right: 20px;
+  }
 }
 .upload-demo {
   width: 360px;
   margin: 0 auto;
+}
+.carinp {
+ top: -3.3px;
 }
 </style>
 
