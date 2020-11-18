@@ -39,15 +39,17 @@
         <!-- <el-table-column type="index" label="序号"></el-table-column> -->
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
-            <el-tooltip
-              :content="row_data.row.title"
-              :disabled="row_data.row.title.length <3"
-              placement="bottom-start"
-            >
-              <el-link
-                @click="showEditDialog(row_data.row.id,'false')"
-              >{{ row_data.row.title >3 ?row_data.row.title.substr(0,3)+'...' :row_data.row.title }}</el-link>
-            </el-tooltip>
+            <el-link type="primary" @click="showEditDialog(row_data.row.id,'false')">
+              <el-tooltip
+                :content="row_data.row.title"
+                :disabled="row_data.row.title.length<8"
+                class="item"
+                effect="dark"
+                placement="top"
+              >
+                <span>{{ row_data.row.title.length>8? row_data.row.title.slice(0,7)+'...':row_data.row.title }}</span>
+              </el-tooltip>
+            </el-link>
           </template>
         </el-table-column>
 
@@ -164,11 +166,9 @@
             <el-radio :label="1">紧急</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="内容">
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
-
         <el-form-item class="select" label="签名档" style="margin-top:1px;">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
@@ -333,7 +333,9 @@ export default {
         signatureId: null,
         creatorId: ""
       },
-      editNoticeForm: {},
+      editNoticeForm: {
+        content: ""
+      },
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
       deleteNoticeTitle: "",
@@ -359,6 +361,7 @@ export default {
   watch: {
     "addNoticeForm.content"(v) {
       if (v.length > 500) {
+        this.addNoticeForm.content = v.slice(0, 499);
         this.$message({
           type: "warning",
           message: "内容长度不能大于500!"
@@ -367,6 +370,7 @@ export default {
     },
     "editNoticeForm.content"(v) {
       if (v.length > 500) {
+        this.editNoticeForm.content = v.slice(0, 499);
         this.$message({
           type: "warning",
           message: "内容长度不能大于500!"

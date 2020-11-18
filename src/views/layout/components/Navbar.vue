@@ -40,13 +40,19 @@
           </div>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <!-- <el-tooltip class="item" effect="dark" content="item.title" placement="top-start"> -->
-          <el-dropdown-item
-            v-for="item in notReadNotice"
-            :key="item.id"
-            :command="item"
-          >{{ '公告: '+ item.title }}</el-dropdown-item>
-          <!-- </el-tooltip> -->
+          <el-dropdown-item v-for="item in notReadNotice" :key="item.id" :command="item">
+            <el-tooltip
+              v-if="item.title.length>8"
+              :content="item.title"
+              :disabled="item.title.length<8"
+              class="item"
+              effect="dark"
+              placement="top"
+            >
+              <span>{{ '公告: '+ item.title.slice(0,7)+ '...' }}</span>
+            </el-tooltip>
+            <span v-else>{{ '公告: ' + item.title }}</span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
