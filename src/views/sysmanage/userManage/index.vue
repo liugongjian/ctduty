@@ -384,7 +384,7 @@ export default {
         params: {}
       }
       if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
+        query.params.name = `%${this.queryName}%`
       }
       fetchUserList(query).then(response => {
         if (response.code !== 0) return

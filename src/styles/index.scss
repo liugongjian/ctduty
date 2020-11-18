@@ -326,6 +326,11 @@ code {
 .el-dialog__wrapper {
     z-index: 100000000 !important;
 }
+
+.el-dialog {
+    z-index: 100000000 !important;
+}
+
 .el-message-box__wrapper {
     z-index: 100000000 !important;
 }

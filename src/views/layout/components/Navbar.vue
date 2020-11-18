@@ -66,7 +66,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
+      <el-dialog v-if="dialogVisable" :visible="dialogVisable" title="公告" width="520px" style="z-index:100000000" @close="closeDialog">
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -229,7 +229,6 @@ export default {
     dialogVisable(v) {
       if (v) {
         setTimeout(() => {
-          console.log(document.getElementsByClassName('el-dialog__wrapper')[0], document.getElementsByClassName('el-dialog__wrapper')[0].style.zIndex)
           document.getElementsByClassName('el-dialog__wrapper')[0].style.zIndex = '100000000'
           document.getElementsByClassName('v-modal')[0].style.zIndex = '99999999'
         }, 300)

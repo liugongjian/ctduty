@@ -883,14 +883,15 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.tableHeight = document.body.clientHeight - 280
-        this.hasTdHeight = true
+        this.tableHeight = document.getElementsByTagName('html')[0].clientHeight - 380
         setTimeout(() => {
-          const tdArr = document.getElementsByTagName('td')
-          console.log(tdArr);
-          [].forEach.apply(tdArr, function(item) {
-            console.log(item)
-            item.style.height = this.tableHeight / 10 + 'px'
+          var trArr = document.getElementsByClassName('el-table__row')
+          var arr = Array.from(trArr)
+          arr.forEach(item => {
+            console.log(document.getElementsByTagName('html')[0].clientHeight, this.tableHeight, this.tableHeight / 11, item.style.height)
+            item.style.height = this.tableHeight / 11 + 'px'
+            item.style.padding = 'none'
+            this.hasTdHeight = true
           })
         }, 300)
       })
