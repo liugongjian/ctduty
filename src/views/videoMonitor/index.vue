@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="12">
           <div class="monitorBox">
-            <div v-if="showVideoSetting" class="video-panel">
+            <div class="video-panel">
               <div class="left-part">
                 <VideoPlayer v-if="!!flv && activeTab == 'video'" :video-ref="videoRef" :options="videoOptions"/>
               </div>
@@ -53,14 +53,14 @@
                 </div>
               </div>
             </div>
-            <div v-else>
+            <!-- <div v-else>
               <p>请选择添加一个摄像头</p>
               <div class="monitorAddress">
                 <span class="displayIB addressText">摄像头地址：</span>
                 <el-select class="displayIB"></el-select>
                 <el-button class="displayIB" type="primary" @click="sureThis">确定</el-button>
               </div>
-            </div>
+            </div> -->
 
           </div>
           <div class="censusData">

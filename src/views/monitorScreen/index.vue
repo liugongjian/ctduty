@@ -132,6 +132,9 @@ export default {
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
         // fluid: true // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
+        // 'data-setup': {
+        //   'techOrder': ['html5', 'flash']
+        // }
       },
       allCameraList: [],
       heightByAuto: ''
@@ -416,7 +419,7 @@ export default {
       border-radius: 3px 3px 0 0;
     }
     .screen-add {
-      height: calc(35vh + 36.4px);
+      // height: calc(35vh + 36.4px);
       // height: 210px;
       margin: 10px;
       // width: 100%;
@@ -426,7 +429,7 @@ export default {
       align-items: center;
       font-size: 14px !important;
       color: #ccc;
-      border: 1px dashed #ccc;
+      border: 1px dashed #9b9b9b;
       border-radius: 5px 5px 0 0;
       cursor: pointer;
       i {

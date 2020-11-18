@@ -1,118 +1,25 @@
 <template>
   <div v-loading="pageLoading" class="algorithmConfigWrap" element-loading-text="拼命加载中">
     <div class="algorithmConfig">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="配置详情" name="first">
-          <div class="tabCon">
-            <!-- <p>智能算法</p> -->
-            <div class="btnBox">
-              <span v-for="(v,k) in taskData" :key="k" :class="activeAlgorithm === k ? 'btnTab active' : 'btnTab'" @click="changeActive(k,v.id)">
-                {{ v.cnName }}
-              </span>
+      <el-row>
+        <el-col :span="7" class="videoQueryBox">
+          <div class="videoTotalBox">
+            <div class="videoTotal">
+              <span class="videoTotalText">视频列表</span>
+              <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
             </div>
-            <!-- <div class="tabBox">
-              <div v-for="(v,k) in taskData" :key="`${k}_${k}`" :class="activeAlgorithm === k ? 'btnCon on' : 'btnCon'">
-                {{ v.description }}
-              </div>
-            </div> -->
-          </div>
-          <div class="videoList">
-            <!-- <div class="videoInfo">
-              <span class="infoName">
-                已配置视频列表
-              </span>
-              <span v-if="videoWithConfig && videoWithConfig.length > 0" class="infoDetail">
-                (已配置视频数：{{ videoWithConfig.length }}路，已配置视频数占比：{{ (videoWithConfig.length/totalCameras*100).toFixed(2) }}%)
-              </span>
-              <span v-else class="infoDetail">
-                (已配置视频数：0路，已配置视频数占比：0%)
-              </span>
-            </div> -->
-            <!-- <ul v-if=" videoWithConfig && videoWithConfig.length > 0 " class="nameList">
-              <li v-for="(v,k) in videoWithConfig" :key="k" >
-                {{ v.name }}
-              </li>
-            </ul> -->
-            <el-table
-              v-if=" videoWithConfig && videoWithConfig.length > 0 "
-              :data="videoWithConfig"
-              :header-cell-class-name="'tableRowClassHeader'"
-              style="width: 100%"
-              fit>
-              <el-table-column
-                prop="id"
-                label="设备号"
-                min-width="25%"
-                class-name="facilicyId"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="name"
-                label="设备名称"
-                min-width="35%"
-                class-name="facilicyName"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="online"
-                label="设备状态"
-                class-name="facilicy-status"
-                min-width="10%"
-              >
-                <template slot-scope="scope">
-                  <svg-icon v-if="scope.row.online" style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="offline" />
-                  <svg-icon v-else style="font-size:6px;line-height:23px;margin-bottom:2px;" icon-class="online" />
-                  <span>{{ scope.row.online ? "离线":"在线" }}</span>
-                </template>
-              </el-table-column>
-              <!-- <el-table-column
-                prop="online"
-                label="负责人"
-                align="center">
-              </el-table-column> -->
-              <el-table-column
-                prop="address"
-                label="设备地址"
-                min-width="30%"
-                class-name="facilicyAddress"
-              >
-              </el-table-column>
-            </el-table>
-            <div v-else class="nodata">
-              暂无已配置视频
-            </div>
-            <pagination
-              v-show="listtotal>0"
-              :total="listtotal"
-              :page.sync="listpage"
-              :limit.sync="listlimit"
-              :pager-count="5"
-              small
-              layout="prev, pager, next"
-              @pagination="listpageChange"
-            />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="算法配置" name="second" class="videoContainerBox">
-          <el-row>
-            <el-col :span="7" class="videoQueryBox">
-              <div class="videoTotalBox">
-                <div class="videoTotal">
-                  <span class="videoTotalText">视频列表</span>
-                  <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
-                </div>
-                <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
-                  <el-button slot="append" icon="el-icon-search" @click="searchList"></el-button>
-                </el-input>
+            <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
+              <el-button slot="append" icon="el-icon-search" @click="searchList"></el-button>
+            </el-input>
 
-              </div>
-              <ul v-if="nameList.length>0" class="videoResult" @scroll="listenScroll">
-                <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
-                  <div>{{ v.name }}</div>
-                </li>
-              </ul>
-              <div v-else class="noResult">暂无视频</div>
-              <!-- <pagination
+          </div>
+          <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
+            <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
+              <div>{{ v.name }}</div>
+            </li>
+          </ul>
+          <div v-else class="noResult">暂无视频</div>
+          <!-- <pagination
                 v-show="total>0"
                 :total="total"
                 :page.sync="page"
@@ -122,22 +29,20 @@
                 layout="prev, pager, next"
                 @pagination="pageChange"
               /> -->
-            </el-col>
-            <el-col :span="17" class="algorithmConfigList totalLine">
-              <div v-if="algorithmList.length>0" class="algorithmBox">
-                <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
-                <div class="totalNum">算法总计：{{ algorithmList.length }}</div>
-              </div>
-              <div v-else class="nodata">
-                稍后再试
-              </div>
-            </el-col>
-          </el-row>
-          <div class="listBtnBox">
-            <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+        </el-col>
+        <el-col :span="17" class="algorithmConfigList totalLine">
+          <div v-if="algorithmList.length>0" class="algorithmBox">
+            <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
+            <div class="totalNum">算法总计：{{ algorithmList.length }}</div>
           </div>
-        </el-tab-pane>
-      </el-tabs>
+          <div v-else class="nodata">
+            稍后再试
+          </div>
+        </el-col>
+      </el-row>
+      <div class="listBtnBox">
+        <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -171,7 +76,7 @@ export default {
       cameraListByQuery: [],
       total: 0,
       page: 1,
-      limit: 20,
+      limit: 30,
       queryKeyword: '',
       canvasShowStatus: false,
       controlShow: false,
@@ -195,21 +100,22 @@ export default {
 
   },
   async created() {
-    await this.getTaskList()
+    await this.getList()
   },
   methods: {
-    handleClick(tab, event) {
-      this.pageLoading = true
-      if (tab.index === '0' || tab.index === 0) {
-        this.getTaskList()
-      } else {
-        this.getList()
-      }
-    },
+    // handleClick(tab, event) {
+    //   this.pageLoading = true
+    //   if (tab.index === '0' || tab.index === 0) {
+    //     this.getTaskList()
+    //   } else {
+    //     this.getList()
+    //   }
+    // },
     getSomeHeight() {
-      this.winHeight = document.querySelector('.videoContainerBox').clientHeight
-      const topH = document.querySelector('.videoTotalBox').offsetHeight
-      this.styleObj.height = (this.winHeight - topH) + 'px'
+      this.winHeight = window.innerHeight
+      // console.log('winHeight------>', this.winHeight)
+      // const topH = document.querySelector('.videoTotalBox').offsetHeight
+      this.styleObj.height = (this.winHeight - 260) + 'px'
     },
     changeActive(k, id) {
       this.activeAlgorithm = k
@@ -580,10 +486,10 @@ export default {
         }
     }
     //算法配置
-    .videoContainerBox{
-        margin-bottom: 15px;
-        position: relative;
-    }
+    // .videoContainerBox{
+    //     margin-bottom: 15px;
+    //     position: relative;
+    // }
     .totalLine{
         border-left: 1px solid #EEE;
     }
@@ -639,8 +545,8 @@ export default {
         // flex-wrap: wrap;
         list-style: none;
         padding: 0 10px;
-        margin: 0 0 5px;
-        height: 575px;
+        margin: 10px 0 5px;
+        // height: 575px;
         overflow: auto;
         &::-webkit-scrollbar {
             display: none;
