@@ -15,13 +15,14 @@
             style="font-size:12px; width: 16%"
             icon="el-icon-search"
             @click="searchAlarm"
-          ></el-button> -->
+          ></el-button>-->
           <el-input
             v-model="formInline.searchkey"
             placeholder="设备名称"
             class="searchinp"
             size="mini"
-            @keyup.enter.native="searchAlarm">
+            @keyup.enter.native="searchAlarm"
+          >
             <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
           </el-input>
           <button
@@ -174,9 +175,7 @@
                 prop="camera.name"
               >
                 <template slot-scope="scope">
-                  <span
-                    style="text-indent:30px"
-                  >{{ scope.row.camera ? scope.row.camera.name:'-' }}</span>
+                  <span style="text-indent:30px">{{ scope.row.camera ? scope.row.camera.name:'-' }}</span>
                 </template>
               </el-table-column>
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.name"></el-table-column> -->
@@ -961,11 +960,11 @@ export default {
 .el-input__inner {
   text-indent: 0px;
 }
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
-  }
-}
+// .alaMesTable {
+//   td {
+//     padding: 2px 0 !important;
+//   }
+// }
 
 .title {
   width: 100%;

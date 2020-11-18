@@ -438,7 +438,7 @@ export default {
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择需要删除的数据!',
           type: 'warning'
         })
       } else {
@@ -452,6 +452,15 @@ export default {
             .then(response => {
               this.getList()
               this.delIDArr = []
+              if (response.code !== 0) {
+                return
+              }
+              this.$notify({
+                title: '成功',
+                message: '批量删除成功',
+                type: 'success',
+                duration: 2000
+              })    
             })
             .catch(() => {
               this.delIDArr = []

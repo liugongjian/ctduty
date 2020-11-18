@@ -39,17 +39,20 @@
         <!-- <el-table-column type="index" label="序号"></el-table-column> -->
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
-
-            <el-link
-              type="primary"
-              @click="showEditDialog(row_data.row.id,'false')"
-            >
-              <el-tooltip :content="row_data.row.title" :disabled="row_data.row.title.length<8" class="item" effect="dark" placement="top">
+            <el-link type="primary" @click="showEditDialog(row_data.row.id,'false')">
+              <el-tooltip
+                :content="row_data.row.title"
+                :disabled="row_data.row.title.length<8"
+                class="item"
+                effect="dark"
+                placement="top"
+              >
                 <span>{{ row_data.row.title.length>8? row_data.row.title.slice(0,7)+'...':row_data.row.title }}</span>
               </el-tooltip>
             </el-link>
           </template>
         </el-table-column>
+
         <el-table-column label="公告类型" prop="type">
           <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
         </el-table-column>
@@ -126,7 +129,7 @@
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    ></el-pagination> -->
+    ></el-pagination>-->
     <pagination
       v-show="total>0"
       :total="total"
@@ -262,10 +265,10 @@ import {
   getNoticeInfo,
   updateANotice,
   deleteNotices
-} from '@/api/notice'
-import Pagination from '@/components/Pagination'
-import { fetchUserList } from '@/api/users'
-import { notReadNotices } from '@/api/notice'
+} from "@/api/notice";
+import Pagination from "@/components/Pagination";
+import { fetchUserList } from "@/api/users";
+import { notReadNotices } from "@/api/notice";
 export default {
   components: { Pagination },
   data() {
@@ -273,115 +276,115 @@ export default {
       page: 1,
       limit: 10,
       oldSize: 10,
-      searchName: '',
+      searchName: "",
       searchUserIds: [],
       addFormRules: {
-        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
         creatorId: [
-          { required: true, message: '创建者不能为空', trigger: 'blur' }
+          { required: true, message: "创建者不能为空", trigger: "blur" }
         ],
-        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
         state: [
-          { required: true, message: '紧急程度不能为空', trigger: 'blur' }
+          { required: true, message: "紧急程度不能为空", trigger: "blur" }
         ]
       },
 
-      editor_content: '',
+      editor_content: "",
       editorOption: {
         modules: {
           toolbar: [
             [
-              { size: ['small', 'normal', 'large', 'huge'] },
-              'bold',
-              'italic',
-              'underline',
-              'strike',
-              'blockquote',
-              { list: 'ordered' },
-              { list: 'bullet' },
-              { indent: '-1' },
-              { indent: '+1' },
-              'link'
+              { size: ["small", "normal", "large", "huge"] },
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "blockquote",
+              { list: "ordered" },
+              { list: "bullet" },
+              { indent: "-1" },
+              { indent: "+1" },
+              "link"
             ]
           ]
         },
-        placeholder: '请输入内容'
+        placeholder: "请输入内容"
       },
 
       addUserDialogVisible: false,
       noticeList: [],
-      username: '',
+      username: "",
       userid: null,
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         params: {
-          title: '',
+          title: "",
           type: null
         }
       },
       total: 0,
       addNoticeDialogVisible: false,
       addNoticeForm: {
-        content: '',
+        content: "",
         state: null,
-        title: '',
+        title: "",
         type: null,
         signatureId: null,
-        creatorId: ''
+        creatorId: ""
       },
       editNoticeForm: {
-        content: ''
+        content: ""
       },
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
-      deleteNoticeTitle: '',
+      deleteNoticeTitle: "",
       deleteNoticerId: 0,
       modifiable: false,
 
       departmentInfo: [
         {
           departmentId: 3275699862611970,
-          department: '华阴公安局'
+          department: "华阴公安局"
         },
         {
           departmentId: 3275699862611971,
-          department: '孟塬镇派出所'
+          department: "孟塬镇派出所"
         },
         {
           departmentId: 3275699862611972,
-          department: '华山镇派出所'
+          department: "华山镇派出所"
         }
       ]
-    }
+    };
   },
   watch: {
-    'addNoticeForm.content'(v) {
+    "addNoticeForm.content"(v) {
       if (v.length > 500) {
-        this.addNoticeForm.content = v.slice(0, 499)
+        this.addNoticeForm.content = v.slice(0, 499);
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
     },
-    'editNoticeForm.content'(v) {
+    "editNoticeForm.content"(v) {
       if (v.length > 500) {
-        this.editNoticeForm.content = v.slice(0, 499)
+        this.editNoticeForm.content = v.slice(0, 499);
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
     },
     limit(v) {
-      this.page = 1
-      this.limit = v
-      this.pageChange()
+      this.page = 1;
+      this.limit = v;
+      this.pageChange();
     }
   },
   created() {
-    this.getNoticeList()
+    this.getNoticeList();
   },
   methods: {
     async getNoticeList() {
@@ -394,190 +397,190 @@ export default {
         params: {},
         sorts: [
           {
-            field: 'create_time',
-            type: 'desc'
+            field: "create_time",
+            type: "desc"
           }
         ]
-      }
+      };
 
-      if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title
+      if (this.queryInfo.params.title.trim() !== "") {
+        query.params["title"] = this.queryInfo.params.title;
       }
       if (this.queryInfo.params.type !== null) {
-        query.params['type'] = this.queryInfo.params.type
+        query.params["type"] = this.queryInfo.params.type;
       }
 
-      if (this.username.trim() !== '') {
-        await this.searchUserId()
+      if (this.username.trim() !== "") {
+        await this.searchUserId();
         if (this.userid !== null) {
-          query.params['creatorId'] = this.userid
+          query.params["creatorId"] = this.userid;
         } else {
-          this.userid = {}
-          return
+          this.userid = {};
+          return;
         }
       }
       fetchNoticeList(query).then(response => {
-        if (response.code !== 0) return this.$message.error('获取通知信息失败')
-        this.noticeList = response.body.data
+        if (response.code !== 0) return this.$message.error("获取通知信息失败");
+        this.noticeList = response.body.data;
         this.noticeList.map(item => {
-          item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
-        })
-        this.total = response.body.page.total
-      })
+          item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
+        });
+        this.total = response.body.page.total;
+      });
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1
+        this.page = 1;
       }
-      this.oldSize = this.limit
-      this.getNoticeList()
+      this.oldSize = this.limit;
+      this.getNoticeList();
     },
     tableRowClassHeader({ row, rowIndex }) {
-      return 'tableRowClassHeader'
+      return "tableRowClassHeader";
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
+        this.originCode = columnObj[key][0];
       }
-      this.page = 1
-      let columnObjKey = ''
+      this.page = 1;
+      let columnObjKey = "";
       for (var i in columnObj) {
-        columnObjKey = i
+        columnObjKey = i;
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getList()
+        this.filteredValue = [];
+        this.getList();
       } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getList()
+        this.filteredValue = columnObj[columnObjKey];
+        this.getList();
       }
     },
 
     async searchUserId() {
-      await fetchUserList({ params: { username: this.username }}).then(
+      await fetchUserList({ params: { username: this.username } }).then(
         response => {
           if (response.body.data.length == 0) {
-            return this.$message.error('该用户不存在，请重新输入')
+            return this.$message.error("该用户不存在，请重新输入");
           }
-          this.userid = response.body.data[0].id
+          this.userid = response.body.data[0].id;
         }
-      )
+      );
     },
 
     handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize
-      this.getNoticeList()
+      this.queryInfo.pagesize = newsize;
+      this.getNoticeList();
     },
     handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage
-      this.getNoticeList()
+      this.queryInfo.pagenum = newpage;
+      this.getNoticeList();
     },
 
     postAddANotice() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return
-        const query = [{ ...this.addNoticeForm }]
-        query[0].creatorId = this.getCookie('userId')
+        if (!valid) return;
+        const query = [{ ...this.addNoticeForm }];
+        query[0].creatorId = this.getCookie("userId");
         // console.log(query[0].creatorId)
         // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('添加失败，请联系系统管理员')
+            return this.$message.error("添加失败，请联系系统管理员");
           }
-          this.$message.success('添加成功')
+          this.$message.success("添加成功");
 
-          this.total++
-          this.pagenum = Math.ceil(this.total / this.pagesize)
-          this.addNoticeDialogVisible = false
-          this.getNoticeList()
+          this.total++;
+          this.pagenum = Math.ceil(this.total / this.pagesize);
+          this.addNoticeDialogVisible = false;
+          this.getNoticeList();
           const params = {
             index: 1,
             size: 10000,
             total: 0
-          }
+          };
           notReadNotices(params).then(res => {
             if (res.body.data.length > 0) {
-              this.$store.commit('SET_NOTICETOTAL', res.body.page.total)
-              this.$store.commit('SET_NOTICEARR', res.body.data)
+              this.$store.commit("SET_NOTICETOTAL", res.body.page.total);
+              this.$store.commit("SET_NOTICEARR", res.body.data);
             }
-          })
-        })
-      })
+          });
+        });
+      });
     },
     addDialogClosed() {
-      this.$refs.addFormRef.resetFields()
-      this.addNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.$refs.addFormRef.resetFields();
+      this.addNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
     resetQuery() {
-      this.queryInfo.params.title = ''
-      this.queryInfo.params.type = null
-      this.username = ''
-      this.userid = null
-      this.getNoticeList()
+      this.queryInfo.params.title = "";
+      this.queryInfo.params.type = null;
+      this.username = "";
+      this.userid = null;
+      this.getNoticeList();
     },
 
     showEditDialog(id, modifiable) {
       getNoticeInfo(id).then(response => {
         // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取信息失败')
-        this.editNoticeForm = response.body.data
-        this.editNoticeDialogVisible = true
-        this.modifiable = modifiable
-      })
+        if (response.code !== 0) return this.$message.error("获取信息失败");
+        this.editNoticeForm = response.body.data;
+        this.editNoticeDialogVisible = true;
+        this.modifiable = modifiable;
+      });
     },
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
+        if (!valid) return;
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('更新信息失败,请稍后再试')
+            return this.$message.error("更新信息失败,请稍后再试");
           }
-          this.editNoticeDialogVisible = false
-          this.getNoticeList()
-          this.$message.success('更新成功')
-        })
-      })
+          this.editNoticeDialogVisible = false;
+          this.getNoticeList();
+          this.$message.success("更新成功");
+        });
+      });
     },
     editDialogClosed() {
-      this.editNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.editNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
 
     showDeleteDialog(title, id) {
-      this.deleteNoticeDialogVisible = true
-      this.deleteNoticeTitle = title
-      this.deleteNoticerId = id
+      this.deleteNoticeDialogVisible = true;
+      this.deleteNoticeTitle = title;
+      this.deleteNoticerId = id;
     },
     deleteANotice() {
-      const ids = []
-      ids.push(this.deleteNoticerId)
+      const ids = [];
+      ids.push(this.deleteNoticerId);
       deleteNotices(ids).then(response => {
         if (response.code !== 0) {
-          return this.$message.error('删除失败,请稍后再试')
+          return this.$message.error("删除失败,请稍后再试");
         }
-        this.deleteNoticeDialogVisible = false
-        this.deleteNoticerId = 0
-        this.deleteNoticeTitle = ''
-        this.getNoticeList()
-        this.$message.success('删除信息成功')
-      })
+        this.deleteNoticeDialogVisible = false;
+        this.deleteNoticerId = 0;
+        this.deleteNoticeTitle = "";
+        this.getNoticeList();
+        this.$message.success("删除信息成功");
+      });
     },
     getCookie(objName) {
       // 获取指定名称的cookie的值
-      var arrStr = document.cookie.split('; ')
+      var arrStr = document.cookie.split("; ");
       for (var i = 0; i < arrStr.length; i++) {
-        var temp = arrStr[i].split('=')
+        var temp = arrStr[i].split("=");
         if (temp[0] == objName) {
-          return decodeURI(temp[1])
+          return decodeURI(temp[1]);
         }
       }
     }
   }
-}
+};
 </script>
 
 <style lang='scss' scoped>
