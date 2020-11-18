@@ -17,8 +17,13 @@
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
+<<<<<<< HEAD
             <el-option :value="1" label="公告">公告</el-option>
             <el-option :value="0" label="通知">通知</el-option>
+=======
+            <el-option :value="0" label="公告">公告</el-option>
+            <el-option :value="1" label="通知">通知</el-option>
+>>>>>>> 582cec255884570479defa5fed9268dd6724c5bc
           </el-select>
           <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
           <el-button @click="resetQuery">重置</el-button>
