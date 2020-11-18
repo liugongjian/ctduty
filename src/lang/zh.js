@@ -53,12 +53,12 @@ export default {
     onlineUser: '在线用户',
     pushSet: '推送设置',
     carManage: '车牌数据管理',
-    carHistory: '历史抓拍',
+    carHistory: '车牌历史抓拍',
     faceManage: '人脸数据管理',
     monitorScreen: '监控大屏',
     videoMonitor: '视频监控',
     algorithmConfig: '算法配置',
-    faceHistory: '历史抓拍'
+    faceHistory: '人脸历史抓拍'
   },
   activeList: {
     name: '名称',

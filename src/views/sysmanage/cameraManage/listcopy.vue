@@ -336,6 +336,8 @@ export default {
         }).then(() => {
           const params = [...this.delIDArr]
           delCamera(params).then(res => {
+            this.getList()
+            this.delIDArr = []
             if (res.code !== 0) {
               return
             }
@@ -345,8 +347,6 @@ export default {
               type: 'success',
               duration: 2000
             })
-            this.getList()
-            this.delIDArr = []
           }).catch(() => {
             this.delIDArr = []
           })
