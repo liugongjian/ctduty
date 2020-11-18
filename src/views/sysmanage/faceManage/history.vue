@@ -6,17 +6,16 @@
           <el-button
             v-waves
             class="filter-item"
-            type="primary"
+            size="mini"
+            type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            type=""
             style="font-size:12px"
             icon="el-icon-refresh"
             @click="onClear"
           >重置</el-button>
-          <!-- <el-button type="" @click="onClear">重置</el-button> -->
         </div>
         <div class="pull-left">
           <div class="block filter-item">
