@@ -305,7 +305,18 @@ export default {
       },
       addrules: {
         province: [
-          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          {
+            required: true,
+            validator: (rules, value, cb) => {
+              let { carWord } = this.addCarForm;
+              if (!value || !carWord) {
+                return cb(new Error("车牌号不能为空"));
+              }
+
+              return cb();
+            },
+            trigger: "change"
+          }
         ],
         carlist: [
           { required: true, trigger: 'blur', message: '所属名单不能为空' }
@@ -478,6 +489,15 @@ export default {
         deleteCarData(params).then(response => {
           this.getList()
           this.delIDArr = []
+          if (response.code !== 0) {
+            return
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          }) 
         })
       })
     },
@@ -687,8 +707,10 @@ export default {
   width: 360px;
   margin: 0 auto;
 }
+.filter-container .filter-item {
+  margin-bottom: 0px;
+}
 .carinp {
  top: -3.3px;
 }
 </style>
-
