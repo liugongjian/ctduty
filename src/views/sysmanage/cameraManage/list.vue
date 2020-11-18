@@ -157,9 +157,10 @@
               style="width: 150px;"
             ></el-input>
             <el-input
+              type="text"
               v-model="editForm.latitude"
               placeholder="请输入摄像头纬度"
-              style="width: 150px;"
+              style="width: 150px; ime-mode:disabled"
               class="filter-item"
             ></el-input>
           </el-form-item>
@@ -284,7 +285,7 @@ export default {
       editForm: {
         id: "",
         inChargeId: "",
-        inChargeName:"",
+        inChargeName: "",
         longitude: "",
         latitude: "",
         address: "",
@@ -306,7 +307,6 @@ export default {
     await Message.closeAll();
     await this.getUserList();
     await this.getList();
-    
   },
   methods: {
     getUserList() {
@@ -326,7 +326,6 @@ export default {
             this.creatorName = item.name;
           }
         });
-    
       });
     },
     batchesDel() {
