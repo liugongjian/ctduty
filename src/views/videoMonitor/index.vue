@@ -1,8 +1,8 @@
 <template>
   <div v-loading="pageLoading" class="videomonitorWrap" element-loading-text="拼命加载中">
     <div class="videoMonitor">
-      <el-row>
-        <el-col :span="12">
+      <div class="leftPanel">
+        <div class="leftContent">
           <div class="monitorBox">
             <div class="video-panel">
               <div class="left-part">
@@ -53,7 +53,7 @@
                 </div>
               </div>
             </div>
-            <!-- <div v-else>
+          <!-- <div v-else>
               <p>请选择添加一个摄像头</p>
               <div class="monitorAddress">
                 <span class="displayIB addressText">摄像头地址：</span>
@@ -64,128 +64,125 @@
 
           </div>
           <div class="censusData">
-            <el-row>
-              <el-col :span="13">
-                <el-table
-                  :data="tableData"
-                  fit
-                  style="width: 100%">
-                  <el-table-column
-                    prop="date"
-                    label="事件"
-                    align="center"
-                    width="180">
-                  </el-table-column>
-                  <el-table-column
-                    prop="name"
-                    label="告警次数"
-                    align="center"
-                    width="180">
-                  </el-table-column>
-                  <el-table-column
-                    prop="address"
-                    align="center"
-                    label="占比">
-                  </el-table-column>
-                </el-table>
-              </el-col>
-              <el-col :span="10" class="actualData">
-                <div class="actualTitle">实时分析</div>
-                <div class="streamData">
-                  <div class="dataHeader">人流分析</div>
-                  <div class="dataTitle">
-                    今日累计
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                  <div class="dataTitle">
-                    实时流量（近一小时）
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="streamData">
-                  <div class="dataHeader">车流分析</div>
-                  <div class="dataTitle">
-                    今日累计
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                  <div class="dataTitle">
-                    实时流量（近一小时）
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-
-          </div>
-        </el-col>
-        <el-col :span="12" class="photoBox">
-          <div class="showPhoto">
-            <span>实时抓拍</span>
-            <el-select></el-select>
-          </div>
-          <div class="photoContainer">
-            <div v-for="(o, index) in 12" :key="o" class="photoList">
-              <el-card :body-style="{ padding: '0px' }">
-                <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" style="width: 100%; height:120px">
-                <div style="padding: 14px;">
-                  <span>人员</span>
-                  <div>2020-08-31  23:00:00 </div>
-                </div>
-              </el-card>
+            <div class="alertTable">
+              <div class="panelTitle">统计分析</div>
+              <el-table
+                :data="tableData"
+                fit
+                style="width: 100%">
+                <el-table-column
+                  prop="date"
+                  label="事件"
+                  align="center"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="name"
+                  label="告警次数"
+                  align="center"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  align="center"
+                  label="占比">
+                </el-table-column>
+              </el-table>
             </div>
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              @pagination="pageChange()"
-            />
+            <div class="realTimeData">
+              <div class="panelTitle">实时分析</div>
+              <div class="streamData">
+                <div class="dataHeader">人流分析</div>
+                <div class="dataTitle">
+                  今日累计
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                    <div>18人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                    <div>12人</div>
+                  </div>
+                </div>
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                    <div>18人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                    <div>12人</div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="streamData">
+                <div class="dataHeader">车流分析</div>
+                <div class="dataTitle">
+                  今日累计
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                    <div>18人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                    <div>12人</div>
+                  </div>
+                </div>
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                    <div>18人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                    <div>12人</div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
           </div>
+        </div>
 
-        </el-col>
-      </el-row>
+      </div>
+      <div class="photoBox">
+        <div class="showPhoto">
+          <span>实时抓拍</span>
+          <el-select class="photo-fitler-sel" size="mini"></el-select>
+        </div>
+        <div class="photoContainer">
+          <div v-for="(o, index) in 10" :key="o" class="photoList">
+            <el-card :body-style="{ padding: '0px' }">
+              <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" style="width: 100%; height:120px">
+              <div style="padding: 14px;">
+                <span>人员</span>
+                <div>2020-08-31  23:00:00 </div>
+              </div>
+            </el-card>
+          </div>
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            @pagination="pageChange()"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import VideoPlayer from '@/components/VideoPlayer'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 export default {
@@ -225,70 +222,117 @@ export default {
 <style lang='scss'>
 .videomonitorWrap {
   padding: 20px;
+  height:100%;
   background: #F0F2F5;
-  .el-col-12{
-    width: 48%;
-    margin-right: 2%;
-  }
   .displayIB{
     display: inline-block;
   }
+  .panelTitle{
+    font-size: 16px;
+    padding-bottom:20px;
+  }
   .videoMonitor{
-    // padding: 10px 10px;
-  }
-  .monitorBox{
-      height: 330px;
-      border: 1px dashed #D9D9D9;
+    display: flex;
+    height:100%;
+    .leftPanel{
+      flex-grow: 1;
+      .leftContent{
+        display: flex;
+        flex-direction:column;
+        height: 100%;
+        width:100%;
+      }
+      .monitorBox{
+        // height: 330px;
+        height:50%;
+        min-height: 300px;
+        width:100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        border: 1px dashed #D9D9D9;
+        background: #fff;
+        border-radius: 2px;
+        position: relative;
+        p{
+            margin: 24px;
+        }
+      }
+    }
+    .photoBox{
       background: #fff;
-      border-radius: 2px;
-      position: relative;
-      p{
-          margin: 24px;
+      width:420px;
+      height:100%;
+      margin-left: 20px;
+      padding:20px;
+      .showPhoto{
+        height: 40px;
+        line-height: 28px;
+        font-size: 16px;
+        position:relative;
+        .photo-fitler-sel{
+          width:120px;
+          position: absolute;
+          right:0;
+        }
       }
+      .photoList{
+          display: inline-block;
+          width: 20%;
+          text-align: center;
+      }
+      .photoContainer{
+        position: relative;
+      }
+    }
   }
-  .monitorAddress{
-      width: 440px;
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-     .el-select{
-        width: 278px;
-        height: 36px;
-     }
-     .addressText{
-        font-size: 14px;
-        color: #4A4A4A;
-     }
-  }
+  // .monitorAddress{
+  //     width: 440px;
+  //     position:absolute;
+  //     top:50%;
+  //     left:50%;
+  //     transform:translate(-50%,-50%);
+  //    .el-select{
+  //       width: 278px;
+  //       height: 36px;
+  //    }
+  //    .addressText{
+  //       font-size: 14px;
+  //       color: #4A4A4A;
+  //    }
+  // }
   .censusData{
-      margin-top: 20px;
-      .el-table__header-wrapper table, .el-table__body-wrapper table{
-          width: 100% !important;
-      }
-      th,td {
-        padding: 5px !important;
-      }
-      .el-table__body, .el-table__footer, .el-table__header{
-        table-layout: auto;
-      }
-  }
-  .actualData{
-      float: right;
+    display: flex;
+    margin-top: 20px;
+    height:300px;
+    width: 100%;
+    .el-table__header-wrapper table, .el-table__body-wrapper table{
+        width: 100% !important;
+    }
+    th,td {
+      padding: 5px !important;
+    }
+    .el-table__body, .el-table__footer, .el-table__header{
+      table-layout: auto;
+    }
+    .alertTable{
+      flex-grow: 1;
       background: #ffffff;
-      padding:0 24px 20px;
-      .actualTitle{
-          font-size: 16px;
-          padding-top:20px;
-      }
+      padding:20px;
+      width:50%;
+    }
+    .realTimeData{
+      flex-grow: 1;
+      width:50%;
+      margin-left: 20px;
+      background: #ffffff;
+      padding:20px;
       .streamData{
-          height: 266px;
           border: 1px solid #F0EFEF;
-          margin-top: 20px;
+          padding-bottom: 20px;
       }
       .dataHeader{
-          height: 47px;
-          line-height: 47px;
+          height: 36px;
+          line-height: 36px;
           font-size: 16px;
           background: #F0EFEF;
           padding-left: 18px;
@@ -296,12 +340,11 @@ export default {
       }
       .dataTitle{
           font-size: 14px;
-          margin-top: 24px;
+          margin-top: 20px;
           margin-left: 20px;
       }
       .dataText{
           margin-left: 20px;
-          margin-top: 5px;
       }
       .dataShow{
           p{
@@ -313,23 +356,11 @@ export default {
               font-size: 14px;
           }
       }
+    }
   }
-  .photoContainer{
-      position: relative;
-    //   height: 100%;
-  }
-  .photoBox{
-      background: #fff;
-      height: 980px;
-      .photoList{
-          display: inline-block;
-          width: 20%;
-          margin: 2.5%;
-          text-align: center;
-      }
-  }
+
   .pagination-container{
-    margin-top: 250px;
+    // margin-top: 250px;
     .showTotal{
       padding-left: 10px;
     }
@@ -339,17 +370,17 @@ export default {
 //     height: 100%;
 //   }
   .right-part {
-    width: 200px;
+    width: 30%;
     position: absolute;
     right: 0;
-    top: 40px;
+    top: calc(50% - 100px);
     background: #fff;
     .video-control {
       transform: scale(0.64);
       transform-origin: top center;
       position: absolute;
       left: 50%;
-      top: 0;
+
       margin-left: -152px;
     }
     .alarm-panel {
