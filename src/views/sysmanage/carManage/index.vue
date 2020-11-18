@@ -428,10 +428,7 @@ export default {
       this.bulkimportVisble = true
     },
     toHistory() {
-      const {
-        currentRoute: { path }
-      } = this.$router
-      this.$router.push(`${path}/carHistory`)
+      this.$router.push(`/carHistory`)
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false

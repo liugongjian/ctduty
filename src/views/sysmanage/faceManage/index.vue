@@ -718,7 +718,7 @@ export default {
       this.getfaceList()
     },
     gohistory() {
-      this.$router.push('/sysmanage/faceManage/faceHistory')
+      this.$router.push('/faceHistory')
     }
   }
 }

@@ -86,16 +86,20 @@
         ></el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
-          :label="'摄像头经度'"
+          :label="'经纬度信息'"
           align="center"
           prop="longitude"
-        ></el-table-column>
-        <el-table-column
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.longitude + ', ' + scope.row.latitude }}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column
           :show-overflow-tooltip="true"
           :label="'摄像头纬度'"
           align="center"
           prop="latitude"
-        ></el-table-column>
+        ></el-table-column>-->
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column> -->
         <el-table-column
           :show-overflow-tooltip="true"
@@ -146,14 +150,13 @@
           </el-form-item>
           <el-form-item label="摄像头经纬度：">
             <el-input
-              type="number"
+              type="text"
               v-model="editForm.longitude"
               placeholder="请输入摄像头经度"
               class="filter-item"
               style="width: 150px;"
             ></el-input>
             <el-input
-              type="number"
               v-model="editForm.latitude"
               placeholder="请输入摄像头纬度"
               style="width: 150px;"
