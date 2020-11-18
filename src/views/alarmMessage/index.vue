@@ -92,7 +92,7 @@
             <el-option
               v-for="item in typeOptions"
               :key="item._id"
-              :label="item.name"
+              :label="item.address"
               :value="item._id"
             ></el-option>
           </el-select>
@@ -168,10 +168,10 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'设备名称'"
+                :label="'摄像头地址'"
                 align="center"
                 min-width="18%"
-                prop="camera.name"
+                prop="camera.address"
               ></el-table-column>
               <el-table-column :label="'图片'" align="center" min-width="12%">
                 <template slot-scope="scope">
@@ -253,10 +253,10 @@
             <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
           </div>
           <div class="popfooter">
-            <el-tooltip :content="temp.camera.name" class="item" effect="light" placement="top-start">
+            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
               <div class="popfooteraddress">
                 <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                <span style="width: 260px;">{{ temp.camera?temp.camera.name : '' }}</span>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
               </div>
             </el-tooltip>
             <div class="popfootertime">
@@ -414,7 +414,7 @@ export default {
           },
           params: [
             {
-              field: 'camera.name',
+              field: 'camera.address',
               operator: 'LIKE',
               value: `%${this.formInline.searchkey}%`
             },
