@@ -308,14 +308,14 @@ export default {
           {
             required: true,
             validator: (rules, value, cb) => {
-              let { carWord } = this.addCarForm;
+              const { carWord } = this.addCarForm
               if (!value || !carWord) {
-                return cb(new Error("车牌号不能为空"));
+                return cb(new Error('车牌号不能为空'))
               }
 
-              return cb();
+              return cb()
             },
-            trigger: "change"
+            trigger: 'change'
           }
         ],
         carlist: [
@@ -497,7 +497,7 @@ export default {
             message: '删除成功',
             type: 'success',
             duration: 2000
-          }) 
+          })
         })
       })
     },
@@ -709,8 +709,5 @@ export default {
 }
 .filter-container .filter-item {
   margin-bottom: 0px;
-}
-.carinp {
- top: -3.3px;
 }
 </style>
