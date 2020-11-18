@@ -150,11 +150,12 @@
           </el-form-item>
           <el-form-item label="摄像头经纬度：">
             <el-input
-              type="text"
               v-model="editForm.longitude"
+              type="text"
               placeholder="请输入摄像头经度"
               class="filter-item"
               style="width: 150px;"
+              @input="editForm.longitude=editForm.longitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
             ></el-input>
             <el-input
               type="text"
@@ -162,6 +163,7 @@
               placeholder="请输入摄像头纬度"
               style="width: 150px; ime-mode:disabled"
               class="filter-item"
+              @input="editForm.latitude=editForm.latitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
             ></el-input>
           </el-form-item>
           <!-- <el-form-item label="摄像头纬度："></el-form-item> -->
