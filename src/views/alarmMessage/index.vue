@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="app-container" style="padding: 20px; height: 100%">
+    <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
           <!-- <el-input
@@ -97,6 +97,37 @@
               :value="item._id"
             ></el-option>
           </el-select>-->
+          <el-select
+            v-model="algorithmList.typeValue"
+            multiple
+            placeholder="请选择事件名称"
+            min-width="300px"
+            :multiple-limit='2'
+            @change="checkModel"
+          >
+            <el-option
+              v-for="item in algorithm"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select>
+          <!-- <el-select
+            v-model="algorithmNameList.typeValue"
+            multiple
+            placeholder="请选择算法名称"
+            min-width="350px"
+            :multiple-limit='2'
+            @change="algorithmCheck"
+          >
+            <el-option
+              v-for="item in algorithmName"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select> -->
+
           <el-button
             v-waves
             class="filter-item sureItem"
@@ -110,9 +141,9 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-show="hasTdHeight"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
-              :height="tableHeight"
               class="alaMesTable"
               style="width: 100%"
               tooltip-effect="dark"
@@ -254,7 +285,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="270" style="z-index:1;" />
+            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
@@ -281,7 +312,7 @@
               <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
               <span style="width: 260px;">
                 {{
-                renderTime(temp.createTime)
+                  renderTime(temp.createTime)
                 }}
               </span>
             </div>
@@ -346,65 +377,105 @@
 </template>
 
 <script>
-import { Message } from "element-ui";
-import { renderTime } from "@/utils";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import CanvasDialog from "@/components/CanvasDialog";
+import { Message } from 'element-ui'
+import { renderTime } from '@/utils'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import CanvasDialog from '@/components/CanvasDialog'
 // import 'element-ui/lib/theme-chalk/index.css'
-import moment from "moment";
-import { mapGetters } from "vuex";
+import moment from 'moment'
+import { mapGetters } from 'vuex'
 import {
   getAlertInfos,
   deleteAlertInfo,
   getPushSet,
   notifyState,
   getAllTotal
-} from "@/api/alarm";
+} from '@/api/alarm'
 export default {
   components: { Pagination, CanvasDialog },
   filters: {
     formatNull: function(val) {
-      if (!val) return "无";
-      return val.name;
+      if (!val) return '无'
+      return val.name
     }
   },
   data() {
     return {
-      alarmtext: "当日告警总计",
+      alarmtext: '当日告警总计',
       renderTime,
-      else: "其他",
+      else: '其他',
       temp: {
         camera: {},
-        createTime: "",
-        image: "",
-        imageCut: ""
+        createTime: '',
+        image: '',
+        imageCut: ''
       },
       points: [],
       rowId: 0,
-      defaultTab: "",
-      state: "",
+      defaultTab: '',
+      state: '',
       value1: [
         new Date(new Date().setDate(new Date().getDate() - 29)),
         new Date(new Date().setDate(new Date().getDate()))
       ],
-      startTime: "",
-      endTime: "",
-      startDate: "",
-      endDate: "",
+      startTime: '',
+      endTime: '',
+      startDate: '',
+      endDate: '',
       tabsArr: [],
       tabsDateArr: [],
-      currentTab: "",
+      currentTab: '',
       formInline: {
-        searchkey: "",
-        typeValue: "all"
+        searchkey: '',
+        typeValue: 'all'
       },
       typeOptions: [
-        { name: "所有警告", _id: "all" },
-        { name: "已处理", _id: "settled" },
-        { name: "未处理", _id: "unsettled" }
+        { name: '所有警告', _id: 'all' },
+        { name: '已处理', _id: 'settled' },
+        { name: '未处理', _id: 'unsettled' }
       ],
-
+      algorithmList: {
+        searchkey: '',
+        typeValue: '行人'
+      },
+      algorithm: [
+        { name: '行人', _id: 1 },
+        { name: '机动车', _id: 2 },
+        { name: '非机动车', _id: 3 },
+        { name: '翻墙', _id: 4 },
+        { name: '人员逗留', _id: 5 },
+        { name: '人员聚集', _id: 6 },
+        { name: '区域划线', _id: 7 },
+        { name: '安全帽', _id: 8 },
+        { name: '打架斗殴', _id: 9 },
+        { name: '摔倒', _id: 10 },
+        { name: '占道经营', _id: 11 }
+      ],
+      algorithmNameList: {
+        searchkey: '',
+        typeValue: '值更检测'
+      },
+      algorithmName: [
+        { name: '值更检测', _id: 1 },
+        { name: '人脸识别', _id: 2 },
+        { name: '车牌识别', _id: 3 },
+        { name: '人脸对比', _id: 4 },
+        { name: '人脸属性', _id: 5 },
+        { name: '区域划线告警', _id: 6 },
+        { name: '翻墙检测', _id: 7 },
+        { name: '人流识别', _id: 8 },
+        { name: '车流识别', _id: 9 },
+        { name: '安全帽识别', _id: 10 },
+        { name: '工服识别', _id: 11 },
+        { name: '车型检测', _id: 12 },
+        { name: '人群聚集检测', _id: 13 },
+        { name: '打架斗殴检测', _id: 14 },
+        { name: '摔倒检测', _id: 15 },
+        { name: '占道经营检测', _id: 16 },
+        { name: '人员逗留检测', _id: 17 },
+        { name: '推流任务', _id: 18 }
+      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -413,83 +484,78 @@ export default {
       allTotal: 0,
       page: 1,
       limit: 10,
-      userId: "",
-      originCode: "",
+      userId: '',
+      originCode: '',
       oldSize: 10,
       tableHeight: null,
       editVisable: false,
+      hasTdHeight: false,
       editForm: {
-        id: "",
-        inCharge: "",
-        longitude: "",
-        latitude: "",
+        id: '',
+        inCharge: '',
+        longitude: '',
+        latitude: '',
         // address: '',
-        url: ""
+        url: ''
       },
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now() - 8.64e6;
+          return time.getTime() > Date.now() - 8.64e6
         }
       },
       warngingKind: {
-        1: "行人",
-        2: "机动车",
-        3: "非机动车",
-        4: "翻墙",
-        5: "人员逗留",
-        6: "人员聚集",
-        7: "区域划线",
-        8: "安全帽",
-        9: "打架斗殴",
-        10: "摔倒",
-        11: "占道经营"
+        1: '行人',
+        2: '机动车',
+        3: '非机动车',
+        4: '翻墙',
+        5: '人员逗留',
+        6: '人员聚集',
+        7: '区域划线',
+        8: '安全帽',
+        9: '打架斗殴',
+        10: '摔倒',
+        11: '占道经营'
       },
       warngingname: {
-        1: "值更检测",
-        2: "人脸识别",
-        3: "车牌识别",
-        4: "人脸比对",
-        5: "人脸属性",
-        6: "区域划线告警",
-        7: "翻墙检测",
-        8: "人流识别",
-        9: "车流识别",
-        10: "安全帽识别",
-        11: "工服识别",
-        12: "车型检测",
-        13: "人群聚集检测",
-        14: "打架斗殴检测",
-        15: "摔倒检测",
-        16: "占道经营检测",
-        17: "人员逗留检测",
-        18: "推流任务"
+        1: '值更检测',
+        2: '人脸识别',
+        3: '车牌识别',
+        4: '人脸比对',
+        5: '人脸属性',
+        6: '区域划线告警',
+        7: '翻墙检测',
+        8: '人流识别',
+        9: '车流识别',
+        10: '安全帽识别',
+        11: '工服识别',
+        12: '车型检测',
+        13: '人群聚集检测',
+        14: '打架斗殴检测',
+        15: '摔倒检测',
+        16: '占道经营检测',
+        17: '人员逗留检测',
+        18: '推流任务'
       }
-    };
+    }
   },
-  // computed: {
-  //   ...mapGetters([
-  //     'userId'
-  //   ])
-  // },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   created() {
-    this.tableHeight = document.body.clientHeight - 280;
-    this.userId = Cookies.get("userId");
+    this.userId = Cookies.get('userId');
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
       new Date(new Date().setDate(new Date().getDate()))
     ]),
-      this.timeChange();
-    this.value1 = "";
-    this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
-    this.defaultTab = this.tabsArr[0];
-    this.currentTab = this.defaultTab;
-    this.getPushSetTime();
+    this.timeChange()
+    this.value1 = ''
+    this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
+    this.defaultTab = this.tabsArr[0]
+    this.currentTab = this.defaultTab
+    this.getPushSetTime()
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     // const h = this.formInline.typeValue
@@ -503,13 +569,12 @@ export default {
   },
   methods: {
     searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + " " + this.startTime + ":00";
-      const e = this.currentTab + " " + this.endTime + ":00";
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       //  + ' ' + this.startTime + ':00'
-      let params;
-      this.page = 1;
-      this.limit = 10;
+      let params
+      this.page = 1
+      this.limit = 10
       if (isNaN(this.formInline.searchkey)) {
         params = {
           cascade: true,
@@ -519,124 +584,124 @@ export default {
           },
           params: [
             {
-              field: "camera.name",
-              operator: "LIKE",
+              field: 'camera.name',
+              operator: 'LIKE',
               value: `%${this.formInline.searchkey}%`
             },
             {
-              field: "createTime",
-              operator: "BETWEEN",
-              value: { start: s || "", end: e || "" }
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
             }
           ],
           sorts: [
             {
-              field: "create_Time",
-              type: "desc"
+              field: 'create_Time',
+              type: 'desc'
             }
           ]
-        };
+        }
       } else {
         params = {
           cascade: true,
           params: [
             {
-              field: "id",
-              operator: "EQUALS",
+              field: 'id',
+              operator: 'EQUALS',
               value: this.formInline.searchkey
             }
           ]
-        };
+        }
       }
       getAlertInfos(params).then(response => {
-        this.tableData = response.body.data;
-        this.total = response.body.page.total;
-        this.listLoading = false;
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
         // this.formInline.searchkey = ''
-      });
+      })
     },
     openBig(url) {
-      window.open(url);
+      window.open(url)
     },
     delAlert(d) {
-      this.rowId = d;
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.rowId = d
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.deleteAlert();
-      });
+        this.deleteAlert()
+      })
     },
     formatTime: function(row, column, cellValue) {
       // YYYY-MM-DD
-      return moment(cellValue).format("HH:mm:ss");
+      return moment(cellValue).format('HH:mm:ss')
     },
     formatType(row, column, cellValue) {
       if (this.warngingKind[cellValue]) {
-        return this.warngingKind[cellValue];
+        return this.warngingKind[cellValue]
       }
-      return "人员";
+      return '人员'
     },
     formattername(row, column, cellValue) {
       if (this.warngingname[cellValue]) {
-        return this.warngingname[cellValue];
+        return this.warngingname[cellValue]
       }
-      return "值更检测";
+      return '值更检测'
     },
     timeChange() {
-      this.startDate = moment(this.value1[0]).format("YYYY-MM-DD");
-      this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse();
+      this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
+      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD')
+      this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
     },
     getDayAll(start, end) {
-      var result = [];
+      var result = []
       if (start === end) {
-        result.push(start);
-        return result;
+        result.push(start)
+        return result
       }
-      var beginDay = start.split("-");
-      var endDay = end.split("-");
-      var diffDay = new Date();
-      var dateList = new Array();
-      var i = 0;
-      diffDay.setDate(beginDay[2]);
-      diffDay.setMonth(beginDay[1] - 1);
-      diffDay.setFullYear(beginDay[0]);
-      result.push(start);
+      var beginDay = start.split('-')
+      var endDay = end.split('-')
+      var diffDay = new Date()
+      var dateList = new Array()
+      var i = 0
+      diffDay.setDate(beginDay[2])
+      diffDay.setMonth(beginDay[1] - 1)
+      diffDay.setFullYear(beginDay[0])
+      result.push(start)
       while (i == 0) {
-        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000;
-        diffDay.setTime(countDay);
-        dateList[2] = diffDay.getDate();
-        dateList[1] = diffDay.getMonth() + 1;
-        dateList[0] = diffDay.getFullYear();
+        var countDay = diffDay.getTime() + 24 * 60 * 60 * 1000
+        diffDay.setTime(countDay)
+        dateList[2] = diffDay.getDate()
+        dateList[1] = diffDay.getMonth() + 1
+        dateList[0] = diffDay.getFullYear()
         if (String(dateList[1]).length == 1) {
-          dateList[1] = "0" + dateList[1];
+          dateList[1] = '0' + dateList[1]
         }
         if (String(dateList[2]).length == 1) {
-          dateList[2] = "0" + dateList[2];
+          dateList[2] = '0' + dateList[2]
         }
-        result.push(dateList[0] + "-" + dateList[1] + "-" + dateList[2]);
+        result.push(dateList[0] + '-' + dateList[1] + '-' + dateList[2])
         if (
           dateList[0] == endDay[0] &&
           dateList[1] == endDay[1] &&
           dateList[2] == endDay[2]
         ) {
-          i = 1;
+          i = 1
         }
       }
 
-      return result;
+      return result
     },
     // 重置搜索
     // 重置
     resetQuery() {
-      this.formInline.searchkey = "";
-      this.page = 1;
-      this.limit = 10;
-      const s = this.currentTab + " " + this.startTime + ":00";
-      const e = this.currentTab + " " + this.endTime + ":00";
-      this.getList(s, e, "all");
+      this.formInline.searchkey = ''
+      this.page = 1
+      this.limit = 10
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
+      this.getList(s, e, 'all')
     },
     // 重置起止时间的搜索
     // onClear() {
@@ -668,44 +733,45 @@ export default {
     //   // this.getTimeAllTotal(s1, e1, h)
     // },
     onSearch() {
-      this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
+      this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
       // this.tabsArr = this.tabsDateArr
       // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
       // this.value1=[this.startDate,this.endDate]
       if (this.tabsArr.indexOf(this.currentTab) === -1) {
-        this.defaultTab = this.tabsArr[0];
-        this.currentTab = this.defaultTab;
+        this.defaultTab = this.tabsArr[0]
+        this.currentTab = this.defaultTab
       }
-      const s1 = this.currentTab + " " + this.startTime + ":00";
-      const end1 = this.currentTab + " " + this.endTime + ":00";
-      const h1 = this.formInline.typeValue;
-      this.oldSize = this.limit;
-      this.getList(s1, end1, h1);
+      const s1 = this.currentTab + ' ' + this.startTime + ':00'
+      const end1 = this.currentTab + ' ' + this.endTime + ':00'
+      const h1 = this.algorithmList.typeValue
+      console.log('h1sssssssssssssssssssss', h1)
+      this.oldSize = this.limit
+      this.getList(s1, end1, h1)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
-        "T" +
+        'T' +
         this.startTime +
-        ":00.000Z";
-      const end = this.tabsArr[0] + "T" + this.endTime + ":00.000Z";
-      this.getTimeAllTotal(s, end, h1);
+        ':00.000Z'
+      const end = this.tabsArr[0] + 'T' + this.endTime + ':00.000Z'
+      this.getTimeAllTotal(s, end, h1)
     },
 
     editDialog(v) {
       setTimeout(() => {
-        this.closeDialog();
-      }, 0);
+        this.closeDialog()
+      }, 0)
       setTimeout(() => {
-        this.dialogVisable = true;
-      }, 1);
-      this.temp = Object.assign({}, v);
-      this.points = JSON.parse(this.temp.box);
+        this.dialogVisable = true
+      }, 1)
+      this.temp = Object.assign({}, v)
+      this.points = JSON.parse(this.temp.box)
       if (this.temp.box == null) {
-        this.points = "";
+        this.points = ''
       }
     },
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     editDialogConfirm() {
       const params = [
@@ -716,155 +782,131 @@ export default {
           longitude: this.editForm.longitude,
           url: this.editForm.url
         }
-      ];
-      editCamera(params).then(response => {});
-      this.editVisable = false;
+      ]
+      editCamera(params).then(response => {})
+      this.editVisable = false
     },
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     checkModel() {
-      this.$emit("getdata", this.formInline.typeValue);
+      console.log('ssssssssssss', this.algorithmList.typeValue)
+      this.$emit('getdata', this.algorithmList.typeValue)
+    },
+    algorithmCheck() {
+      console.log('ccccccccccccccc', this.algorithmNameList.typeValue)
+      this.$emit('getdata', this.algorithmNameList.typeValue)
+
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange(e) {
-      const s = this.currentTab + " " + this.startTime + ":00";
-      const end = this.currentTab + " " + this.endTime + ":00";
-      const h = this.formInline.typeValue;
-      this.oldSize = this.limit;
-      this.getList(s, end, h);
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const end = this.currentTab + ' ' + this.endTime + ':00'
+      const h = this.formInline.typeValue
+      this.oldSize = this.limit
+      this.getList(s, end, h)
     },
     tabChangeQuery(e) {
-      this.currentTab = e.label;
-      const s = e.label + " " + this.startTime + ":00";
-      const end = e.label + " " + this.endTime + ":00";
-      const h = this.formInline.typeValue;
-      this.page = 1;
-      this.getList(s, end, h);
+      this.currentTab = e.label
+      const s = e.label + ' ' + this.startTime + ':00'
+      const end = e.label + ' ' + this.endTime + ':00'
+      const h = this.formInline.typeValue
+      this.page = 1
+      this.getList(s, end, h)
     },
     deleteAlert() {
-      const params = [this.rowId];
+      const params = [this.rowId]
       deleteAlertInfo(params).then(() => {
-        const s = this.currentTab + " " + this.startTime + ":00";
-        const end = this.currentTab + " " + this.endTime + ":00";
-        const h = this.formInline.typeValue;
-        this.getList(s, end, h);
-      });
+        const s = this.currentTab + ' ' + this.startTime + ':00'
+        const end = this.currentTab + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        this.getList(s, end, h)
+      })
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     getPushSetTime() {
       getPushSet().then(response => {
-        const setting = response.body.data.setting;
-        let parseSetting;
+        const setting = response.body.data.setting
+        let parseSetting
         try {
-          parseSetting = JSON.parse(setting);
+          parseSetting = JSON.parse(setting)
         } catch (err) {
-          parseSetting = {};
+          parseSetting = {}
         }
-        this.startTime = parseSetting.date1;
-        this.endTime = parseSetting.date2;
-        const s = this.tabsArr[0] + " " + this.startTime + ":00";
-        const e = this.tabsArr[0] + " " + this.endTime + ":00";
-        const h = this.formInline.typeValue;
-        const s1 = this.startDate + "T" + this.startTime + ":00.000Z";
-        const e1 = this.endDate + "T" + this.endTime + ":00.000Z";
-        this.getTimeAllTotal(s1, e1, h);
-        this.getList(s, e, h);
-      });
+        this.startTime = parseSetting.date1
+        this.endTime = parseSetting.date2
+        const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+        const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+        const h = this.formInline.typeValue
+        const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+        const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+        this.getTimeAllTotal(s1, e1, h)
+        this.getList(s, e, h)
+      })
     },
 
     // 获取多天告警总数
     getTimeAllTotal(s, e, h) {
-      let oper;
-      if (h === "settled") {
-        oper = false;
-      } else if (h === "unsettled") {
-        oper = true;
-      } else if (h === "all") {
-        oper = null;
+      let oper
+      if (h === 'settled') {
+        oper = false
+      } else if (h === 'unsettled') {
+        oper = true
+      } else if (h === 'all') {
+        oper = null
       }
       const params = {
         start: s,
         end: e,
         null: oper
-      };
+      }
 
       getAllTotal(params).then(response => {
-        this.allTotal = response.body.data;
-        this.listLoading = false;
-      });
+        this.allTotal = response.body.data
+        this.listLoading = false
+      })
     },
 
     // 获取列表数据
     getList(s, e, h) {
-      // console.log('se', s , e)
-      let oper;
-      if (h === "settled") {
-        oper = "NOT_NULL";
-      } else if (h === "unsettled") {
-        oper = "NULL";
-      }
-      const ss = {
-        field: "handlerId",
-        operator: oper,
-        value: "null"
-      };
-      const param =
-        h == "all"
-          ? [
-              {
-                field: "camera.name",
-                operator: "LIKE",
-                value: `%${this.formInline.searchkey}%`
-              },
-              {
-                field: "createTime",
-                operator: "BETWEEN",
-                value: { start: s || "", end: e || "" }
-              },
-              {
-                field: "username",
-                operator: "NULL"
-              },
-              {
-                field: "camera.inChargeId",
-                operator: "EQUALS",
-                value: this.userId
-              }
-            ]
-          : [
-              {
-                field: "camera.name",
-                operator: "LIKE",
-                value: `%${this.formInline.searchkey}%`
-              },
-              {
-                field: "createTime",
-                operator: "BETWEEN",
-                value: { start: s || "", end: e || "" }
-              },
-              {
-                field: "username",
-                operator: "NULL"
-              },
-              {
-                field: "camera.inChargeId",
-                operator: "EQUALS",
-                value: this.userId
-              },
-              ss
-            ];
+      console.log('hhhhhhhhhhhhhhh', h)
+      const param =[
+            {
+              field: 'camera.name',
+              operator: 'LIKE',
+              value: `%${this.formInline.searchkey}%`
+            },
+            {
+              field: 'createTime',
+              operator: 'BETWEEN',
+              value: { start: s || '', end: e || '' }
+            },
+            {
+              field: 'username',
+              operator: 'NULL'
+            },
+            {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            },
+            {
+              field: 'type',
+              operator: 'IN',
+              value: h
+            }
+          ]
       const params = {
         cascade: true,
         page: {
@@ -874,77 +916,85 @@ export default {
         params: param,
         sorts: [
           {
-            field: "create_Time",
-            type: "desc"
+            field: 'create_Time',
+            type: 'desc'
           }
         ]
-      };
+      }
       getAlertInfos(params).then(response => {
-        this.tableData = response.body.data;
-        this.total = response.body.page.total;
-        this.listLoading = false;
-        console.log(document.getElementsByTagName("td"));
-      });
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
+        this.tableData = response.body.data
+        this.total = response.body.page.total
+        this.listLoading = false
+        this.tableHeight = document.getElementsByTagName('html')[0].clientHeight - 380
+        setTimeout(() => {
+          var trArr = document.getElementsByClassName('el-table__row')
+          var arr = Array.from(trArr)
+          arr.forEach(item => {
+            var child = Array.from(item.children)
+            child.forEach(dom => {
+              dom.style.height = this.tableHeight / 11 + 'px'
+              dom.style.padding = 'none'
+              this.hasTdHeight = true
+            })
+          })
+        }, 300)
+      })
     },
     dialogQuxiao(val) {
-      this.state = 1;
-      const tempData = Object.assign({}, this.temp);
+      this.state = 1
+      const tempData = Object.assign({}, this.temp)
       const params = [
         {
           id: tempData.id,
           state: this.state,
           handlerId: this.userId
         }
-      ];
+      ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + " " + this.startTime + ":00";
-        const end1 = this.currentTab + " " + this.endTime + ":00";
-        const h1 = this.formInline.typeValue;
-        this.oldSize = this.limit;
-        this.getList(s1, end1, h1);
-        this.dialogVisable = false;
+        const s1 = this.currentTab + ' ' + this.startTime + ':00'
+        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const h1 = this.formInline.typeValue
+        this.oldSize = this.limit
+        this.getList(s1, end1, h1)
+        this.dialogVisable = false
         this.$notify({
-          title: "成功",
-          message: "更新成功",
-          type: "success",
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
     },
 
     dialogConfirm(val) {
-      this.state = 0;
-      const tempData = Object.assign({}, this.temp);
+      this.state = 0
+      const tempData = Object.assign({}, this.temp)
       const params = [
         {
           id: tempData.id,
           state: this.state,
           handlerId: this.userId
         }
-      ];
+      ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + " " + this.startTime + ":00";
-        const end1 = this.currentTab + " " + this.endTime + ":00";
-        const h1 = this.formInline.typeValue;
-        this.oldSize = this.limit;
-        this.getList(s1, end1, h1);
-        this.dialogVisable = false;
+        const s1 = this.currentTab + ' ' + this.startTime + ':00'
+        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const h1 = this.formInline.typeValue
+        this.oldSize = this.limit
+        this.getList(s1, end1, h1)
+        this.dialogVisable = false
         this.$notify({
-          title: "成功",
-          message: "更新成功",
-          type: "success",
+          title: '成功',
+          message: '更新成功',
+          type: 'success',
           duration: 2000
-        });
-      });
+        })
+      })
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>
@@ -983,9 +1033,6 @@ export default {
 }
 .untreated {
   fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
 }
 .buttonText {
   color: #409eff;
@@ -1074,9 +1121,9 @@ td {
 .searchinp {
   width: 75%;
 }
-.list {
-  height: 100%;
-}
+// .list {
+//   height: 100%;
+// }
 // .el-dialog__headerbtn {
 //   // display: none;
 //   position: relative;

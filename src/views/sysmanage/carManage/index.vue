@@ -104,7 +104,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
+              <el-input v-model="addCarForm.carWord" class="carinp" style="width:126px;" placeholder="请输入车牌号"></el-input>
             </el-form-item>
             <el-form-item label="所属名单：" prop="carlist">
               <el-select
@@ -305,7 +305,18 @@ export default {
       },
       addrules: {
         province: [
-          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          {
+            required: true,
+            validator: (rules, value, cb) => {
+              const { carWord } = this.addCarForm
+              if (!value || !carWord) {
+                return cb(new Error('车牌号不能为空'))
+              }
+
+              return cb()
+            },
+            trigger: 'change'
+          }
         ],
         carlist: [
           { required: true, trigger: 'blur', message: '所属名单不能为空' }
@@ -460,7 +471,7 @@ export default {
                 message: '批量删除成功',
                 type: 'success',
                 duration: 2000
-              })    
+              })
             })
             .catch(() => {
               this.delIDArr = []
@@ -478,6 +489,15 @@ export default {
         deleteCarData(params).then(response => {
           this.getList()
           this.delIDArr = []
+          if (response.code !== 0) {
+            return
+          }
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
       })
     },
@@ -679,10 +699,15 @@ export default {
 }
 .carInput {
   height: 36.8px !important;
+  label {
+    padding-right: 20px;
+  }
 }
 .upload-demo {
   width: 360px;
   margin: 0 auto;
 }
+.filter-container .filter-item {
+  margin-bottom: 0px;
+}
 </style>
-
