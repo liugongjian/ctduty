@@ -100,10 +100,10 @@
           <br>
           <el-select
             v-model="algorithmList.typeValue"
+            :multiple-limit="2"
             multiple
             placeholder="请选择事件名称"
             min-width="300px"
-            :multiple-limit='2'
             @change="checkModel"
           >
             <el-option
@@ -115,10 +115,10 @@
           </el-select>
           <el-select
             v-model="algorithmNameList.typeValue"
+            :multiple-limit="2"
             multiple
             placeholder="请选择算法名称"
             min-width="350px"
-            :multiple-limit='2'
             @change="algorithmCheck"
           >
             <el-option
@@ -143,7 +143,6 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
-              v-show="hasTdHeight"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -885,38 +884,38 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      const {type, taskId} = h
-      const param =[
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            {
-              field: 'type',
-              operator: 'IN',
-              value: type
-            },
-            {
-              field: 'taskId',
-              operator: 'IN',
-              value: taskId
-            }
-          ]
+      const { type, taskId } = h
+      const param = [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'username',
+          operator: 'NULL'
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'taskId',
+          operator: 'IN',
+          value: taskId
+        }
+      ]
       const params = {
         cascade: true,
         page: {
