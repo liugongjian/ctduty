@@ -1,7 +1,7 @@
 <template>
   <div class="notice">
     <div>
-      <div class="clearfix">
+      <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
           <el-input
             ref="queryTitleRef"
@@ -394,7 +394,18 @@ export default {
           index: this.queryInfo.pagenum,
           size: this.limit
         },
-        params: {},
+        params: [
+          {
+            field: 'creator.name',
+            operator: 'LIKE',
+            value: `%${this.username.trim()}%`
+          },
+          {
+            field: 'title',
+            operator: 'LIKE',
+            value: `%${this.queryInfo.params.title.trim()}%`
+          }
+        ],
         sorts: [
           {
             field: 'create_time',
@@ -402,16 +413,8 @@ export default {
           }
         ]
       }
-
-      if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = `%${this.queryInfo.params.title}%`
-      }
       if (this.queryInfo.params.type !== null) {
         query.params['type'] = this.queryInfo.params.type
-      }
-
-      if (this.username.trim() !== '') {
-        query.params['creator.name'] = `%${this.username}%`
       }
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error('获取通知信息失败')
@@ -595,7 +598,7 @@ export default {
   float: right;
 }
 .el-table {
-  margin-top: 20px;
+  margin-top: 5px;
 }
 .searchinput {
   width: 250px;

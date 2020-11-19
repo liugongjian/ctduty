@@ -121,36 +121,20 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/alarmMessage',
+    path: '/carManage',
+    // component: () => import('@/views/sysmanage/carManage/index'),
     component: Layout,
-    redirect: '/alarmMessage',
+    redirect: '/carManage',
     hidden: false,
+    // alwaysShow: true, // will always show the root menu
+    // hidden: false,
     children: [
       {
-        path: '/alarmMessage',
-        component: () => import('@/views/alarmMessage/index'),
-        name: 'alarmMessageIndex',
+        path: '/carManage',
+        component: () => import('@/views/sysmanage/carManage/index'),
+        name: 'sysCarManage',
         meta: {
-          title: 'alarmMessage',
-          icon: 'alarmMessage',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
-  {
-    path: '/carHistory',
-    component: Layout,
-    redirect: '/carHistory',
-    hidden: false,
-    children: [
-      {
-        path: '/carHistory',
-        component: () => import('@/views/sysmanage/carHistory/index'),
-        name: 'carHistory',
-        meta: {
-          title: 'carHistory',
+          title: 'carManage',
           icon: 'license',
           noCache: true,
           affix: true
@@ -159,20 +143,63 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/faceHistory',
+    path: '/faceManage',
     component: Layout,
-    redirect: '/faceHistory',
+    redirect: '/faceManage',
     hidden: false,
     children: [
       {
-        path: '/faceHistory',
-        component: () => import('@/views/sysmanage/faceManage/history'),
-        name: 'sysFaceHistory',
+        path: '/faceManage',
+        component: () => import('@/views/sysmanage/faceManage/index'),
+        name: 'sysFaceManage',
         meta: {
-          title: 'faceHistory',
+          title: 'faceManage',
           icon: 'face',
           noCache: true,
           affix: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: 'alarmMessage',
+      icon: 'alarmMessage',
+      noCache: true,
+      roles: 'admin'
+    },
+    children: [
+      {
+        path: 'alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'alarmMessage',
+          noCache: false
+        }
+      },
+      {
+        path: 'carHistory',
+        component: () => import('@/views/sysmanage/carHistory/index'),
+        name: 'carHistory',
+        meta: {
+          title: 'carHistory',
+          icon: 'license',
+          noCache: false
+        }
+      },
+      {
+        path: 'faceHistory',
+        component: () => import('@/views/sysmanage/faceManage/history'),
+        name: 'faceHistory',
+        meta: {
+          title: 'faceHistory',
+          icon: 'face',
+          noCache: false
         }
       }
     ]
@@ -311,57 +338,8 @@ export const asyncRouterMap = [
           icon: 'cameraManagement',
           noCache: false
         }
-      },
-
-      {
-        path: 'carManage',
-        // component: () => import('@/views/sysmanage/carManage/index'),
-        component: MainLayout,
-        withnonestmenu: true,
-        name: 'sysCarManage',
-        meta: {
-          title: 'carManage',
-          icon: 'license',
-          noCache: false
-        },
-        // alwaysShow: true, // will always show the root menu
-        // hidden: false,
-        children: [
-          {
-            path: '',
-            component: () => import('@/views/sysmanage/carManage/index'),
-            hidden: true,
-            meta: {
-              title: 'carManage',
-              icon: 'license',
-              noCache: false
-            }
-          }
-        ]
-      },
-      {
-        path: 'faceManage',
-        component: MainLayout,
-        name: 'sysFaceManage',
-        meta: {
-          title: 'faceManage',
-          icon: 'face',
-          noCache: false
-        },
-        withnonestmenu: true,
-        children: [
-          {
-            path: '',
-            component: () => import('@/views/sysmanage/faceManage/index'),
-            hidden: true,
-            meta: {
-              title: 'faceManage',
-              icon: 'face',
-              noCache: false
-            }
-          }
-        ]
       }
+
     ]
   }
 ]
