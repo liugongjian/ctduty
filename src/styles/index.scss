@@ -318,15 +318,24 @@ code {
 }
 
 .v-modal {
-    z-index: 999 !important;
+    z-index: 99999999 !important;
 }
 
 .el-dialog__wrapper {
-    z-index: 1000 !important;
+    z-index: 100000000 !important;
 }
 
+.el-dialog {
+    z-index: 100000000 !important;
+}
+.el-message {
+    z-index: 100000001 !important;
+}
+.el-message-box__wrapper {
+    z-index: 100000000 !important;
+}
 .el-select-dropdown {
-    z-index: 99999 !important;
+    z-index: 9999999999 !important;
 }
 
 .el-dialog__body::-webkit-scrollbar {
@@ -357,10 +366,6 @@ code {
             text-indent: 20px !important;
         }
     }
-}
-
-.el-cascader__dropdown {
-    z-index: 9999999999999999999999999999999999 !important;
 }
 
 .el-row {

@@ -583,7 +583,4 @@ export default {
 .el-row {
   margin-top: 20px;
 }
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
 </style>
