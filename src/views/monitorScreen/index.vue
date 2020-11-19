@@ -390,7 +390,7 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
-  height: 100%;
+  // height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
     width: 360px;
@@ -420,7 +420,7 @@ export default {
     }
     .screen-add {
       // height: calc(35vh + 36.4px);
-      // height: 210px;
+      height: 210px;
       margin: 10px;
       // width: 100%;
       // height: 100%;
