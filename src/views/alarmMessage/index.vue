@@ -149,13 +149,6 @@
               tooltip-effect="dark"
               fit
             >
-              <!-- <el-table-column
-                :show-overflow-tooltip="true"
-                :label="'告警ID'"
-                align="center"
-                min-width="7.5%"
-                prop="id"
-              ></el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
@@ -881,16 +874,16 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.tableHeight = document.getElementsByTagName('html')[0].clientHeight - 380
         setTimeout(() => {
           var trArr = document.getElementsByClassName('el-table__row')
           var arr = Array.from(trArr)
           arr.forEach(item => {
-            var child = Array.from(item.children)
-            child.forEach(dom => {
-              dom.style.height = this.tableHeight / 11 + 'px'
-              dom.style.padding = 'none'
-              this.hasTdHeight = true
+            this.hasTdHeight = true
+            item.style.height = (document.getElementsByTagName('html')[0].clientHeight - 380) / 11 + 'px'
+            const child = item.children
+            const tds = Array.from(child)
+            tds.forEach(dom => {
+              dom.style.height = '100%'
             })
           })
         }, 300)
@@ -994,7 +987,11 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-
+.el-table--medium {
+  td {
+    padding: 0;
+  }
+}
 td {
   .el-image {
     vertical-align: middle;
@@ -1090,5 +1087,15 @@ td {
   // .el-input--medium.el-input--suffix {
   //   height: 28px;
   // }
+}
+.root {
+    flex: auto;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    .el-tabs__content {
+      flex-grow: 1;
+      overflow-y: scroll;
+  }
 }
 </style>
