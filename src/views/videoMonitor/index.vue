@@ -7,9 +7,9 @@
             <div class="video-panel">
               <div class="left-part">
                 <VideoPlayer
-                  :video-ref="cameraId"
-                  :key="cameraId"
-                  :options="videoOptions"
+                  :video-ref="device[0].cameraId"
+                  :key="device[0].cameraId"
+                  :options="device[0].videoOptions"
                 />
               </div>
               <!-- v-if="!!flv && activeTab == 'video'" -->
@@ -217,6 +217,9 @@ import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import { getAlertInfos } from '@/api/alarm'
 import { taskList } from '@/api/algorithm'
+import {
+  fetchAllMonitor
+} from '@/api/monitor'
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
 const timeFormat = 'MM-DD HH:mm:ss'
 export default {
@@ -231,6 +234,7 @@ export default {
       pageLoading: false,
       total: 10,
       page: 0,
+      limit: 10,
       showVideoSetting: false,
       videoOptions: {
         autoplay: true,
@@ -241,8 +245,7 @@ export default {
         fluid: true, // 流体布局，自动充满，并保持播放其比例
         sources: [
           {
-            src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-            type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+
           }
           // {
           //   src: item.rtmpuri,
@@ -266,7 +269,8 @@ export default {
         date: '2222',
         name: '111',
         address: '33%'
-      }]
+      }],
+      device: []
     }
   },
   watch: {
@@ -277,6 +281,7 @@ export default {
   async created() {
     await this.getTaskList()
     await this.getPhotoList()
+    await this.getLiveList()
   },
   methods: {
     sureThis() {
@@ -357,6 +362,50 @@ export default {
         console.log(err)
         this.photosLoading = false
       })
+    },
+    getLiveList() {
+      fetchAllMonitor().then(res => {
+        const data = res.body.data || []
+        this.device = data.map(item => {
+          return {
+            ...item,
+            image: null,
+            flvSrc: item.rtmpuri,
+            videoOptions: {
+              autoplay: true,
+              controls: true,
+              width: 400, // 播放器宽度
+              height: 300, // 播放器高度
+              // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+              fluid: true, // 流体布局，自动充满，并保持播放其比例
+              sources: [
+                {
+                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+                }
+              ]
+            }
+          }
+        })
+        console.log('devide', this.device)
+        this.pageLoading = false
+      })
+    },
+    video_type(_url) {
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
+      }
     }
   }
 }
