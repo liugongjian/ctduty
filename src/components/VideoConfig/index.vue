@@ -234,6 +234,7 @@ export default {
   border-width: 1px;
   border-color: #d3d3d3;
   //   display: inline-block;
+  border-radius: 4px;
   margin: 8px;
   position: relative;
   .config-btn {
