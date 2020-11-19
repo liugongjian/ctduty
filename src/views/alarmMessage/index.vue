@@ -262,7 +262,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="220" style="z-index:1;" >
+            <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
