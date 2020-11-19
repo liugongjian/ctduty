@@ -3,19 +3,29 @@
     <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <!-- <el-input
-            v-model="formInline.searchkey"
-            placeholder="请输入..."
-            class="filter-item alarmInp"
-            style="width: 60%; height: 32px"
-            @keyup.enter.native="searchAlarm"
-          ></el-input>
           <el-button
-            class="filter-item searchsure"
-            style="font-size:12px; width: 16%"
-            icon="el-icon-search"
-            @click="searchAlarm"
-          ></el-button>-->
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 2px"
+            @click="onSearch"
+          >{{ '确定' }}</el-button>
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px; width: 20%;height:36px;"
+            icon="el-icon-refresh"
+            @click="resetQuery"
+          >重置</button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
+        </div>
+        <div class="pull-left alarmmsgleft">
+          <div class="block filter-item">
+            <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
+          </div>
           <el-input
             v-model="formInline.searchkey"
             placeholder="设备名称"
@@ -24,85 +34,15 @@
             @keyup.enter.native="onSearch"
           >
           </el-input>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
-        </div>
-        <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
-          <div class="block filter-item">
-            <el-date-picker
-              v-model="value1"
-              :clearable="false"
-              :style="{width:210 + 'px', height: 36 + 'px'}"
-              :picker-options="pickerOptions"
-              type="daterange"
-              range-separator="to"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              size="mini"
-              @change="timeChange"
-            ></el-date-picker>
-          </div>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px',height:'36px'}"
-              v-model="startTime"
-              :picker-options="{
-                selectableRange:'00:00:00-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px', height: 36 + 'px'}"
-              v-model="endTime"
-              :picker-options="{
-                selectableRange:startTime+ ':00' + '-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <!-- <el-select
-            v-model="formInline.typeValue"
-            style="width:95px; margin-left:10px; margin-right: 10px"
-            size="mini"
-            class="filter-item"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>-->
-          <br>
           <el-select
             v-model="algorithmList.typeValue"
-            :multiple-limit="2"
             multiple
             placeholder="请选择事件名称"
             min-width="300px"
+            collapse-tags
             @change="checkModel"
           >
             <el-option
@@ -112,12 +52,15 @@
               :value="item._id">
             </el-option>
           </el-select>
+          <div class="block filter-item">
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
+          </div>
           <el-select
             v-model="algorithmNameList.typeValue"
-            :multiple-limit="2"
             multiple
             placeholder="请选择算法名称"
             min-width="350px"
+            collapse-tags
             @change="algorithmCheck"
           >
             <el-option
@@ -127,15 +70,58 @@
               :value="item._id">
             </el-option>
           </el-select>
-
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            style="margin-bottom: 2px"
-            @click="onSearch"
-          >{{ '确定' }}</el-button>
+          <transition name = "fade">
+            <div v-show="flag">
+              <div class="block filter-item">
+                <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  :style="{width:210 + 'px', height: 36 + 'px'}"
+                  :picker-options="pickerOptions"
+                  type="daterange"
+                  range-separator="to"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px',height:'36px'}"
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px', height: 36 + 'px'}"
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
       <div>
@@ -149,13 +135,6 @@
               tooltip-effect="dark"
               fit
             >
-              <!-- <el-table-column
-                :show-overflow-tooltip="true"
-                :label="'告警ID'"
-                align="center"
-                min-width="7.5%"
-                prop="id"
-              ></el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
@@ -220,7 +199,7 @@
                   </el-popover>-->
                   <el-image
                     :src="scope.row.imageCompress"
-                    style="width:68.4px; height:39px;"
+                    style="object-fit:contain;"
                     @click="openBig(scope.row.image)"
                   />
                 </template>
@@ -284,7 +263,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
+            <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
@@ -401,6 +380,8 @@ export default {
   },
   data() {
     return {
+      flag: false,
+      openname: '展开',
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
@@ -563,10 +544,15 @@ export default {
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
   },
-  mounted() {
-    // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
-  },
   methods: {
+    opendraw() {
+      this.flag = !this.flag
+      if (this.openname == '展开') {
+        this.openname = '收起'
+      } else if (this.openname == '收起') {
+        this.openname = '展开'
+      }
+    },
     openBig(url) {
       window.open(url)
     },
@@ -696,7 +682,6 @@ export default {
         type: h1,
         taskId: h2
       }
-      console.log('自定义对象', h)
       this.oldSize = this.limit
       this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
@@ -822,7 +807,6 @@ export default {
         end: e,
         null: oper
       }
-
       getAllTotal(params).then(response => {
         this.allTotal = response.body.data
         this.listLoading = false
@@ -881,16 +865,23 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.tableHeight = document.getElementsByTagName('html')[0].clientHeight - 380
+        this.hasTdHeight = true
         setTimeout(() => {
-          var trArr = document.getElementsByClassName('el-table__row')
-          var arr = Array.from(trArr)
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
           arr.forEach(item => {
-            var child = Array.from(item.children)
-            child.forEach(dom => {
-              dom.style.height = this.tableHeight / 11 + 'px'
-              dom.style.padding = 'none'
-              this.hasTdHeight = true
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+              }
             })
           })
         }, 300)
@@ -994,12 +985,18 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-
-td {
-  .el-image {
-    vertical-align: middle;
+.alaMesTable.el-table--medium {
+        td{
+          padding:0px;
+          .el-image {
+          vertical-align: middle;
+        }
+        }
+        th{
+          padding:0px;
+        }
   }
-}
+
 .sureItem {
   height: 36px;
 }
@@ -1012,8 +1009,9 @@ td {
   .clearsearch {
     position: absolute;
     top: 0px;
-    right: 0px;
+    // right: 0px;
     height: 34px;
+    margin-left: 10px;
     width: 60px;
     // margin-left: 16px;
     border: 1px solid #ccc;
@@ -1075,7 +1073,7 @@ td {
   font-size: 14px;
 }
 .searchinp {
-  width: 75%;
+  width: 20%;
 }
 .el-select.el-select--medium {
   width: 260px;
@@ -1090,5 +1088,25 @@ td {
   // .el-input--medium.el-input--suffix {
   //   height: 28px;
   // }
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
+}
+.open {
+  margin-left: 90px;
+  color: #ff9832;
+  cursor: pointer;
+}
+.draw {
+  display: none;
+}
+.tdimage {
+  object-fit: contain !important;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: all .8s ease 0.2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+    opacity: 0;
 }
 </style>
