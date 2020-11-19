@@ -3,19 +3,29 @@
     <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <!-- <el-input
-            v-model="formInline.searchkey"
-            placeholder="请输入..."
-            class="filter-item alarmInp"
-            style="width: 60%; height: 32px"
-            @keyup.enter.native="searchAlarm"
-          ></el-input>
           <el-button
-            class="filter-item searchsure"
-            style="font-size:12px; width: 16%"
-            icon="el-icon-search"
-            @click="searchAlarm"
-          ></el-button>-->
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 2px"
+            @click="onSearch"
+          >{{ '确定' }}</el-button>
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px; width: 20%;height:36px;"
+            icon="el-icon-refresh"
+            @click="resetQuery"
+          >重置</button>
+          <span class="open" @click="opendraw">
+            展开
+            <i class="el-icon-arrow-down"></i>
+          </span>
+        </div>
+        <div class="pull-left alarmmsgleft">
+          <div class="block filter-item">
+            <div style="margin-top: 10px; margin-right: 8px; font-size: 12px;">设备名称:</div>
+          </div>
           <el-input
             v-model="formInline.searchkey"
             placeholder="设备名称"
@@ -24,79 +34,9 @@
             @keyup.enter.native="onSearch"
           >
           </el-input>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
-        </div>
-        <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+            <div style="margin-top: 10px; margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
-          <div class="block filter-item">
-            <el-date-picker
-              v-model="value1"
-              :clearable="false"
-              :style="{width:210 + 'px', height: 36 + 'px'}"
-              :picker-options="pickerOptions"
-              type="daterange"
-              range-separator="to"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              size="mini"
-              @change="timeChange"
-            ></el-date-picker>
-          </div>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px',height:'36px'}"
-              v-model="startTime"
-              :picker-options="{
-                selectableRange:'00:00:00-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px', height: 36 + 'px'}"
-              v-model="endTime"
-              :picker-options="{
-                selectableRange:startTime+ ':00' + '-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <!-- <el-select
-            v-model="formInline.typeValue"
-            style="width:95px; margin-left:10px; margin-right: 10px"
-            size="mini"
-            class="filter-item"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>-->
-          <br>
           <el-select
             v-model="algorithmList.typeValue"
             :multiple-limit="2"
@@ -112,6 +52,9 @@
               :value="item._id">
             </el-option>
           </el-select>
+          <div class="block filter-item">
+            <div style="margin-top: 10px; margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
+          </div>
           <el-select
             v-model="algorithmNameList.typeValue"
             :multiple-limit="2"
@@ -127,15 +70,57 @@
               :value="item._id">
             </el-option>
           </el-select>
-
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            style="margin-bottom: 2px"
-            @click="onSearch"
-          >{{ '确定' }}</el-button>
+          <div class="draw">
+            <div class="block filter-item">
+              <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+            </div>
+            <div class="block filter-item">
+              <el-date-picker
+                v-model="value1"
+                :clearable="false"
+                :style="{width:210 + 'px', height: 36 + 'px'}"
+                :picker-options="pickerOptions"
+                type="daterange"
+                range-separator="to"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                format="yyyy-MM-dd"
+                size="mini"
+                @change="timeChange"
+              ></el-date-picker>
+            </div>
+            <div class="block filter-item">
+              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+            </div>
+            <div class="block filter-item">
+              <el-time-picker
+                :style="{width:95 + 'px',height:'36px'}"
+                v-model="startTime"
+                :picker-options="{
+                  selectableRange:'00:00:00-23:59:00'
+                }"
+                size="mini"
+                format="HH:mm"
+                value-format="HH:mm"
+              ></el-time-picker>
+            </div>
+            <div class="block filter-item">
+              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+            </div>
+            <div class="block filter-item">
+              <el-time-picker
+                :style="{width:95 + 'px', height: 36 + 'px'}"
+                v-model="endTime"
+                :picker-options="{
+                  selectableRange:startTime+ ':00' + '-23:59:00'
+                }"
+                size="mini"
+                format="HH:mm"
+                value-format="HH:mm"
+              ></el-time-picker>
+            </div>
+          </div>
+          
         </div>
       </div>
       <div>
@@ -567,6 +552,9 @@ export default {
     // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
+    opendraw() {
+      
+    },
     openBig(url) {
       window.open(url)
     },
@@ -696,7 +684,6 @@ export default {
         type: h1,
         taskId: h2
       }
-      console.log('自定义对象', h)
       this.oldSize = this.limit
       this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
@@ -1012,8 +999,9 @@ td {
   .clearsearch {
     position: absolute;
     top: 0px;
-    right: 0px;
+    // right: 0px;
     height: 34px;
+    margin-left: 10px;
     width: 60px;
     // margin-left: 16px;
     border: 1px solid #ccc;
@@ -1075,7 +1063,7 @@ td {
   font-size: 14px;
 }
 .searchinp {
-  width: 75%;
+  width: 20%;
 }
 .el-select.el-select--medium {
   width: 260px;
@@ -1090,5 +1078,15 @@ td {
   // .el-input--medium.el-input--suffix {
   //   height: 28px;
   // }
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
+}
+.open {
+  margin-left: 90px;
+  color: #ff9832;
+}
+.draw {
+  display: none;
 }
 </style>
