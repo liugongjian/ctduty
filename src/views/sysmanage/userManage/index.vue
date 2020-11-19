@@ -355,10 +355,13 @@ export default {
           index: this.page,
           size: this.limit
         },
-        params: {}
-      }
-      if (this.queryName.trim() !== '') {
-        query.params.name = `%${this.queryName}%`
+        params: [
+          {
+            field: 'name',
+            operator: 'LIKE',
+            value: `%${this.queryName.trim()}%`
+          }
+        ]
       }
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
