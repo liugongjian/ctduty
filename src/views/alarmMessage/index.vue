@@ -1066,7 +1066,7 @@ td {
   width: 20%;
 }
 .el-select.el-select--medium {
-  width: 260px;
+  width: 20%;
 }
 .el-input--mini .el-input__inner {
   height: 36px;
@@ -1088,5 +1088,8 @@ td {
 }
 .draw {
   display: none;
+}
+.undraw {
+  display: block;
 }
 </style>
