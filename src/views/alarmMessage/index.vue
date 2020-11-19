@@ -17,8 +17,8 @@
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
-          <span id="openId" class="open" @click="opendraw(this)">
-            展开
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
             <i class="el-icon-arrow-down"></i>
           </span>
         </div>
@@ -381,6 +381,7 @@ export default {
   data() {
     return {
       flag: false,
+      openname: '展开',
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
@@ -544,15 +545,13 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
-    opendraw(obj) {
+    opendraw() {
       this.flag = !this.flag
-      const inner = document.getElementById('openId')
-      // console.log('innner', inner.innerText)
-      // if (inner.innerText === '展开') {
-      //   inner.innerText = '收起'
-      // } else if (inner.innerText === '收起') {
-      //   inner.innerText = '展开'
-      // }
+      if (this.openname == '展开') {
+        this.openname = '收起'
+      } else if (this.openname == '收起') {
+        this.openname = '展开'
+      }
     },
     openBig(url) {
       window.open(url)
