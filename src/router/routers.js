@@ -121,25 +121,6 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/alarmMessage',
-    component: Layout,
-    redirect: '/alarmMessage',
-    hidden: false,
-    children: [
-      {
-        path: '/alarmMessage',
-        component: () => import('@/views/alarmMessage/index'),
-        name: 'alarmMessageIndex',
-        meta: {
-          title: 'alarmMessage',
-          icon: 'alarmMessage',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
-  {
     path: '/carManage',
     // component: () => import('@/views/sysmanage/carManage/index'),
     component: Layout,
@@ -181,39 +162,44 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/carHistory',
+    path: '/alarmMessage',
     component: Layout,
-    redirect: '/carHistory',
-    hidden: false,
+    alwaysShow: true,
+    meta: {
+      title: 'alarmMessage',
+      icon: 'alarmMessage',
+      noCache: true,
+      roles: 'admin'
+    },
     children: [
       {
-        path: '/carHistory',
+        path: 'alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
+        meta: {
+          title: 'alarmMessage',
+          icon: 'alarmMessage',
+          noCache: false
+        }
+      },
+      {
+        path: 'carHistory',
         component: () => import('@/views/sysmanage/carHistory/index'),
         name: 'carHistory',
         meta: {
           title: 'carHistory',
           icon: 'license',
-          noCache: true,
-          affix: true
+          noCache: false
         }
-      }
-    ]
-  },
-  {
-    path: '/faceHistory',
-    component: Layout,
-    redirect: '/faceHistory',
-    hidden: false,
-    children: [
+      },
       {
-        path: '/faceHistory',
+        path: 'faceHistory',
         component: () => import('@/views/sysmanage/faceManage/history'),
-        name: 'sysFaceHistory',
+        name: 'faceHistory',
         meta: {
           title: 'faceHistory',
           icon: 'face',
-          noCache: true,
-          affix: true
+          noCache: false
         }
       }
     ]
