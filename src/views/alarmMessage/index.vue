@@ -808,7 +808,6 @@ export default {
         end: e,
         null: oper
       }
-
       getAllTotal(params).then(response => {
         this.allTotal = response.body.data
         this.listLoading = false
