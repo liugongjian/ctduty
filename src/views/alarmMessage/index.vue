@@ -198,7 +198,7 @@
                   </el-popover>-->
                   <el-image
                     :src="scope.row.imageCompress"
-                    style="object-fit:fill;"
+                    style="object-fit:contain;"
                     @click="openBig(scope.row.image)"
                   />
                 </template>
@@ -871,6 +871,7 @@ export default {
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
                 dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 305) / 11) * 16 / 9 + 'px'
               } else if (dom.className === 'el-tag') {
                 dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
               }
