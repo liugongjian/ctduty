@@ -74,24 +74,14 @@
               <div class="panelTitle">统计分析</div>
               <el-table
                 :data="tableData"
-                fit
-                style="width: 100%">
-                <el-table-column
-                  prop="date"
-                  label="事件"
-                  align="center"
-                  width="180">
+                :header-cell-style="{ background: '#ecedee', color: '#717171' }"
+              >
+                <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
+                  <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
                 </el-table-column>
-                <el-table-column
-                  prop="name"
-                  label="告警次数"
-                  align="center"
-                  width="180">
-                </el-table-column>
-                <el-table-column
-                  prop="address"
-                  align="center"
-                  label="占比">
+                <!-- 根据返回算法渲染列 -->
+                <el-table-column v-for="item in tableColumn" :key="item.id" :label="item.name" align="center" min-width="125" width="125">
+                  <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template>
                 </el-table-column>
               </el-table>
             </div>
@@ -213,6 +203,9 @@
 
 <script>
 import moment from 'moment'
+import {
+  getAlertStatics
+} from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import { getAlertInfos } from '@/api/alarm'
@@ -238,35 +231,20 @@ export default {
         width: 400, // 播放器宽度
         height: 300, // 播放器高度
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-        fluid: true, // 流体布局，自动充满，并保持播放其比例
-        sources: [
-          {
-            src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-            type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
-          }
-          // {
-          //   src: item.rtmpuri,
-          //   type: 'application/x-mpegURL'
-          // }
-        ]
+        fluid: true // 流体布局，自动充满，并保持播放其比例
+        // sources: [
+        //   {
+        //     src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+        //     type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+        //   }
+        //   // {
+        //   //   src: item.rtmpuri,
+        //   //   type: 'application/x-mpegURL'
+        //   // }
+        // ]
       },
-      tableData: [{
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }]
+      tableData: [],
+      tableColumn: []
     }
   },
   watch: {
@@ -277,6 +255,7 @@ export default {
   async created() {
     await this.getTaskList()
     await this.getPhotoList()
+    await this.getAlertDetailList()
   },
   methods: {
     sureThis() {
@@ -356,6 +335,32 @@ export default {
       }).catch(err => {
         console.log(err)
         this.photosLoading = false
+      })
+    },
+    getCountByName(taskCount, name) {
+      for (const item of taskCount) {
+        if (item.name === name) {
+          return item.count
+        }
+      }
+      return '-'
+    },
+    getAlertDetailList() {
+      const query = {
+        page: {
+          index: 1,
+          size: 10
+        },
+        params: {
+          id: this.cameraId
+        }
+        // sorts: [{ field: 'create_time', type: 'desc' }]
+      }
+      getAlertStatics(query).then(res => {
+        if (res.code !== 0) return
+        this.tableData = res.body.data
+        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
+        // this.total = res.body.page.total
       })
     }
   }
@@ -444,7 +449,7 @@ export default {
             margin-left: 20px;
         }
         .dataShow{
-          width:100px;
+          width:40%;
             p{
                 font-size: 12px;
                 color:rgba(0,0,0,0.85);
@@ -549,15 +554,15 @@ export default {
     margin-top: 20px;
     height:300px;
     width: 100%;
-    .el-table__header-wrapper table, .el-table__body-wrapper table{
-        width: 100% !important;
-    }
-    th,td {
-      padding: 5px !important;
-    }
-    .el-table__body, .el-table__footer, .el-table__header{
-      table-layout: auto;
-    }
+    // .el-table__header-wrapper table, .el-table__body-wrapper table{
+    //     width: 100% !important;
+    // }
+    // th,td {
+    //   padding: 5px !important;
+    // }
+    // .el-table__body, .el-table__footer, .el-table__header{
+    //   table-layout: auto;
+    // }
     .alertTable{
       // flex-grow: 1;
       background: #ffffff;
