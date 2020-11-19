@@ -21,9 +21,8 @@
             placeholder="设备名称"
             class="searchinp"
             size="mini"
-            @keyup.enter.native="searchAlarm"
+            @keyup.enter.native="onSearch"
           >
-            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
           </el-input>
           <button
             class="filter-item clearsearch"
@@ -568,58 +567,6 @@ export default {
     // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
-    searchAlarm() {
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      this.page = 1
-      this.limit = 10
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
-          cascade: true,
-          page: {
-            index: this.page,
-            size: this.limit
-          },
-          params: [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ],
-          sorts: [
-            {
-              field: 'create_Time',
-              type: 'desc'
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
-              operator: 'EQUALS',
-              value: this.formInline.searchkey
-            }
-          ]
-        }
-      }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
-    },
     openBig(url) {
       window.open(url)
     },
