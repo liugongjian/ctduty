@@ -318,7 +318,7 @@ export default {
           index: 1,
           size: 9999999
         },
-        params: {}
+        params: []
       }
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
