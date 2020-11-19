@@ -870,17 +870,17 @@ export default {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
-            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
             item.style.paddingTop = '2px'
             item.style.paddingBottom = '2px'
             const child = item.children
             const childArr = Array.from(child)
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
-                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
-                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 346) / 11) * 16 / 9 + 'px'
               } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
               }
             })
           })
