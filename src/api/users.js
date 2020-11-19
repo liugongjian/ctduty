@@ -3,7 +3,7 @@ import qs from 'qs'
 
 export function fetchUserList(query) {
   return request({
-    url: '/nvsapi/User/QueryFilter',
+    url: '/nvsapi/User/QueryActive',
     method: 'post',
     data: query
   })
