@@ -1,7 +1,7 @@
 <template>
   <div class="notice">
     <div>
-      <div class="clearfix">
+      <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
           <el-input
             ref="queryTitleRef"
@@ -598,7 +598,7 @@ export default {
   float: right;
 }
 .el-table {
-  margin-top: 20px;
+  margin-top: 5px;
 }
 .searchinput {
   width: 250px;
