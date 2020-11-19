@@ -41,7 +41,7 @@
         </el-col>
       </el-row>
       <div class="listBtnBox">
-        <el-button type="primary" @click="applyAlgorithms(true)">确定</el-button>
+        <el-button :loading="btnLoading" type="primary" @click="applyAlgorithms(true)">确定</el-button>
       </div>
     </div>
   </div>
@@ -86,7 +86,8 @@ export default {
       winHeight: '',
       styleObj: {
         height: ''
-      }
+      },
+      btnLoading: false
     }
   },
   watch: {
@@ -308,6 +309,7 @@ export default {
           }
         }
         if (flag) {
+          console.log(params)
           if (params.length > 0) {
             // console.log('组装的参数是-----', params)
             var finalBody = {
@@ -316,6 +318,8 @@ export default {
             }
             // console.log('最终组装的参数是-----', finalBody)
             this.pageLoading = true
+
+            this.btnLoading = true
             this.configTask(finalBody)
           }
           this.configVisable = false
@@ -349,12 +353,15 @@ export default {
     async configTask(body) {
       const res = await client.configInstance(body)
       //   console.log('任务实例配置调用接口返回-----', res)
+      const { deviceId } = body
       if (res.code === 0) {
         this.pageLoading = false
+        this.btnLoading = false
         this.$message({
           message: '更新成功',
           type: 'success'
         })
+        this.getAlgorithmList(deviceId)
       }
     },
     setCanvasShow(payload) {
