@@ -27,7 +27,7 @@
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
+            style="font-size:12px; width: 20%;height:36px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -40,7 +40,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:210 + 'px', height: 28 + 'px'}"
+              :style="{width:210 + 'px', height: 36 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="to"
@@ -56,7 +56,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px',height:'28px'}"
+              :style="{width:95 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -72,7 +72,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px', height: 28 + 'px'}"
+              :style="{width:95 + 'px', height: 36 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -97,6 +97,7 @@
               :value="item._id"
             ></el-option>
           </el-select>-->
+          <br>
           <el-select
             v-model="algorithmList.typeValue"
             multiple
@@ -112,7 +113,7 @@
               :value="item._id">
             </el-option>
           </el-select>
-          <!-- <el-select
+          <el-select
             v-model="algorithmNameList.typeValue"
             multiple
             placeholder="请选择算法名称"
@@ -126,13 +127,14 @@
               :label="item.name"
               :value="item._id">
             </el-option>
-          </el-select> -->
+          </el-select>
 
           <el-button
             v-waves
             class="filter-item sureItem"
             size="mini"
             type="warning"
+            style="margin-bottom: 2px"
             @click="onSearch"
           >{{ '确定' }}</el-button>
         </div>
@@ -148,7 +150,6 @@
               style="width: 100%"
               tooltip-effect="dark"
               fit
-              @selection-change="handleSelectionChange"
             >
               <!-- <el-table-column
                 :show-overflow-tooltip="true"
@@ -744,9 +745,14 @@ export default {
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
       const h1 = this.algorithmList.typeValue
-      console.log('h1sssssssssssssssssssss', h1)
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
+      console.log('自定义对象', h)
       this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+      this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
@@ -801,8 +807,7 @@ export default {
     },
     algorithmCheck() {
       console.log('ccccccccccccccc', this.algorithmNameList.typeValue)
-      this.$emit('getdata', this.algorithmNameList.typeValue)
-
+      // this.$emit('getdata', this.algorithmNameList.typeValue)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
@@ -880,7 +885,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      console.log('hhhhhhhhhhhhhhh', h)
+      const {type, taskId} = h
       const param =[
             {
               field: 'camera.name',
@@ -904,7 +909,12 @@ export default {
             {
               field: 'type',
               operator: 'IN',
-              value: h
+              value: type
+            },
+            {
+              field: 'taskId',
+              operator: 'IN',
+              value: taskId
             }
           ]
       const params = {
@@ -1045,7 +1055,7 @@ td {
   }
 }
 .sureItem {
-  height: 28px;
+  height: 36px;
 }
 .pull-left.alarmmsgleft {
   width: 75%;
@@ -1121,13 +1131,18 @@ td {
 .searchinp {
   width: 75%;
 }
-// .list {
-//   height: 100%;
-// }
-// .el-dialog__headerbtn {
-//   // display: none;
-//   position: relative;
-//   top: 4px;
-//   left: 85%;
-// }
+.el-select.el-select--medium {
+  width: 260px;
+}
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-select.el-select--medium {
+  // height: 28px;
+  margin-bottom: 10px;
+  // .el-input--medium.el-input--suffix {
+  //   height: 28px;
+  // }
+}
 </style>
