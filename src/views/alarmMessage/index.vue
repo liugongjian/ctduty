@@ -198,7 +198,7 @@
                   </el-popover>-->
                   <el-image
                     :src="scope.row.imageCompress"
-                    style="object-fit:fill;"
+                    style="object-fit:contain;"
                     @click="openBig(scope.row.image)"
                   />
                 </template>
@@ -262,7 +262,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="220" style="z-index:1;" >
+            <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
@@ -541,9 +541,6 @@ export default {
     // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
-  },
-  mounted() {
-    // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
     opendraw(obj) {
@@ -868,19 +865,22 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.hasTdHeight = true
         setTimeout(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
-            this.hasTdHeight = true
-            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
             const child = item.children
             const childArr = Array.from(child)
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
-                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
               } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
               }
             })
           })
@@ -985,19 +985,18 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-.el-table--medium {
-  td{
-    padding:0px;
+.alaMesTable.el-table--medium {
+        td{
+          padding:0px;
+          .el-image {
+          vertical-align: middle;
+        }
+        }
+        th{
+          padding:0px;
+        }
   }
-  th{
-    padding:0px;
-  }
-}
-td {
-  .el-image {
-    vertical-align: middle;
-  }
-}
+
 .sureItem {
   height: 36px;
 }
