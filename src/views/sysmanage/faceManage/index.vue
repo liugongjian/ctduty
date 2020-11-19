@@ -727,7 +727,7 @@ export default {
       this.getfaceList()
     },
     gohistory() {
-      this.$router.push('/faceHistory')
+      this.$router.push('/alarmMessage/faceHistory')
     }
   }
 }

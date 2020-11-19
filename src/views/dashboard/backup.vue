@@ -216,7 +216,7 @@ export default {
       })
     },
     goAlarmList() {
-      this.$router.push('/alarmMessage')
+      this.$router.push('/alarmMessage/alarmMessage')
     },
     checkFull() {
       var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled

@@ -71,7 +71,7 @@
               <div class="bottom-right">
                 <ul>
                   <li style="float:right;line-height: 20px;margin-left:5px;font-size:12px;">
-                    <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
+                    <a @click="()=>{this.$router.push('/alarmMessage/alarmMessage')}">历史告警</a>
                   </li>
                 </ul>
               </div>

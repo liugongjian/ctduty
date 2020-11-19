@@ -21,9 +21,8 @@
             placeholder="设备名称"
             class="searchinp"
             size="mini"
-            @keyup.enter.native="searchAlarm"
+            @keyup.enter.native="onSearch"
           >
-            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
           </el-input>
           <button
             class="filter-item clearsearch"
@@ -100,10 +99,10 @@
           <br>
           <el-select
             v-model="algorithmList.typeValue"
+            :multiple-limit="2"
             multiple
             placeholder="请选择事件名称"
             min-width="300px"
-            :multiple-limit='2'
             @change="checkModel"
           >
             <el-option
@@ -115,10 +114,10 @@
           </el-select>
           <el-select
             v-model="algorithmNameList.typeValue"
+            :multiple-limit="2"
             multiple
             placeholder="请选择算法名称"
             min-width="350px"
-            :multiple-limit='2'
             @change="algorithmCheck"
           >
             <el-option
@@ -143,7 +142,6 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
-              v-show="hasTdHeight"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -569,58 +567,6 @@ export default {
     // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
-    searchAlarm() {
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      this.page = 1
-      this.limit = 10
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
-          cascade: true,
-          page: {
-            index: this.page,
-            size: this.limit
-          },
-          params: [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ],
-          sorts: [
-            {
-              field: 'create_Time',
-              type: 'desc'
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
-              operator: 'EQUALS',
-              value: this.formInline.searchkey
-            }
-          ]
-        }
-      }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
-    },
     openBig(url) {
       window.open(url)
     },
@@ -885,38 +831,38 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      const {type, taskId} = h
-      const param =[
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            {
-              field: 'type',
-              operator: 'IN',
-              value: type
-            },
-            {
-              field: 'taskId',
-              operator: 'IN',
-              value: taskId
-            }
-          ]
+      const { type, taskId } = h
+      const param = [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'username',
+          operator: 'NULL'
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'taskId',
+          operator: 'IN',
+          value: taskId
+        }
+      ]
       const params = {
         cascade: true,
         page: {

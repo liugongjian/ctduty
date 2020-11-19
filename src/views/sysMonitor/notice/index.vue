@@ -278,7 +278,6 @@ export default {
       oldSize: 10,
       searchName: "",
       searchUserIds: [],
-      delIDArr: [],
       addFormRules: {
         title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
         creatorId: [
@@ -579,13 +578,10 @@ export default {
           if (response.code !== 0) {
             return this.$message.error("删除失败,请稍后再试");
           }
-          // this.deleteNoticeDialogVisible = false;
-          // this.deleteNoticeTitle = title;
-          // this.deleteNoticerId = id;
+
           this.deleteNoticerId = 0;
           this.deleteNoticeTitle = "";
           this.getNoticeList();
-          // this.delIDArr = [];
           this.$message.success("删除信息成功");
         });
       });
@@ -622,7 +618,7 @@ export default {
   float: right;
 }
 .el-table {
-  margin-top: 5px;
+  margin-top: 15px;
 }
 .searchinput {
   width: 250px;
