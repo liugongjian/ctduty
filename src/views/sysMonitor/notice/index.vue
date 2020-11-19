@@ -71,7 +71,7 @@
             <el-button
               type="text"
               size="small"
-              @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
+              @click="showDeleteDialog(row_data.row.id)"
             >{{ '删除' }}</el-button>
           </template>
         </el-table-column>
@@ -248,13 +248,13 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="400px">
+    <!-- <el-dialog :visible.sync="deleteNoticeDialogVisible" title="删除消息" width="400px">
       <span>确认删除信息{{ deleteNoticeTitle }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteANotice">确 定</el-button>
         <el-button @click="deleteNoticeDialogVisible = false">取 消</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -547,23 +547,43 @@ export default {
       this.userid = null
     },
 
-    showDeleteDialog(title, id) {
-      this.deleteNoticeDialogVisible = true
-      this.deleteNoticeTitle = title
-      this.deleteNoticerId = id
-    },
-    deleteANotice() {
-      const ids = []
-      ids.push(this.deleteNoticerId)
-      deleteNotices(ids).then(response => {
-        if (response.code !== 0) {
-          return this.$message.error('删除失败,请稍后再试')
-        }
-        this.deleteNoticeDialogVisible = false
-        this.deleteNoticerId = 0
-        this.deleteNoticeTitle = ''
-        this.getNoticeList()
-        this.$message.success('删除信息成功')
+    // showDeleteDialog(title, id) {
+    //   this.deleteNoticeDialogVisible = true;
+    //   this.deleteNoticeTitle = title;
+    //   this.deleteNoticerId = id;
+    // },
+    // deleteANotice() {
+    //   const ids = [];
+    //   ids.push(this.deleteNoticerId);
+    //   deleteNotices(ids).then(response => {
+    //     if (response.code !== 0) {
+    //       return this.$message.error("删除失败,请稍后再试");
+    //     }
+    //     this.deleteNoticeDialogVisible = false;
+    //     this.deleteNoticerId = 0;
+    //     this.deleteNoticeTitle = "";
+    //     this.getNoticeList();
+    //     this.$message.success("删除信息成功");
+    //   });
+    // },
+    showDeleteDialog(id) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = []
+        ids.push(this.deleteNoticerId)
+        deleteNotices([id]).then(response => {
+          if (response.code !== 0) {
+            return this.$message.error('删除失败,请稍后再试')
+          }
+
+          this.deleteNoticerId = 0
+          this.deleteNoticeTitle = ''
+          this.getNoticeList()
+          this.$message.success('删除信息成功')
+        })
       })
     },
     getCookie(objName) {

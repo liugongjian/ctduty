@@ -24,11 +24,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="row_data">
           <el-button type="text" size="small" @click="showEditDialog(row_data.row.id)">{{ "编辑" }}</el-button>
-          <el-button
-            type="text"
-            size="small"
-            @click="showDeleteDialog(row_data.row.username, row_data.row.id)"
-          >{{ "删除" }}</el-button>
+          <el-button type="text" size="small" @click="showDeleteDialog(row_data.row.id)">{{ "删除" }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -163,13 +159,13 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="30%">
+    <!-- <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="30%">
       <span>确认删除用户{{ deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
         <el-button @click="deleteUserDialogVisible = false">取 消</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -427,26 +423,46 @@ export default {
     editDialogClosed() {
       this.editUserForm = {}
     },
-    showDeleteDialog(username, id) {
-      this.deleteUserDialogVisible = true
-      this.deleteUserName = username
-      this.deleteUserId = id
-    },
+    // showDeleteDialog(username, id) {
+    //   this.deleteUserDialogVisible = true
+    //   this.deleteUserName = username
+    //   this.deleteUserId = id
+    // },
+    showDeleteDialog(id) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = []
+        ids.push(this.deleteNoticerId)
+        deleteUser([id]).then(response => {
+          if (response.code !== 0) {
+            return this.$message.error('删除失败,请稍后再试')
+          }
 
-    deleteAUser() {
-      const ids = []
-      ids.push(this.deleteUserId)
-      deleteUser(ids).then(response => {
-        if (response.code !== 0) {
-          return this.$message.error('删除用户失败,请稍后再试')
-        }
-        this.deleteUserDialogVisible = false
-        this.deleteUserId = 0
-        this.deleteUserName = ''
-        this.getUserList()
-        this.$message.success('删除用户信息')
+          this.deleteUserId = 0
+          this.deleteUserName = ''
+          this.getUserList()
+          this.$message.success('删除信息成功')
+        })
       })
     },
+
+    // deleteAUser() {
+    //   const ids = []
+    //   ids.push(this.deleteUserId)
+    //   deleteUser(ids).then(response => {
+    //     if (response.code !== 0) {
+    //       return this.$message.error('删除用户失败,请稍后再试')
+    //     }
+    //     this.deleteUserDialogVisible = false
+    //     this.deleteUserId = 0
+    //     this.deleteUserName = ''
+    //     this.getUserList()
+    //     this.$message.success('删除用户信息')
+    //   })
+    // },
 
     resetQuery() {
       this.queryName = ''

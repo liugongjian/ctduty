@@ -39,10 +39,10 @@
           </div>
           <el-select
             v-model="algorithmList.typeValue"
-            :multiple-limit="2"
             multiple
             placeholder="请选择事件名称"
             min-width="300px"
+            collapse-tags
             @change="checkModel"
           >
             <el-option
@@ -57,10 +57,10 @@
           </div>
           <el-select
             v-model="algorithmNameList.typeValue"
-            :multiple-limit="2"
             multiple
             placeholder="请选择算法名称"
             min-width="350px"
+            collapse-tags
             @change="algorithmCheck"
           >
             <el-option
