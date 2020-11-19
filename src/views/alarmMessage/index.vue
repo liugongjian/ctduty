@@ -17,7 +17,7 @@
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
-          <span class="open" id="openId" @click="opendraw(this)">
+          <span id="openId" class="open" @click="opendraw(this)">
             展开
             <i class="el-icon-arrow-down"></i>
           </span>
@@ -70,57 +70,58 @@
               :value="item._id">
             </el-option>
           </el-select>
-          <div v-show="flag">
-            <div class="block filter-item">
-              <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+          <transition name = "fade">
+            <div v-show="flag">
+              <div class="block filter-item">
+                <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  :style="{width:210 + 'px', height: 36 + 'px'}"
+                  :picker-options="pickerOptions"
+                  type="daterange"
+                  range-separator="to"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px',height:'36px'}"
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px', height: 36 + 'px'}"
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
             </div>
-            <div class="block filter-item">
-              <el-date-picker
-                v-model="value1"
-                :clearable="false"
-                :style="{width:210 + 'px', height: 36 + 'px'}"
-                :picker-options="pickerOptions"
-                type="daterange"
-                range-separator="to"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="yyyy-MM-dd"
-                size="mini"
-                @change="timeChange"
-              ></el-date-picker>
-            </div>
-            <div class="block filter-item">
-              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-            </div>
-            <div class="block filter-item">
-              <el-time-picker
-                :style="{width:95 + 'px',height:'36px'}"
-                v-model="startTime"
-                :picker-options="{
-                  selectableRange:'00:00:00-23:59:00'
-                }"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-              ></el-time-picker>
-            </div>
-            <div class="block filter-item">
-              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-            </div>
-            <div class="block filter-item">
-              <el-time-picker
-                :style="{width:95 + 'px', height: 36 + 'px'}"
-                v-model="endTime"
-                :picker-options="{
-                  selectableRange:startTime+ ':00' + '-23:59:00'
-                }"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-              ></el-time-picker>
-            </div>
-          </div>
-
+          </transition>
         </div>
       </div>
       <div>
@@ -1103,5 +1104,10 @@ export default {
 .tdimage {
   object-fit: contain !important;
 }
-
+.fade-enter-active, .fade-leave-active {
+    transition: all .8s ease 0.2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+    opacity: 0;
+}
 </style>
