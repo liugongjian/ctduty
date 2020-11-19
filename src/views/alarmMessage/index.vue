@@ -866,14 +866,14 @@ export default {
           var arr = Array.from(cellArr)
           arr.forEach(item => {
             this.hasTdHeight = true
-            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 320) / 11 + 'px'
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
             const child = item.children
             const childArr = Array.from(child)
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
-                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 320) / 11 + 'px'
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
               } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 320) / 11 + 'px'
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
               }
             })
           })
@@ -979,7 +979,10 @@ export default {
   text-decoration: underline;
 }
 .el-table--medium {
-  td {
+  td{
+    padding:0px;
+  }
+  th{
     padding:0px;
   }
 }
@@ -1093,4 +1096,5 @@ td {
 .tdimage {
   object-fit: contain !important;
 }
+
 </style>
