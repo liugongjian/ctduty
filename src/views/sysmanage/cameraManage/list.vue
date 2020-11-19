@@ -154,14 +154,14 @@
               type="text"
               placeholder="请输入摄像头经度"
               class="filter-item"
-              style="width: 145px;"
+              style="width: 147px;"
               @input="editForm.longitude=editForm.longitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
             ></el-input>
             <el-input
               type="text"
               v-model="editForm.latitude"
               placeholder="请输入摄像头纬度"
-              style="width: 145px; ime-mode:disabled"
+              style="width: 147px; "
               class="filter-item"
               @input="editForm.latitude=editForm.latitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
             ></el-input>
