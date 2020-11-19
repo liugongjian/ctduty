@@ -1,131 +1,140 @@
 <template>
   <div class="list">
-    <div class="app-container" style="padding: 20px; height: 100%">
+    <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <!-- <el-input
-            v-model="formInline.searchkey"
-            placeholder="请输入..."
-            class="filter-item alarmInp"
-            style="width: 60%; height: 32px"
-            @keyup.enter.native="searchAlarm"
-          ></el-input>
-          <el-button
-            class="filter-item searchsure"
-            style="font-size:12px; width: 16%"
-            icon="el-icon-search"
-            @click="searchAlarm"
-          ></el-button>-->
-          <el-input
-            v-model="formInline.searchkey"
-            placeholder="设备名称"
-            class="searchinp"
-            size="mini"
-            @keyup.enter.native="searchAlarm"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
-          </el-input>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
-        </div>
-        <div class="pull-left alarmmsgleft">
-          <div class="block filter-item">
-            <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
-          </div>
-          <div class="block filter-item">
-            <el-date-picker
-              v-model="value1"
-              :clearable="false"
-              :style="{width:210 + 'px', height: 28 + 'px'}"
-              :picker-options="pickerOptions"
-              type="daterange"
-              range-separator="to"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              size="mini"
-              @change="timeChange"
-            ></el-date-picker>
-          </div>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px',height:'28px'}"
-              v-model="startTime"
-              :picker-options="{
-                selectableRange:'00:00:00-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px', height: 28 + 'px'}"
-              v-model="endTime"
-              :picker-options="{
-                selectableRange:startTime+ ':00' + '-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <!-- <el-select
-            v-model="formInline.typeValue"
-            style="width:95px; margin-left:10px; margin-right: 10px"
-            size="mini"
-            class="filter-item"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>-->
           <el-button
             v-waves
             class="filter-item sureItem"
             size="mini"
             type="warning"
+            style="margin-bottom: 2px"
             @click="onSearch"
           >{{ '确定' }}</el-button>
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px; width: 20%;height:36px;"
+            icon="el-icon-refresh"
+            @click="resetQuery"
+          >重置</button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
+        </div>
+        <div class="pull-left alarmmsgleft">
+          <div class="block filter-item">
+            <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
+          </div>
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="设备名称"
+            class="searchinp"
+            size="mini"
+            @keyup.enter.native="onSearch"
+          >
+          </el-input>
+          <div class="block filter-item">
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
+          </div>
+          <el-select
+            v-model="algorithmList.typeValue"
+            multiple
+            placeholder="请选择事件名称"
+            min-width="300px"
+            collapse-tags
+            @change="checkModel"
+          >
+            <el-option
+              v-for="item in algorithm"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select>
+          <div class="block filter-item">
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
+          </div>
+          <el-select
+            v-model="algorithmNameList.typeValue"
+            multiple
+            placeholder="请选择算法名称"
+            min-width="350px"
+            collapse-tags
+            @change="algorithmCheck"
+          >
+            <el-option
+              v-for="item in algorithmName"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select>
+          <transition name = "fade">
+            <div v-show="flag">
+              <div class="block filter-item">
+                <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  :style="{width:210 + 'px', height: 36 + 'px'}"
+                  :picker-options="pickerOptions"
+                  type="daterange"
+                  range-separator="to"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px',height:'36px'}"
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px', height: 36 + 'px'}"
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
-              v-show="hasTdHeight"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
               style="width: 100%"
               tooltip-effect="dark"
               fit
-              @selection-change="handleSelectionChange"
             >
-              <!-- <el-table-column
-                :show-overflow-tooltip="true"
-                :label="'告警ID'"
-                align="center"
-                min-width="7.5%"
-                prop="id"
-              ></el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
@@ -190,7 +199,7 @@
                   </el-popover>-->
                   <el-image
                     :src="scope.row.imageCompress"
-                    style="width:68.4px; height:39px;"
+                    style="object-fit:contain;"
                     @click="openBig(scope.row.image)"
                   />
                 </template>
@@ -254,7 +263,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
+            <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
@@ -371,6 +380,8 @@ export default {
   },
   data() {
     return {
+      flag: false,
+      openname: '展开',
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
@@ -404,7 +415,47 @@ export default {
         { name: '已处理', _id: 'settled' },
         { name: '未处理', _id: 'unsettled' }
       ],
-
+      algorithmList: {
+        searchkey: '',
+        typeValue: '行人'
+      },
+      algorithm: [
+        { name: '行人', _id: 1 },
+        { name: '机动车', _id: 2 },
+        { name: '非机动车', _id: 3 },
+        { name: '翻墙', _id: 4 },
+        { name: '人员逗留', _id: 5 },
+        { name: '人员聚集', _id: 6 },
+        { name: '区域划线', _id: 7 },
+        { name: '安全帽', _id: 8 },
+        { name: '打架斗殴', _id: 9 },
+        { name: '摔倒', _id: 10 },
+        { name: '占道经营', _id: 11 }
+      ],
+      algorithmNameList: {
+        searchkey: '',
+        typeValue: '值更检测'
+      },
+      algorithmName: [
+        { name: '值更检测', _id: 1 },
+        { name: '人脸识别', _id: 2 },
+        { name: '车牌识别', _id: 3 },
+        { name: '人脸对比', _id: 4 },
+        { name: '人脸属性', _id: 5 },
+        { name: '区域划线告警', _id: 6 },
+        { name: '翻墙检测', _id: 7 },
+        { name: '人流识别', _id: 8 },
+        { name: '车流识别', _id: 9 },
+        { name: '安全帽识别', _id: 10 },
+        { name: '工服识别', _id: 11 },
+        { name: '车型检测', _id: 12 },
+        { name: '人群聚集检测', _id: 13 },
+        { name: '打架斗殴检测', _id: 14 },
+        { name: '摔倒检测', _id: 15 },
+        { name: '占道经营检测', _id: 16 },
+        { name: '人员逗留检测', _id: 17 },
+        { name: '推流任务', _id: 18 }
+      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -467,11 +518,6 @@ export default {
       }
     }
   },
-  // computed: {
-  //   ...mapGetters([
-  //     'userId'
-  //   ])
-  // },
   watch: {
     limit() {
       this.page = 1
@@ -498,62 +544,14 @@ export default {
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
   },
-  mounted() {
-    // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
-  },
   methods: {
-    searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      this.page = 1
-      this.limit = 10
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
-          cascade: true,
-          page: {
-            index: this.page,
-            size: this.limit
-          },
-          params: [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ],
-          sorts: [
-            {
-              field: 'create_Time',
-              type: 'desc'
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
-              operator: 'EQUALS',
-              value: this.formInline.searchkey
-            }
-          ]
-        }
+    opendraw() {
+      this.flag = !this.flag
+      if (this.openname == '展开') {
+        this.openname = '收起'
+      } else if (this.openname == '收起') {
+        this.openname = '展开'
       }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
     },
     openBig(url) {
       window.open(url)
@@ -678,9 +676,14 @@ export default {
       }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
       this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+      this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
@@ -730,7 +733,12 @@ export default {
       this.dialogVisable = false
     },
     checkModel() {
-      this.$emit('getdata', this.formInline.typeValue)
+      console.log('ssssssssssss', this.algorithmList.typeValue)
+      this.$emit('getdata', this.algorithmList.typeValue)
+    },
+    algorithmCheck() {
+      console.log('ccccccccccccccc', this.algorithmNameList.typeValue)
+      // this.$emit('getdata', this.algorithmNameList.typeValue)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
@@ -799,7 +807,6 @@ export default {
         end: e,
         null: oper
       }
-
       getAllTotal(params).then(response => {
         this.allTotal = response.body.data
         this.listLoading = false
@@ -808,63 +815,38 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      // console.log('se', s , e)
-      let oper
-      if (h === 'settled') {
-        oper = 'NOT_NULL'
-      } else if (h === 'unsettled') {
-        oper = 'NULL'
-      }
-      const ss = {
-        field: 'handlerId',
-        operator: oper,
-        value: 'null'
-      }
-      const param =
-        h == 'all'
-          ? [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            }
-          ]
-          : [
-            {
-              field: 'camera.name',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            ss
-          ]
+      const { type, taskId } = h
+      const param = [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'username',
+          operator: 'NULL'
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'taskId',
+          operator: 'IN',
+          value: taskId
+        }
+      ]
       const params = {
         cascade: true,
         page: {
@@ -883,21 +865,27 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.tableHeight = document.body.clientHeight - 280
         this.hasTdHeight = true
         setTimeout(() => {
-          const tdArr = document.getElementsByTagName('td')
-          console.log(tdArr);
-          [].forEach.apply(tdArr, function(item) {
-            console.log(item)
-            item.style.height = this.tableHeight / 10 + 'px'
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+              }
+            })
           })
         }, 300)
       })
-    },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-      // console.log('this.multipleSelection', this.multipleSelection, 'val', val)
     },
     dialogQuxiao(val) {
       this.state = 1
@@ -993,21 +981,24 @@ export default {
 .untreated {
   fill: #ff9832 !important;
 }
-.v-modal {
-  z-index: 999 !important;
-}
 .buttonText {
   color: #409eff;
   text-decoration: underline;
 }
-
-td {
-  .el-image {
-    vertical-align: middle;
+.alaMesTable.el-table--medium {
+        td{
+          padding:0px;
+          .el-image {
+          vertical-align: middle;
+        }
+        }
+        th{
+          padding:0px;
+        }
   }
-}
+
 .sureItem {
-  height: 28px;
+  height: 36px;
 }
 .pull-left.alarmmsgleft {
   width: 75%;
@@ -1018,8 +1009,9 @@ td {
   .clearsearch {
     position: absolute;
     top: 0px;
-    right: 0px;
+    // right: 0px;
     height: 34px;
+    margin-left: 10px;
     width: 60px;
     // margin-left: 16px;
     border: 1px solid #ccc;
@@ -1081,15 +1073,40 @@ td {
   font-size: 14px;
 }
 .searchinp {
-  width: 75%;
+  width: 20%;
 }
-.list {
-  height: 100%;
+.el-select.el-select--medium {
+  width: 260px;
 }
-// .el-dialog__headerbtn {
-//   // display: none;
-//   position: relative;
-//   top: 4px;
-//   left: 85%;
-// }
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-select.el-select--medium {
+  // height: 28px;
+  margin-bottom: 10px;
+  // .el-input--medium.el-input--suffix {
+  //   height: 28px;
+  // }
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
+}
+.open {
+  margin-left: 90px;
+  color: #ff9832;
+  cursor: pointer;
+}
+.draw {
+  display: none;
+}
+.tdimage {
+  object-fit: contain !important;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: all .8s ease 0.2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+    opacity: 0;
+}
 </style>

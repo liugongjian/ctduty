@@ -57,7 +57,7 @@
       </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
-          <img src="../../../assets/images/username_icon.png" alt />
+          <img src="../../../assets/images/username_icon.png" alt >
           <span class="user-name">{{ username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -66,7 +66,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
+      <el-dialog v-if="dialogVisable" :visible="dialogVisable" title="公告" width="520px" style="z-index:100000000" @close="closeDialog">
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -92,7 +92,7 @@
           </el-form-item>
           <el-form-item label="内容">
             <span
-              style="margin-left:10px;margin-top:10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;height:150px;"
+              style="margin-left:10px;margin-top:8px;padding:0 10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;"
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
@@ -105,24 +105,26 @@
         </div>
       </el-dialog>
     </div>
+    <div v-if="isShowMark" class="mark"></div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import screenfull from "screenfull";
-import Cookies from "js-cookie";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
-import ErrorLog from "@/components/ErrorLog";
-import Screenfull from "@/components/Screenfull";
-import SizeSelect from "@/components/SizeSelect";
-import LangSelect from "@/components/LangSelect";
-import ThemePicker from "@/components/ThemePicker";
-import minLogo from "@/assets/images/logo-min.png";
-import { fetchUser } from "@/api/user";
-import { logout } from "@/api/login";
-import { notReadNotices, upReadNotices } from "@/api/notice";
+import { mapGetters } from 'vuex'
+import screenfull from 'screenfull'
+import Cookies from 'js-cookie'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
+import ErrorLog from '@/components/ErrorLog'
+import Screenfull from '@/components/Screenfull'
+import SizeSelect from '@/components/SizeSelect'
+import LangSelect from '@/components/LangSelect'
+import ThemePicker from '@/components/ThemePicker'
+import minLogo from '@/assets/images/logo-min.png'
+import { fetchUser } from '@/api/user'
+import { logout } from '@/api/login'
+import '@/styles/index.scss' // global css
+import { notReadNotices, upReadNotices } from '@/api/notice'
 
 export default {
   components: {
@@ -141,122 +143,133 @@ export default {
       timer: null,
       noticeForm: {
         creator: {
-          username: ""
+          username: ''
         },
-        signatureId: ""
+        signatureId: ''
       },
       dialogFormVisible: false,
       form: {
-        re_password: "",
-        new_password: ""
+        re_password: '',
+        new_password: ''
       },
       isFullscreen: false,
-      username: "",
+      username: '',
       notReadNotice: [],
-      notReadNoticeTotal: "",
+      notReadNoticeTotal: '',
+      isShowMark: false,
       departmentInfo: [
         {
           departmentId: 3275699862611970,
-          department: "华阴公安局"
+          department: '华阴公安局'
         },
         {
           departmentId: 3275699862611971,
-          department: "孟塬派出所"
+          department: '孟塬派出所'
         },
         {
           departmentId: 3275699862611972,
-          department: "华山镇派出所"
+          department: '华山镇派出所'
         }
       ],
-      level: Cookies.get("level")
-    };
+      level: Cookies.get('level')
+    }
   },
   computed: {
     ...mapGetters([
-      "sidebar",
+      'sidebar',
       // 'name',
-      "avatar",
-      "device",
-      "noticeTotal",
-      "noticeArr"
+      'avatar',
+      'device',
+      'noticeTotal',
+      'noticeArr'
     ])
   },
   watch: {
     noticeTotal(v) {
-      this.notReadNoticeTotal = v;
+      this.notReadNoticeTotal = v
     },
     noticeArr(v) {
-      this.notReadNotice = v;
+      this.notReadNotice = v
     },
     isFullscreen(v) {
       if (v) {
         document
-          .getElementsByClassName("fullscreen")[0]
-          .childNodes[0].classList.add("highlight");
+          .getElementsByClassName('fullscreen')[0]
+          .childNodes[0].classList.add('highlight')
         document
-          .getElementsByClassName("fullscreen")[0]
-          .childNodes[2].classList.add("texthighlight");
+          .getElementsByClassName('fullscreen')[0]
+          .childNodes[2].classList.add('texthighlight')
         console.log(
-          "sssssssssssssss",
-          document.getElementsByClassName("screen")
-        );
-        document.getElementsByClassName("screen")[0].innerText = "退出";
+          'sssssssssssssss',
+          document.getElementsByClassName('screen')
+        )
+        document.getElementsByClassName('screen')[0].innerText = '退出'
       } else {
         document
-          .getElementsByClassName("fullscreen")[0]
-          .childNodes[0].classList.remove("highlight");
+          .getElementsByClassName('fullscreen')[0]
+          .childNodes[0].classList.remove('highlight')
         document
-          .getElementsByClassName("fullscreen")[0]
-          .childNodes[2].classList.remove("texthighlight");
-        document.getElementsByClassName("screen")[0].innerText = "全屏";
+          .getElementsByClassName('fullscreen')[0]
+          .childNodes[2].classList.remove('texthighlight')
+        document.getElementsByClassName('screen')[0].innerText = '全屏'
       }
     },
     notReadNoticeTotal(v, oldV) {
       if (v > oldV) {
         this.$message({
-          type: "info",
+          type: 'info',
           message: `您有${v}条未读消息`
-        });
+        })
       }
     },
     $route(to, from) {
-      if (to.path === "/login") {
-        window.clearInterval(this.timer);
+      if (to.path === '/login') {
+        window.clearInterval(this.timer)
       }
-      this.closeDialog();
+      this.closeDialog()
+    },
+    dialogVisable(v) {
+      if (v) {
+        this.isShowMark = true
+        setTimeout(() => {
+          document.getElementsByClassName('v-modal')[0].style.display = 'none'
+        }, 300)
+      } else {
+        this.isShowMark = false
+      }
     }
   },
   beforeDestroy() {
     if (this.timer) {
-      clearInterval(this.timer);
+      clearInterval(this.timer)
     }
   },
   created() {
     setTimeout(() => {
-      this.getNewNotice();
-    }, 2000);
+      this.getNewNotice()
+    }, 2000)
   },
   mounted() {
     this.timer = setInterval(() => {
-      this.getNewNotice();
-    }, 30 * 1000);
+      this.getNewNotice()
+    }, 30 * 1000)
     window.onresize = () => {
       // 全屏下监控是否按键了ESC
       if (!document.webkitIsFullScreen) {
-        this.isFullscreen = false;
+        this.isFullscreen = false
       }
       if (!this.checkFull()) {
         // 全屏下按键esc后要执行的动作
-        this.isFullscreen = false;
+        this.isFullscreen = false
       }
-    };
+    }
     fetchUser()
       .then(res => {
-        this.username = res.body.data.username;
+        this.username = res.body.data.username
       })
       .catch(err => {
-        return err;
-      });
+        return err
+      })
   },
   methods: {
     getNewNotice() {
@@ -264,38 +277,38 @@ export default {
         index: 1,
         size: 10000,
         total: 0
-      };
+      }
       notReadNotices(params).then(res => {
         if (res.body.data.length > 0) {
-          this.notReadNoticeTotal = res.body.page.total;
-          this.notReadNotice = res.body.data;
+          this.notReadNoticeTotal = res.body.page.total
+          this.notReadNotice = res.body.data
         } else {
-          this.notReadNoticeTotal = "";
-          this.notReadNotice = [];
+          this.notReadNoticeTotal = ''
+          this.notReadNotice = []
         }
-      });
+      })
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     dialogConfirm() {
       upReadNotices(this.noticeForm.id).then(res => {
-        this.dialogVisable = false;
-        this.getNewNotice();
-      });
+        this.dialogVisable = false
+        this.getNewNotice()
+      })
     },
     handleCommand(command) {
-      this.dialogVisable = true;
-      this.noticeForm = command;
+      this.dialogVisable = true
+      this.noticeForm = command
     },
     screenfull(e) {
       e.path.forEach(item => {
-        if (item.className === "fullscreen") {
-          item.childNodes[0].classList.toggle("highlight");
+        if (item.className === 'fullscreen') {
+          item.childNodes[0].classList.toggle('highlight')
         }
-      });
-      screenfull.toggle();
-      this.isFullscreen = !this.isFullscreen;
+      })
+      screenfull.toggle()
+      this.isFullscreen = !this.isFullscreen
     },
     /**
      * 是否全屏并按键ESC键的方法
@@ -305,15 +318,15 @@ export default {
         document.fullscreenEnabled ||
         window.fullScreen ||
         document.webkitIsFullScreen ||
-        document.msFullscreenEnabled;
+        document.msFullscreenEnabled
       // to fix : false || undefined == undefined
       if (isFull === undefined) {
-        isFull = false;
+        isFull = false
       }
-      return isFull;
+      return isFull
     },
     toggleSideBar() {
-      this.$store.dispatch("toggleSideBar");
+      this.$store.dispatch('toggleSideBar')
     },
     // logout() {
     //   this.$store.dispatch('LogOut').then(() => {
@@ -325,17 +338,17 @@ export default {
       // window.location.href = `${process.env.LOGOUT_URL}`;
       logout()
         .then(res => {
-          Cookies.remove("token");
-          Cookies.remove("username");
-          Cookies.remove("userId");
-          Cookies.remove("level");
-          this.$store.dispatch("FedLogOut").then(() => {
-            this.$router.push("/login");
-          });
+          Cookies.remove('token')
+          Cookies.remove('username')
+          Cookies.remove('userId')
+          Cookies.remove('level')
+          this.$store.dispatch('FedLogOut').then(() => {
+            this.$router.push('/login')
+          })
         })
         .catch(err => {
-          return err;
-        });
+          return err
+        })
       // Cookies.remove('token')
       // Cookies.remove('username')
       // Cookies.remove('userId')
@@ -372,7 +385,7 @@ export default {
     //   })
     // }
   }
-};
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -503,5 +516,15 @@ label {
 }
 .noticeDrop {
   border: none !important;
+}
+.mark {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .5;
+  background: #000;
+  z-index: 99999999 !important;
 }
 </style>
