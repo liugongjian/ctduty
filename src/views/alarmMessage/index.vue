@@ -978,19 +978,18 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-.el-table--medium {
-  td{
-    padding:0px;
+.alaMesTable.el-table--medium {
+        td{
+          padding:0px;
+          .el-image {
+          vertical-align: middle;
+        }
+        }
+        th{
+          padding:0px;
+        }
   }
-  th{
-    padding:0px;
-  }
-}
-td {
-  .el-image {
-    vertical-align: middle;
-  }
-}
+
 .sureItem {
   height: 36px;
 }
