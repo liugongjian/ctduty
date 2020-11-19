@@ -826,8 +826,7 @@ export default {
   label {
     width: 15px;
   }
-}
-.el-checkbox {
+  .el-checkbox {
   display: none;
   position: absolute;
   top: 4px;
@@ -835,6 +834,7 @@ export default {
 }
 .is-checked {
   display: inline-block;
+}
 }
 </style>
 
