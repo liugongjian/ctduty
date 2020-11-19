@@ -553,7 +553,7 @@ export default {
   },
   methods: {
     opendraw() {
-      
+
     },
     openBig(url) {
       window.open(url)

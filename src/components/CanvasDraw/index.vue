@@ -191,9 +191,9 @@ export default {
           this.wallCount = parseInt(nameList[1]) + 1
         } else if (lastHisArea.name.startsWith('forb')) {
           this.forbCount = parseInt(nameList[1]) + 1
-        } else if (lastHisArea.name.startsWith('line')){
+        } else if (lastHisArea.name.startsWith('line')) {
           this.lineCount = parseInt(nameList[1]) + 1
-        } else{
+        } else {
           this.areaCount = parseInt(nameList[1]) + 1
         }
       }
@@ -372,12 +372,12 @@ export default {
         this.wallCount--
       } else if (revokeArea.name.startsWith('forb')) {
         this.forbCount--
-      } else if (revokeArea.name.startsWith('line')){
+      } else if (revokeArea.name.startsWith('line')) {
         this.lineCount--
       } else {
         this.areaCount--
       }
-	  
+
       this.drawAll()
     },
     // 从后端获取的点坐标格式化
@@ -616,13 +616,13 @@ export default {
         name = 'line-' + (this.lineCount++)
         return name
       }
-      if (this.currentPickAlgorithm.name=="stepWallCheck"){
+      if (this.currentPickAlgorithm.name == 'stepWallCheck') {
         if (this.value == 1) {
           name = 'wall-' + (this.wallCount++)
         } else {
           name = 'forb-' + (this.forbCount++)
         }
-      }else{
+      } else {
         name = 'area-' + (this.areaCount++)
       }
       return name
