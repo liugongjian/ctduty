@@ -57,7 +57,16 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" align="center" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" align="center" class-name="deviceName">
+          <template slot-scope="scope">
+            <a
+              @click="toDetail(scope.row)"
+            >
+              {{ scope.row.name }}
+            </a>
+
+          </template>
+        </el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
           :label="'摄像头状态'"
@@ -514,6 +523,9 @@ export default {
             })
           })
       })
+    },
+    toDetail(item) {
+      console.log(item.id)
     }
   }
 }
@@ -522,6 +534,9 @@ export default {
 <style lang='scss'>
 .app-main {
   padding-top: 50px;
+}
+.deviceName{
+  color: #409EFF;
 }
 </style>
 
