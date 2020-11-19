@@ -541,9 +541,6 @@ export default {
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
   },
-  mounted() {
-    // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
-  },
   methods: {
     opendraw() {
 
@@ -860,20 +857,22 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.hasTdHeight = true
         setTimeout(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
-            this.hasTdHeight = true
-            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
             const child = item.children
             const childArr = Array.from(child)
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
-                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
-                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 305) / 11) * 16 / 9 + 'px'
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
               } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
               }
             })
           })
