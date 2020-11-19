@@ -128,9 +128,8 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getLiveList()
-    loadingImg().then(res => {
+  async mounted() {
+    await loadingImg().then(res => {
       if (res.body.data.length > 0) {
         res.body.data.forEach(item => {
           this.deviceList.push({
@@ -141,6 +140,7 @@ export default {
         })
       }
     })
+    this.getLiveList()
   },
   methods: {
     getCameraList(keyword) {
@@ -186,6 +186,7 @@ export default {
     getLiveList() {
       fetchAllMonitor().then(res => {
         const data = res.body.data || []
+        this.deviceList = []
         this.deviceList = data.map(item => {
           return {
             ...item,
