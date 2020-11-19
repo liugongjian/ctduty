@@ -439,7 +439,7 @@ export default {
       this.bulkimportVisble = true
     },
     toHistory() {
-      this.$router.push(`/carHistory`)
+      this.$router.push(`/alarmMessage/carHistory`)
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
