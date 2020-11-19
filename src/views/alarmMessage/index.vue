@@ -17,14 +17,14 @@
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
-          <span class="open" @click="opendraw">
+          <span class="open" id="openId" @click="opendraw(this)">
             展开
             <i class="el-icon-arrow-down"></i>
           </span>
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style="margin-top: 10px; margin-right: 8px; font-size: 12px;">设备名称:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
@@ -35,7 +35,7 @@
           >
           </el-input>
           <div class="block filter-item">
-            <div style="margin-top: 10px; margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
           <el-select
             v-model="algorithmList.typeValue"
@@ -53,7 +53,7 @@
             </el-option>
           </el-select>
           <div class="block filter-item">
-            <div style="margin-top: 10px; margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
           </div>
           <el-select
             v-model="algorithmNameList.typeValue"
@@ -70,7 +70,7 @@
               :value="item._id">
             </el-option>
           </el-select>
-          <div class="draw">
+          <div v-show="flag">
             <div class="block filter-item">
               <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
             </div>
@@ -120,7 +120,7 @@
               ></el-time-picker>
             </div>
           </div>
-          
+
         </div>
       </div>
       <div>
@@ -134,13 +134,6 @@
               tooltip-effect="dark"
               fit
             >
-              <!-- <el-table-column
-                :show-overflow-tooltip="true"
-                :label="'告警ID'"
-                align="center"
-                min-width="7.5%"
-                prop="id"
-              ></el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
@@ -205,7 +198,7 @@
                   </el-popover>-->
                   <el-image
                     :src="scope.row.imageCompress"
-                    style="width:68.4px; height:39px;"
+                    style="object-fit:fill;"
                     @click="openBig(scope.row.image)"
                   />
                 </template>
@@ -269,7 +262,7 @@
             style="width:480px;height:270px;position:relative;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
+            <img :src="temp.image" width="480" height="220" style="z-index:1;" >
             <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
@@ -386,6 +379,7 @@ export default {
   },
   data() {
     return {
+      flag: false,
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
@@ -552,7 +546,15 @@ export default {
     // var tdHeight = document.getElementsByClassName('el-table__body')[0].clientHeight / 10
   },
   methods: {
-    opendraw() {
+    opendraw(obj) {
+      this.flag = !this.flag
+      const inner = document.getElementById('openId')
+      // console.log('innner', inner.innerText)
+      // if (inner.innerText === '展开') {
+      //   inner.innerText = '收起'
+      // } else if (inner.innerText === '收起') {
+      //   inner.innerText = '展开'
+      // }
     },
     openBig(url) {
       window.open(url)
@@ -866,16 +868,20 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
-        this.tableHeight = document.getElementsByTagName('html')[0].clientHeight - 380
         setTimeout(() => {
-          var trArr = document.getElementsByClassName('el-table__row')
-          var arr = Array.from(trArr)
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
           arr.forEach(item => {
-            var child = Array.from(item.children)
-            child.forEach(dom => {
-              dom.style.height = this.tableHeight / 11 + 'px'
-              dom.style.padding = 'none'
-              this.hasTdHeight = true
+            this.hasTdHeight = true
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 305) / 11 + 'px'
+              }
             })
           })
         }, 300)
@@ -979,7 +985,14 @@ export default {
   color: #409eff;
   text-decoration: underline;
 }
-
+.el-table--medium {
+  td{
+    padding:0px;
+  }
+  th{
+    padding:0px;
+  }
+}
 td {
   .el-image {
     vertical-align: middle;
@@ -1064,7 +1077,7 @@ td {
   width: 20%;
 }
 .el-select.el-select--medium {
-  width: 20%;
+  width: 260px;
 }
 .el-input--mini .el-input__inner {
   height: 36px;
@@ -1083,11 +1096,13 @@ td {
 .open {
   margin-left: 90px;
   color: #ff9832;
+  cursor: pointer;
 }
 .draw {
   display: none;
 }
-.undraw {
-  display: block;
+.tdimage {
+  object-fit: contain !important;
 }
+
 </style>
