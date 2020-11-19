@@ -5,7 +5,6 @@
       :unique-opened="true"
       :default-active="$route.path"
       :collapse="isCollapse"
-      :default-openeds="['/sysMonitor','/sysmanage']"
       mode="vertical"
       background-color="#304156"
       text-color="#bfcbd9"

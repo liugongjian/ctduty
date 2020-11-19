@@ -2,7 +2,7 @@
   <div class="userManage">
     <!-- <el-divider></el-divider> -->
     <div class="container">
-      <div class="clearfix">
+      <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
           <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
           <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
@@ -355,10 +355,13 @@ export default {
           index: this.page,
           size: this.limit
         },
-        params: {}
-      }
-      if (this.queryName.trim() !== '') {
-        query.params.name = `%${this.queryName}%`
+        params: [
+          {
+            field: 'name',
+            operator: 'LIKE',
+            value: `%${this.queryName.trim()}%`
+          }
+        ]
       }
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
@@ -471,7 +474,7 @@ export default {
   float: right;
 }
 .el-table {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 .searchinput {
   float: left;
