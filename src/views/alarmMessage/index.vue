@@ -13,11 +13,14 @@
           >{{ '查询' }}</el-button>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
+            style="font-size:12px; width: 20%;height:36px;color:#333;"
             icon="el-icon-refresh"
             @click="onClear"
           >重置</button>
-
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i :class="openname === '展开' ? 'el-icon-arrow-down':'el-icon-arrow-up'"></i>
+          </span>
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
@@ -66,10 +69,7 @@
               :value="item._id"
             ></el-option>
           </el-select>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i :class="openname === '展开' ? 'el-icon-arrow-down':'el-icon-arrow-up'"></i>
-          </span>
+
           <transition name="fade">
             <div v-show="flag">
               <div class="block filter-item">
@@ -737,16 +737,16 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      const s = this.currentTab + " " + this.startTime + ":00";
-      const end = this.currentTab + " " + this.endTime + ":00";
-      const h1 = this.algorithmList.typeValue;
-      const h2 = this.algorithmNameList.typeValue;
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const end = this.currentTab + ' ' + this.endTime + ':00'
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
       const h = {
         type: h1,
         taskId: h2
-      };
-      this.oldSize = this.limit;
-      this.getList(s, end, h);
+      }
+      this.oldSize = this.limit
+      this.getList(s, end, h)
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
@@ -1029,7 +1029,7 @@ export default {
 }
 .pull-right.alarmmsgright {
   position: relative;
-  right: 66px;
+  right: 0px;
   .clearsearch {
     position: absolute;
     top: 0px;
@@ -1042,6 +1042,7 @@ export default {
     background: none;
     border-radius: 3px;
     outline: none;
+    cursor: pointer;
   }
   .clearsearch:active {
     background-color: rgb(243, 241, 241);
@@ -1120,7 +1121,7 @@ export default {
   line-height: 36px;
 }
 .open {
-  margin-left: 10px;
+  margin-left: 80px;
   color: #ff9832;
   cursor: pointer;
 }
