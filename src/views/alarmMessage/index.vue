@@ -1001,17 +1001,20 @@ export default {
   .el-select {
     width: 180px;
   }
+  .el-date-editor {
+    width: 180px !important;
+  }
 }
 .pull-right.alarmmsgright {
   position: relative;
-  width: 25%;
+  right: 0;
   .clearsearch {
     position: absolute;
     top: 0px;
     // right: 0px;
     height: 34px;
     margin-left: 10px;
-    width: 60px;
+    width: 56px !important;
     // margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
@@ -1072,7 +1075,7 @@ export default {
   font-size: 14px;
 }
 .searchinp {
-  width: 20%;
+  width:180px;
 }
 .el-select.el-select--medium {
   width: 260px;
