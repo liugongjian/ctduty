@@ -15,7 +15,7 @@
             class="filter-item clearsearch"
             style="font-size:12px; width: 20%;height:36px;"
             icon="el-icon-refresh"
-            @click="resetQuery"
+            @click="onClear"
           >重置</button>
           <span id="openId" class="open" @click="opendraw">
             {{ openname }}
@@ -627,44 +627,42 @@ export default {
       return result
     },
     // 重置搜索
-    // 重置
-    resetQuery() {
+    onClear() {
+      (this.value1 = [
+        new Date(new Date().setDate(new Date().getDate() - 29)),
+        new Date(new Date().setDate(new Date().getDate()))
+      ]),
+      (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
+      this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
+      (this.value1 = ""),
+      (this.page = 1),
+        // this.startTime = '02:00'
+        // this.endTime = '05:00'
+      // (this.formInline.typeValue = "all");
+      // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+      // this.defaultTab=this.endDate
+      // this.getList(s1, end1, h1)
+      this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
+      this.defaultTab = this.tabsArr[0];
+      this.currentTab = this.defaultTab;
+      this.getPushSetTime();
+      
       this.formInline.searchkey = ''
+      this.algorithmList = {}
+      this.algorithmNameList = {}
       this.page = 1
       this.limit = 10
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
+      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+      // const h = this.formInline.typeValue
+      // this.getList(s, e, h)
+      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      // this.getTimeAllTotal(s1, e1, h)
     },
-    // 重置起止时间的搜索
-    // onClear() {
-    //   (this.value1 = [
-    //     new Date(new Date().setDate(new Date().getDate() - 29)),
-    //     new Date(new Date().setDate(new Date().getDate()))
-    //   ]),
-    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
-    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-    //   (this.value1 = ""),
-    //   (this.page = 1),
-    //     // this.startTime = '02:00'
-    //     // this.endTime = '05:00'
-    //   (this.formInline.typeValue = "all");
-    //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    //   // this.defaultTab=this.endDate
-    //   // this.getList(s1, end1, h1)
-    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
-    //   this.defaultTab = this.tabsArr[0];
-    //   this.currentTab = this.defaultTab;
-    //   this.getPushSetTime();
-    //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    //   // const h = this.formInline.typeValue
-    //   // this.getList(s, e, h)
-
-    //   // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-    //   // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-    //   // this.getTimeAllTotal(s1, e1, h)
-    // },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
       // this.tabsArr = this.tabsDateArr
@@ -1008,6 +1006,7 @@ export default {
 .pull-right.alarmmsgright {
   position: relative;
   right: 0;
+  width: 25%;
   .clearsearch {
     position: absolute;
     top: 0px;
@@ -1095,7 +1094,7 @@ export default {
   line-height: 36px;
 }
 .open {
-  margin-left: 28%;
+  margin-left: 25%;
   color: #ff9832;
   cursor: pointer;
 }
