@@ -41,7 +41,7 @@
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
-                  v-if="videoOptions.sources"
+                  v-if="videoOptions.sources && videoOptions.sources[0].src"
                   :video-ref="cameraId"
                   :key="cameraId"
                   :options="videoOptions"
