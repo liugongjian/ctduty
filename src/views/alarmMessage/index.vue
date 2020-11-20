@@ -23,7 +23,7 @@
           </span>
         </div>
         <div class="pull-left alarmmsgleft">
-          <div class="block filter-item" style="text-align: center">
+          <div class="block filter-item">
             <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
           </div>
           <el-input
@@ -827,10 +827,6 @@ export default {
           value: { start: s || "", end: e || "" }
         },
         {
-          field: "username",
-          operator: "NULL"
-        },
-        {
           field: "camera.inChargeId",
           operator: "EQUALS",
           value: this.userId
@@ -1018,17 +1014,24 @@ export default {
 }
 .pull-left.alarmmsgleft {
   width: 75%;
+  // text-align: center;
+  .el-select {
+    width: 180px;
+  }
+  .el-date-editor {
+    width: 180px !important;
+  }
 }
 .pull-right.alarmmsgright {
   position: relative;
-  width: 25%;
+  right: 0;
   .clearsearch {
     position: absolute;
     top: 0px;
     // right: 0px;
     height: 34px;
     margin-left: 10px;
-    width: 60px;
+    width: 56px !important;
     // margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
@@ -1089,7 +1092,7 @@ export default {
   font-size: 14px;
 }
 .searchinp {
-  width: 20%;
+  width: 180px;
 }
 .el-select.el-select--medium {
   width: 20%;
