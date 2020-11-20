@@ -351,17 +351,6 @@ export default {
       // })
       this.$nextTick(() => {
         const boxHeight = document.querySelector('.video-panel').offsetHeight
-        // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
-        // const windowWidth = window.innerWidth
-        // const windowHeight = window.innerHeight
-        // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
-        // if (windowWidth > 1440) {
-        //   this.heightByAuto = boxWidth / 1.3 + 'px'
-        // } else if (windowWidth <= 1440 && windowWidth > 1300) {
-        //   this.heightByAuto = boxWidth / 1.366 + 'px'
-        // } else {
-        //   this.heightByAuto = boxWidth / 1.45 + 'px'
-        // }
         console.log('test---->', boxHeight)
         this.heightByAuto = boxHeight + 'px'
       })
@@ -382,6 +371,11 @@ export default {
   mounted() {
     // this.cameraId = this.$route.params.cameraId
     console.log('mounted', this.$route)
+    window.onresize = () => {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    }
   },
   methods: {
     saveMonitor() {
