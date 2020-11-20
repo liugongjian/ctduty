@@ -1014,14 +1014,19 @@ export default {
 }
 .pull-left.alarmmsgleft {
   width: 75%;
-  // text-align: center;
   .el-select {
     width: 180px;
   }
   .el-date-editor {
+    width: 205px !important;
+    padding-left: 5px !important;
+    padding-right: 0px !important;
+    .el-range-input {
+      margin-bottom: 2px;
+    }
+  }
+  .el-date-editor--time {
     width: 180px !important;
-    // padding-left: 3px !important;
-    // padding-right: 0px !important;
   }
 }
 .pull-right.alarmmsgright {
@@ -1094,10 +1099,10 @@ export default {
   font-size: 14px;
 }
 .searchinp {
-  width: 180px;
+  width: 205px;
 }
 .el-select.el-select--medium {
-  width: 20%;
+  width: 260px;
 }
 .el-input--mini .el-input__inner {
   height: 36px;
