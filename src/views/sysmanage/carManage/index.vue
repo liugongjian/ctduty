@@ -180,7 +180,7 @@
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form :model="editForm" label-position="right" label-width="130px">
           <el-form-item label="车牌号：">
-            <el-input v-model="editForm.carNumber" style="width:84%;"></el-input>
+            <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
             <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
