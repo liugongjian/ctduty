@@ -284,8 +284,8 @@ export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      cameraId: '61010010001320014342', // '64010106001324014975', //
-      cameraName: '云公司',
+      cameraId: '', // '64010106001324014975', //61010010001320014342
+      cameraName: '-',
       taskId: '',
       // form: {},
       // loading: false,
@@ -370,12 +370,11 @@ export default {
     const { cameraId } = this.$route.query
     this.cameraId = cameraId
     this.$nextTick(() => {
-      console.log('cameraId', this.cameraId)
       this.getTaskList()
-      this.getPhotoList(cameraId)
-      this.getAlertDetailList(cameraId)
-      this.getLiveStream(cameraId)
-      this.getCameraById(cameraId)
+      this.getPhotoList()
+      this.getAlertDetailList()
+      this.getLiveStream()
+      this.getCameraById()
       console.log('crreated', this.$route)
     })
   },
@@ -395,7 +394,8 @@ export default {
       })
     },
     getCameraById() {
-      if (this.cameraId) {
+      const { cameraId } = this.$route.query
+      if (cameraId) {
         this.loading = true
         const params = {
           cascade: true,
@@ -407,7 +407,7 @@ export default {
             {
               field: 'id',
               operator: 'EQUALS',
-              value: this.cameraId
+              value: cameraId
             }
           ]
         }
@@ -513,8 +513,9 @@ export default {
     getDateTimeStr(time) {
       return moment(time).format(timeFormat)
     },
-    getPhotoList(cameraId) {
+    getPhotoList() {
       this.photosLoading = true
+      const { cameraId } = this.$route.query
       const param = [{
         field: 'createTime',
         operator: 'BETWEEN',
@@ -523,7 +524,7 @@ export default {
       {
         field: 'cameraId',
         operator: 'EQUALS',
-        value: cameraId || this.cameraId
+        value: cameraId
       }
       ]
       if (this.taskId && this.taskId.length) {
@@ -565,7 +566,8 @@ export default {
       }
       return '-'
     },
-    getAlertDetailList(cameraId) {
+    getAlertDetailList() {
+      const { cameraId } = this.$route.query
       this.pageLoading = true
       const query = {
         page: {
@@ -573,7 +575,7 @@ export default {
           size: 10
         },
         params: {
-          id: cameraId || this.cameraId
+          id: cameraId
         }
         // sorts: [{ field: 'create_time', type: 'desc' }]
       }
@@ -584,9 +586,10 @@ export default {
         // this.total = res.body.page.total
       })
     },
-    getLiveStream(cameraId) {
+    getLiveStream() {
       this.pageLoading = true
-      play(cameraId || this.cameraId, {
+      const { cameraId } = this.$route.query
+      play(cameraId, {
         'type': 2
       }).then(res => {
         const data = res.body.data || []
