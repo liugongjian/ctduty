@@ -1,5 +1,39 @@
 <template>
   <div v-loading="pageLoading" class="videomonitorWrap" element-loading-text="拼命加载中">
+    <!-- <el-dialog
+      key="monitor-device"
+      :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
+      :visible.sync="deviceChosenVisible"
+      width="540px"
+      @closed="onClose"
+    >
+      <el-form ref="ruleForm" :model="form" :rules="rules">
+        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
+          <el-select
+            v-model="form.cameraId"
+            :remote-method="getCameraList"
+            :loading="loading"
+            filterable
+            remote
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            >
+          </el-option></el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="onClose">取 消</el-button>
+        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
+      </div>
+    </el-dialog> -->
+    <el-dialog key="photo" :visible.sync="bigPhotoVisible" title="抓拍照片" width="300px" style="text-align:center;">
+      <el-image :src="curPhoto" class="photoList-image" style="max-width:100%;"/>
+    </el-dialog>
     <div class="videoMonitor">
       <div class="leftPanel">
         <div class="leftContent">
@@ -7,11 +41,23 @@
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
+                  v-if="videoOptions.sources"
                   :video-ref="cameraId"
                   :key="cameraId"
                   :options="videoOptions"
                 />
+                <div
+                  v-else
+                  style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
+                >
+                  <el-image
+                    :src="nosrc"
+                    style="position:absolute;width:138px;height:30px;object-fit:contain;top:50%;left:50%;
+                  transform:translate(-50%,-50%);"
+                  ></el-image>
+                </div>
               </div>
+
               <!-- v-if="!!flv && activeTab == 'video'" -->
               <!-- :video-ref="videoRef" -->
               <div class="right-part">
@@ -59,6 +105,14 @@
                 </div>
               </div>
             </div>
+            <div class="screenBottom">
+              {{ cameraName }}
+              <span class="screenBottom-op">
+                <a title="算法配置" @click="gotoAiConfig"><svg-icon icon-class="aiConfig"/></a>
+                <!-- <a @click="deviceChosenVisible=true"><svg-icon icon-class="edit"/></a> -->
+              </span>
+            </div>
+
           <!-- <div v-else>
               <p>请选择添加一个摄像头</p>
               <div class="monitorAddress">
@@ -176,7 +230,7 @@
             <div v-for="(item) in photoCardList" :key="item.id" class="photoList">
               <div v-if="item.myPlaceholder" style="opacity:0"></div>
               <el-card v-else :body-style="{ padding: '0px' }">
-                <el-image :src="item.imageCut" style="width: 100%; height:120px;" class="photoList-image" />
+                <el-image :src="item.imageCut" style="width: 100%; height:120px;" class="photoList-image" @click="bigPhotoVisible = true; curPhoto = item.imageCut" />
                 <div style="padding: 14px;">
                   <span>{{ getTaskById(item.taskId) }}</span>
                   <div>{{ getDateTimeStr(item.createTime) }}</div>
@@ -195,6 +249,14 @@
             small
             @pagination="pageChange()"
           />
+          <!-- <el-pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            small
+            layout="prev, pager, next">
+          </el-pagination> -->
         </div>
       </div>
     </div>
@@ -209,18 +271,33 @@ import {
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import { getAlertInfos } from '@/api/alarm'
+import { fetchAllCameraList, searchCameraList } from '@/api/camera'
 import { taskList } from '@/api/algorithm'
 import {
-  fetchAllMonitor, play
+  play
 } from '@/api/monitor'
+import nosrc from '@/assets/images/nosrc.png'
+
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
 const timeFormat = 'MM-DD HH:mm:ss'
 export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      cameraId: '64010106001324014975', // '61010010001320014342',
+      cameraId: '61010010001320014342', // '64010106001324014975', //
+      cameraName: '云公司',
       taskId: '',
+      // form: {},
+      // loading: false,
+      // rules: {
+      //   cameraId: [
+      //     { required: true, message: '请选择设备名称', trigger: 'change' }
+      //   ]
+      // },
+      deviceChosenVisible: false,
+      bigPhotoVisible: false,
+      curPhoto: '',
+      nosrc,
       taskData: [],
       // algorithmTblData: [],
       photosLoading: false,
@@ -233,37 +310,26 @@ export default {
       videoOptions: {
         autoplay: true,
         controls: true,
-        width: 400, // 播放器宽度
-        height: 300, // 播放器高度
-        // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-        fluid: true, // 流体布局，自动充满，并保持播放其比例
-        sources: [
-          {
-
-          }
-          // {
-          //   src: item.rtmpuri,
-          //   type: 'application/x-mpegURL'
-          // }
-        ]
+        autoDisable: true
+        // width: 960, // 播放器宽度
+        // height: 480 // 播放器高度
       },
-      device: [],
+      tableColumn: [],
+      tableData: [],
       heightByAuto: ''
     }
   },
   computed: {
     algorithmTblData() {
-      console.log('11111111111111111111111111111111111111111111111111111111')
-      console.log(this.tableColumn)
       if (this.tableColumn) {
-        const alertTotal = this.tableData[0].alertCount
+        const alertTotal = this.tableData[0] && this.tableData[0].alertCount
         // const realTableData = []
         const row1 = { realHead: '触发次数' }
         const row2 = { realHead: '占比' }
         const row3 = { realHead: '是否配置' }
         this.tableColumn.forEach(({ id, name, applied, count }) => {
           row1[name] = count
-          row2[name] = (count * 100 / alertTotal).toFixed(2) + '%'
+          row2[name] = count ? (count * 100 / alertTotal).toFixed(2) + '%' : '0%'
           row3[name] = applied ? '是' : '否'
         })
         return [row1, row2, row3]
@@ -283,7 +349,7 @@ export default {
       //   })
       // })
       this.$nextTick(() => {
-        const boxHeight = document.querySelector('.monitorBox').offsetHeight
+        const boxHeight = document.querySelector('.video-panel').offsetHeight
         // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
         // const windowWidth = window.innerWidth
         // const windowHeight = window.innerHeight
@@ -301,12 +367,112 @@ export default {
     }
   },
   async created() {
-    await this.getTaskList()
-    await this.getPhotoList()
-    await this.getAlertDetailList()
-    await this.getLiveStream()
+    const { cameraId } = this.$route.query
+    this.cameraId = cameraId
+    this.$nextTick(() => {
+      console.log('cameraId', this.cameraId)
+      this.getTaskList()
+      this.getPhotoList(cameraId)
+      this.getAlertDetailList(cameraId)
+      this.getLiveStream(cameraId)
+      this.getCameraById(cameraId)
+      console.log('crreated', this.$route)
+    })
+  },
+  mounted() {
+    // this.cameraId = this.$route.params.cameraId
+    console.log('mounted', this.$route)
   },
   methods: {
+    saveMonitor() {
+      this.$refs['ruleForm'].validate(valid => {
+        if (valid) {
+          this.submiting = true
+          console.log('form', this.form)
+        } else {
+          return false
+        }
+      })
+    },
+    getCameraById() {
+      if (this.cameraId) {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 10
+          },
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: this.cameraId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          console.log('获取摄像头信息', data[0])
+          const { name } = data[0]
+          this.cameraName = name
+        })
+      } else {
+        this.cameraName = '-'
+      }
+    },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 20
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'LIKE',
+              value: `%${keyword}%`
+            },
+            {
+              field: 'online',
+              operator: 'EQUALS',
+              value: 0
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          let data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          data = data.filter(
+            i => !this.deviceList.find(r => r.cameraId === i.id)
+          )
+          this.options = data.map(item => {
+            return {
+              value: item.id,
+              label: item.address,
+              name: item.name
+            }
+          })
+          this.loading = false
+        })
+      } else {
+        this.options = []
+      }
+    },
+    onClose() {
+      this.$refs['ruleForm'].resetFields()
+      this.submiting = false
+      this.form = {}
+      this.dialogFormVisible = false
+      this.id = null
+    },
+    gotoAiConfig() {
+      this.$router.push('/algorithmconfig')
+    },
     sureThis() {
       this.showVideoSetting = true
     },
@@ -347,7 +513,7 @@ export default {
     getDateTimeStr(time) {
       return moment(time).format(timeFormat)
     },
-    getPhotoList() {
+    getPhotoList(cameraId) {
       this.photosLoading = true
       const param = [{
         field: 'createTime',
@@ -357,7 +523,7 @@ export default {
       {
         field: 'cameraId',
         operator: 'EQUALS',
-        value: this.cameraId
+        value: cameraId || this.cameraId
       }
       ]
       if (this.taskId && this.taskId.length) {
@@ -399,14 +565,15 @@ export default {
       }
       return '-'
     },
-    getAlertDetailList() {
+    getAlertDetailList(cameraId) {
+      this.pageLoading = true
       const query = {
         page: {
           index: 1,
           size: 10
         },
         params: {
-          id: this.cameraId
+          id: cameraId || this.cameraId
         }
         // sorts: [{ field: 'create_time', type: 'desc' }]
       }
@@ -417,9 +584,9 @@ export default {
         // this.total = res.body.page.total
       })
     },
-    getLiveStream() {
+    getLiveStream(cameraId) {
       this.pageLoading = true
-      play(this.cameraId, {
+      play(cameraId || this.cameraId, {
         'type': 2
       }).then(res => {
         const data = res.body.data || []
@@ -427,7 +594,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
-        console.log('?????????', data.rtmpuri)
+        console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
           controls: true,
@@ -469,7 +636,22 @@ export default {
 }
 </script>
 <style lang='scss'>
+#app{
+  min-height: 100% !important;
+  height:100% !important;
+}
 .videomonitorWrap {
+  .el-dialog{
+    .el-dialog__header{
+      text-align: left;
+    }
+    .photoList-image{
+      img{
+        object-fit: contain;
+      }
+    }
+  }
+
   padding: 20px;
   height:100%;
   background: #F0F2F5;
@@ -484,8 +666,9 @@ export default {
     display: flex;
     height:100%;
     .leftPanel{
-      width:50%;
-      flex-grow: 1;
+      width:600px;
+      flex-grow: 2;
+      flex-shrink: 1;
       .leftContent{
         display: flex;
         flex-direction:column;
@@ -495,7 +678,7 @@ export default {
       .monitorBox{
         // height: 330px;
         height:50%;
-        min-height: 300px;
+        // min-height: 200px;
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
@@ -512,9 +695,10 @@ export default {
       }
     }
     .rightPanel{
-      width:50%;
+      width:600px;
       height:100%;
       flex-grow: 1;
+      flex-shrink: 1;
       display:flex;
       flex-direction: column;
       .realTimeData{
@@ -576,7 +760,7 @@ export default {
       background: #fff;
       width:calc(100% - 20px);
       height:calc(100% - 340px);
-      min-height: 200px;
+      // min-height: 200px;
       margin: 20px 20px 0 20px;
       // height:100%;
       padding:20px;
@@ -593,18 +777,25 @@ export default {
       }
       .photoContainer{
         display: flex;
-        height: calc(100% - 80px);
+        max-height: calc(100% - 80px);
         overflow-y:auto;
         flex-wrap: wrap;
         // justify-content: space-between;
+        align-items: flex-start;
         .photoList-image{
-          object-fit: contain;
+          img{
+            object-fit: contain;
+            background-color: #f5f7fa;
+          }
+        }
+        .photoList-image:hover{
+          cursor:zoom-in;
         }
         @media screen and (max-width: 1400px){
           .photoList{
             // display: inline-block;
             width: 31%;
-            height:170px;
+            height:180px;
             margin-bottom: 20px;
             margin-right: 2%;
           }
@@ -613,7 +804,7 @@ export default {
           .photoList{
             // display: inline-block;
             width: 23%;
-            height:170px;
+            height:180px;
             margin-bottom: 20px;
             margin-right: 2%;
           }
@@ -622,7 +813,7 @@ export default {
           .photoList{
             // display: inline-block;
             width: 18%;
-            height:170px;
+            height:180px;
             margin-bottom: 20px;
             margin-right: 2%;
           }
@@ -630,7 +821,7 @@ export default {
           .photoContainer-noData{
             &-text{
               width:100%;
-              margin-top:calc(35% - 15px);
+              margin-top:calc(25% - 15px);
               font-size: 20px;
               color:#999;
               text-align: center;
@@ -659,7 +850,14 @@ export default {
   .censusData{
     // display: flex;
     margin-top: 20px;
-    height:300px;
+    //TODO1
+     @media screen and (max-width: 1400px){
+      height:350px;
+      overflow-y:hidden;
+    }
+    @media screen and (min-width: 1400px){
+      height:280px;
+    }
     width: 100%;
     // .el-table__header-wrapper table, .el-table__body-wrapper table{
     //     width: 100% !important;
@@ -692,6 +890,9 @@ export default {
       height:100%;
       padding:20px;
       width:100%;
+      // .el-table{
+      //   margin-top:5px;
+      // }
     }
   }
 
@@ -699,11 +900,42 @@ export default {
     position: absolute;
     bottom: 20px;
     width:calc(100% - 20px);
+    .el-pagination--small{
+      height:28px;
+    }
+    @media screen and (max-width: 1600px){
+      .el-pagination__jump{
+        display:none;
+      }
+    }
+    @media screen and (max-width: 1400px){
+      bottom:40px;
+      .showTotal{
+        display:none;
+      }
+    }
   }
-//   .video-panel {
-//     position: relative;
-//     height: 100%;
-//   }
+  .video-panel {
+    position: relative;
+    height: calc(100% - 35px);
+  }
+  .screenBottom{
+    height: 35px;
+    position: relative;
+    line-height: 35px;;
+    background: #FAFAFA;
+    padding: 0 20px;
+    font-size:14px;
+    &-op{
+      position: absolute;
+      right:20px;
+      font-size:22px;
+      .svg-icon:hover{
+        cursor:pointer;
+        color:#1989fa;
+      }
+    }
+  }
   .right-part {
     width: 200px;
     position: absolute;

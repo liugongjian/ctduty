@@ -203,7 +203,7 @@ export const asyncRouterMap = [
             // }
           },
           {
-            path: 'videomonitor',
+            path: '/cameraManage/videomonitor',
             component: () => import('@/views/videoMonitor/index'),
             name: 'cameraManage/videoMonitor',
             hidden: true,
