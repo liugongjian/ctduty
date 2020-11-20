@@ -56,7 +56,7 @@
         :data="tableData"
         :header-cell-style="{ background: '#ecedee', color: '#717171' }"
       >
-        <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
+        <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="left" fixed>
           <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
         </el-table-column>
         <!-- 根据返回算法渲染列 -->
