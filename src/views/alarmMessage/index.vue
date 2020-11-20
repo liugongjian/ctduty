@@ -752,7 +752,12 @@ export default {
       this.currentTab = e.label
       const s = e.label + ' ' + this.startTime + ':00'
       const end = e.label + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue;
+      const h2 = this.algorithmNameList.typeValue;
+      const h = {
+        type: h1,
+        taskId: h2
+      };
       this.page = 1
       this.getList(s, end, h)
     },
