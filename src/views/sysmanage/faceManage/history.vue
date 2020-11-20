@@ -93,7 +93,7 @@
                         style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                       >
                         <i class="el-icon-map-location" />
-                        <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                        <span>{{ val.camera && val.camera.name || '未知' }}</span>
                       </div>
                       <div class="location">
                         <i class="el-icon-time" />
@@ -147,7 +147,7 @@ export default {
   filters: {
     formatNull: function(val) {
       if (!val) return '无'
-      return val.address
+      return val.name
     }
   },
   data() {

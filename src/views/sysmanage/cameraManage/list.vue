@@ -186,7 +186,7 @@
           </el-form-item>
           <el-form-item label="地址：">
             <el-input
-              v-model="editForm.address"
+              v-model="editForm.name"
               :rows="4"
               type="textarea"
               placeholder="请输入地址"
