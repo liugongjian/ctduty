@@ -369,15 +369,15 @@ export default {
   async created() {
     const { cameraId } = this.$route.query
     this.cameraId = cameraId
-    // this.$nextTick(() => {
-    console.log('cameraId', this.cameraId)
-    await this.getTaskList()
-    await this.getPhotoList(cameraId)
-    await this.getAlertDetailList(cameraId)
-    await this.getLiveStream(cameraId)
-    await this.getCameraById(cameraId)
-    console.log('crreated', this.$route)
-    // })
+    this.$nextTick(() => {
+      console.log('cameraId', this.cameraId)
+      this.getTaskList()
+      this.getPhotoList(cameraId)
+      this.getAlertDetailList(cameraId)
+      this.getLiveStream(cameraId)
+      this.getCameraById(cameraId)
+      console.log('crreated', this.$route)
+    })
   },
   mounted() {
     // this.cameraId = this.$route.params.cameraId
@@ -821,7 +821,7 @@ export default {
           .photoContainer-noData{
             &-text{
               width:100%;
-              margin-top:calc(35% - 15px);
+              margin-top:calc(25% - 15px);
               font-size: 20px;
               color:#999;
               text-align: center;
