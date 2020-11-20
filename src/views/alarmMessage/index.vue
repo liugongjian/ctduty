@@ -828,10 +828,6 @@ export default {
           value: { start: s || '', end: e || '' }
         },
         {
-          field: 'username',
-          operator: 'NULL'
-        },
-        {
           field: 'camera.inChargeId',
           operator: 'EQUALS',
           value: this.userId
@@ -1002,6 +998,9 @@ export default {
 }
 .pull-left.alarmmsgleft {
   width: 75%;
+  .el-select {
+    width: 180px;
+  }
 }
 .pull-right.alarmmsgright {
   position: relative;
