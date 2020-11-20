@@ -8,9 +8,9 @@
             class="filter-item sureItem"
             size="mini"
             type="warning"
-            style="margin-bottom: 2px"
+            style="margin-bottom: 2px; width: 20%"
             @click="onSearch"
-          >{{ '确定' }}</el-button>
+          >{{ '搜索' }}</el-button>
           <button
             class="filter-item clearsearch"
             style="font-size:12px; width: 20%;height:36px;"
@@ -24,7 +24,7 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
+            <div style=" margin-right: 8px; margin-bottom: 0px; font-size: 12px;">设备名称:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
@@ -1075,7 +1075,7 @@ export default {
   width: 20%;
 }
 .el-select.el-select--medium {
-  width: 260px;
+  width: 20%;
 }
 .el-input--mini .el-input__inner {
   height: 36px;
@@ -1092,7 +1092,7 @@ export default {
   line-height: 36px;
 }
 .open {
-  margin-left: 90px;
+  margin-left: 28%;
   color: #ff9832;
   cursor: pointer;
 }
