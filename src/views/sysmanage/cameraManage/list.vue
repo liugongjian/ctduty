@@ -525,7 +525,7 @@ export default {
       })
     },
     toDetail(item) {
-      console.log(item.id)
+      this.$router.push({ name: 'videomonitor', params: { cameraId: item.id }})
     }
   }
 }
