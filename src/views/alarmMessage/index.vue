@@ -1116,9 +1116,7 @@ export default {
   // }
 }
 .filter-container .filter-item {
-  display: inline-block;
   vertical-align: initial;
-  margin-bottom: 10px;
 }
 .el-input--mini .el-input__icon {
   line-height: 36px;
