@@ -15,7 +15,13 @@
           </div>
           <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
             <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
-              <div>{{ v.name }}</div>
+              <div>
+                <svg-icon icon-class="monitorIcon" class="svgBtn"/>
+                {{ v.name }}
+                <span @click.stop="toMonitorDetail(v.id)">
+                  <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
+                </span>
+              </div>
             </li>
           </ul>
           <div v-else class="noResult">暂无视频</div>
@@ -53,12 +59,13 @@ import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoConfig from '@/components/VideoConfig'
 import client from '@/api/vedioAlgo'
+import SvgIcon from '@/components/SvgIcon'
 import {
   taskList, videoListByAlgorithmId, getCameraList
 } from '@/api/algorithm'
 
 export default {
-  components: { Pagination, VideoPlayer, VideoConfig },
+  components: { Pagination, VideoPlayer, VideoConfig, SvgIcon },
   data() {
     return {
       activeName: 'first',
@@ -355,7 +362,6 @@ export default {
       //   console.log('任务实例配置调用接口返回-----', res)
       const { deviceId } = body
       if (res.code === 0) {
-        this.pageLoading = false
         this.btnLoading = false
         this.$message({
           message: '更新成功',
@@ -376,6 +382,9 @@ export default {
     },
     getStatus(status) {
       return status === 1 ? '在线' : '离线'
+    },
+    toMonitorDetail(id) {
+      console.log(id)
     }
   }
 }
@@ -562,6 +571,13 @@ export default {
             margin: 5px 0;
             cursor: pointer;
             font-size: 13px;
+            position: relative;
+            &:hover{
+              background: #f0f8ff;
+              .detailSvg{
+                display: inline;
+              }
+            }
             div{
                 padding: 5px 7px;
                 // display: inline-block;
@@ -569,11 +585,23 @@ export default {
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+            .detailSvg{
+              display: none;
+              position: absolute;
+              right: 5px;
+              &:hover{
+                font-size: 16px;
+                color: #FF9832;
+              }
+            }
             &.active{
                 div{
                     background: #FF9832;
                     border-radius: 5px;
                     color: #FFFFFF;
+                    .svgBtn{
+                      fill: #fff;
+                    }
                 }
             }
         }

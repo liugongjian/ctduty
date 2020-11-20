@@ -17,8 +17,8 @@
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
-          <span class="open" id="openId" @click="opendraw">
-            {{openname}}
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
             <i class="el-icon-arrow-down"></i>
           </span>
         </div>
@@ -70,57 +70,58 @@
               :value="item._id">
             </el-option>
           </el-select>
-          <div v-show="flag">
-            <div class="block filter-item">
-              <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+          <transition name = "fade">
+            <div v-show="flag">
+              <div class="block filter-item">
+                <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  :style="{width:210 + 'px', height: 36 + 'px'}"
+                  :picker-options="pickerOptions"
+                  type="daterange"
+                  range-separator="to"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px',height:'36px'}"
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  :style="{width:95 + 'px', height: 36 + 'px'}"
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
             </div>
-            <div class="block filter-item">
-              <el-date-picker
-                v-model="value1"
-                :clearable="false"
-                :style="{width:210 + 'px', height: 36 + 'px'}"
-                :picker-options="pickerOptions"
-                type="daterange"
-                range-separator="to"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                format="yyyy-MM-dd"
-                size="mini"
-                @change="timeChange"
-              ></el-date-picker>
-            </div>
-            <div class="block filter-item">
-              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-            </div>
-            <div class="block filter-item">
-              <el-time-picker
-                :style="{width:95 + 'px',height:'36px'}"
-                v-model="startTime"
-                :picker-options="{
-                  selectableRange:'00:00:00-23:59:00'
-                }"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-              ></el-time-picker>
-            </div>
-            <div class="block filter-item">
-              <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-            </div>
-            <div class="block filter-item">
-              <el-time-picker
-                :style="{width:95 + 'px', height: 36 + 'px'}"
-                v-model="endTime"
-                :picker-options="{
-                  selectableRange:startTime+ ':00' + '-23:59:00'
-                }"
-                size="mini"
-                format="HH:mm"
-                value-format="HH:mm"
-              ></el-time-picker>
-            </div>
-          </div>
-
+          </transition>
         </div>
       </div>
       <div>
@@ -827,10 +828,6 @@ export default {
           value: { start: s || '', end: e || '' }
         },
         {
-          field: 'username',
-          operator: 'NULL'
-        },
-        {
           field: 'camera.inChargeId',
           operator: 'EQUALS',
           value: this.userId
@@ -869,17 +866,17 @@ export default {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
-            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+            item.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
             item.style.paddingTop = '2px'
             item.style.paddingBottom = '2px'
             const child = item.children
             const childArr = Array.from(child)
             childArr.forEach(dom => {
               if (dom.className === 'el-image') {
-                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
-                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 343) / 11) * 16 / 9 + 'px'
+                dom.style.height = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
+                dom.style.width = ((document.getElementsByTagName('html')[0].clientHeight - 346) / 11) * 16 / 9 + 'px'
               } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 343) / 11 + 'px'
+                dom.style.lineHeight = (document.getElementsByTagName('html')[0].clientHeight - 346) / 11 + 'px'
               }
             })
           })
@@ -1001,17 +998,23 @@ export default {
 }
 .pull-left.alarmmsgleft {
   width: 75%;
+  .el-select {
+    width: 180px;
+  }
+  .el-date-editor {
+    width: 180px !important;
+  }
 }
 .pull-right.alarmmsgright {
   position: relative;
-  width: 25%;
+  right: 0;
   .clearsearch {
     position: absolute;
     top: 0px;
     // right: 0px;
     height: 34px;
     margin-left: 10px;
-    width: 60px;
+    width: 56px !important;
     // margin-left: 16px;
     border: 1px solid #ccc;
     background: none;
@@ -1072,7 +1075,7 @@ export default {
   font-size: 14px;
 }
 .searchinp {
-  width: 20%;
+  width:180px;
 }
 .el-select.el-select--medium {
   width: 20%;
@@ -1102,5 +1105,10 @@ export default {
 .tdimage {
   object-fit: contain !important;
 }
-
+.fade-enter-active, .fade-leave-active {
+    transition: all .8s ease 0.2s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+    opacity: 0;
+}
 </style>
