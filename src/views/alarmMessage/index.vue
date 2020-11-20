@@ -10,7 +10,7 @@
             type="warning"
             style="margin-bottom: 2px"
             @click="onSearch"
-          >{{ '确定' }}</el-button>
+          >{{ '查询' }}</el-button>
           <button
             class="filter-item clearsearch"
             style="font-size:12px; width: 20%;height:36px;"
@@ -543,6 +543,9 @@ export default {
     // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
     // this.getTimeAllTotal(s1, e1, h)
     // this.getList(s, e, h)
+  },
+  mounted() {
+    console.log(window.screen.availHeight)
   },
   methods: {
     opendraw() {
