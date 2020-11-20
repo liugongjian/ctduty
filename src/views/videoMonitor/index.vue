@@ -642,6 +642,9 @@ export default {
 #app{
   min-height: 100% !important;
   height:100% !important;
+  .openSidebar{
+    height:100%;
+  }
 }
 .videomonitorWrap {
   .el-dialog{
