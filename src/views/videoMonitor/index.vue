@@ -41,7 +41,7 @@
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
-                  v-if="videoOptions.source"
+                  v-if="videoOptions.sources"
                   :video-ref="cameraId"
                   :key="cameraId"
                   :options="videoOptions"
@@ -287,13 +287,13 @@ export default {
       cameraId: '61010010001320014342', // '64010106001324014975', //
       cameraName: '云公司',
       taskId: '',
-      form: {},
-      loading: false,
-      rules: {
-        cameraId: [
-          { required: true, message: '请选择设备名称', trigger: 'change' }
-        ]
-      },
+      // form: {},
+      // loading: false,
+      // rules: {
+      //   cameraId: [
+      //     { required: true, message: '请选择设备名称', trigger: 'change' }
+      //   ]
+      // },
       deviceChosenVisible: false,
       bigPhotoVisible: false,
       curPhoto: '',
@@ -308,6 +308,11 @@ export default {
       limit: 10,
       showVideoSetting: false,
       videoOptions: {
+        autoplay: true,
+        controls: true,
+        autoDisable: true
+        // width: 960, // 播放器宽度
+        // height: 480 // 播放器高度
       },
       tableColumn: [],
       tableData: [],
@@ -362,11 +367,17 @@ export default {
     }
   },
   async created() {
+    const { cameraId } = this.$route.query
+    this.cameraId = cameraId
+    // this.$nextTick(() => {
+    console.log('cameraId', this.cameraId)
     await this.getTaskList()
-    await this.getPhotoList()
-    await this.getAlertDetailList()
-    await this.getLiveStream()
+    await this.getPhotoList(cameraId)
+    await this.getAlertDetailList(cameraId)
+    await this.getLiveStream(cameraId)
+    await this.getCameraById(cameraId)
     console.log('crreated', this.$route)
+    // })
   },
   mounted() {
     // this.cameraId = this.$route.params.cameraId
@@ -377,11 +388,39 @@ export default {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          console.log('????', this.form)
+          console.log('form', this.form)
         } else {
           return false
         }
       })
+    },
+    getCameraById() {
+      if (this.cameraId) {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 10
+          },
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: this.cameraId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          console.log('获取摄像头信息', data[0])
+          const { name } = data[0]
+          this.cameraName = name
+        })
+      } else {
+        this.cameraName = '-'
+      }
     },
     getCameraList(keyword) {
       if (keyword !== '') {
@@ -474,7 +513,7 @@ export default {
     getDateTimeStr(time) {
       return moment(time).format(timeFormat)
     },
-    getPhotoList() {
+    getPhotoList(cameraId) {
       this.photosLoading = true
       const param = [{
         field: 'createTime',
@@ -484,7 +523,7 @@ export default {
       {
         field: 'cameraId',
         operator: 'EQUALS',
-        value: this.cameraId
+        value: cameraId || this.cameraId
       }
       ]
       if (this.taskId && this.taskId.length) {
@@ -526,14 +565,15 @@ export default {
       }
       return '-'
     },
-    getAlertDetailList() {
+    getAlertDetailList(cameraId) {
+      this.pageLoading = true
       const query = {
         page: {
           index: 1,
           size: 10
         },
         params: {
-          id: this.cameraId
+          id: cameraId || this.cameraId
         }
         // sorts: [{ field: 'create_time', type: 'desc' }]
       }
@@ -544,9 +584,9 @@ export default {
         // this.total = res.body.page.total
       })
     },
-    getLiveStream() {
+    getLiveStream(cameraId) {
       this.pageLoading = true
-      play(this.cameraId, {
+      play(cameraId || this.cameraId, {
         'type': 2
       }).then(res => {
         const data = res.body.data || []
@@ -554,7 +594,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
-        console.log('?????????', data.rtmpuri)
+        console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
           controls: true,
@@ -596,8 +636,11 @@ export default {
 }
 </script>
 <style lang='scss'>
+#app{
+  min-height: 100% !important;
+  height:100% !important;
+}
 .videomonitorWrap {
-
   .el-dialog{
     .el-dialog__header{
       text-align: left;
@@ -635,7 +678,7 @@ export default {
       .monitorBox{
         // height: 330px;
         height:50%;
-        min-height: 300px;
+        // min-height: 200px;
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
@@ -717,7 +760,7 @@ export default {
       background: #fff;
       width:calc(100% - 20px);
       height:calc(100% - 340px);
-      min-height: 200px;
+      // min-height: 200px;
       margin: 20px 20px 0 20px;
       // height:100%;
       padding:20px;
@@ -807,7 +850,14 @@ export default {
   .censusData{
     // display: flex;
     margin-top: 20px;
-    height:300px;
+    //TODO1
+     @media screen and (max-width: 1400px){
+      height:350px;
+      overflow-y:hidden;
+    }
+    @media screen and (min-width: 1400px){
+      height:280px;
+    }
     width: 100%;
     // .el-table__header-wrapper table, .el-table__body-wrapper table{
     //     width: 100% !important;
@@ -840,9 +890,9 @@ export default {
       height:100%;
       padding:20px;
       width:100%;
-      .el-table{
-        margin-top:20px;
-      }
+      // .el-table{
+      //   margin-top:5px;
+      // }
     }
   }
 
@@ -858,7 +908,7 @@ export default {
         display:none;
       }
     }
-    @media screen and (max-width: 1000px){
+    @media screen and (max-width: 1400px){
       bottom:40px;
       .showTotal{
         display:none;
