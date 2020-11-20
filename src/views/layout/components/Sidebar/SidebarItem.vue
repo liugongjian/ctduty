@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden&&item.children" class="menu-wrapper">
+  <div v-if="!item.hidden&&item.children" :class="item.withnonestmenu ? 'withnowNestMenu':''" class="menu-wrapper">
 
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link :to="resolvePath(onlyOneChild.path)">
@@ -103,3 +103,10 @@ export default {
   }
 }
 </script>
+<style lang='scss'>
+  .withnowNestMenu{
+    i{
+      display: none;
+    }
+  }
+</style>

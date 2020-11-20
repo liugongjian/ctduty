@@ -63,26 +63,26 @@ export const asyncRouterMap = [
   //     }
   //   ]
   // },
-  {
-    path: '/videomonitor',
-    component: Layout,
-    redirect: '/videomonitor',
-    name: 'videomonitor',
-    hidden: false,
-    children: [
-      {
-        path: '/videomonitor',
-        component: () => import('@/views/videoMonitor/index'),
-        name: 'videoMonitor',
-        meta: {
-          title: 'videoMonitor',
-          icon: 'videoMonitor',
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/videomonitor',
+  //   component: Layout,
+  //   redirect: '/videomonitor',
+  //   name: 'videomonitor',
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '/videomonitor',
+  //       component: () => import('@/views/videoMonitor/index'),
+  //       name: 'videoMonitor',
+  //       meta: {
+  //         title: 'videoMonitor',
+  //         icon: 'videoMonitor',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/monitorScreen',
     component: Layout,
@@ -166,20 +166,79 @@ export const asyncRouterMap = [
   {
     path: '/cameraManage',
     component: Layout,
-    redirect: '/cameraManage',
+    redirect: '/cameraManage/list',
+    // alwaysShow: true,
     hidden: false,
+    name: 'sysCameraManage',
+    meta: {
+      title: 'cameraManage',
+      icon: 'cameraManagement',
+      noCache: false
+    },
+    withnonestmenu: true,
     children: [
       {
-        path: '/cameraManage',
-        component: () => import('@/views/sysmanage/cameraManage/list'),
+        path: '/cameraManage/list',
+        component: MainLayout,
         name: 'sysCameraManage',
-        meta: {
-          title: 'cameraManage',
-          icon: 'cameraManagement',
-          noCache: true,
-          affix: true
-        }
+        hidden: true,
+        withnonestmenu: true,
+        // meta: {
+        //   title: 'cameraManage',
+        //   icon: 'cameraManagement',
+        //   noCache: false
+        //   // affix: true
+        // },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/sysmanage/cameraManage/list'),
+            name: 'sysCameraManage',
+            hidden: true
+            // meta: {
+            //   title: 'cameraManage',
+            //   icon: 'cameraManagement',
+            //   noCache: true
+            //   // affix: true
+            // }
+          },
+          {
+            path: 'videomonitor',
+            component: () => import('@/views/videoMonitor/index'),
+            name: 'cameraManage/videoMonitor',
+            hidden: true,
+            meta: {
+              title: 'videoMonitor',
+              icon: 'videoMonitor',
+              noCache: false
+            }
+
+          }
+        ]
       }
+      // {
+      //   path: '',
+      //   component: () => import('@/views/sysmanage/cameraManage/list'),
+      //   name: 'cameraManage',
+      //   // hidden: true,
+      //   meta: {
+      //     title: 'cameraManage',
+      //     icon: 'cameraManagement',
+      //     noCache: true,
+      //     affix: true
+      //   }
+      // }, {
+      //   path: 'videomonitor',
+      //   component: () => import('@/views/videoMonitor/index'),
+      //   name: 'cameraManage/videoMonitor',
+      //   hidden: true,
+      //   meta: {
+      //     title: 'videoMonitor',
+      //     icon: 'videoMonitor',
+      //     noCache: false
+      //   }
+
+      // }
     ]
   },
   {
