@@ -316,7 +316,8 @@ export default {
       },
       tableColumn: [],
       tableData: [],
-      heightByAuto: ''
+      heightByAuto: '',
+      slide: 0
     }
   },
   computed: {
