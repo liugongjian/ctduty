@@ -646,6 +646,9 @@ export default {
   .openSidebar{
     height:100%;
   }
+  .hideSidebar{
+    height:100%;
+  }
 }
 .videomonitorWrap {
   .el-dialog{
