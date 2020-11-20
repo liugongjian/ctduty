@@ -67,6 +67,7 @@ export const asyncRouterMap = [
     path: '/videomonitor',
     component: Layout,
     redirect: '/videomonitor',
+    name: 'videomonitor',
     hidden: false,
     children: [
       {

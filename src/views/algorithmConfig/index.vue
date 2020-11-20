@@ -14,10 +14,17 @@
 
           </div>
           <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
-            <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)">
+            <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)" @mouseover="checkNameLen(k)">
               <div>
-                <svg-icon icon-class="monitorIcon" class="svgBtn"/>
-                {{ v.name }}
+                <span class="displayIB">
+                  <svg-icon icon-class="monitorIcon" class="svgBtn"/>
+                </span>
+                <el-tooltip :disabled="deviceShowTooltip" placement="top">
+                  <div slot="content">{{ v.name }}</div>
+                  <span class="seviceName displayIB" >
+                    {{ v.name }}
+                  </span>
+                </el-tooltip>
                 <span @click.stop="toMonitorDetail(v.id)">
                   <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
                 </span>
@@ -94,7 +101,8 @@ export default {
       styleObj: {
         height: ''
       },
-      btnLoading: false
+      btnLoading: false,
+      deviceShowTooltip: true
     }
   },
   watch: {
@@ -384,8 +392,19 @@ export default {
       return status === 1 ? '在线' : '离线'
     },
     toMonitorDetail(id) {
-      console.log(id)
+      this.$router.push({ name: 'videomonitor', params: { cameraId: id }})
+    },
+    checkNameLen(k) {
+      const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth
+      if (eleWidth > 179) {
+        // console.log('芜湖~')
+        this.deviceShowTooltip = false
+      } else {
+        // console.log('起飞')
+        this.deviceShowTooltip = true
+      }
     }
+
   }
 }
 </script>
@@ -581,9 +600,9 @@ export default {
             div{
                 padding: 5px 7px;
                 // display: inline-block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                // overflow: hidden;
+                // text-overflow: ellipsis;
+                // white-space: nowrap;
             }
             .detailSvg{
               display: none;
@@ -593,6 +612,18 @@ export default {
                 font-size: 16px;
                 color: #FF9832;
               }
+            }
+            .displayIB{
+              display: inline-block;
+
+              vertical-align: middle;
+            }
+            .seviceName{
+
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              max-width: 180px;
             }
             &.active{
                 div{
