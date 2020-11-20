@@ -997,10 +997,15 @@ export default {
 .pull-left.alarmmsgleft {
   width: 75%;
   .el-select {
-    width: 180px;
+    width: 205px;
   }
   .el-date-editor {
-    width: 180px !important;
+    width: 205px !important;
+    padding-left: 5px !important;
+    padding-right: 0px !important;
+    .el-range-input {
+      margin-bottom: 2px;
+    }
   }
 }
 .pull-right.alarmmsgright {
@@ -1074,7 +1079,7 @@ export default {
   font-size: 14px;
 }
 .searchinp {
-  width:180px;
+  width:205px;
 }
 .el-select.el-select--medium {
   width: 20%;
