@@ -42,7 +42,6 @@
             placeholder="请选择事件名称"
             min-width="300px"
             collapse-tags
-            @change="checkModel"
           >
             <el-option
               v-for="item in algorithm"
@@ -60,7 +59,6 @@
             placeholder="请选择算法名称"
             min-width="350px"
             collapse-tags
-            @change="algorithmCheck"
           >
             <el-option
               v-for="item in algorithmName"
@@ -724,14 +722,6 @@ export default {
     closeDialog() {
       this.dialogVisable = false
     },
-    checkModel() {
-      console.log('ssssssssssss', this.algorithmList.typeValue)
-      this.$emit('getdata', this.algorithmList.typeValue)
-    },
-    algorithmCheck() {
-      console.log('ccccccccccccccc', this.algorithmNameList.typeValue)
-      // this.$emit('getdata', this.algorithmNameList.typeValue)
-    },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
       return 'tableRowClassHeader'
@@ -752,12 +742,12 @@ export default {
       this.currentTab = e.label
       const s = e.label + ' ' + this.startTime + ':00'
       const end = e.label + ' ' + this.endTime + ':00'
-      const h1 = this.algorithmList.typeValue;
-      const h2 = this.algorithmNameList.typeValue;
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
       const h = {
         type: h1,
         taskId: h2
-      };
+      }
       this.page = 1
       this.getList(s, end, h)
     },
