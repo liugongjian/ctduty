@@ -5,7 +5,7 @@
         <div class="leftContent">
           <div class="monitorBox">
             <div class="video-panel">
-              <div class="left-part">
+              <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
                   :video-ref="cameraId"
                   :key="cameraId"
@@ -72,16 +72,16 @@
           <div class="censusData">
             <div class="alertTable">
               <div class="panelTitle">统计分析</div>
+              <!-- :header-cell-style="{ background: '#ecedee', color: '#717171' }" -->
               <el-table
-                :data="tableData"
-                :header-cell-style="{ background: '#ecedee', color: '#717171' }"
+                :data="algorithmTblData"
               >
-                <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="center" fixed>
-                  <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
+                <el-table-column :show-overflow-tooltip="true" label="智能算法" prop="realHead" width="150" align="center" fixed>
+                  <!-- <template slot-scope="scope">告警次数</template> -->
                 </el-table-column>
                 <!-- 根据返回算法渲染列 -->
-                <el-table-column v-for="item in tableColumn" :key="item.id" :label="item.name" align="center" min-width="125" width="125">
-                  <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template>
+                <el-table-column v-for="item in tableColumn" :key="item.id" :prop="item.name" :label="item.name" align="center" min-width="125" width="125">
+                  <!-- <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template> -->
                 </el-table-column>
               </el-table>
             </div>
@@ -184,7 +184,7 @@
               </el-card>
             </div>
           </div>
-          <div v-else class="photoContainer photoContainer-noData">
+          <div v-else class="photoContainer">
             <div class="photoContainer-noData-text">暂无数据</div>
           </div>
           <pagination
@@ -210,20 +210,25 @@ import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import { getAlertInfos } from '@/api/alarm'
 import { taskList } from '@/api/algorithm'
+import {
+  fetchAllMonitor, play
+} from '@/api/monitor'
 const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
 const timeFormat = 'MM-DD HH:mm:ss'
 export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      cameraId: '61010010001320014342',
+      cameraId: '64010106001324014975', // '61010010001320014342',
       taskId: '',
       taskData: [],
+      // algorithmTblData: [],
       photosLoading: false,
       photoCardList: [],
       pageLoading: false,
       total: 10,
       page: 0,
+      limit: 10,
       showVideoSetting: false,
       videoOptions: {
         autoplay: true,
@@ -231,31 +236,75 @@ export default {
         width: 400, // 播放器宽度
         height: 300, // 播放器高度
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-        fluid: true // 流体布局，自动充满，并保持播放其比例
-        // sources: [
-        //   {
-        //     src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-        //     type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
-        //   }
-        //   // {
-        //   //   src: item.rtmpuri,
-        //   //   type: 'application/x-mpegURL'
-        //   // }
-        // ]
+        fluid: true, // 流体布局，自动充满，并保持播放其比例
+        sources: [
+          {
+
+          }
+          // {
+          //   src: item.rtmpuri,
+          //   type: 'application/x-mpegURL'
+          // }
+        ]
       },
-      tableData: [],
-      tableColumn: []
+      device: [],
+      heightByAuto: ''
+    }
+  },
+  computed: {
+    algorithmTblData() {
+      console.log('11111111111111111111111111111111111111111111111111111111')
+      console.log(this.tableColumn)
+      if (this.tableColumn) {
+        const alertTotal = this.tableData[0].alertCount
+        // const realTableData = []
+        const row1 = { realHead: '触发次数' }
+        const row2 = { realHead: '占比' }
+        const row3 = { realHead: '是否配置' }
+        this.tableColumn.forEach(({ id, name, applied, count }) => {
+          row1[name] = count
+          row2[name] = (count * 100 / alertTotal).toFixed(2) + '%'
+          row3[name] = applied ? '是' : '否'
+        })
+        return [row1, row2, row3]
+      } else return []
     }
   },
   watch: {
     taskId(taskId) {
       this.getPhotoList(taskId)
+    },
+    videoOptions(v) {
+      // v.map(item => {
+      //   this.allCameraList.forEach(one => {
+      //     if (one.id === item.cameraId) {
+      //       item.name = one.name
+      //     }
+      //   })
+      // })
+      this.$nextTick(() => {
+        const boxHeight = document.querySelector('.monitorBox').offsetHeight
+        // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
+        // const windowWidth = window.innerWidth
+        // const windowHeight = window.innerHeight
+        // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
+        // if (windowWidth > 1440) {
+        //   this.heightByAuto = boxWidth / 1.3 + 'px'
+        // } else if (windowWidth <= 1440 && windowWidth > 1300) {
+        //   this.heightByAuto = boxWidth / 1.366 + 'px'
+        // } else {
+        //   this.heightByAuto = boxWidth / 1.45 + 'px'
+        // }
+        console.log('test---->', boxHeight)
+        this.heightByAuto = boxHeight + 'px'
+      })
     }
   },
   async created() {
     await this.getTaskList()
     await this.getPhotoList()
     await this.getAlertDetailList()
+    await this.getLiveStream()
   },
   methods: {
     sureThis() {
@@ -304,6 +353,11 @@ export default {
         field: 'createTime',
         operator: 'BETWEEN',
         value: { 'start': moment().startOf('day').format(dateTimeFormat), 'end': moment().endOf('day').format(dateTimeFormat) }
+      },
+      {
+        field: 'cameraId',
+        operator: 'EQUALS',
+        value: this.cameraId
       }
       ]
       if (this.taskId && this.taskId.length) {
@@ -362,6 +416,54 @@ export default {
         this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
         // this.total = res.body.page.total
       })
+    },
+    getLiveStream() {
+      this.pageLoading = true
+      play(this.cameraId, {
+        'type': 2
+      }).then(res => {
+        const data = res.body.data || []
+        // const xx = {
+        //     ...data,
+        //     image: null,
+        //     flvSrc: data.rtmpuri,
+        console.log('?????????', data.rtmpuri)
+        this.videoOptions = {
+          autoplay: true,
+          controls: true,
+          width: 400, // 播放器宽度
+          height: 300, // 播放器高度
+          // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+          fluid: true, // 流体布局，自动充满，并保持播放其比例
+          sources: [
+            {
+              src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
+              type: this.video_type(data.rtmpuri ? data.rtmpuri + '&a.flv' : '')
+            }
+          ]
+        }
+        // }
+        this.pageLoading = false
+      }).catch(err => {
+        this.$message(err.message || '获取摄像头播放流失败.')
+        this.pageLoading = false
+      })
+    },
+    video_type(_url) {
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
+      }
     }
   }
 }
@@ -394,13 +496,16 @@ export default {
         // height: 330px;
         height:50%;
         min-height: 300px;
-        width:100%;
+        width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
         border: 1px dashed #D9D9D9;
         background: #fff;
         border-radius: 2px;
         position: relative;
+        .left-part{
+          width:calc(100% - 200px);
+        }
         p{
             margin: 24px;
         }
@@ -424,10 +529,13 @@ export default {
           justify-content: space-between;
         }
         .streamData{
-          width: 48%;
+          width: 50%;
           background: #ffffff;
           border: 1px solid #F0EFEF;
           padding-bottom: 15px;
+        }
+        .streamData:first-of-type{
+          margin-right:10px;
         }
         .dataHeader{
             height: 30px;
@@ -501,7 +609,7 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1401px) and (max-width: 1500px){
+        @media screen and (min-width: 1401px) and (max-width: 1600px){
           .photoList{
             // display: inline-block;
             width: 23%;
@@ -510,7 +618,7 @@ export default {
             margin-right: 2%;
           }
         }
-         @media screen and (min-width: 1501px){
+         @media screen and (min-width: 1601px){
           .photoList{
             // display: inline-block;
             width: 18%;
@@ -521,9 +629,8 @@ export default {
         }
           .photoContainer-noData{
             &-text{
-              height: 100%;
               width:100%;
-              line-height: 250px;
+              margin-top:calc(35% - 15px);
               font-size: 20px;
               color:#999;
               text-align: center;
@@ -563,6 +670,22 @@ export default {
     // .el-table__body, .el-table__footer, .el-table__header{
     //   table-layout: auto;
     // }
+    .el-table__header{
+      tr{
+        th:first-of-type{
+          background-color: rgb(236, 237, 238);
+          color: rgb(113, 113, 113);
+          font-weight: bold;
+        }
+      }
+    }
+    .el-table__row{
+      td:first-of-type{
+        background-color: rgb(236, 237, 238);
+        color: rgb(113, 113, 113);
+        font-weight: bold;
+      }
+    }
     .alertTable{
       // flex-grow: 1;
       background: #ffffff;

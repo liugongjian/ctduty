@@ -355,7 +355,6 @@ export default {
       //   console.log('任务实例配置调用接口返回-----', res)
       const { deviceId } = body
       if (res.code === 0) {
-        this.pageLoading = false
         this.btnLoading = false
         this.$message({
           message: '更新成功',
