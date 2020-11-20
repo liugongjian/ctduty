@@ -68,7 +68,7 @@
           </el-select>
           <span id="openId" class="open" @click="opendraw">
             {{ openname }}
-            <i class="el-icon-arrow-down"></i>
+            <i :class="openname === '展开' ? 'el-icon-arrow-down':'el-icon-arrow-up'"></i>
           </span>
           <transition name="fade">
             <div v-show="flag">
@@ -1006,7 +1006,7 @@ export default {
   height: 36px;
 }
 .pull-left.alarmmsgleft {
-  width: 75%;
+  width: 80%;
   .el-select {
     width: 180px;
   }
