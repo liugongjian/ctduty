@@ -123,12 +123,12 @@
                 </span>
                 <div class="bottom clearfix">
                   <el-tooltip
-                    :content="item.camera.address"
+                    :content="item.camera.name"
                     placement="top-start"
                   >
                     <div class="location">
                       <i class="el-icon-map-location" />
-                      <span class="locationtext">{{ item.camera && item.camera.address || '未知' }}</span>
+                      <span class="locationtext">{{ item.camera && item.camera.name || '未知' }}</span>
                     </div>
                   </el-tooltip>
                   <div class="location">

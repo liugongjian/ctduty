@@ -84,6 +84,7 @@ import client from '@/api/vedioAlgo'
 import store from '@/store'
 import SvgIcon from '@/components/SvgIcon'
 export default {
+  components: { SvgIcon },
   props: ['ifShow', 'currentPickDeviceId', 'currentPickAlgorithm'],
   data() {
     return {
