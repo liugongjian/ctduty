@@ -1020,6 +1020,8 @@ export default {
   }
   .el-date-editor {
     width: 180px !important;
+    // padding-left: 3px !important;
+    // padding-right: 0px !important;
   }
 }
 .pull-right.alarmmsgright {
