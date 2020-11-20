@@ -2,26 +2,7 @@
   <div class="list">
     <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
-        <div class="pull-right alarmmsgright">
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            style="margin-bottom: 2px"
-            @click="onSearch"
-          >{{ '确定' }}</el-button>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i class="el-icon-arrow-down"></i>
-          </span>
-        </div>
+
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
             <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
@@ -31,6 +12,7 @@
             placeholder="设备名称"
             class="searchinp"
             size="mini"
+            style="width:205px;"
             @keyup.enter.native="onSearch"
           >
           </el-input>
@@ -41,7 +23,6 @@
             v-model="algorithmList.typeValue"
             multiple
             placeholder="请选择事件名称"
-            min-width="300px"
             collapse-tags
             @change="checkModel"
           >
@@ -59,7 +40,6 @@
             v-model="algorithmNameList.typeValue"
             multiple
             placeholder="请选择算法名称"
-            min-width="350px"
             collapse-tags
             @change="algorithmCheck"
           >
@@ -87,6 +67,7 @@
                   end-placeholder="结束日期"
                   format="yyyy-MM-dd"
                   size="mini"
+                  style="width:205px;"
                   @change="timeChange"
                 ></el-date-picker>
               </div>
@@ -122,6 +103,26 @@
               </div>
             </div>
           </transition>
+        </div>
+        <div class="pull-right alarmmsgright">
+          <el-button
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 2px"
+            @click="onSearch"
+          >{{ '确定' }}</el-button>
+          <button
+            class="filter-item clearsearch"
+            style="font-size:12px; width: 20%;height:36px;"
+            icon="el-icon-refresh"
+            @click="resetQuery"
+          >重置</button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
         </div>
       </div>
       <div>
@@ -999,15 +1000,17 @@ export default {
 .pull-left.alarmmsgleft {
   width: 75%;
   .el-select {
-    width: 205px;
+    width: 180px;
   }
   .el-date-editor {
-    width: 205px !important;
     padding-left: 5px !important;
     padding-right: 0px !important;
     .el-range-input {
       margin-bottom: 2px;
     }
+  }
+  .el-date-editor--time {
+    width: 180px !important;
   }
 }
 .pull-right.alarmmsgright {
