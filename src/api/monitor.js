@@ -31,10 +31,11 @@ export function delMonitor(id) {
   })
 }
 
-export function play(cameraId) {
+export function play(cameraId, data) {
   return request({
     url: `/nvsapi/camera/live/play/${cameraId}`,
-    method: 'post'
+    method: 'post',
+    data
   })
 }
 
