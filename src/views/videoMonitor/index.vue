@@ -8,7 +8,7 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
+        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
@@ -318,7 +318,7 @@ export default {
       // loading: false,
       // rules: {
       //   cameraId: [
-      //     { required: true, message: '请选择设备名称', trigger: 'change' }
+      //     { required: true, message: '请选择摄像头名称', trigger: 'change' }
       //   ]
       // },
       deviceChosenVisible: false,
