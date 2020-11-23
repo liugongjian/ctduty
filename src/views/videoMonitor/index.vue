@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="pageLoading" class="videomonitorWrap" element-loading-text="拼命加载中">
+  <div class="videomonitorWrap">
     <!-- <el-dialog
       key="monitor-device"
       :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
@@ -43,7 +43,7 @@
     <div class="videoMonitor">
       <div class="leftPanel">
         <div class="leftContent">
-          <div class="monitorBox">
+          <div v-loading="videoLoading" class="monitorBox" >
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
@@ -53,7 +53,7 @@
                   :options="videoOptions"
                 />
                 <div
-                  v-else
+                  v-else-if="!videoLoading"
                   style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
                 >
                   <el-image
@@ -131,7 +131,7 @@
             </div>-->
           </div>
           <div class="censusData">
-            <div class="alertTable">
+            <div v-loading="tableLoading" class="alertTable">
               <div class="panelTitle">统计分析</div>
               <!-- :header-cell-style="{ background: '#ecedee', color: '#717171' }" -->
               <el-table :data="algorithmTblData">
@@ -169,7 +169,19 @@
             <div class="streamData">
               <div class="dataHeader"></div>
               <div class="dataPanel">
-                <div class="dataTitle">今日累计</div>
+                <div class="dataTitle">
+                  今日累计
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <p>流入</p>
@@ -180,7 +192,6 @@
                 </div>
               </div>
               <div class="dataPanel">
-                <div class="dataTitle">实时流量（近一小时）</div>
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <p>流入</p>
@@ -289,8 +300,11 @@
               </el-card>
             </div>
           </div>
-          <div v-else class="photoContainer">
-            <div class="photoContainer-noData-text">暂无数据</div>
+          <div v-else class="photoContainer photoContainer-noData">
+            <div class="photoContainer-noData-text">
+              <div class="photoContainer-noData-text-icon"><svg-icon icon-class="noData" /></div>
+              <div class="photoContainer-noData-text-content">暂无数据</div>
+            </div>
           </div>
           <pagination
             v-show="total>0"
@@ -315,25 +329,25 @@
 </template>
 
 <script>
-import moment from "moment";
-import { getAlertStatics } from "@/api/dashboard";
-import Pagination from "@/components/Pagination";
-import VideoPlayer from "@/components/VideoPlayer";
-import { getAlertInfos } from "@/api/alarm";
-import { fetchAllCameraList, searchCameraList } from "@/api/camera";
-import { taskList } from "@/api/algorithm";
-import { play } from "@/api/monitor";
-import nosrc from "@/assets/images/nosrc.png";
+import moment from 'moment'
+import { getAlertStatics } from '@/api/dashboard'
+import Pagination from '@/components/Pagination'
+import VideoPlayer from '@/components/VideoPlayer'
+import { getAlertInfos } from '@/api/alarm'
+import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+import { taskList } from '@/api/algorithm'
+import { play } from '@/api/monitor'
+import nosrc from '@/assets/images/nosrc.png'
 
-const dateTimeFormat = "YYYY-MM-DD HH:mm:ss";
-const timeFormat = "MM-DD HH:mm:ss";
+const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
+const timeFormat = 'MM-DD HH:mm:ss'
 export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      cameraId: "", // '64010106001324014975', //61010010001320014342
-      cameraName: "-",
-      taskId: "",
+      cameraId: '', // '64010106001324014975', //61010010001320014342
+      cameraName: '-',
+      taskId: '',
       // form: {},
       // loading: false,
       // rules: {
@@ -343,13 +357,13 @@ export default {
       // },
       deviceChosenVisible: false,
       bigPhotoVisible: false,
-      curPhoto: "",
+      curPhoto: '',
       nosrc,
       taskData: [],
       // algorithmTblData: [],
-      photosLoading: false,
+      photosLoading: true,
       photoCardList: [],
-      pageLoading: false,
+      videoLoading: false,
       total: 10,
       page: 0,
       limit: 10,
@@ -361,86 +375,82 @@ export default {
         // width: 960, // 播放器宽度
         // height: 480 // 播放器高度
       },
+      tableLoading: true,
       tableColumn: [],
       tableData: [],
-      heightByAuto: "",
+      heightByAuto: '',
       slide: 0
-    };
+    }
   },
   computed: {
     algorithmTblData() {
       if (this.tableColumn) {
-        const alertTotal = this.tableData[0] && this.tableData[0].alertCount;
+        const alertTotal = this.tableData[0] && this.tableData[0].alertCount
         // const realTableData = []
-        const row1 = { realHead: "触发次数" };
-        const row2 = { realHead: "占比" };
-        const row3 = { realHead: "是否配置" };
+        const row1 = { realHead: '触发次数' }
+        const row2 = { realHead: '占比' }
+        const row3 = { realHead: '是否配置' }
         this.tableColumn.forEach(({ id, name, applied, count }) => {
-          row1[name] = count;
+          row1[name] = count
           row2[name] = count
-            ? ((count * 100) / alertTotal).toFixed(2) + "%"
-            : "0%";
-          row3[name] = applied ? "是" : "否";
-        });
-        return [row1, row2, row3];
-      } else return [];
+            ? ((count * 100) / alertTotal).toFixed(2) + '%'
+            : '0%'
+          row3[name] = applied ? '是' : '否'
+        })
+        return [row1, row2, row3]
+      } else return []
     }
   },
   watch: {
     taskId(taskId) {
-      this.getPhotoList(taskId);
+      this.getPhotoList(taskId)
     },
     videoOptions(v) {
-      // v.map(item => {
-      //   this.allCameraList.forEach(one => {
-      //     if (one.id === item.cameraId) {
-      //       item.name = one.name
-      //     }
-      //   })
-      // })
       this.$nextTick(() => {
-        const boxHeight = document.querySelector(".video-panel").offsetHeight;
-        console.log("test---->", boxHeight);
-        this.heightByAuto = boxHeight + "px";
-      });
+        this.setVideoHeight()
+      })
     }
   },
   async created() {
-    const { cameraId } = this.$route.query;
-    this.cameraId = cameraId;
+    const { cameraId } = this.$route.query
+    this.cameraId = cameraId
     this.$nextTick(() => {
-      this.getTaskList();
-      this.getPhotoList();
-      this.getAlertDetailList();
-      this.getLiveStream();
-      this.getCameraById();
-      console.log("crreated", this.$route);
-    });
+      this.getTaskList()
+      this.getPhotoList()
+      this.getAlertDetailList()
+      this.getLiveStream()
+      this.getCameraById()
+      console.log('crreated', this.$route)
+    })
   },
   mounted() {
+    this.setVideoHeight()
     // this.cameraId = this.$route.params.cameraId
-    console.log("mounted", this.$route);
+    console.log('mounted', this.$route)
     window.onresize = () => {
-      const boxHeight = document.querySelector(".video-panel").offsetHeight;
-      console.log("test---->", boxHeight);
-      this.heightByAuto = boxHeight + "px";
-    };
+      this.setVideoHeight()
+    }
   },
   methods: {
+    setVideoHeight() {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    },
     saveMonitor() {
-      this.$refs["ruleForm"].validate(valid => {
+      this.$refs['ruleForm'].validate(valid => {
         if (valid) {
-          this.submiting = true;
-          console.log("form", this.form);
+          this.submiting = true
+          console.log('form', this.form)
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     getCameraById() {
-      const { cameraId } = this.$route.query;
+      const { cameraId } = this.$route.query
       if (cameraId) {
-        this.loading = true;
+        this.loading = true
         const params = {
           cascade: true,
           page: {
@@ -449,26 +459,26 @@ export default {
           },
           params: [
             {
-              field: "id",
-              operator: "EQUALS",
+              field: 'id',
+              operator: 'EQUALS',
               value: cameraId
             }
           ]
-        };
+        }
         searchCameraList(params).then(res => {
-          const data = res.body.data || [];
+          const data = res.body.data || []
           // 已添加到九宫格的摄像头要过滤掉
-          console.log("获取摄像头信息", data[0]);
-          const { name } = data[0];
-          this.cameraName = name;
-        });
+          console.log('获取摄像头信息', data[0])
+          const { name } = data[0]
+          this.cameraName = name
+        })
       } else {
-        this.cameraName = "-";
+        this.cameraName = '-'
       }
     },
     getCameraList(keyword) {
-      if (keyword !== "") {
-        this.loading = true;
+      if (keyword !== '') {
+        this.loading = true
         const params = {
           cascade: true,
           page: {
@@ -477,52 +487,52 @@ export default {
           },
           params: [
             {
-              field: "name",
-              operator: "LIKE",
+              field: 'name',
+              operator: 'LIKE',
               value: `%${keyword}%`
             },
             {
-              field: "online",
-              operator: "EQUALS",
+              field: 'online',
+              operator: 'EQUALS',
               value: 0
             }
           ]
-        };
+        }
         searchCameraList(params).then(res => {
-          let data = res.body.data || [];
+          let data = res.body.data || []
           // 已添加到九宫格的摄像头要过滤掉
           data = data.filter(
             i => !this.deviceList.find(r => r.cameraId === i.id)
-          );
+          )
           this.options = data.map(item => {
             return {
               value: item.id,
               label: item.address,
               name: item.name
-            };
-          });
-          this.loading = false;
-        });
+            }
+          })
+          this.loading = false
+        })
       } else {
-        this.options = [];
+        this.options = []
       }
     },
     onClose() {
-      this.$refs["ruleForm"].resetFields();
-      this.submiting = false;
-      this.form = {};
-      this.dialogFormVisible = false;
-      this.id = null;
+      this.$refs['ruleForm'].resetFields()
+      this.submiting = false
+      this.form = {}
+      this.dialogFormVisible = false
+      this.id = null
     },
     gotoAiConfig() {
-      this.$router.push("/algorithmconfig");
+      this.$router.push('/algorithmconfig')
     },
     sureThis() {
-      this.showVideoSetting = true;
+      this.showVideoSetting = true
     },
     getTaskById(id) {
-      const target = this.taskData.find(item => item.id === id);
-      return target.cnName;
+      const target = this.taskData.find(item => item.id === id)
+      return target.cnName
     },
     getTaskList() {
       const query = {
@@ -532,61 +542,61 @@ export default {
           size: 100
         },
         params: {}
-      };
+      }
       taskList(query)
         .then(res => {
           if (res.code === 0) {
-            this.taskData = res.body.data;
+            this.taskData = res.body.data
             //   this.algorithmId = res.body.data[0].id
             // this. = false
           } else {
-            this.taskData = [];
+            this.taskData = []
           }
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
     pageChange(e) {
-      console.log("change");
+      console.log('change')
       //   this.currentTab = e.label
       //   const s = e.label + ' ' + this.startTime + ':00'
       //   const end = e.label + ' ' + this.endTime + ':00'
       //   const h = this.formInline.typeValue
       //   this.page = 1
-      this.getPhotoList();
+      this.getPhotoList()
     },
     getDateTimeStr(time) {
-      return moment(time).format(timeFormat);
+      return moment(time).format(timeFormat)
     },
     getPhotoList() {
-      this.photosLoading = true;
-      const { cameraId } = this.$route.query;
+      this.photosLoading = true
+      const { cameraId } = this.$route.query
       const param = [
         {
-          field: "createTime",
-          operator: "BETWEEN",
+          field: 'createTime',
+          operator: 'BETWEEN',
           value: {
             start: moment()
-              .startOf("day")
+              .startOf('day')
               .format(dateTimeFormat),
             end: moment()
-              .endOf("day")
+              .endOf('day')
               .format(dateTimeFormat)
           }
         },
         {
-          field: "cameraId",
-          operator: "EQUALS",
+          field: 'cameraId',
+          operator: 'EQUALS',
           value: cameraId
         }
-      ];
+      ]
       if (this.taskId && this.taskId.length) {
         param.push({
-          field: "taskId",
-          operator: "IN",
+          field: 'taskId',
+          operator: 'IN',
           value: [...this.taskId]
-        });
+        })
       }
       const params = {
         cascade: true,
@@ -597,11 +607,11 @@ export default {
         params: param,
         sorts: [
           {
-            field: "create_Time",
-            type: "desc"
+            field: 'create_Time',
+            type: 'desc'
           }
         ]
-      };
+      }
       getAlertInfos(params)
         .then(res => {
           const {
@@ -609,27 +619,27 @@ export default {
               data,
               page: { total }
             }
-          } = res;
-          this.photoCardList = data;
-          this.total = total;
-          this.photosLoading = false;
+          } = res
+          this.photoCardList = data
+          this.total = total
+          this.photosLoading = false
         })
         .catch(err => {
-          console.log(err);
-          this.photosLoading = false;
-        });
+          console.log(err)
+          this.photosLoading = false
+        })
     },
     getCountByName(taskCount, name) {
       for (const item of taskCount) {
         if (item.name === name) {
-          return item.count;
+          return item.count
         }
       }
-      return "-";
+      return '-'
     },
     getAlertDetailList() {
-      const { cameraId } = this.$route.query;
-      this.pageLoading = true;
+      this.tableLoading = true
+      const { cameraId } = this.$route.query
       const query = {
         page: {
           index: 1,
@@ -639,27 +649,60 @@ export default {
           id: cameraId
         }
         // sorts: [{ field: 'create_time', type: 'desc' }]
-      };
+      }
       getAlertStatics(query).then(res => {
-        if (res.code !== 0) return;
-        this.tableData = res.body.data;
-        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : [];
+        if (res.code !== 0) {
+          this.tableLoading = false
+          return
+        }
+        this.tableData = res.body.data
+        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
+        this.tableLoading = false
         // this.total = res.body.page.total
-      });
+      // eslint-disable-next-line handle-callback-err
+      }).catch(err => {
+        this.tableLoading = false
+      })
     },
     getLiveStream() {
-      this.pageLoading = true;
-      const { cameraId } = this.$route.query;
+      this.videoLoading = true
+      const { cameraId } = this.$route.query
       play(cameraId, {
-        type: 2
+        'type': 2
+      }).then(res => {
+        const data = res.body.data || []
+        // const xx = {
+        //     ...data,
+        //     image: null,
+        //     flvSrc: data.rtmpuri,
+        console.log('视频流--------', data.rtmpuri)
+        this.videoOptions = {
+          autoplay: true,
+          controls: true,
+          width: 400, // 播放器宽度
+          height: 300, // 播放器高度
+          // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+          fluid: true, // 流体布局，自动充满，并保持播放其比例
+          sources: [
+            {
+              src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
+              type: this.video_type(data.rtmpuri ? data.rtmpuri + '&a.flv' : '')
+            }
+          ]
+        }
+        // }
+        this.videoLoading = false
+      }).catch(err => {
+        this.$message(err.message || '获取摄像头播放流失败.')
+        this.videoLoading = false
       })
         .then(res => {
-          const data = res.body.data || [];
+          const data = res.body.data || []
           // const xx = {
           //     ...data,
           //     image: null,
           //     flvSrc: data.rtmpuri,
-          console.log("视频流--------", data.rtmpuri);
+          console.log('视频流--------', data.rtmpuri)
           this.videoOptions = {
             autoplay: true,
             controls: true,
@@ -669,39 +712,39 @@ export default {
             fluid: true, // 流体布局，自动充满，并保持播放其比例
             sources: [
               {
-                src: data.rtmpuri ? data.rtmpuri + "&a.flv" : "",
+                src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
                 type: this.video_type(
-                  data.rtmpuri ? data.rtmpuri + "&a.flv" : ""
+                  data.rtmpuri ? data.rtmpuri + '&a.flv' : ''
                 )
               }
             ]
-          };
+          }
           // }
-          this.pageLoading = false;
+          this.pageLoading = false
         })
         .catch(err => {
-          this.$message(err.message || "获取摄像头播放流失败.");
-          this.pageLoading = false;
-        });
+          this.$message(err.message || '获取摄像头播放流失败.')
+          this.pageLoading = false
+        })
     },
     video_type(_url) {
-      var url = _url.toLowerCase();
-      if (url.startsWith("rtmp")) {
-        return "rtmp/flv";
-      } else if (url.endsWith("m3u8") || url.endsWith("m3u")) {
-        return "application/x-mpegURL";
-      } else if (url.endsWith("webm")) {
-        return "video/webm";
-      } else if (url.endsWith("mp4")) {
-        return "video/mp4";
-      } else if (url.endsWith("ogv")) {
-        return "video/ogg";
-      } else if (url.endsWith("hls")) {
-        return "application/x-mpegURL";
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
       }
     }
   }
-};
+}
 </script>
 <style lang='scss'>
 #app {
@@ -715,8 +758,9 @@ export default {
   }
 }
 .videomonitorWrap {
-  .el-dialog {
-    .el-dialog__header {
+   min-height:540px;
+  .el-dialog{
+    .el-dialog__header{
       text-align: left;
     }
     .photoList-image {
@@ -778,7 +822,7 @@ export default {
       .realTimeData {
         // flex-grow: 1;
         // width:50%;
-        height: 190px;
+        height:195px;
         margin-left: 20px;
         background: #ffffff;
         padding: 20px;
@@ -792,38 +836,39 @@ export default {
         }
         .dataHeader {
           display: table-cell;
-          width: 20%;
+          width:16%;
           min-width: 90px;
-          height: 30px;
-          line-height: 30px;
-          // font-size: 14px;
-          // background: #F0EFEF;
-          padding-left: 18px;
-          color: rgba(0, 0, 0, 0.85);
-          // 注意回退
-          padding-top: 10px;
-          font-size: 16px;
+          font-weight: bold;
+            // height: 30px;
+            line-height: 30px;
+            // font-size: 14px;
+            // background: #F0EFEF;
+            // padding-left: 18px;
+            color:rgba(0,0,0,0.85);
+            // 注意回退
+             padding-top:10px;
+             font-size:16px;
         }
         .dataPanel {
           display: table-cell;
-          width: 40%;
-          .dataTitle {
-            font-size: 14px;
-            margin-left: 20px;
+          width:42%;
+          .dataTitle{
+              font-size: 14px;
+              margin-left: 20px;
           }
           .dataText {
             margin-left: 20px;
           }
-          .dataShow {
-            width: 40%;
-            p {
-              font-size: 12px;
-              color: rgba(0, 0, 0, 0.85);
-              margin: 10px 0 0px;
-            }
-            div {
-              font-size: 14px;
-            }
+          .dataShow{
+            width:40%;
+              p{
+                  font-size: 12px;
+                  color: #666;
+                  margin: 15px 0 0;
+              }
+              div{
+                  font-size: 14px;
+              }
           }
         }
       }
@@ -893,14 +938,25 @@ export default {
             margin-right: 2%;
           }
         }
-        .photoContainer-noData {
-          &-text {
-            width: 100%;
-            margin-top: calc(25% - 15px);
-            font-size: 20px;
-            color: #999;
-            text-align: center;
-            vertical-align: middle;
+          .photoContainer-noData{
+            min-height:90px;
+            &-text{
+              height:90px;
+              overflow:hidden;
+              &-icon{
+                 font-size: 48px;
+              }
+              &-content{
+                font-size: 16px;
+                padding-top: 10px;
+              }
+              width:100%;
+              position:absolute;
+              top:calc(50% - 45px);
+              color: #b2b2b2;
+              text-align: center;
+              vertical-align: middle;
+            }
           }
         }
       }
@@ -1172,6 +1228,5 @@ export default {
         flex: 1;
       }
     }
-  }
 }
 </style>
