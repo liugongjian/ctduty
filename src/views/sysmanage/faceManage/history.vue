@@ -7,13 +7,14 @@
             v-waves
             class="filter-item"
             size="mini"
+            style="height: 36px"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            style="font-size:12px"
-            icon="el-icon-refresh"
+            style="font-size:12px; height: 36px"
+            size="mini"
             @click="onClear"
           >重置</el-button>
         </div>
@@ -28,7 +29,7 @@
               :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -596,7 +597,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 36px !important;
 }
 .el-range-separator {
   width: 30px !important;
