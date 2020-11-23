@@ -609,7 +609,7 @@ export default {
               position: absolute;
               right: 12px;
               &:hover{
-                font-size: 16px;
+                font-size: 14px;
                 color: #FF9832;
               }
             }
