@@ -7,13 +7,14 @@
             v-waves
             class="filter-item"
             size="mini"
+            style="height: 36px"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            style="font-size:12px"
-            icon="el-icon-refresh"
+            style="font-size:12px; height: 36px"
+            size="mini"
             @click="onClear"
           >重置</el-button>
         </div>
@@ -28,7 +29,7 @@
               :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -347,6 +348,7 @@ export default {
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
       const h1 = this.formInline.typeValue
       this.oldSize = this.limit
+      this.page = 1
       this.getList(s1, end1, h1)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
@@ -596,7 +598,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 36px !important;
 }
 .el-range-separator {
   width: 30px !important;
