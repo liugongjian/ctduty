@@ -10,8 +10,20 @@
             style="width: 260px;"
             @keyup.enter.native="onSearch"
           ></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="onClear"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button
@@ -595,6 +607,7 @@ export default {
       this.$refs[formName].clearValidate()
     },
     onSearch() {
+      this.page = 1
       const params = {
         page: {
           index: this.page,

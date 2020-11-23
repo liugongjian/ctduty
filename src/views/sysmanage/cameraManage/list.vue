@@ -59,7 +59,7 @@
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
         <el-table-column
           :show-overflow-tooltip="true"
-          :label="摄像头名称"
+          :label="'摄像头名称'"
           align="center"
           class-name="deviceName"
         >
