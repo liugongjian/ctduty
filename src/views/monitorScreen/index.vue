@@ -20,7 +20,7 @@
                 v-else-if="item.flvSrc"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
-                :flv="item.flvSrc"/> -->
+              :flv="item.flvSrc"/>-->
               <div
                 v-else
                 style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
@@ -53,7 +53,11 @@
         </div>
       </template>
       <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
-        <div :style="{height: `${parseInt(heightByAuto,10)+36}px`}" class="screen-add" @click="addMonitorDialog">
+        <div
+          :style="{height: `${parseInt(heightByAuto,10)+36}px`}"
+          class="screen-add"
+          @click="addMonitorDialog"
+        >
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
@@ -65,7 +69,7 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
+        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
@@ -79,8 +83,8 @@
               :key="item.value"
               :label="item.name"
               :value="item.value"
-            >
-          </el-option></el-select>
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -92,18 +96,18 @@
 </template>
 
 <script>
-import VideoPlayer from '@/components/VideoPlayer'
-import VideoFlv from '@/components/VideoFlv'
+import VideoPlayer from "@/components/VideoPlayer";
+import VideoFlv from "@/components/VideoFlv";
 import {
   fetchAllMonitor,
   updateMonitor,
   addMonitor,
   delMonitor,
   loadingImg
-} from '@/api/monitor'
-import { fetchAllCameraList, searchCameraList } from '@/api/camera'
-import fakeimg from '@/assets/images/fakeimg.png'
-import nosrc from '@/assets/images/nosrc.png'
+} from "@/api/monitor";
+import { fetchAllCameraList, searchCameraList } from "@/api/camera";
+import fakeimg from "@/assets/images/fakeimg.png";
+import nosrc from "@/assets/images/nosrc.png";
 
 export default {
   components: { VideoPlayer, VideoFlv },
@@ -114,7 +118,7 @@ export default {
       form: {},
       rules: {
         cameraId: [
-          { required: true, message: '请选择设备名称', trigger: 'change' }
+          { required: true, message: "请选择摄像头", trigger: "change" }
         ]
       },
       nosrc,
@@ -122,7 +126,7 @@ export default {
       deviceList: [],
       loading: false,
       submiting: false,
-      id: '',
+      id: "",
       videoOptions: {
         autoplay: true,
         controls: true,
@@ -137,62 +141,64 @@ export default {
         // }
       },
       allCameraList: [],
-      heightByAuto: ''
-    }
+      heightByAuto: ""
+    };
   },
   watch: {
     deviceList(v) {
       v.map(item => {
         this.allCameraList.forEach(one => {
           if (one.id === item.cameraId) {
-            item.name = one.name
+            item.name = one.name;
           }
-        })
-      })
+        });
+      });
       this.$nextTick(() => {
-        const boxWidth = document.querySelector('.screen-body').offsetWidth
+        const boxWidth = document.querySelector(".screen-body").offsetWidth;
         // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
-        const windowWidth = window.innerWidth
+        const windowWidth = window.innerWidth;
         // const windowHeight = window.innerHeight
         // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
         if (windowWidth > 1440) {
-          this.heightByAuto = boxWidth / 1.3 + 'px'
+          this.heightByAuto = boxWidth / 1.3 + "px";
         } else if (windowWidth <= 1440 && windowWidth > 1300) {
-          this.heightByAuto = boxWidth / 1.366 + 'px'
+          this.heightByAuto = boxWidth / 1.366 + "px";
         } else {
-          this.heightByAuto = boxWidth / 1.45 + 'px'
+          this.heightByAuto = boxWidth / 1.45 + "px";
         }
-      })
+      });
     }
   },
   async mounted() {
-    await this.loadFakeImg()
-    await this.getAllCamera()
+    await this.loadFakeImg();
+    await this.getAllCamera();
   },
   methods: {
     loadFakeImg() {
-      this.pageLoading = true
+      this.pageLoading = true;
       loadingImg().then(res => {
         if (res.body.data.length > 0) {
           // const staticImg = []
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
-              image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
+              image: item.image
+                ? "data:image/png;base64," + item.image
+                : fakeimg,
               id: item.id,
               name: item.name
-            })
-          })
+            });
+          });
           // const a = staticImg.filter((item, index) => {
           //   this.deviceList.find(val => item.id !== val.id)
           // })
           // if (a.length > 1) {
           //   this.deviceList.push(a)
           // }
-          this.getLiveList()
-          this.pageLoading = false
+          this.getLiveList();
+          this.pageLoading = false;
         }
-      })
+      });
     },
     getAllCamera() {
       const params = {
@@ -201,18 +207,17 @@ export default {
           index: 1,
           size: 999999
         },
-        params: {
-        }
-      }
+        params: {}
+      };
       fetchAllCameraList(params).then(res => {
         if (res.code === 0) {
-          this.allCameraList = res.body.data
+          this.allCameraList = res.body.data;
         }
-      })
+      });
     },
     getCameraList(keyword) {
-      if (keyword !== '') {
-        this.loading = true
+      if (keyword !== "") {
+        this.loading = true;
         const params = {
           cascade: true,
           page: {
@@ -221,39 +226,39 @@ export default {
           },
           params: [
             {
-              field: 'name',
-              operator: 'LIKE',
+              field: "name",
+              operator: "LIKE",
               value: `%${keyword}%`
             },
             {
-              field: 'online',
-              operator: 'EQUALS',
+              field: "online",
+              operator: "EQUALS",
               value: 0
             }
           ]
-        }
+        };
         searchCameraList(params).then(res => {
-          let data = res.body.data || []
+          let data = res.body.data || [];
           // 已添加到九宫格的摄像头要过滤掉
           data = data.filter(
             i => !this.deviceList.find(r => r.cameraId === i.id)
-          )
+          );
           this.options = data.map(item => {
             return {
               value: item.id,
               label: item.address,
               name: item.name
-            }
-          })
-          this.loading = false
-        })
+            };
+          });
+          this.loading = false;
+        });
       } else {
-        this.options = []
+        this.options = [];
       }
     },
     getLiveList() {
       fetchAllMonitor().then(res => {
-        const data = res.body.data || []
+        const data = res.body.data || [];
         this.deviceList = data.map(item => {
           return {
             ...item,
@@ -268,8 +273,10 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+                  src: item.rtmpuri ? item.rtmpuri + "&a.flv" : "",
+                  type: this.video_type(
+                    item.rtmpuri ? item.rtmpuri + "&a.flv" : ""
+                  )
                 }
                 // {
                 //   src: item.rtmpuri,
@@ -277,51 +284,51 @@ export default {
                 // }
               ]
             }
-          }
-        })
+          };
+        });
         // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
         this.options = this.options.filter(
           i => !this.deviceList.find(r => r.cameraId === i.value)
-        )
-        this.pageLoading = false
-      })
+        );
+        this.pageLoading = false;
+      });
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.name
-      this.dialogFormVisible = true
-      this.id = item.id
+      this.form.cameraId = item.name;
+      this.dialogFormVisible = true;
+      this.id = item.id;
     },
     deleteMonitor(item) {
-      this.$confirm('确认移除该摄像头?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("确认移除该摄像头?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
         delMonitor(item.id).then(res => {
-          this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
+          this.deviceList = this.deviceList.filter(i => i.id !== item.id); // list接口响应慢，这里先过滤掉
           this.$message({
-            type: 'success',
-            message: '删除成功'
-          })
-          this.getLiveList()
-        })
-      })
+            type: "success",
+            message: "删除成功"
+          });
+          this.getLiveList();
+        });
+      });
     },
     onClose() {
-      this.$refs['ruleForm'].resetFields()
-      this.submiting = false
-      this.form = {}
-      this.dialogFormVisible = false
-      this.id = null
+      this.$refs["ruleForm"].resetFields();
+      this.submiting = false;
+      this.form = {};
+      this.dialogFormVisible = false;
+      this.id = null;
     },
     addMonitorDialog() {
-      this.form = {}
-      this.dialogFormVisible = true
+      this.form = {};
+      this.dialogFormVisible = true;
     },
     saveMonitor() {
-      this.$refs['ruleForm'].validate(valid => {
+      this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          this.submiting = true
+          this.submiting = true;
           if (this.id) {
             updateMonitor({
               id: this.id,
@@ -330,63 +337,63 @@ export default {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
-              )
+              );
               this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-              this.onClose()
-              this.getLiveList()
-              this.submiting = false
-            })
+                type: "success",
+                message: "修改成功"
+              });
+              this.onClose();
+              this.getLiveList();
+              this.submiting = false;
+            });
           } else {
             this.options.forEach(item => {
               if (item.value === this.form.cameraId) {
                 this.deviceList.push({
                   address: item.label,
                   image: fakeimg
-                })
+                });
               }
-            })
+            });
             addMonitor({
               cameraId: this.form.cameraId
             }).then(res => {
               // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
-              )
+              );
               this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
-              this.onClose()
-              this.getLiveList()
-              this.submiting = false
-            })
+                type: "success",
+                message: "添加成功"
+              });
+              this.onClose();
+              this.getLiveList();
+              this.submiting = false;
+            });
           }
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
     video_type(_url) {
-      var url = _url.toLowerCase()
-      if (url.startsWith('rtmp')) {
-        return 'rtmp/flv'
-      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
-        return 'application/x-mpegURL'
-      } else if (url.endsWith('webm')) {
-        return 'video/webm'
-      } else if (url.endsWith('mp4')) {
-        return 'video/mp4'
-      } else if (url.endsWith('ogv')) {
-        return 'video/ogg'
-      } else if (url.endsWith('hls')) {
-        return 'application/x-mpegURL'
+      var url = _url.toLowerCase();
+      if (url.startsWith("rtmp")) {
+        return "rtmp/flv";
+      } else if (url.endsWith("m3u8") || url.endsWith("m3u")) {
+        return "application/x-mpegURL";
+      } else if (url.endsWith("webm")) {
+        return "video/webm";
+      } else if (url.endsWith("mp4")) {
+        return "video/mp4";
+      } else if (url.endsWith("ogv")) {
+        return "video/ogg";
+      } else if (url.endsWith("hls")) {
+        return "application/x-mpegURL";
       }
     }
   }
-}
+};
 </script>
 <style lang='scss'>
 .monitorScreen-wrap {
@@ -406,7 +413,7 @@ export default {
   background: #fff;
   display: flex;
   flex-wrap: wrap;
-  flex-direction:row;
+  flex-direction: row;
   // justify-content: center;
 
   .screen {

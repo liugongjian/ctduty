@@ -20,11 +20,11 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">设备名称:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
-            placeholder="设备名称"
+            placeholder="摄像头名称"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
@@ -81,7 +81,7 @@
                   :style="{width:210 + 'px', height: 36 + 'px'}"
                   :picker-options="pickerOptions"
                   type="daterange"
-                  range-separator="to"
+                  range-separator="~~"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   format="yyyy-MM-dd"
@@ -177,7 +177,7 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'设备名称'"
+                :label="'摄像头名称'"
                 align="center"
                 min-width="8%"
                 prop="camera.name"
@@ -315,7 +315,7 @@
         </el-button>-->
 
         <!-- >
-            <el-form-item label="设备名称：" prop="camera.name">
+            <el-form-item label="摄像头名称：" prop="camera.name">
               <span style="width: 300px;">{{ temp.camera | formatNull }}</span>
             </el-form-item>
             <el-form-item label="监控时间：" prop="createTime">
