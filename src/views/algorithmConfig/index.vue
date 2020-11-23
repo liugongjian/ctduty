@@ -5,7 +5,7 @@
         <el-col :span="7" class="videoQueryBox">
           <div class="videoTotalBox">
             <div class="videoTotal">
-              <span class="videoTotalText">视频列表</span>
+              <span class="videoTotalText">摄像头列表</span>
               <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
             </div>
             <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
@@ -607,7 +607,7 @@ export default {
             .detailSvg{
               display: none;
               position: absolute;
-              right: 5px;
+              right: 12px;
               &:hover{
                 font-size: 16px;
                 color: #FF9832;
