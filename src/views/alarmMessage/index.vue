@@ -673,6 +673,7 @@ export default {
         taskId: h2
       }
       this.oldSize = this.limit
+      this.page = 1
       this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =

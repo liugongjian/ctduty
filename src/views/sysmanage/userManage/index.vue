@@ -5,7 +5,7 @@
       <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
           <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
-          <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
+          <el-button class="searchbtn" type="warning" @click="onSearch">搜索</el-button>
           <el-button class="searchbtn" @click="resetQuery">重置</el-button>
         </div>
         <div class="pull-right">
@@ -344,6 +344,10 @@ export default {
     this.getUserList()
   },
   methods: {
+    onSearch() {
+      this.page = 1
+      this.getUserList()
+    },
     getUserList() {
       const query = {
         cascade: true,

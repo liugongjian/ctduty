@@ -595,6 +595,7 @@ export default {
       this.$refs[formName].clearValidate()
     },
     onSearch() {
+      this.page = 1
       const params = {
         page: {
           index: this.page,
