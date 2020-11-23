@@ -71,7 +71,7 @@
           <transition name="fade">
             <div v-show="flag">
               <div class="block filter-item">
-                <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+                <div style="margin-right: 20px;font-size: 12px">选择日期:</div>
               </div>
               <div class="block filter-item">
                 <el-date-picker
