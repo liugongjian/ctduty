@@ -399,6 +399,10 @@ export default {
     this.getNoticeList()
   },
   methods: {
+    onSearch() {
+      this.queryInfo.pagenum = 1
+      this.getNoticeList()
+    },
     async getNoticeList() {
       const query = {
         cascade: true,

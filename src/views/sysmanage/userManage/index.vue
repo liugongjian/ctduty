@@ -356,6 +356,10 @@ export default {
     this.getUserList()
   },
   methods: {
+    onSearch() {
+      this.page = 1
+      this.getUserList()
+    },
     getUserList() {
       const query = {
         cascade: true,

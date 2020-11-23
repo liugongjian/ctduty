@@ -348,6 +348,7 @@ export default {
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
       const h1 = this.formInline.typeValue
       this.oldSize = this.limit
+      this.page = 1
       this.getList(s1, end1, h1)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
