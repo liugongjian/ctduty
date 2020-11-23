@@ -670,6 +670,7 @@ export default {
       play(cameraId, {
         'type': 2
       }).then(res => {
+        if (!res || res.code !== 0) return
         const data = res.body.data || []
         // const xx = {
         //     ...data,
@@ -696,36 +697,6 @@ export default {
         this.$message(err.message || '获取摄像头播放流失败.')
         this.videoLoading = false
       })
-        .then(res => {
-          const data = res.body.data || []
-          // const xx = {
-          //     ...data,
-          //     image: null,
-          //     flvSrc: data.rtmpuri,
-          console.log('视频流--------', data.rtmpuri)
-          this.videoOptions = {
-            autoplay: true,
-            controls: true,
-            width: 400, // 播放器宽度
-            height: 300, // 播放器高度
-            // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
-            fluid: true, // 流体布局，自动充满，并保持播放其比例
-            sources: [
-              {
-                src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
-                type: this.video_type(
-                  data.rtmpuri ? data.rtmpuri + '&a.flv' : ''
-                )
-              }
-            ]
-          }
-          // }
-          this.pageLoading = false
-        })
-        .catch(err => {
-          this.$message(err.message || '获取摄像头播放流失败.')
-          this.pageLoading = false
-        })
     },
     video_type(_url) {
       var url = _url.toLowerCase()
