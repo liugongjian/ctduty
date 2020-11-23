@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="pageLoading" class="videomonitorWrap" element-loading-text="拼命加载中">
+  <div class="videomonitorWrap">
     <!-- <el-dialog
       key="monitor-device"
       :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
@@ -37,7 +37,7 @@
     <div class="videoMonitor">
       <div class="leftPanel">
         <div class="leftContent">
-          <div class="monitorBox">
+          <div v-loading="videoLoading" class="monitorBox" >
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
@@ -47,7 +47,7 @@
                   :options="videoOptions"
                 />
                 <div
-                  v-else
+                  v-else-if="!videoLoading"
                   style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
                 >
                   <el-image
@@ -124,7 +124,7 @@
 
           </div>
           <div class="censusData">
-            <div class="alertTable">
+            <div v-loading="tableLoading" class="alertTable">
               <div class="panelTitle">统计分析</div>
               <!-- :header-cell-style="{ background: '#ecedee', color: '#717171' }" -->
               <el-table
@@ -153,6 +153,16 @@
                 <div class="dataTitle">
                   今日累计
                 </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <p>流入</p>
@@ -163,9 +173,6 @@
                 </div>
               </div>
               <div class="dataPanel">
-                <div class="dataTitle">
-                  实时流量（近一小时）
-                </div>
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <p>流入</p>
@@ -265,8 +272,11 @@
               </el-card>
             </div>
           </div>
-          <div v-else class="photoContainer">
-            <div class="photoContainer-noData-text">暂无数据</div>
+          <div v-else class="photoContainer photoContainer-noData">
+            <div class="photoContainer-noData-text">
+              <div class="photoContainer-noData-text-icon"><svg-icon icon-class="noData" /></div>
+              <div class="photoContainer-noData-text-content">暂无数据</div>
+            </div>
           </div>
           <pagination
             v-show="total>0"
@@ -327,9 +337,9 @@ export default {
       nosrc,
       taskData: [],
       // algorithmTblData: [],
-      photosLoading: false,
+      photosLoading: true,
       photoCardList: [],
-      pageLoading: false,
+      videoLoading: false,
       total: 10,
       page: 0,
       limit: 10,
@@ -341,6 +351,7 @@ export default {
         // width: 960, // 播放器宽度
         // height: 480 // 播放器高度
       },
+      tableLoading: true,
       tableColumn: [],
       tableData: [],
       heightByAuto: '',
@@ -369,17 +380,8 @@ export default {
       this.getPhotoList(taskId)
     },
     videoOptions(v) {
-      // v.map(item => {
-      //   this.allCameraList.forEach(one => {
-      //     if (one.id === item.cameraId) {
-      //       item.name = one.name
-      //     }
-      //   })
-      // })
       this.$nextTick(() => {
-        const boxHeight = document.querySelector('.video-panel').offsetHeight
-        console.log('test---->', boxHeight)
-        this.heightByAuto = boxHeight + 'px'
+        this.setVideoHeight()
       })
     }
   },
@@ -396,15 +398,19 @@ export default {
     })
   },
   mounted() {
+    this.setVideoHeight()
     // this.cameraId = this.$route.params.cameraId
     console.log('mounted', this.$route)
     window.onresize = () => {
-      const boxHeight = document.querySelector('.video-panel').offsetHeight
-      console.log('test---->', boxHeight)
-      this.heightByAuto = boxHeight + 'px'
+      this.setVideoHeight()
     }
   },
   methods: {
+    setVideoHeight() {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    },
     saveMonitor() {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
@@ -589,8 +595,8 @@ export default {
       return '-'
     },
     getAlertDetailList() {
+      this.tableLoading = true
       const { cameraId } = this.$route.query
-      this.pageLoading = true
       const query = {
         page: {
           index: 1,
@@ -602,14 +608,21 @@ export default {
         // sorts: [{ field: 'create_time', type: 'desc' }]
       }
       getAlertStatics(query).then(res => {
-        if (res.code !== 0) return
+        if (res.code !== 0) {
+          this.tableLoading = false
+          return
+        }
         this.tableData = res.body.data
         this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
+        this.tableLoading = false
         // this.total = res.body.page.total
+      // eslint-disable-next-line handle-callback-err
+      }).catch(err => {
+        this.tableLoading = false
       })
     },
     getLiveStream() {
-      this.pageLoading = true
+      this.videoLoading = true
       const { cameraId } = this.$route.query
       play(cameraId, {
         'type': 2
@@ -635,10 +648,10 @@ export default {
           ]
         }
         // }
-        this.pageLoading = false
+        this.videoLoading = false
       }).catch(err => {
         this.$message(err.message || '获取摄像头播放流失败.')
-        this.pageLoading = false
+        this.videoLoading = false
       })
     },
     video_type(_url) {
@@ -672,6 +685,7 @@ export default {
   }
 }
 .videomonitorWrap {
+   min-height:540px;
   .el-dialog{
     .el-dialog__header{
       text-align: left;
@@ -735,7 +749,7 @@ export default {
       .realTimeData{
         // flex-grow: 1;
         // width:50%;
-        height:190px;
+        height:195px;
         margin-left: 20px;
         background: #ffffff;
         padding:20px;
@@ -749,13 +763,14 @@ export default {
         }
         .dataHeader{
           display: table-cell;
-          width:20%;
+          width:16%;
           min-width: 90px;
-            height: 30px;
+          font-weight: bold;
+            // height: 30px;
             line-height: 30px;
             // font-size: 14px;
             // background: #F0EFEF;
-            padding-left: 18px;
+            // padding-left: 18px;
             color:rgba(0,0,0,0.85);
             // 注意回退
              padding-top:10px;
@@ -763,7 +778,7 @@ export default {
         }
         .dataPanel{
           display: table-cell;
-          width:40%;
+          width:42%;
           .dataTitle{
               font-size: 14px;
               margin-left: 20px;
@@ -775,8 +790,8 @@ export default {
             width:40%;
               p{
                   font-size: 12px;
-                  color:rgba(0,0,0,0.85);
-                  margin: 10px 0 0px;
+                  color: #666;
+                  margin: 15px 0 0;
               }
               div{
                   font-size: 14px;
@@ -851,11 +866,21 @@ export default {
           }
         }
           .photoContainer-noData{
+            min-height:90px;
             &-text{
+              height:90px;
+              overflow:hidden;
+              &-icon{
+                 font-size: 48px;
+              }
+              &-content{
+                font-size: 16px;
+                padding-top: 10px;
+              }
               width:100%;
-              margin-top:calc(25% - 15px);
-              font-size: 20px;
-              color:#999;
+              position:absolute;
+              top:calc(50% - 45px);
+              color: #b2b2b2;
               text-align: center;
               vertical-align: middle;
             }
