@@ -40,6 +40,7 @@
         </div>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="noticeList"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -284,6 +285,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
@@ -403,6 +405,7 @@ export default {
       this.getNoticeList()
     },
     async getNoticeList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
@@ -438,6 +441,7 @@ export default {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
         })
         this.total = response.body.page.total
+        this.tableLoading = false
       })
     },
     pageChange() {

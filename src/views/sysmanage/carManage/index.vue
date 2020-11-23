@@ -156,6 +156,7 @@
         </el-dialog>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -253,6 +254,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
@@ -398,6 +400,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         page: {
           index: this.page,
@@ -415,6 +418,7 @@ export default {
         this.importData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     importConfirm() {

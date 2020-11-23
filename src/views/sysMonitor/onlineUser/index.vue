@@ -29,6 +29,7 @@
       </div>
 
       <el-table
+        v-loading="tableLoading"
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -163,6 +164,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -278,6 +280,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       fetchOnlineList().then(response => {
         this.tableData = []
         for (let i = 0; i < response.body.data.length; i++) {
@@ -286,6 +289,7 @@ export default {
         }
         // this.total = response.body.data.pageInfo.totalItems
         // this.listLoading = false
+        this.tableLoading = false
       })
     },
 

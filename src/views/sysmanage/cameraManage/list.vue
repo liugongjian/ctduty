@@ -46,6 +46,7 @@
         </div>-->
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -222,6 +223,7 @@ export default {
   components: { Pagination, VideoConfig },
   data() {
     return {
+      tableLoading: null,
       dialogForm: {
         address: '',
         creatorId: '',
@@ -464,6 +466,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         cascade: true,
         page: {
@@ -476,6 +479,7 @@ export default {
         this.tableData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     handleSelectionChange(val) {

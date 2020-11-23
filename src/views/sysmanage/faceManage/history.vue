@@ -72,7 +72,7 @@
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
-          <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
+          <el-tab-pane v-loading="tableLoading" v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
             <div v-if="tableData.length>0" class="history-box">
               <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
@@ -153,6 +153,7 @@ export default {
   },
   data() {
     return {
+      tableLoading: null,
       renderTime,
       else: '其他',
       temp: {
@@ -468,6 +469,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      this.tableLoading = true
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -522,6 +524,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     handleSelectionChange(val) {

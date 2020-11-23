@@ -44,6 +44,7 @@
           @close="closebulkimportDialog"
         >
           <el-table
+            v-loading="tableLoading"
             v-if="isBatchSuccess"
             :data="mulTableData"
             :header-cell-class-name="tableRowClassHeader"
@@ -345,6 +346,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       upSingleHeaders: {
         Authorization: token
       },
@@ -424,7 +426,6 @@ export default {
   async created() {
     await Message.closeAll()
     await this.getfaceList()
-    await this.getfaceList()
   },
   methods: {
     delmulTableInfo(id) {
@@ -502,6 +503,7 @@ export default {
       this.mulTableData = []
     },
     getfaceList() {
+      this.tableLoading = true
       const query = {
         page: {
           index: this.page,
@@ -515,6 +517,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     batchesDel() {

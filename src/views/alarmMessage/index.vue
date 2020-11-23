@@ -127,6 +127,7 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -379,6 +380,7 @@ export default {
   },
   data() {
     return {
+      tableLoading: null,
       flag: false,
       openname: '展开',
       alarmtext: '当日告警总计',
@@ -812,6 +814,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      this.tableLoading = true
       const { type, taskId } = h
       const param = [
         {
@@ -895,6 +898,7 @@ export default {
             })
           })
         }, 300)
+        this.tableLoading = false
       })
     },
     dialogQuxiao(val) {
