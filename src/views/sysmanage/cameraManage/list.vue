@@ -17,7 +17,7 @@
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
+              <el-form-item label="摄像头型号："><el-input v-model="dialogForm.model" placeholder="请输入摄像头型号" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
               <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -57,14 +57,9 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" align="center" class-name="deviceName">
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头名称'" class-name="deviceName">
           <template slot-scope="scope">
-            <a
-              @click="toDetail(scope.row)"
-            >
-              {{ scope.row.name }}
-            </a>
-
+            <a @click="toDetail(scope.row)">{{ scope.row.name }}</a>
           </template>
         </el-table-column>
         <el-table-column
@@ -133,8 +128,13 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="摄像头ID：">
+        <el-form
+          :model="editForm"
+          :rules="editFormRules"
+          label-position="right"
+          label-width="130px"
+        >
+          <el-form-item label="摄像头ID：" prop="id">
             <el-input
               v-model="editForm.id"
               placeholder="请输入摄像头ID"
@@ -142,7 +142,7 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="负责人：">
+          <el-form-item label="负责人：" prop="creator">
             <el-select
               v-model="editForm.inChargeName"
               :value="editForm.inChargeName"
@@ -157,26 +157,17 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="摄像头经纬度：">
+          <el-form-item label="摄像头经纬度：" prop="tude">
             <el-input
-              v-model="editForm.longitude"
+              v-model="editForm.tude"
               type="text"
               placeholder="请输入摄像头经度"
+              style="width:300px;"
               class="filter-item"
-              style="width: 147px;"
-              @input="editForm.longitude=editForm.longitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
-            ></el-input>
-            <el-input
-              v-model="editForm.latitude"
-              type="text"
-              placeholder="请输入摄像头纬度"
-              style="width: 147px; "
-              class="filter-item"
-              @input="editForm.latitude=editForm.latitude.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
             ></el-input>
           </el-form-item>
           <!-- <el-form-item label="摄像头纬度："></el-form-item> -->
-          <el-form-item label="视频流信息：">
+          <el-form-item label="视频流信息：" prop="url">
             <el-input
               v-model="editForm.url"
               placeholder="请输入视频流信息"
@@ -184,7 +175,7 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="地址：">
+          <el-form-item label="地址：" prop="address">
             <el-input
               v-model="editForm.name"
               :rows="4"
@@ -244,22 +235,26 @@ export default {
         model: '',
         phone: ''
       },
-      addrules: {
-        creatorId: [
-          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
-        ],
-        name: [
-          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
+      editFormRules: {
+        creator: [
+          { required: true, trigger: 'change', message: '请选择负责人' }
         ],
         url: [
           { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
+        tude: [
+          { required: true, trigger: 'blur', message: '经纬度信息不能为空' },
+          {
+            pattern: /^[\-\+]?(0?\d{1,2}\.\d{1,6}|1[0-7]?\d{1}\.\d{1,6}|180\.0{1,6})\,[\-\+]?([0-8]?\d{1}\.\d{1,6}|90\.0{1,6})/g,
+            message: '请输入正确经纬度',
+            trigger: 'blur'
+          }
+        ],
         manufacturer: [
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: 'blur', message: '设备型号不能为空' }
+          { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
         ],
         id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
@@ -302,7 +297,8 @@ export default {
         address: '',
         url: '',
         name: '',
-        creatorId: ''
+        creatorId: '',
+        tude: ''
       },
       userList: [],
       creatorName: ''
@@ -312,6 +308,9 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    'editForm.tude'(v) {
+      console.log(v)
     }
   },
   async created() {
@@ -381,6 +380,7 @@ export default {
     },
     editDialog(v) {
       this.editForm.id = v.id
+      this.editForm.tude = v.longitude + ',' + v.latitude
       this.editForm.creatorId = v.creatorId
       this.editForm.inChargeId = v.inChargeId
       this.editForm.inChargeName = v.inCharge.name
@@ -525,7 +525,11 @@ export default {
       })
     },
     toDetail(item) {
-      this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: item.id }, query: { cameraId: item.id }})
+      this.$router.push({
+        path: '/cameraManage/videomonitor',
+        params: { cameraId: item.id },
+        query: { cameraId: item.id }
+      })
     }
   }
 }
@@ -535,8 +539,8 @@ export default {
 .app-main {
   padding-top: 50px;
 }
-.deviceName{
-  color: #409EFF;
+.deviceName {
+  color: #409eff;
 }
 </style>
 

@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="to"
+          range-separator="~"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -97,8 +97,20 @@
         </el-time-picker>
       </span>
       <span style="float:right;">
-        <el-button type="primary" @click="onSearch">搜索</el-button>
-        <el-button type="" @click="onClear">重置</el-button>
+        <el-button
+            v-waves
+            class="filter-item"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="onClear"
+          >重置</el-button>
       </span>
     </div>
     <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">

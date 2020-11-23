@@ -10,8 +10,15 @@
             style="width: 260px;"
             @keyup.enter.native="onSearch"
           ></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 2px"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
         </div>
 
         <div class="pull-right">
@@ -159,14 +166,19 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'车牌'"
+          prop="licenseNo"
+          align="center"
+        ></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.type }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'" align="center">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -560,6 +572,7 @@ export default {
       this.$refs[formName].clearValidate();
     },
     onSearch() {
+      this.page = 1;
       const query = {
         page: {
           index: this.page,
@@ -714,5 +727,8 @@ export default {
 }
 .filter-container .filter-item {
   margin-bottom: 0px;
+}
+.sureItem {
+  height: 36px;
 }
 </style>

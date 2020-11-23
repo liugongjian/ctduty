@@ -5,8 +5,20 @@
       <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
           <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
-          <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
-          <el-button class="searchbtn" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item searchbtn"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="getUserList"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item searchbtn"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button class="addbtn" type="warning" @click="addUserDialogVisible = true">+新增用户</el-button>
@@ -15,7 +27,7 @@
     </div>
 
     <el-table :data="userList" :header-cell-style="{ background: '#ecedee', color: '#717171' }">
-      <el-table-column align="center" label="用户名" prop="username"></el-table-column>
+      <el-table-column align="left" label="用户名" prop="username"></el-table-column>
       <el-table-column align="center" label="姓名" prop="name"></el-table-column>
       <el-table-column align="center" label="手机号码" prop="phone"></el-table-column>
       <!-- <el-table-column label="岗位" prop="post.name"></el-table-column> -->
@@ -40,7 +52,7 @@
     <el-dialog
       :visible.sync="addUserDialogVisible"
       title="新增用户"
-      width="40%"
+      width="545px"
       @close="addDialogClosed"
     >
       <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
@@ -56,7 +68,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
+        <!-- <el-form-item label="区域/部门" prop="departmentId">
           <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
             <el-option
               v-for="item in departmentInfo"
@@ -75,7 +87,7 @@
               :key="item.postId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -95,8 +107,8 @@
 
     <el-dialog
       :visible.sync="editUserDialogVisible"
-      title="修改用户"
-      width="40%"
+      title="编辑"
+      width="545px"
       @close="editDialogClosed"
     >
       <el-form
@@ -117,8 +129,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
-          <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
+        <!-- <el-form-item label="区域/部门" prop="departmentId">
           <el-select
             v-model="editUserForm.departmentId"
             :value="editUserForm.departmentId"
@@ -141,7 +152,7 @@
               :key="item.postId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -344,6 +355,10 @@ export default {
     this.getUserList()
   },
   methods: {
+    onSearch() {
+      this.page = 1
+      this.getUserList()
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -381,6 +396,8 @@ export default {
       this.getUserList()
     },
     addAUser() {
+      this.addUserForm.departmentId = 3275699862611970
+      this.addUserForm.postId = 3275699862609920
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addUserForm }]
