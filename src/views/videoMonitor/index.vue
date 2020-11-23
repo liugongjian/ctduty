@@ -41,7 +41,7 @@
             <div class="video-panel">
               <div :style="{height: heightByAuto}" class="left-part">
                 <VideoPlayer
-                  v-if="videoOptions.source"
+                  v-if="videoOptions.sources && videoOptions.sources[0].src"
                   :video-ref="cameraId"
                   :key="cameraId"
                   :options="videoOptions"
@@ -130,7 +130,7 @@
               <el-table
                 :data="algorithmTblData"
               >
-                <el-table-column :show-overflow-tooltip="true" label="智能算法" prop="realHead" width="150" align="center" fixed>
+                <el-table-column :show-overflow-tooltip="true" label="智能算法" prop="realHead" width="100" align="center" fixed>
                   <!-- <template slot-scope="scope">告警次数</template> -->
                 </el-table-column>
                 <!-- 根据返回算法渲染列 -->
@@ -145,63 +145,90 @@
       </div>
       <div class="rightPanel">
         <div class="realTimeData">
-          <!-- <div class="panelTitle">实时分析</div> -->
+          <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  今日累计
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
               <div class="dataHeader">人流分析</div>
-              <div class="dataTitle">
-                今日累计
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0人</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0人</div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
                 </div>
               </div>
-              <div class="dataTitle">
-                实时流量（近一小时）
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0人</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0人</div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="streamData">
               <div class="dataHeader">车流分析</div>
-              <div class="dataTitle">
-                今日累计
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0辆</div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  今日累计
+                </div> -->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>0辆</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>0辆</div>
+                  </div>
                 </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0辆</div>
-                </div>
               </div>
-              <div class="dataTitle">
-                实时流量（近一小时）
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0辆</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0辆</div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  实时流量（近一小时）
+                </div> -->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>0辆</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>0辆</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -284,16 +311,16 @@ export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      cameraId: '61010010001320014342', // '64010106001324014975', //
-      cameraName: '云公司',
+      cameraId: '', // '64010106001324014975', //61010010001320014342
+      cameraName: '-',
       taskId: '',
-      form: {},
-      loading: false,
-      rules: {
-        cameraId: [
-          { required: true, message: '请选择设备名称', trigger: 'change' }
-        ]
-      },
+      // form: {},
+      // loading: false,
+      // rules: {
+      //   cameraId: [
+      //     { required: true, message: '请选择设备名称', trigger: 'change' }
+      //   ]
+      // },
       deviceChosenVisible: false,
       bigPhotoVisible: false,
       curPhoto: '',
@@ -308,10 +335,16 @@ export default {
       limit: 10,
       showVideoSetting: false,
       videoOptions: {
+        autoplay: true,
+        controls: true,
+        autoDisable: true
+        // width: 960, // 播放器宽度
+        // height: 480 // 播放器高度
       },
       tableColumn: [],
       tableData: [],
-      heightByAuto: ''
+      heightByAuto: '',
+      slide: 0
     }
   },
   computed: {
@@ -345,43 +378,71 @@ export default {
       // })
       this.$nextTick(() => {
         const boxHeight = document.querySelector('.video-panel').offsetHeight
-        // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
-        // const windowWidth = window.innerWidth
-        // const windowHeight = window.innerHeight
-        // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
-        // if (windowWidth > 1440) {
-        //   this.heightByAuto = boxWidth / 1.3 + 'px'
-        // } else if (windowWidth <= 1440 && windowWidth > 1300) {
-        //   this.heightByAuto = boxWidth / 1.366 + 'px'
-        // } else {
-        //   this.heightByAuto = boxWidth / 1.45 + 'px'
-        // }
         console.log('test---->', boxHeight)
         this.heightByAuto = boxHeight + 'px'
       })
     }
   },
   async created() {
-    await this.getTaskList()
-    await this.getPhotoList()
-    await this.getAlertDetailList()
-    await this.getLiveStream()
-    console.log('crreated', this.$route)
+    const { cameraId } = this.$route.query
+    this.cameraId = cameraId
+    this.$nextTick(() => {
+      this.getTaskList()
+      this.getPhotoList()
+      this.getAlertDetailList()
+      this.getLiveStream()
+      this.getCameraById()
+      console.log('crreated', this.$route)
+    })
   },
   mounted() {
     // this.cameraId = this.$route.params.cameraId
     console.log('mounted', this.$route)
+    window.onresize = () => {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    }
   },
   methods: {
     saveMonitor() {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           this.submiting = true
-          console.log('????', this.form)
+          console.log('form', this.form)
         } else {
           return false
         }
       })
+    },
+    getCameraById() {
+      const { cameraId } = this.$route.query
+      if (cameraId) {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 10
+          },
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: cameraId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          console.log('获取摄像头信息', data[0])
+          const { name } = data[0]
+          this.cameraName = name
+        })
+      } else {
+        this.cameraName = '-'
+      }
     },
     getCameraList(keyword) {
       if (keyword !== '') {
@@ -476,6 +537,7 @@ export default {
     },
     getPhotoList() {
       this.photosLoading = true
+      const { cameraId } = this.$route.query
       const param = [{
         field: 'createTime',
         operator: 'BETWEEN',
@@ -484,7 +546,7 @@ export default {
       {
         field: 'cameraId',
         operator: 'EQUALS',
-        value: this.cameraId
+        value: cameraId
       }
       ]
       if (this.taskId && this.taskId.length) {
@@ -527,13 +589,15 @@ export default {
       return '-'
     },
     getAlertDetailList() {
+      const { cameraId } = this.$route.query
+      this.pageLoading = true
       const query = {
         page: {
           index: 1,
           size: 10
         },
         params: {
-          id: this.cameraId
+          id: cameraId
         }
         // sorts: [{ field: 'create_time', type: 'desc' }]
       }
@@ -546,7 +610,8 @@ export default {
     },
     getLiveStream() {
       this.pageLoading = true
-      play(this.cameraId, {
+      const { cameraId } = this.$route.query
+      play(cameraId, {
         'type': 2
       }).then(res => {
         const data = res.body.data || []
@@ -554,7 +619,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
-        console.log('?????????', data.rtmpuri)
+        console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
           controls: true,
@@ -596,8 +661,17 @@ export default {
 }
 </script>
 <style lang='scss'>
+#app{
+  min-height: 100% !important;
+  height:100% !important;
+  .openSidebar{
+    height:100%;
+  }
+  .hideSidebar{
+    height:100%;
+  }
+}
 .videomonitorWrap {
-
   .el-dialog{
     .el-dialog__header{
       text-align: left;
@@ -635,11 +709,11 @@ export default {
       .monitorBox{
         // height: 330px;
         height:50%;
-        min-height: 300px;
+        // min-height: 200px;
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
-        border: 1px dashed #D9D9D9;
+        // border: 1px dashed #D9D9D9;
         background: #fff;
         border-radius: 2px;
         position: relative;
@@ -655,30 +729,28 @@ export default {
       width:600px;
       height:100%;
       flex-grow: 1;
-      flex-shrink: 1;
+      flex-shrink: 1.5;
       display:flex;
       flex-direction: column;
       .realTimeData{
         // flex-grow: 1;
         // width:50%;
-        height:210px;
+        height:190px;
         margin-left: 20px;
-        // background: #ffffff;
-        // padding:20px;
-        .streamData-wrapper{
-          display:flex;
-          justify-content: space-between;
+        background: #ffffff;
+        padding:20px;
+        .panelTitle{
+          padding-bottom: 10px;
         }
         .streamData{
-          width: 50%;
-          background: #ffffff;
-          border: 1px solid #F0EFEF;
-          padding-bottom: 15px;
-        }
-        .streamData:first-of-type{
-          margin-right:10px;
+          width: 100%;
+          display:table;
+          // border: 1px solid #F0EFEF;
         }
         .dataHeader{
+          display: table-cell;
+          width:20%;
+          min-width: 90px;
             height: 30px;
             line-height: 30px;
             // font-size: 14px;
@@ -689,24 +761,27 @@ export default {
              padding-top:10px;
              font-size:16px;
         }
-        .dataTitle{
-            font-size: 14px;
-            margin-top: 15px;
-            margin-left: 20px;
-        }
-        .dataText{
-            margin-left: 20px;
-        }
-        .dataShow{
+        .dataPanel{
+          display: table-cell;
           width:40%;
-            p{
-                font-size: 12px;
-                color:rgba(0,0,0,0.85);
-                margin: 16px 0 7px;
-            }
-            div{
-                font-size: 14px;
-            }
+          .dataTitle{
+              font-size: 14px;
+              margin-left: 20px;
+          }
+          .dataText{
+              margin-left: 20px;
+          }
+          .dataShow{
+            width:40%;
+              p{
+                  font-size: 12px;
+                  color:rgba(0,0,0,0.85);
+                  margin: 10px 0 0px;
+              }
+              div{
+                  font-size: 14px;
+              }
+          }
         }
       }
     }
@@ -717,7 +792,7 @@ export default {
       background: #fff;
       width:calc(100% - 20px);
       height:calc(100% - 340px);
-      min-height: 200px;
+      // min-height: 200px;
       margin: 20px 20px 0 20px;
       // height:100%;
       padding:20px;
@@ -778,7 +853,7 @@ export default {
           .photoContainer-noData{
             &-text{
               width:100%;
-              margin-top:calc(35% - 15px);
+              margin-top:calc(25% - 15px);
               font-size: 20px;
               color:#999;
               text-align: center;
@@ -807,7 +882,14 @@ export default {
   .censusData{
     // display: flex;
     margin-top: 20px;
-    height:300px;
+    //TODO1
+     @media screen and (max-width: 1400px){
+      height:350px;
+      overflow-y:hidden;
+    }
+    @media screen and (min-width: 1400px){
+      height:280px;
+    }
     width: 100%;
     // .el-table__header-wrapper table, .el-table__body-wrapper table{
     //     width: 100% !important;
@@ -840,9 +922,9 @@ export default {
       height:100%;
       padding:20px;
       width:100%;
-      .el-table{
-        margin-top:20px;
-      }
+      // .el-table{
+      //   margin-top:5px;
+      // }
     }
   }
 
@@ -858,7 +940,7 @@ export default {
         display:none;
       }
     }
-    @media screen and (max-width: 1000px){
+    @media screen and (max-width: 1400px){
       bottom:40px;
       .showTotal{
         display:none;
@@ -880,6 +962,7 @@ export default {
       position: absolute;
       right:20px;
       font-size:22px;
+      color:#999;
       .svg-icon:hover{
         cursor:pointer;
         color:#1989fa;

@@ -392,7 +392,7 @@ export default {
       return status === 1 ? '在线' : '离线'
     },
     toMonitorDetail(id) {
-      this.$router.push({ name: 'videomonitor', params: { cameraId: id }})
+      this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
     },
     checkNameLen(k) {
       const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth

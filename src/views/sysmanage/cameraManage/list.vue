@@ -525,7 +525,7 @@ export default {
       })
     },
     toDetail(item) {
-      this.$router.push({ name: 'videomonitor', params: { cameraId: item.id }})
+      this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: item.id }, query: { cameraId: item.id }})
     }
   }
 }
