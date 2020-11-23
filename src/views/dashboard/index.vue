@@ -1133,8 +1133,7 @@ export default {
   }
   #dashID{
     height: 100%;
-  }
-#panel {
+    #panel {
   overflow: hidden;
   position:relative !important;
   div {
@@ -1391,5 +1390,6 @@ export default {
   }
   .chartHei {
     height: 210px !important;
+  }
   }
 </style>

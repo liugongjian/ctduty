@@ -842,6 +842,7 @@ export default {
 </script>
 
 <style lang='scss'>
+.list {
 .el-input__inner {
   text-indent: 0px;
 }
@@ -974,4 +975,5 @@ td {
 //   top: 4px;
 //   left: 85%;
 // }
+}
 </style>

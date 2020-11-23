@@ -324,8 +324,7 @@ export default {
   .el-form-item__content {
     margin-left: 90px;
   }
-}
-.monitorScreen {
+  .monitorScreen {
   overflow: hidden;
   padding: 10px 10px;
   background: #fff;
@@ -394,5 +393,6 @@ export default {
 }
 .screen-body {
   overflow: hidden;
+}
 }
 </style>

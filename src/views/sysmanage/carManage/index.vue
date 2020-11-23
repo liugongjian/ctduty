@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="carlist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -632,17 +632,16 @@ export default {
 </script>
 
 <style lang='scss'>
-.dlTem:hover {
+.app-main {
+  padding-top: 50px;
+}
+
+.carlist {
+  overflow: auto !important;
+  .dlTem:hover {
   a {
     color: #409eff;
   }
-}
-
-.list {
-  overflow: auto !important;
-}
-.app-main {
-  padding-top: 50px;
 }
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -676,6 +675,7 @@ export default {
 .upload-demo {
   width: 360px;
   margin: 0 auto;
+}
 }
 </style>
 

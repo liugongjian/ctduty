@@ -445,8 +445,7 @@ export default {
 <style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
-}
-.title {
+  .title {
   width: 150px;
   height: 100px;
   border: 1px solid #000;
@@ -478,5 +477,7 @@ label {
   width: 100px !important;
   text-align: left !important;
 }
+}
+
 </style>
 

@@ -1178,81 +1178,13 @@ export default {
 </script>
 
 <style lang="scss">
-body {
-  margin: 0;
-}
-.clickgif {
-  width:50px;
-  height:50px;
-}
-.num {
-  width: 80%;
-  height: 30px;
-  margin: 0 auto;
-  display: flex;
-  margin-top: 5px;
-  position: absolute;
-  bottom:10px;
-  left: 50%;
-  transform: translateX(-50%);
-  div{
-    width: 50%;
-    padding:0 5px;
-  }
-}
-.bottom {
-  background-color: #fff !important;
-  opacity:1 !important;
-}
-.dispose {
-  background-color: #fff !important;
-  opacity:1 !important;
-  box-sizing: content-box !important;
-}
-.warn {
-  // height:590px !important;
-  margin-bottom: 20px;
-  overflow: hidden;
-  border-radius: 5px;
-  opacity: .95;
-  background-color: #ffffff;
-}
-.zuoContent {
-  padding: 20px 10px;
-}
-.zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
-    margin-right: 20px;
-    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 4px;
-}
-.zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    border-radius: 5px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    background: #a4b0be;
-}
-.zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border-radius: 0;
-    background: rgba(0,0,0,0.1);
-}
-* {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
 #alarmInfo {
   padding: 0 !important;
 }
-.alarmMonitoring {
-  border-left:1px solid #ccc;
+body {
+  margin: 0;
 }
-.videoBox {
-  border: none;
-  background-color: #fff;
-}
- .trafficSvg {
-   fill : #FF9832 !important;
- }
+
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
@@ -1385,8 +1317,77 @@ body {
       }
     }
   }
+  .clickgif {
+  width:50px;
+  height:50px;
 }
-.disbox {
+.num {
+  width: 80%;
+  height: 30px;
+  margin: 0 auto;
+  display: flex;
+  margin-top: 5px;
+  position: absolute;
+  bottom:10px;
+  left: 50%;
+  transform: translateX(-50%);
+  div{
+    width: 50%;
+    padding:0 5px;
+  }
+}
+.bottom {
+  background-color: #fff !important;
+  opacity:1 !important;
+}
+.dispose {
+  background-color: #fff !important;
+  opacity:1 !important;
+  box-sizing: content-box !important;
+}
+.warn {
+  // height:590px !important;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 5px;
+  opacity: .95;
+  background-color: #ffffff;
+}
+.zuoContent {
+  padding: 20px 10px;
+}
+.zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
+    margin-right: 20px;
+    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+}
+.zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #a4b0be;
+}
+.zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.alarmMonitoring {
+  border-left:1px solid #ccc;
+}
+.videoBox {
+  border: none;
+  background-color: #fff;
+}
+ .trafficSvg {
+   fill : #FF9832 !important;
+ }
+ .disbox {
   position: relative;
 }
 .lefticon {
@@ -1564,6 +1565,7 @@ body {
 }
 .deal.svg-icon {
   font-size: 18px;
+}
 }
 </style>
 

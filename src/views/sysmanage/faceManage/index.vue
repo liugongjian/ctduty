@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="faceindexlist">
     <!--  <div class="title">
       摄像头管理
     </div>-->
@@ -728,13 +728,12 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
-  overflow: auto !important;
-}
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
+.faceindexlist {
+  overflow: auto !important;
+  .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -834,6 +833,7 @@ export default {
 }
 .is-checked {
   display: inline-block;
+}
 }
 }
 </style>

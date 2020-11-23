@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="cameralist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -596,17 +596,17 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
+.cameralist {
   overflow: auto !important;
-}
-.app-main {
-  padding-top: 50px;
-}
-.el-button--text {
+  .el-button--text {
   color: #FA8334 !important;
 }
 .el-button.is-disabled {
   color: #C0C4CC !important;
+}
+}
+.app-main {
+  padding-top: 50px;
 }
 </style>
 

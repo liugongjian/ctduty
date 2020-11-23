@@ -552,35 +552,35 @@ export default {
 <style lang='scss' scoped>
 .notice {
   padding: 10px 20px;
-}
-.input_title {
-  width: 360px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  width: 250px;
-}
-/* .addNotice {
-  float: right;
-} */
-.quill-editor {
-  display: inline-block;
-  width: 360px;
-  height: 150px;
-}
-.el-row {
-  margin-top: 20px;
+  .input_title {
+    width: 360px;
+  }
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    width: 250px;
+  }
+  /* .addNotice {
+    float: right;
+  } */
+  .quill-editor {
+    display: inline-block;
+    width: 360px;
+    height: 150px;
+  }
+  .el-row {
+    margin-top: 20px;
+  }
 }
 </style>
