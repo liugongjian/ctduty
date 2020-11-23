@@ -181,9 +181,8 @@
         <el-form-item label="内容">
           <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
         </el-form-item>
-        <el-form-item class="select" label="签名档" style="margin-top:1px;">
+        <!-- <el-form-item class="select" label="签名档" style="margin-top:1px;">
           <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
-            <!-- <el-option value="1" label="1"></el-option> -->
             <el-option
               v-for="(item,key) in departmentInfo"
               :key="key"
@@ -191,7 +190,7 @@
               :value="item.departmentId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -239,7 +238,7 @@
         <el-form-item v-if="modifiable==='false'" label="内容">
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
-        <el-form-item label="签名档">
+      <!--   <el-form-item label="签名档">
           <el-select
             v-model="editNoticeForm.signatureId"
             :value="editNoticeForm.signatureId"
@@ -252,7 +251,7 @@
               :key="item.departmentId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-if="modifiable==='true'" type="warning" @click="getEditANotice">确 定</el-button>
