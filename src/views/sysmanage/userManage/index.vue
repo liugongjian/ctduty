@@ -218,9 +218,9 @@ export default {
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
           {
-            min: 5,
-            max: 10,
-            message: '姓名长度在5-12个字符之间',
+            min: 2,
+            max: 5,
+            message: '姓名长度在2-5个字符之间',
             trigger: 'blur'
           }
         ],
@@ -396,8 +396,6 @@ export default {
       this.getUserList()
     },
     addAUser() {
-      this.addUserForm.departmentId = 3275699862611970
-      this.addUserForm.postId = 3275699862609920
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addUserForm }]
