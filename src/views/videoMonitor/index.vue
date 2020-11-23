@@ -130,7 +130,7 @@
               <el-table
                 :data="algorithmTblData"
               >
-                <el-table-column :show-overflow-tooltip="true" label="智能算法" prop="realHead" width="150" align="center" fixed>
+                <el-table-column :show-overflow-tooltip="true" label="智能算法" prop="realHead" width="100" align="center" fixed>
                   <!-- <template slot-scope="scope">告警次数</template> -->
                 </el-table-column>
                 <!-- 根据返回算法渲染列 -->
@@ -145,63 +145,90 @@
       </div>
       <div class="rightPanel">
         <div class="realTimeData">
-          <!-- <div class="panelTitle">实时分析</div> -->
+          <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  今日累计
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
               <div class="dataHeader">人流分析</div>
-              <div class="dataTitle">
-                今日累计
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0人</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0人</div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
                 </div>
               </div>
-              <div class="dataTitle">
-                实时流量（近一小时）
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0人</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0人</div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>0人</div>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="streamData">
               <div class="dataHeader">车流分析</div>
-              <div class="dataTitle">
-                今日累计
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0辆</div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  今日累计
+                </div> -->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>0辆</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>0辆</div>
+                  </div>
                 </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0辆</div>
-                </div>
               </div>
-              <div class="dataTitle">
-                实时流量（近一小时）
-              </div>
-              <div class="dataText">
-                <div class="dataShow displayIB">
-                  <p>流入</p>
-                  <div>0辆</div>
-                </div>
-                <div class="dataShow displayIB">
-                  <p>流出</p>
-                  <div>0辆</div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  实时流量（近一小时）
+                </div> -->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>0辆</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>0辆</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -351,17 +378,6 @@ export default {
       // })
       this.$nextTick(() => {
         const boxHeight = document.querySelector('.video-panel').offsetHeight
-        // const test = document.querySelector('.monitorScreen-wrap').offsetWidth
-        // const windowWidth = window.innerWidth
-        // const windowHeight = window.innerHeight
-        // console.log(boxWidth, windowWidth, windowHeight, (windowWidth - 240) / windowHeight, test)
-        // if (windowWidth > 1440) {
-        //   this.heightByAuto = boxWidth / 1.3 + 'px'
-        // } else if (windowWidth <= 1440 && windowWidth > 1300) {
-        //   this.heightByAuto = boxWidth / 1.366 + 'px'
-        // } else {
-        //   this.heightByAuto = boxWidth / 1.45 + 'px'
-        // }
         console.log('test---->', boxHeight)
         this.heightByAuto = boxHeight + 'px'
       })
@@ -382,6 +398,11 @@ export default {
   mounted() {
     // this.cameraId = this.$route.params.cameraId
     console.log('mounted', this.$route)
+    window.onresize = () => {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    }
   },
   methods: {
     saveMonitor() {
@@ -646,6 +667,9 @@ export default {
   .openSidebar{
     height:100%;
   }
+  .hideSidebar{
+    height:100%;
+  }
 }
 .videomonitorWrap {
   .el-dialog{
@@ -689,7 +713,7 @@ export default {
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
-        border: 1px dashed #D9D9D9;
+        // border: 1px dashed #D9D9D9;
         background: #fff;
         border-radius: 2px;
         position: relative;
@@ -705,30 +729,28 @@ export default {
       width:600px;
       height:100%;
       flex-grow: 1;
-      flex-shrink: 1;
+      flex-shrink: 1.5;
       display:flex;
       flex-direction: column;
       .realTimeData{
         // flex-grow: 1;
         // width:50%;
-        height:210px;
+        height:190px;
         margin-left: 20px;
-        // background: #ffffff;
-        // padding:20px;
-        .streamData-wrapper{
-          display:flex;
-          justify-content: space-between;
+        background: #ffffff;
+        padding:20px;
+        .panelTitle{
+          padding-bottom: 10px;
         }
         .streamData{
-          width: 50%;
-          background: #ffffff;
-          border: 1px solid #F0EFEF;
-          padding-bottom: 15px;
-        }
-        .streamData:first-of-type{
-          margin-right:10px;
+          width: 100%;
+          display:table;
+          // border: 1px solid #F0EFEF;
         }
         .dataHeader{
+          display: table-cell;
+          width:20%;
+          min-width: 90px;
             height: 30px;
             line-height: 30px;
             // font-size: 14px;
@@ -739,24 +761,27 @@ export default {
              padding-top:10px;
              font-size:16px;
         }
-        .dataTitle{
-            font-size: 14px;
-            margin-top: 15px;
-            margin-left: 20px;
-        }
-        .dataText{
-            margin-left: 20px;
-        }
-        .dataShow{
+        .dataPanel{
+          display: table-cell;
           width:40%;
-            p{
-                font-size: 12px;
-                color:rgba(0,0,0,0.85);
-                margin: 16px 0 7px;
-            }
-            div{
-                font-size: 14px;
-            }
+          .dataTitle{
+              font-size: 14px;
+              margin-left: 20px;
+          }
+          .dataText{
+              margin-left: 20px;
+          }
+          .dataShow{
+            width:40%;
+              p{
+                  font-size: 12px;
+                  color:rgba(0,0,0,0.85);
+                  margin: 10px 0 0px;
+              }
+              div{
+                  font-size: 14px;
+              }
+          }
         }
       }
     }
@@ -937,6 +962,7 @@ export default {
       position: absolute;
       right:20px;
       font-size:22px;
+      color:#999;
       .svg-icon:hover{
         cursor:pointer;
         color:#1989fa;
