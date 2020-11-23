@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="facehistorylist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container facehistory-box clearfix">
         <div class="pull-right">
@@ -585,7 +585,8 @@ export default {
 </script>
 
 <style lang='scss'>
-.title {
+.facehistorylist {
+  .title {
   width: 100%;
   height: 50px;
   line-height: 50px;
@@ -703,4 +704,6 @@ export default {
     background-color: rgb(245, 247, 250);
   }
 }
+}
+
 </style>

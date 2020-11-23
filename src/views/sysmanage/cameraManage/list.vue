@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="cameralist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -122,8 +122,8 @@
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>-->
         <el-table-column :show-overflow-tooltip="true" :label="'操作'" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-            <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+            <el-button style="color:#fa8334;" type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
+            <el-button style="color:#fa8334;" type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -246,7 +246,7 @@ export default {
           { required: true, trigger: 'blur', message: '经纬度信息不能为空' },
           {
             pattern: /^[\-\+]?(0?\d{1,2}\.\d{1,6}|1[0-7]?\d{1}\.\d{1,6}|180\.0{1,6})\,[\-\+]?([0-8]?\d{1}\.\d{1,6}|90\.0{1,6})/g,
-            message: '请输入正确经纬度',
+            message: '请输入正确经纬度信息',
             trigger: 'blur'
           }
         ],
@@ -541,6 +541,11 @@ export default {
 }
 .deviceName {
   color: #409eff;
+}
+.cameralist {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
 }
 </style>
 

@@ -218,9 +218,9 @@ export default {
         name: [
           { required: true, message: '姓名不能为空', trigger: 'blur' },
           {
-            min: 5,
-            max: 10,
-            message: '姓名长度在5-12个字符之间',
+            min: 2,
+            max: 5,
+            message: '姓名长度在2-5个字符之间',
             trigger: 'blur'
           }
         ],
@@ -396,8 +396,6 @@ export default {
       this.getUserList()
     },
     addAUser() {
-      this.addUserForm.departmentId = 3275699862611970
-      this.addUserForm.postId = 3275699862609920
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return
         const query = [{ ...this.addUserForm }]
@@ -492,40 +490,41 @@ export default {
 <style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-divider--horizontal {
+    margin-top: 0px;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 15px;
+  }
+  .searchinput {
+    float: left;
+    width: 250px;
+  }
+  .searchbtn {
+    float: left;
+    margin-left: 5px;
+  }
+  .addbtn {
+    float: right;
+  }
+  .el-select-dropdown {
+    z-index: 9999999999999999999999999999999999 !important;
+  }
+  label {
+    display: inline-block;
+    width: 100px !important;
+    text-align: left !important;
+  }
 }
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-divider--horizontal {
-  margin-top: 0px;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 15px;
-}
-.searchinput {
-  float: left;
-  width: 250px;
-}
-.searchbtn {
-  float: left;
-  margin-left: 5px;
-}
-.addbtn {
-  float: right;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
-label {
-  display: inline-block;
-  width: 100px !important;
-  text-align: left !important;
-}
+
 </style>
