@@ -73,7 +73,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .el-breadcrumb{
     font-family: MicrosoftYaHei;
     font-size: 22px;

@@ -490,40 +490,41 @@ export default {
 <style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-divider--horizontal {
+    margin-top: 0px;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 15px;
+  }
+  .searchinput {
+    float: left;
+    width: 250px;
+  }
+  .searchbtn {
+    float: left;
+    margin-left: 5px;
+  }
+  .addbtn {
+    float: right;
+  }
+  .el-select-dropdown {
+    z-index: 9999999999999999999999999999999999 !important;
+  }
+  label {
+    display: inline-block;
+    width: 100px !important;
+    text-align: left !important;
+  }
 }
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-divider--horizontal {
-  margin-top: 0px;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 15px;
-}
-.searchinput {
-  float: left;
-  width: 250px;
-}
-.searchbtn {
-  float: left;
-  margin-left: 5px;
-}
-.addbtn {
-  float: right;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
-label {
-  display: inline-block;
-  width: 100px !important;
-  text-align: left !important;
-}
+
 </style>
