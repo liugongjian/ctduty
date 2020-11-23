@@ -80,7 +80,7 @@
                   :style="{width:210 + 'px', height: 36 + 'px'}"
                   :picker-options="pickerOptions"
                   type="daterange"
-                  range-separator="to"
+                  range-separator="~"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   format="yyyy-MM-dd"
@@ -432,10 +432,10 @@ export default {
       ],
       algorithmNameList: {
         searchkey: '',
-        typeValue: '值更检测'
+        typeValue: '移动侦测'
       },
       algorithmName: [
-        { name: '值更检测', _id: 1 },
+        { name: '移动侦测', _id: 1 },
         { name: '人脸识别', _id: 2 },
         { name: '车牌识别', _id: 3 },
         { name: '人脸对比', _id: 4 },
@@ -495,7 +495,7 @@ export default {
         11: '占道经营'
       },
       warngingname: {
-        1: '值更检测',
+        1: '移动侦测',
         2: '人脸识别',
         3: '车牌识别',
         4: '人脸比对',
@@ -578,7 +578,7 @@ export default {
       if (this.warngingname[cellValue]) {
         return this.warngingname[cellValue]
       }
-      return '值更检测'
+      return '移动侦测'
     },
     timeChange() {
       this.startDate = moment(this.value1[0]).format('YYYY-MM-DD')
@@ -1013,7 +1013,6 @@ export default {
   }
   .el-date-editor {
     width: 205px !important;
-    padding-left: 5px !important;
     padding-right: 0px !important;
     .el-range-input {
       margin-bottom: 2px;
@@ -1104,11 +1103,7 @@ export default {
   line-height: 36px;
 }
 .el-select.el-select--medium {
-  // height: 28px;
   margin-bottom: 10px;
-  // .el-input--medium.el-input--suffix {
-  //   height: 28px;
-  // }
 }
 .filter-container .filter-item {
   vertical-align: initial;
