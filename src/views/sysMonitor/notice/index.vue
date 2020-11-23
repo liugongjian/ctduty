@@ -13,7 +13,7 @@
             ref="queryOperatorRef"
             v-model="username"
             class="searchinput"
-            placeholder="创建者姓名"
+            placeholder="创建者"
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>

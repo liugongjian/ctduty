@@ -22,7 +22,7 @@
             class="filter-item"
             style="font-size:12px; height: 36px"
             size="mini"
-            @click="onClear"
+            @click="resetQuery"
           >重置</el-button>
         </div>
         <div class="pull-right">

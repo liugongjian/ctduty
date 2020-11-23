@@ -71,7 +71,7 @@ service.interceptors.response.use(
         }).catch(err => {
           return Promise.reject(err)
         })
-      } else if (res.code === 50000 && res.message === '设备异常') {
+      } else if (res.code === 50000 && res.message === '摄像头异常') {
         return res
       } else {
         return Promise.reject(response.data)

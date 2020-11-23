@@ -118,7 +118,7 @@ export default {
       form: {},
       rules: {
         cameraId: [
-          { required: true, message: "请选择摄像头", trigger: "change" }
+          { required: true, message: "请选择摄像头名称", trigger: "change" }
         ]
       },
       nosrc,
