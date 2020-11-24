@@ -410,12 +410,19 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
+    },
+    total() {
+      if (this.total === this.limit * (this.page - 1)) {
+        this.page--
+        this.getfaceList()
+      }
     }
+
   },
   async created() {
     await Message.closeAll()
     await this.getfaceList()
-    await this.getfaceList()
+    // await this.getfaceList()
   },
   methods: {
     delmulTableInfo(id) {
