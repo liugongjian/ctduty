@@ -39,7 +39,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:178 + 'px', height: 36 + 'px'}"
+              :style="{width:210 + 'px', height: 36 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="~"
@@ -933,11 +933,11 @@ td {
   height: 36px;
 }
 .pull-left.alarmmsgleft {
-  width: 75%;
+  width: 78%;
 }
 .pull-right.alarmmsgright {
   position: relative;
-  width: 25%;
+  width: 22%;
   .clearsearch {
     position: absolute;
     top: 0px;
