@@ -5,6 +5,7 @@
     </div>
 
     <el-table
+    v-loading="tableLoading"
       :data="userList"
       :header-cell-style="{background:'#ecedee',color:'#717171'}"
       @filter-change="filerStatus"
@@ -116,6 +117,7 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
@@ -288,6 +290,7 @@ export default {
       }
     },
     getPoliceList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
@@ -303,6 +306,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        this.tableLoading = false
       })
     },
     addAPolice() {
