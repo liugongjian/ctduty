@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <el-table :data="userList" :header-cell-style="{ background: '#ecedee', color: '#717171' }">
+    <el-table v-loading="tableLoading" :data="userList" :header-cell-style="{ background: '#ecedee', color: '#717171' }">
       <el-table-column align="left" label="用户名" prop="username"></el-table-column>
       <el-table-column align="center" label="姓名" prop="name"></el-table-column>
       <el-table-column align="center" label="手机号码" prop="phone"></el-table-column>
@@ -201,6 +201,7 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
@@ -360,6 +361,7 @@ export default {
       this.getUserList()
     },
     getUserList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
@@ -378,6 +380,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        this.tableLoading = false
       })
     },
     pageChange() {

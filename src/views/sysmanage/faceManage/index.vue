@@ -44,6 +44,7 @@
           @close="closebulkimportDialog"
         >
           <el-table
+            v-loading="tableLoading"
             v-if="isBatchSuccess"
             :data="mulTableData"
             :header-cell-class-name="tableRowClassHeader"
@@ -191,12 +192,11 @@
               <div style="display:flex;">
                 <el-tooltip
                   :content="item.name"
-                  :disabled="item.name.length <4"
                   placement="bottom-start"
                 >
-                  <div
-                    class="face-name"
-                  >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                  <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
+                    {{ item.name }}
+                  </div>
                 </el-tooltip>
                 <el-tag
                   :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
@@ -208,7 +208,7 @@
                 <el-button
                   type="text"
                   icon="el-icon-edit-outline"
-                  style="width:10px;height:10px;color: #898989; margin-right: 4px;"
+                  style="width:10px;height:10px;color: #898989; margin-right: 4px;margin-top:.2px;"
                   size="mini"
                   @click="editDialog(item)"
                 ></el-button>
@@ -345,6 +345,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       upSingleHeaders: {
         Authorization: token
       },
@@ -424,7 +425,6 @@ export default {
   async created() {
     await Message.closeAll()
     await this.getfaceList()
-    await this.getfaceList()
   },
   methods: {
     delmulTableInfo(id) {
@@ -502,6 +502,7 @@ export default {
       this.mulTableData = []
     },
     getfaceList() {
+      this.tableLoading = true
       const query = {
         page: {
           index: this.page,
@@ -515,6 +516,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     batchesDel() {
@@ -851,6 +853,12 @@ export default {
     height: 50px;
     line-height: 50px;
     text-align: center;
+  }
+  .namespan {
+    width:35px;
+    overflow:hidden !important;
+    white-space:nowrap !important;
+    text-overflow:ellipsis !important;
   }
 }
 

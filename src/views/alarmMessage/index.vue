@@ -17,6 +17,10 @@
             icon="el-icon-refresh"
             @click="onClear"
           >重置</button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
@@ -65,10 +69,7 @@
               :value="item._id"
             ></el-option>
           </el-select>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i class="el-icon-arrow-down"></i>
-          </span>
+
           <transition name="fade">
             <div v-show="flag">
               <div class="block filter-item">
@@ -127,6 +128,7 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -362,6 +364,7 @@ import CanvasDialog from '@/components/CanvasDialog'
 // import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
+import { taskList } from '@/api/camera'
 import {
   getAlertInfos,
   deleteAlertInfo,
@@ -379,6 +382,7 @@ export default {
   },
   data() {
     return {
+      tableLoading: null,
       flag: false,
       openname: '展开',
       alarmtext: '当日告警总计',
@@ -436,24 +440,7 @@ export default {
         typeValue: '移动侦测'
       },
       algorithmName: [
-        { name: '移动侦测', _id: 1 },
-        { name: '人脸识别', _id: 2 },
-        { name: '车牌识别', _id: 3 },
-        { name: '人脸对比', _id: 4 },
-        { name: '人脸属性', _id: 5 },
-        { name: '区域划线告警', _id: 6 },
-        { name: '翻墙检测', _id: 7 },
-        { name: '人流识别', _id: 8 },
-        { name: '车流识别', _id: 9 },
-        { name: '安全帽识别', _id: 10 },
-        { name: '工服识别', _id: 11 },
-        { name: '车型检测', _id: 12 },
-        { name: '人群聚集检测', _id: 13 },
-        { name: '打架斗殴检测', _id: 14 },
-        { name: '摔倒检测', _id: 15 },
-        { name: '占道经营检测', _id: 16 },
-        { name: '人员逗留检测', _id: 17 },
-        { name: '推流任务', _id: 18 }
+
       ],
       listLoading: false,
       filteredValue: [],
@@ -496,24 +483,7 @@ export default {
         11: '占道经营'
       },
       warngingname: {
-        1: '移动侦测',
-        2: '人脸识别',
-        3: '车牌识别',
-        4: '人脸比对',
-        5: '人脸属性',
-        6: '区域划线告警',
-        7: '翻墙检测',
-        8: '人流识别',
-        9: '车流识别',
-        10: '安全帽识别',
-        11: '工服识别',
-        12: '车型检测',
-        13: '人群聚集检测',
-        14: '打架斗殴检测',
-        15: '摔倒检测',
-        16: '占道经营检测',
-        17: '人员逗留检测',
-        18: '推流任务'
+
       }
     }
   },
@@ -528,13 +498,32 @@ export default {
     (this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
       new Date(new Date().setDate(new Date().getDate()))
-    ]),
+    ])
+    const query = {
+      cascade: true,
+      page: {
+        index: 1,
+        size: 9999
+      },
+      params: {}
+    }
+    taskList(query).then(res => {
+      if (res.code !== 0) return
+      res.body.data.forEach(item => {
+        this.algorithmName.push({
+          name: item.cnName,
+          _id: item.id
+        })
+        this.warngingname[item.id] = item.cnName
+      })
+    })
     this.timeChange()
     this.value1 = ''
     this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
     this.getPushSetTime()
+
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     // const h = this.formInline.typeValue
@@ -812,6 +801,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      this.tableLoading = true
       const { type, taskId } = h
       const param = [
         {
@@ -895,6 +885,7 @@ export default {
             })
           })
         }, 300)
+        this.tableLoading = false
       })
     },
     dialogQuxiao(val) {
@@ -1029,7 +1020,7 @@ export default {
   }
   .pull-right.alarmmsgright {
     position: relative;
-    right: 66px;
+    right: 0px;
     .clearsearch {
       position: absolute;
       top: 0px;
@@ -1116,7 +1107,7 @@ export default {
     line-height: 36px;
   }
   .open {
-    margin-left: 10px;
+    margin-left: 80px;
     color: #ff9832;
     cursor: pointer;
   }
