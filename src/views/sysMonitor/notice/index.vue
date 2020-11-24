@@ -13,14 +13,14 @@
             ref="queryOperatorRef"
             v-model="username"
             class="searchinput"
-            placeholder="创建者姓名"
+            placeholder="创建者"
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
             <el-option :value="0" label="公告">通知</el-option>
             <el-option :value="1" label="通知">公告</el-option>
           </el-select>
-          <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
+          <el-button type="warning" @click="getNoticeList">搜索</el-button>
           <el-button @click="resetQuery">重置</el-button>
         </div>
         <div class="pull-right">
@@ -36,7 +36,6 @@
         style="width: 120vw"
         @filter-change="filerStatus"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column label="公告标题">
           <template slot-scope="row_data">
             <el-link
@@ -51,7 +50,7 @@
         <el-table-column label="状态" prop="state">
           <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
         </el-table-column>
-        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建者" prop="creator.name"></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="row_data">
@@ -69,50 +68,6 @@
         </el-table-column>
       </el-table>
     </div>
-
-    <!-- <el-table
-      :data="noticeList"
-      :header-cell-class-name="tableRowClassHeader"
-      class="amountdetailTable"
-      tooltip-effect="dark"
-      fit
-      style="width: 120vw"
-      @filter-change="filerStatus"
-    >
-      <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column label="公告标题">
-        <template slot-scope="row_data">
-          <el-link
-            type="primary"
-            @click="showEditDialog(row_data.row.id,'false')"
-          >{{ row_data.row.title }}</el-link>
-        </template>
-      </el-table-column>
-      <el-table-column label="公告类型" prop="type">
-        <template slot-scope="row_data">{{ row_data.row.type === 0 ? '通知' : '公告' }}</template>
-      </el-table-column>
-      <el-table-column label="状态" prop="state">
-        <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
-      </el-table-column>
-      <el-table-column label="创建者" prop="creator.username"></el-table-column>
-      <el-table-column label="创建时间" prop="createTime"></el-table-column>
-      <el-table-column :show-overflow-tooltip="true" :label="'操作'">
-        <template slot-scope="row_data">
-          <a
-            style="color: #FA8334; text-decoration:none;"
-            type="text"
-            size="small"
-            @click="showEditDialog(row_data.row.id,'true')"
-          >{{ '编辑' }}</a>
-          <el-button
-            type="text"
-            size="small"
-            @click="showDeleteDialog(row_data.row.title,row_data.row.id)"
-          >{{ '删除' }}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>-->
-
     <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
@@ -377,20 +332,14 @@ export default {
       }
 
       if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title
+        query.params['title'] = this.queryInfo.params.title.trim()
       }
       if (this.queryInfo.params.type !== null) {
         query.params['type'] = this.queryInfo.params.type
       }
 
       if (this.username.trim() !== '') {
-        await this.searchUserId()
-        if (this.userid !== null) {
-          query.params['creatorId'] = this.userid
-        } else {
-          this.userid = {}
-          return
-        }
+        query.params['name'] = this.username.trim()
       }
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error('获取通知信息失败')
