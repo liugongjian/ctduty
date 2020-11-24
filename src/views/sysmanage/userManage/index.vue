@@ -465,6 +465,9 @@ export default {
   .el-button--text {
     color: #fa8334 !important;
   }
+  .el-input__inner {
+    height: 38px;
+  }
   .title {
     width: 150px;
     height: 100px;

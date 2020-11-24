@@ -4,7 +4,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button style="border-radius:4px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
+          <el-button style="border-radius:4px;height:36px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -422,10 +422,6 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
- .list {
-  overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
-}
 .app-main {
   padding-top: 50px;
 }

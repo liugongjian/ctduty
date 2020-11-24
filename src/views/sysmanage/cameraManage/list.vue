@@ -4,7 +4,7 @@
       <div class="filter-container clearfix">
         <div class="pull-left">
           <!--  <el-button class="filter-item" type="warning" icon="el-icon-plus" @click="create">{{ '新增摄像头' }}</el-button> -->
-          <el-button type="warning" size="small" @click="batchesDel">{{ '批量删除' }}</el-button>
+          <el-button type="warning" size="small" style="height:36px;" @click="batchesDel">{{ '批量删除' }}</el-button>
           <!--  <el-dialog :visible="dialogVisable" title="新增摄像头" width="520px" @close="closeDialog">
             <el-form ref="addForm" :model="dialogForm" :rule="addrules" label-position="right" label-width="130px">
               <el-form-item label="摄像头ID："><el-input v-model="dialogForm.id" placeholder="请输入摄像头ID" class="filter-item" style="width: 240px;"></el-input>
@@ -213,74 +213,74 @@
 </template>
 
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchAllCameraList,
   editCamera,
   addCamera,
   delCamera
-} from "@/api/camera";
-import { fetchUserList } from "@/api/users";
-import VideoConfig from "@/components/VideoConfig";
-import client from "@/api/vedioAlgo";
+} from '@/api/camera'
+import { fetchUserList } from '@/api/users'
+import VideoConfig from '@/components/VideoConfig'
+import client from '@/api/vedioAlgo'
 
 export default {
   components: { Pagination, VideoConfig },
   data() {
     return {
       dialogForm: {
-        address: "",
-        creatorId: "",
-        id: "",
-        name: "",
-        latitude: "",
-        longitude: "",
-        url: "",
-        inChargeId: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        address: '',
+        creatorId: '',
+        id: '',
+        name: '',
+        latitude: '',
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
       addrules: {
         creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
+          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
         ],
         name: [
-          { required: true, trigger: "blur", message: "摄像头名称不能为空" }
+          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
         ],
         url: [
-          { required: true, trigger: "blur", message: "视频流信息不能为空" }
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
+        phone: [{ required: true, trigger: 'blur', message: '手机号不能为空' }],
         manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: "blur", message: "设备型号不能为空" }
+          { required: true, trigger: 'blur', message: '设备型号不能为空' }
         ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
         longitude: [
-          { required: true, trigger: "blur", message: "经度不能为空" }
+          { required: true, trigger: 'blur', message: '经度不能为空' }
         ],
         latitude: [
-          { required: true, trigger: "blur", message: "纬度不能为空" }
+          { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [{ required: true, trigger: "blur", message: "地址不能为空" }]
+        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
-        searchkey: "",
-        typeValue: "list"
+        searchkey: '',
+        typeValue: 'list'
       },
       typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
+        { name: '地图模式', _id: 'map' },
+        { name: '列表模式', _id: 'list' }
       ],
       listLoading: false,
       filteredValue: [],
@@ -289,160 +289,160 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        inChargeId: "",
-        longitude: "",
-        latitude: "",
-        address: "",
-        url: "",
-        name: "",
-        creatorId: ""
+        id: '',
+        inChargeId: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: '',
+        name: '',
+        creatorId: ''
       },
       userList: [],
-      creatorName: "",
+      creatorName: '',
       configVisable: false,
-      currentPickDeviceId: "",
+      currentPickDeviceId: '',
       algorithmList: [],
       algorithmListCopy: [],
       algorithmListTwoDim: [],
-      timer: "11",
+      timer: '11',
       canvasShowStatus: false,
-      configName: "视频AI配置",
+      configName: '视频AI配置',
       tableLoading: null
-    };
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getUserList();
-    await this.getList();
+    await Message.closeAll()
+    await this.getUserList()
+    await this.getList()
   },
   methods: {
     setCanvasShow(payload) {
-      this.canvasShowStatus = payload;
+      this.canvasShowStatus = payload
       if (payload == true) {
-        this.configName = "";
+        this.configName = ''
       } else {
-        this.configName = "视频AI配置";
+        this.configName = '视频AI配置'
       }
     },
     async getAlgorithmList(deviceId) {
-      const { body: res } = await client.getInstanceList(deviceId);
-      this.algorithmList = res.data;
-      this.algorithmListCopy = JSON.parse(JSON.stringify(this.algorithmList));
-      this.algorithmList = this.algorithmList.map(this.saveUpdatePick);
-      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3);
+      const { body: res } = await client.getInstanceList(deviceId)
+      this.algorithmList = res.data
+      this.algorithmListCopy = JSON.parse(JSON.stringify(this.algorithmList))
+      this.algorithmList = this.algorithmList.map(this.saveUpdatePick)
+      this.algorithmListTwoDim = this.changeToTwoDiArray(this.algorithmList, 3)
     },
     changeToTwoDiArray(dataList, num) {
       return dataList.reduce(
         (prev, next, idx) => {
-          const inner = prev[~~(idx / num)];
+          const inner = prev[~~(idx / num)]
           if (inner !== undefined) {
-            inner.push(next);
+            inner.push(next)
           } else {
-            prev.push([next]);
+            prev.push([next])
           }
-          return prev;
+          return prev
         },
         [[]]
-      );
+      )
     },
     saveUpdatePick(item) {
       if (item.isPick) {
-        item["isConfigAlready"] = true;
-        item["beforePickStatus"] = true;
-        item["isCommitStatus"] = true;
-        item["originalPickStatus"] = true;
+        item['isConfigAlready'] = true
+        item['beforePickStatus'] = true
+        item['isCommitStatus'] = true
+        item['originalPickStatus'] = true
       } else {
-        item["isConfigAlready"] = false;
-        item["beforePickStatus"] = false;
-        item["isCommitStatus"] = false;
-        item["originalPickStatus"] = false;
+        item['isConfigAlready'] = false
+        item['beforePickStatus'] = false
+        item['isCommitStatus'] = false
+        item['originalPickStatus'] = false
       }
-      return item;
+      return item
     },
     applyAlgorithms(flag) {
       if (flag) {
         // 先组装参数，包含删除、增加、修改
-        var allDatas = [];
-        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim);
-        var params = [];
-        var flag = true;
+        var allDatas = []
+        var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
+        var params = []
+        var flag = true
         for (var i = 0; i < nowAlgorithmList.length; i++) {
-          var algorithmObject = nowAlgorithmList[i];
+          var algorithmObject = nowAlgorithmList[i]
           var param = {
             taskId: algorithmObject.id,
             id: algorithmObject.id,
             taskName: algorithmObject.name
-          };
+          }
           if (algorithmObject.originalPickStatus && !algorithmObject.isPick) {
             // 删除
-            param["action"] = "delete";
-            params.push(param);
+            param['action'] = 'delete'
+            params.push(param)
           } else if (
             !algorithmObject.originalPickStatus &&
             algorithmObject.isPick
           ) {
             // 增加(检查，如果该配置的没有配置需要弹窗告警)
-            param["action"] = "add";
+            param['action'] = 'add'
             if (algorithmObject.isNeedConfig) {
-              var areas = algorithmObject["areas"];
+              var areas = algorithmObject['areas']
               if (areas == undefined || areas.length == 0) {
                 // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
                 this.$message({
                   showClose: false,
                   message:
                     algorithmObject.cnName +
-                    "没有标注，请标注再提交或者取消选择",
-                  type: "error"
-                });
-                flag = false;
-                break;
+                    '没有标注，请标注再提交或者取消选择',
+                  type: 'error'
+                })
+                flag = false
+                break
               } else {
-                param["areas"] = this.formatAreas(
+                param['areas'] = this.formatAreas(
                   areas,
                   algorithmObject.ratiox,
                   algorithmObject.ratioy
-                );
+                )
               }
             }
-            params.push(param);
+            params.push(param)
           } else if (
             algorithmObject.originalPickStatus &&
             algorithmObject.isPick &&
             !algorithmObject.isCommitStatus
           ) {
             // 修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
-            param["action"] = "update";
-            var areas = algorithmObject["areas"];
+            param['action'] = 'update'
+            var areas = algorithmObject['areas']
             if (areas == undefined || areas.length == 0) {
               // alert(algorithmObject.cnName+"没有标注，请标注再提交或者取消选择")
               this.$message({
                 showClose: false,
                 message:
-                  algorithmObject.cnName + "没有标注，请标注再提交或者取消选择",
-                type: "error"
-              });
-              flag = false;
-              break;
+                  algorithmObject.cnName + '没有标注，请标注再提交或者取消选择',
+                type: 'error'
+              })
+              flag = false
+              break
             }
-            param["areas"] = this.formatAreas(
+            param['areas'] = this.formatAreas(
               areas,
               algorithmObject.ratiox,
               algorithmObject.ratioy
-            );
-            params.push(param);
+            )
+            params.push(param)
           }
         }
         if (flag) {
@@ -450,47 +450,47 @@ export default {
             var finalBody = {
               deviceId: this.currentPickDeviceId,
               taskInstParams: params
-            };
-            this.configTask(finalBody);
+            }
+            this.configTask(finalBody)
           }
-          this.configVisable = false;
+          this.configVisable = false
         }
       } else {
-        this.configVisable = false;
+        this.configVisable = false
       }
     },
     formatAreas(areas, ratiox, ratioy) {
       var newAreas = areas.map(eachArea => {
-        var newPoints = this.formatPoints(eachArea.points, ratiox, ratioy);
+        var newPoints = this.formatPoints(eachArea.points, ratiox, ratioy)
         return {
           type: eachArea.type,
           name: eachArea.name,
           points: newPoints
-        };
-      });
-      return newAreas;
+        }
+      })
+      return newAreas
     },
     formatPoints(points, ratiox, ratioy) {
-      var newPoints = [];
+      var newPoints = []
       for (var i = 0; i < points.length; i++) {
         newPoints.push({
           x: parseInt(points[i].x * ratiox),
           y: parseInt(points[i].y * ratioy)
-        });
+        })
       }
-      return newPoints;
+      return newPoints
     },
     async configTask(body) {
-      const res = await client.configInstance(body);
+      const res = await client.configInstance(body)
     },
     configDialog(v) {
-      this.currentPickDeviceId = v;
-      this.timer = new Date().getTime();
-      this.configVisable = true;
-      this.getAlgorithmList(v);
+      this.currentPickDeviceId = v
+      this.timer = new Date().getTime()
+      this.configVisable = true
+      this.getAlgorithmList(v)
     },
     configCloseDialog() {
-      this.configVisable = false;
+      this.configVisable = false
     },
     getUserList() {
       const query = {
@@ -500,70 +500,70 @@ export default {
           size: 9999999
         },
         params: {}
-      };
+      }
       fetchUserList(query).then(response => {
-        if (response.code !== 0) return;
-        this.userList = response.body.data;
+        if (response.code !== 0) return
+        this.userList = response.body.data
         this.userList.forEach(item => {
           if (item.id === +this.userId) {
-            this.creatorName = item.name;
+            this.creatorName = item.name
           }
-        });
-      });
+        })
+      })
     },
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: "请选择需要删除的摄像头!",
-          type: "warning"
-        });
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
+        })
       } else {
-        this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }).then(() => {
-          const params = [...this.delIDArr];
+          const params = [...this.delIDArr]
           delCamera(params)
             .then(response => {
-              this.getList();
-              this.delIDArr = [];
+              this.getList()
+              this.delIDArr = []
             })
             .catch(() => {
-              this.delIDArr = [];
-            });
-        });
+              this.delIDArr = []
+            })
+        })
       }
     },
     delAlert(d) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [d];
+        const params = [d]
         delCamera(params).then(response => {
-          this.getList();
-          this.delIDArr = [];
-        });
-      });
+          this.getList()
+          this.delIDArr = []
+        })
+      })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     editDialog(v) {
-      this.editForm.id = v.id;
-      this.editForm.creatorId = v.creatorId;
-      this.editForm.inChargeId = v.inChargeId;
-      this.editForm.longitude = v.longitude;
-      this.editForm.latitude = v.latitude;
-      this.editForm.address = v.address;
-      this.editForm.name = v.name;
-      this.editForm.url = v.url;
-      this.editVisable = true;
+      this.editForm.id = v.id
+      this.editForm.creatorId = v.creatorId
+      this.editForm.inChargeId = v.inChargeId
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.name = v.name
+      this.editForm.url = v.url
+      this.editVisable = true
     },
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     editDialogConfirm() {
       const params = [
@@ -576,65 +576,65 @@ export default {
           name: this.editForm.name,
           creatorId: this.editForm.creatorId
         }
-      ];
+      ]
       editCamera(params).then(response => {
         this.$notify({
-          title: "成功",
-          message: "编辑成功",
-          type: "success",
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
           duration: 2000
-        });
-        this.getList();
-        this.editVisable = false;
-      });
+        })
+        this.getList()
+        this.editVisable = false
+      })
     },
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     onSearch() {},
     checkModel() {
-      this.$emit("getdata", this.formInline.typeValue, true);
+      this.$emit('getdata', this.formInline.typeValue, true)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
     // 获取列表数据
     getList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       const params = {
         cascade: true,
         page: {
@@ -642,62 +642,62 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-        this.tableLoading = false;
-      });
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+        this.listLoading = false
+        this.tableLoading = false
+      })
     },
     handleSelectionChange(val) {
       this.delIDArr = val.map(item => {
-        return item.id;
-      });
+        return item.id
+      })
     },
     dialogQuxiao() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
-        if (!valid) return;
-        const params = [{ ...this.dialogForm, creatorId: this.userId }];
+        if (!valid) return
+        const params = [{ ...this.dialogForm, creatorId: this.userId }]
         addCamera(params)
           .then(res => {
             this.dialogForm = {
-              address: "",
-              creatorId: "",
-              id: "",
-              name: "",
-              latitude: "",
-              longitude: "",
-              url: "",
-              inChargeId: "",
-              manufacturer: "",
-              model: "",
-              phone: ""
-            };
+              address: '',
+              creatorId: '',
+              id: '',
+              name: '',
+              latitude: '',
+              longitude: '',
+              url: '',
+              inChargeId: '',
+              manufacturer: '',
+              model: '',
+              phone: ''
+            }
             this.$notify({
-              title: "成功",
-              message: "增加成功",
-              type: "success",
+              title: '成功',
+              message: '增加成功',
+              type: 'success',
               duration: 2000
-            });
-            this.getList();
-            this.dialogVisable = false;
+            })
+            this.getList()
+            this.dialogVisable = false
           })
           .catch(() => {
             this.$notify({
-              title: "失败",
-              message: "增加失败",
-              type: "error",
+              title: '失败',
+              message: '增加失败',
+              type: 'error',
               duration: 2000
-            });
-          });
-      });
+            })
+          })
+      })
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>

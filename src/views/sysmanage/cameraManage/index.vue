@@ -585,6 +585,9 @@ export default {
 .camera {
   height: calc(100vh - 90px) !important;
 }
+.el-input__inner {
+  height: 38px;
+}
 .filter-item  {
    input {
     font-size: 12px !important;
