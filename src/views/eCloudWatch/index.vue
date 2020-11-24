@@ -1561,6 +1561,7 @@ border-radius: 4px;
 }
 .amap-info-sharp {
   background: url('./assets/newarrow.png') !important;
+  margin: 0 auto;
   background-repeat: no-repeat !important;
 }
 .deal.svg-icon {
