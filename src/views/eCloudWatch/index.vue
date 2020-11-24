@@ -402,7 +402,7 @@ export default {
     },
     hasMarker(v) {
       if (v) {
-        const o = amapManager.getMap()
+        // const o = amapManager.getMap()
         o.setFitView(/* this.markers */)
         this.showZwMes = false
       }

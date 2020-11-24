@@ -27,8 +27,8 @@
     </div>
 
     <el-table
-      :data="userList"
       v-loading="tableLoading"
+      :data="userList"
       :header-cell-style="{ background: '#ecedee', color: '#717171' }"
     >
       <el-table-column label="用户名" prop="username"></el-table-column>
@@ -190,25 +190,25 @@
 </template>
 
 <script>
-import Pagination from "@/components/Pagination";
+import Pagination from '@/components/Pagination'
 import {
   fetchUserList,
   postAddUser,
   getUserInfo,
   updateUser,
   deleteUser
-} from "@/api/users";
+} from '@/api/users'
 
 export default {
   components: { Pagination },
   data() {
     var checkMobile = (rule, value, cb) => {
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/;
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
       if (regMobile.test(value)) {
-        return cb();
+        return cb()
       }
-      cb(new Error("请输入合法的手机号"));
-    };
+      cb(new Error('请输入合法的手机号'))
+    }
     return {
       tableLoading: null,
       page: 1,
@@ -217,38 +217,38 @@ export default {
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
-          { required: true, message: "用户名称不能为空", trigger: "blur" },
+          { required: true, message: '用户名称不能为空', trigger: 'blur' },
           {
             min: 5,
             max: 10,
-            message: "用户名长度在5-12个字符之间",
-            trigger: "blur"
+            message: '用户名长度在5-12个字符之间',
+            trigger: 'blur'
           }
         ],
         password: [
           {
             required: true,
-            message: "密码不能为空",
-            trigger: "blur"
+            message: '密码不能为空',
+            trigger: 'blur'
           },
           {
             min: 8,
             max: 20,
-            message: "密码长度在8-20个字符之间",
-            trigger: "blur"
+            message: '密码长度在8-20个字符之间',
+            trigger: 'blur'
           }
         ],
         phone: [
           {
             required: true,
-            message: "手机号不能为空",
-            trigger: "blur"
+            message: '手机号不能为空',
+            trigger: 'blur'
           },
           {
             min: 11,
             max: 11,
-            message: "长度为11个字符",
-            trigger: "blur"
+            message: '长度为11个字符',
+            trigger: 'blur'
           } /* ,
           {
             validator: checkMobile,
@@ -256,98 +256,98 @@ export default {
           } */
         ],
         permissionId: [
-          { required: true, message: "权限不能为空", trigger: "blur" }
+          { required: true, message: '权限不能为空', trigger: 'blur' }
         ],
         departmentId: [
-          { required: true, message: "区域/部门不能为空", trigger: "blur" }
+          { required: true, message: '区域/部门不能为空', trigger: 'blur' }
         ],
-        postId: [{ required: true, message: "岗位不能为空", trigger: "blur" }]
+        postId: [{ required: true, message: '岗位不能为空', trigger: 'blur' }]
       },
       addUserForm: {
-        username: "",
-        name: "",
-        password: "",
-        permissionId: "",
+        username: '',
+        name: '',
+        password: '',
+        permissionId: '',
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: ''
       },
       editUserForm: {
         id: 0,
-        username: "",
-        name: "",
-        password: "",
-        permissionId: "",
+        username: '',
+        name: '',
+        password: '',
+        permissionId: '',
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: ''
       },
       userList: [],
       queryInfo: {
         pagenum: 1,
         pagesize: 10
       },
-      queryName: "",
+      queryName: '',
       total: 0,
       editUserDialogVisible: false,
-      deleteUserName: "",
+      deleteUserName: '',
       deleteUserDialogVisible: false,
       deleteUserId: 0,
       departmentInfo: [
         {
           departmentId: 3275699862611970,
-          department: "华阴公安局"
+          department: '华阴公安局'
         },
         {
           departmentId: 3275699862611971,
-          department: "孟塬派出所"
+          department: '孟塬派出所'
         },
         {
           departmentId: 3275699862611972,
-          department: "华山镇派出所"
+          department: '华山镇派出所'
         }
       ],
 
       postInfo: [
         {
           postId: 3275699862609920,
-          post: "所长"
+          post: '所长'
         },
         {
           postId: 3275699862609921,
-          post: "副所长"
+          post: '副所长'
         },
         {
           postId: 3275699862609922,
-          post: "民警"
+          post: '民警'
         },
         {
           postId: 3275699862609923,
-          post: "普通员工"
+          post: '普通员工'
         },
         {
           postId: 3275699862611968,
-          post: "管控中心"
+          post: '管控中心'
         },
         {
           postId: 3275699862611969,
-          post: "监控中心"
+          post: '监控中心'
         }
       ]
-    };
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   created() {
-    this.getUserList();
+    this.getUserList()
   },
   methods: {
     getUserList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
@@ -357,111 +357,111 @@ export default {
         params: {},
         sorts: [
           {
-            field: "create_time",
-            type: "desc"
+            field: 'create_time',
+            type: 'desc'
           }
         ]
-      };
-      if (this.queryName.trim() !== "") {
-        query.params.name = this.queryName;
+      }
+      if (this.queryName.trim() !== '') {
+        query.params.name = this.queryName
       }
       fetchUserList(query).then(response => {
-        if (response.code !== 0) return;
-        this.userList = response.body.data;
-        this.total = response.body.page.total;
-        this.tableLoading = false;
-      });
+        if (response.code !== 0) return
+        this.userList = response.body.data
+        this.total = response.body.page.total
+        this.tableLoading = false
+      })
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getUserList();
+      this.oldSize = this.limit
+      this.getUserList()
     },
     handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize;
-      this.getUserList();
+      this.queryInfo.pagesize = newsize
+      this.getUserList()
     },
     handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage;
-      this.getUserList();
+      this.queryInfo.pagenum = newpage
+      this.getUserList()
     },
     addAUser() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return;
-        const query = [{ ...this.addUserForm }];
+        if (!valid) return
+        const query = [{ ...this.addUserForm }]
         postAddUser(query).then(response => {
           if (response.code !== 0) {
-            return this.$message.error("添加用户失败，请联系系统管理员");
+            return this.$message.error('添加用户失败，请联系系统管理员')
           }
-          this.$message.success("添加用户成功");
-          this.addUserDialogVisible = false;
-          this.getUserList();
-        });
-      });
+          this.$message.success('添加用户成功')
+          this.addUserDialogVisible = false
+          this.getUserList()
+        })
+      })
     },
     addDialogClosed() {
-      this.addUserForm = {};
-      this.$refs.addFormRef.resetFields();
+      this.addUserForm = {}
+      this.$refs.addFormRef.resetFields()
     },
     showEditDialog(id) {
       const { data: res } = getUserInfo(id).then(response => {
         // console.log(response)
-        if (response.code !== 0) return this.$message.error("获取用户信息失败");
-        this.editUserForm = response.body.data;
-        this.editUserDialogVisible = true;
-      });
+        if (response.code !== 0) return this.$message.error('获取用户信息失败')
+        this.editUserForm = response.body.data
+        this.editUserDialogVisible = true
+      })
     },
     editAUser() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return;
+        if (!valid) return
         updateUser([{ ...this.editUserForm }]).then(response => {
           // console.log(response)
           if (response.code !== 0) {
-            return this.$message.error("更新用户信息失败,请稍后再试");
+            return this.$message.error('更新用户信息失败,请稍后再试')
           }
-          this.editUserDialogVisible = false;
-          this.getUserList();
-          this.$message.success("更新用户信息成功");
-        });
-      });
+          this.editUserDialogVisible = false
+          this.getUserList()
+          this.$message.success('更新用户信息成功')
+        })
+      })
     },
     editDialogClosed() {
-      this.editUserForm = {};
+      this.editUserForm = {}
     },
     showDeleteDialog(username, id) {
-      this.deleteUserDialogVisible = true;
-      this.deleteUserName = username;
-      this.deleteUserId = id;
+      this.deleteUserDialogVisible = true
+      this.deleteUserName = username
+      this.deleteUserId = id
     },
 
     deleteAUser() {
-      const ids = [];
-      ids.push(this.deleteUserId);
+      const ids = []
+      ids.push(this.deleteUserId)
       deleteUser(ids).then(response => {
         if (response.code !== 0) {
-          return this.$message.error("删除用户失败,请稍后再试");
+          return this.$message.error('删除用户失败,请稍后再试')
         }
-        this.deleteUserDialogVisible = false;
-        this.deleteUserId = 0;
-        this.deleteUserName = "";
-        this.getUserList();
-        this.$message.success("删除用户信息");
-      });
+        this.deleteUserDialogVisible = false
+        this.deleteUserId = 0
+        this.deleteUserName = ''
+        this.getUserList()
+        this.$message.success('删除用户信息')
+      })
     },
 
     resetQuery() {
-      this.queryName = "";
-      this.getUserList();
+      this.queryName = ''
+      this.getUserList()
     }
   }
-};
+}
 </script>
 
 <style lang='scss' scoped>
 .userManage {
-  padding: 10px 20px;
+  padding: 20px;
   .el-button--text {
     color: #fa8334 !important;
   }
