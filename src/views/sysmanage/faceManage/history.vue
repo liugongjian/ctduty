@@ -37,7 +37,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px',height:'10px'}"
+              :style="{width:100 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -596,7 +596,7 @@ export default {
     padding: 0 20px;
   }
   .el-date-editor {
-    height: 28px !important;
+    height: 36px !important;
   }
   .el-range-separator {
     width: 30px !important;
@@ -704,5 +704,9 @@ export default {
 }
 .sureItem {
   height: 36px;
+}
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
 }
 </style>

@@ -963,8 +963,8 @@ td {
   border-radius: 4px;
 }
 .el-input--mini .el-input__inner {
-  height: 32px;
-  line-height: 32px;
+  height: 36px;
+  line-height: 36px;
 }
 .el-range-editor.el-input__inner {
   padding: 5px 5px;
