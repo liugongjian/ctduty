@@ -1,36 +1,5 @@
 <template>
   <div class="videomonitorWrap">
-    <!-- <el-dialog
-      key="monitor-device"
-      :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
-      :visible.sync="deviceChosenVisible"
-      width="540px"
-      @closed="onClose"
-    >
-      <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
-          <el-select
-            v-model="form.cameraId"
-            :remote-method="getCameraList"
-            :loading="loading"
-            filterable
-            remote
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-          </el-option></el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="onClose">取 消</el-button>
-        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
-      </div>
-    </el-dialog>-->
     <el-dialog
       key="photo"
       :visible.sync="bigPhotoVisible"
@@ -333,7 +302,7 @@ import moment from 'moment'
 import { getAlertStatics } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
-import { getAlertInfos } from '@/api/alarm'
+import { getAlertInfos, getAlertRealtimeStatics } from '@/api/alarm'
 import { fetchAllCameraList, searchCameraList } from '@/api/camera'
 import { taskList } from '@/api/algorithm'
 import { play } from '@/api/monitor'
@@ -420,6 +389,7 @@ export default {
       this.getAlertDetailList()
       this.getLiveStream()
       this.getCameraById()
+      this.getRealTimeData()
       console.log('crreated', this.$route)
     })
   },
@@ -432,6 +402,42 @@ export default {
     }
   },
   methods: {
+    getRealTimeData() {
+      const { cameraId } = this.$route.query
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: {
+            start: moment()
+              .subtract(1, 'h')
+              .format(dateTimeFormat),
+            end: moment()
+              .format(dateTimeFormat)
+          }
+        },
+        {
+          field: 'cameraId',
+          operator: 'EQUALS',
+          value: cameraId
+        }
+      ]
+      const params = {
+        // cascade: true,
+        // page: {
+        //   index: this.page,
+        //   size: this.limit
+        // },
+        params: param
+      }
+      getAlertRealtimeStatics(params)
+        .then(res => {
+          console.log('realTimeData, ', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     setVideoHeight() {
       const boxHeight = document.querySelector('.video-panel').offsetHeight
       console.log('test---->', boxHeight)
