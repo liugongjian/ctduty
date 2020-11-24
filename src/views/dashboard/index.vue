@@ -1128,12 +1128,46 @@ export default {
 .app-main {
   height: 100% !important;
 }
+
 .main-container {
   background-color: #F0F2F5;
   }
-  #dashID{
-    height: 100%;
-    #panel {
+
+.dashboard-container {
+  // height: 759px;
+  height: 100%;
+  padding: 0px 20px;
+  background: #F0F2F5;
+  .dash-title {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    padding-left: 20px;
+    font-size: 14px;
+    border-bottom: 1px solid #F0F2F5;
+    height: 40px;
+    line-height: 40px;
+    color: #333;
+    position: relative;
+    span {
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #1890FF;
+      line-height: 22px;
+      position: absolute;
+      top: 50%;
+      right: 3%;
+      transform: translateY(-50%);
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      font-size: 16px;
+      transform: translate(-50%, -50%);
+    }
+  }
+   #panel {
   overflow: hidden;
   position:relative !important;
   div {
@@ -1196,7 +1230,7 @@ export default {
     transform: translate(-50%,-50%);
   }
 }
-#alarmLine {
+  #alarmLine {
   overflow: hidden;
   position:relative !important;
   div {
@@ -1218,10 +1252,6 @@ export default {
     transform: translate(-50%,-50%);
   }
 }
-.dashboard-container {
-  // height: 759px;
-  padding: 0px 20px;
-  background: #F0F2F5;
   #map {
     // height: 440px;
     background-color: #fff;
@@ -1291,35 +1321,6 @@ export default {
     margin-top: 20px;
   }
 
-  .dash-title {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    padding-left: 20px;
-    font-size: 14px;
-    border-bottom: 1px solid #F0F2F5;
-    height: 40px;
-    line-height: 40px;
-    color: #333;
-    position: relative;
-    span {
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
-      color: #1890FF;
-      line-height: 22px;
-      position: absolute;
-      top: 50%;
-      right: 3%;
-      transform: translateY(-50%);
-    }
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 10px;
-      font-size: 16px;
-      transform: translate(-50%, -50%);
-    }
-  }
 }
 .mapbox {
   padding: 0;
@@ -1390,6 +1391,5 @@ export default {
   }
   .chartHei {
     height: 210px !important;
-  }
   }
 </style>
