@@ -966,17 +966,32 @@ export default {
       vertical-align: middle;
     }
   }
-}
-.sureItem {
-  height: 36px;
-}
-.pull-left.alarmmsgleft {
-  width: 78%;
-}
-.pull-right.alarmmsgright {
-  position: relative;
-  width: 22%;
-  .clearsearch {
+  .sureItem {
+    height: 32px;
+  }
+  .pull-left.alarmmsgleft {
+    width: 75%;
+  }
+  .pull-right.alarmmsgright {
+    position: relative;
+    width: 25%;
+    .clearsearch {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      height: 34px;
+      width: 60px;
+      // margin-left: 16px;
+      border: 1px solid #ccc;
+      background: none;
+      border-radius: 3px;
+      outline: none;
+    }
+    .clearsearch:active {
+      background-color: rgb(243, 241, 241);
+    }
+  }
+  .searchsure {
     position: absolute;
     top: 1px;
     height: 34px;
@@ -984,37 +999,32 @@ export default {
     // border-left: none;
     border-radius: 4px;
   }
-  // .el-input--mini .el-input__inner {
-  //   text-indent: 0px;
-  // }
+  .el-input--mini .el-input__inner {
+    height: 36px;
+    line-height: 36px;
+  }
   .el-range-editor.el-input__inner {
     padding: 5px 5px;
   }
-}
-.searchsure {
-  position: absolute;
-  top: 1px;
-  height: 34px;
-  right: 22%;
-  // border-left: none;
-  border-radius: 4px;
-}
-.el-input--mini .el-input__inner {
-  height: 36px;
-  line-height: 36px;
-}
-.el-range-editor.el-input__inner {
-  padding: 5px 5px;
-}
-.mesdialog {
-  .el-dialog__header {
-    padding: 0 !important;
+  .mesdialog {
+    .el-dialog__header {
+      padding: 0 !important;
+    }
+    .el-dialog .el-dialog__body {
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .el-dialog__footer {
+      padding: 0 !important;
+    }
+    .dialog-footer {
+      padding: 10px 0 !important;
+    }
   }
   .popfooter {
     padding-top: 4px;
     padding-left: 4px;
     display: flex;
-
     .popfooteraddress {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1023,7 +1033,6 @@ export default {
     }
     .popfootertime {
       width: 150px;
-      padding-left: 65px;
     }
   }
   .el-button--text {
