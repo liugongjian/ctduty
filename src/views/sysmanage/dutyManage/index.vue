@@ -413,59 +413,59 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
-.dutyManage {
-  padding: 0px 20px;
-}
-.el-dialog__body {
-  margin: 0 auto;
-}
-.list {
+ .list {
   overflow: auto !important;
   min-height: calc(100vh - 90px) !important;
 }
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-.carDialog {
-  margin: 0 auto;
-}
-.el-dialog__body {
-  width: 100%;
-}
-.carInput {
-  height: 36.8px !important;
-}
-.el-form-item__content {
-  display: flex;
-  .xuanze {
-    width: 20vw !important;
+.dutyManage {
+  .el-dialog__body {
+    margin: 0 auto;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .carDialog {
+    margin: 0 auto;
+  }
+  .el-dialog__body {
+    width: 100%;
+  }
+  .carInput {
+    height: 36.8px !important;
+  }
+  .el-form-item__content {
+    display: flex;
+    .xuanze {
+      width: 20vw !important;
+    }
+  }
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
   }
 }
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
+
 </style>
