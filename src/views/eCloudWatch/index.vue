@@ -1318,255 +1318,255 @@ body {
     }
   }
   .clickgif {
-  width:50px;
-  height:50px;
-}
-.num {
-  width: 80%;
-  height: 30px;
-  margin: 0 auto;
-  display: flex;
-  margin-top: 5px;
-  position: absolute;
-  bottom:10px;
-  left: 50%;
-  transform: translateX(-50%);
-  div{
-    width: 50%;
-    padding:0 5px;
+    width:50px;
+    height:50px;
   }
-}
-.bottom {
-  background-color: #fff !important;
-  opacity:1 !important;
-}
-.dispose {
-  background-color: #fff !important;
-  opacity:1 !important;
-  box-sizing: content-box !important;
-}
-.warn {
-  // height:590px !important;
-  margin-bottom: 20px;
-  overflow: hidden;
-  border-radius: 4px;
-  opacity: .95;
-  background-color: #ffffff;
-}
-.zuoContent {
-  padding: 20px 10px;
-}
-.zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
-    margin-right: 20px;
-    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
-    height: 4px;
-}
-.zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-border-radius: 4px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    background: #a4b0be;
-}
-.zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border-radius: 0;
-    background: rgba(0,0,0,0.1);
-}
-* {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.alarmMonitoring {
-  border-left:1px solid #ccc;
-}
-.videoBox {
-  border: none;
-  background-color: #fff;
-}
- .trafficSvg {
-   fill : #FF9832 !important;
- }
- .disbox {
-  position: relative;
-}
-.lefticon {
-  height: 100%;
-  .shu {
-    width: 1px;
-    height: 28px;
-    background-color: #d9d9d9;
-    margin-left: 25%;
-    margin-top: 2px;
-  }
-}
-.youContent {
-  margin-bottom: 16px;
-  overflow: hidden;
-  cursor: pointer;
-}
-.dizhi {
-  width: 100%;
-  font-size: 14px;
-  color: #000000;
-  font-weight: 300;
-  margin-bottom: 8px;
-}
-#panel.panelown {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  &>div {
-    width: 100%;
-  }
-}
-.dispose {
-  height: 210px;
-  width: 100%;
-  background-color: #fff;
-}
-.dash-title {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
-  height: 40px;
-  line-height: 40px;
-  color: #333;
-  .close {
+  .num {
+    width: 80%;
+    height: 30px;
+    margin: 0 auto;
+    display: flex;
+    margin-top: 5px;
     position: absolute;
-    top: 20px;
-    right: 10px;
-    font-size: 16px;
-    transform: translate(-50%, -50%);
+    bottom:10px;
+    left: 50%;
+    transform: translateX(-50%);
+    div{
+      width: 50%;
+      padding:0 5px;
+    }
   }
-}
-.todayAlarm {
-  padding-left: 10px;
-}
-.status {
-  margin-top: 20px;
-}
-.originImg {
-  width: 380px;
-  height: 250px;
-}
-.markerImg {
-  fill: #3e94f9;
-  width: 40px;
-  height: 40px;
-}
-.markerClickImg {
-  width: 50px !important;
-  height: 50px !important;
-}
-.watchtitle {
-  display: flex;
-  .dash-title {
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-    border-bottom: 1px solid #ccc;
+  .bottom {
+    background-color: #fff !important;
+    opacity:1 !important;
   }
-}
-.active {
-  color: #FF9832;
-}
-.switch {
-  font-size: 12px;
-  padding: 0 30px;
-}
-.offline {
-  fill: #95afc0 !important;
-  // cursor: no-drop;
-}
-.elTag {
-  text-align: center;
-  width: 60px;
-}
-// .el-dialog__header {
-//   padding: 0 !important;
-// }
-// .el-dialog .el-dialog__body {
-//   padding: 0 !important;
-// }
-// .el-dialog__footer {
-//   padding: 0 !important;
-// }
-.popsure {
-  padding: 10px 0 !important;
-}
-.popfooter {
-  padding-top: 4px;
-  padding-left: 4px;
-  display: flex;
-  .popfooteraddress {
+  .dispose {
+    background-color: #fff !important;
+    opacity:1 !important;
+    box-sizing: content-box !important;
+  }
+  .warn {
+    // height:590px !important;
+    margin-bottom: 20px;
     overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-    width: 330px;
+    border-radius: 4px;
+    opacity: .95;
+    background-color: #ffffff;
   }
-  .popfootertime {
-    width: 150px;
+  .zuoContent {
+    padding: 20px 10px;
   }
-}
-.amap-info-content {
-  padding-right: 10px;
-}
-.amap-info-close {
-  display: none;
-}
-.warnnormal {
-  border: 1px solid #ccc;
-  background:#fff;
-  .spantext {
-    margin-left: -4px !important;
+  .zuoContent::-webkit-scrollbar {/*滚动条整体样式*/
+      margin-right: 20px;
+      width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+      height: 4px;
   }
-}
-.popwarn {
-  border-radius: 2px !important;
-  width: 60px;
-  height: 30px;
-  font-size: 12px;
-  line-height: 10px;
-  text-align: center;
-  outline: none;
-  cursor: pointer;
-}
-.warnunnormal {
-  border: 1px solid #FF9832;
-  color: #fff;
-  background:#FF9832;
-  margin-left: 10px;
-  .spantext {
-    margin-left: -4px !important;
+  .zuoContent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  border-radius: 4px;
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      background: #a4b0be;
   }
-}
-.amap-info-content .amap-info-outer {
-  padding-bottom: 0px !important;
-}
-.amap-info-content {
-  padding: 0px !important;
-  border: none;
-}
-.el-tabs__header {
-  margin: 0px;
-}
-.video-wrap {
-  margin-top: 0px !important;
-}
-.untreated {
-  font-size: 18px;
-}
-.amap-info-sharp {
-  background: url('./assets/newarrow.png') !important;
-  margin: 0 auto;
-  background-repeat: no-repeat !important;
-}
-.deal.svg-icon {
-  font-size: 18px;
-}
+  .zuoContent::-webkit-scrollbar-track {/*滚动条里面轨道*/
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      border-radius: 0;
+      background: rgba(0,0,0,0.1);
+  }
+  * {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .alarmMonitoring {
+    border-left:1px solid #ccc;
+  }
+  .videoBox {
+    border: none;
+    background-color: #fff;
+  }
+  .trafficSvg {
+    fill : #FF9832 !important;
+  }
+  .disbox {
+    position: relative;
+  }
+  .lefticon {
+    height: 100%;
+    .shu {
+      width: 1px;
+      height: 28px;
+      background-color: #d9d9d9;
+      margin-left: 25%;
+      margin-top: 2px;
+    }
+  }
+  .youContent {
+    margin-bottom: 16px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .dizhi {
+    width: 100%;
+    font-size: 14px;
+    color: #000000;
+    font-weight: 300;
+    margin-bottom: 8px;
+  }
+  #panel.panelown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    &>div {
+      width: 100%;
+    }
+  }
+  .dispose {
+    height: 210px;
+    width: 100%;
+    background-color: #fff;
+  }
+  .dash-title {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    color: #333;
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      font-size: 16px;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .todayAlarm {
+    padding-left: 10px;
+  }
+  .status {
+    margin-top: 20px;
+  }
+  .originImg {
+    width: 380px;
+    height: 250px;
+  }
+  .markerImg {
+    fill: #3e94f9;
+    width: 40px;
+    height: 40px;
+  }
+  .markerClickImg {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  .watchtitle {
+    display: flex;
+    .dash-title {
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+  }
+  .active {
+    color: #FF9832;
+  }
+  .switch {
+    font-size: 12px;
+    padding: 0 30px;
+  }
+  .offline {
+    fill: #95afc0 !important;
+    // cursor: no-drop;
+  }
+  .elTag {
+    text-align: center;
+    width: 60px;
+  }
+  // .el-dialog__header {
+  //   padding: 0 !important;
+  // }
+  // .el-dialog .el-dialog__body {
+  //   padding: 0 !important;
+  // }
+  // .el-dialog__footer {
+  //   padding: 0 !important;
+  // }
+  .popsure {
+    padding: 10px 0 !important;
+  }
+  .popfooter {
+    padding-top: 4px;
+    padding-left: 4px;
+    display: flex;
+    .popfooteraddress {
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+      width: 330px;
+    }
+    .popfootertime {
+      width: 150px;
+    }
+  }
+  .amap-info-content {
+    padding-right: 10px;
+  }
+  .amap-info-close {
+    display: none;
+  }
+  .warnnormal {
+    border: 1px solid #ccc;
+    background:#fff;
+    .spantext {
+      margin-left: -4px !important;
+    }
+  }
+  .popwarn {
+    border-radius: 2px !important;
+    width: 60px;
+    height: 30px;
+    font-size: 12px;
+    line-height: 10px;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+  }
+  .warnunnormal {
+    border: 1px solid #FF9832;
+    color: #fff;
+    background:#FF9832;
+    margin-left: 10px;
+    .spantext {
+      margin-left: -4px !important;
+    }
+  }
+  .amap-info-content .amap-info-outer {
+    padding-bottom: 0px !important;
+  }
+  .amap-info-content {
+    padding: 0px !important;
+    border: none;
+  }
+  .el-tabs__header {
+    margin: 0px;
+  }
+  .video-wrap {
+    margin-top: 0px !important;
+  }
+  .untreated {
+    font-size: 18px;
+  }
+  .amap-info-sharp {
+    background: url('./assets/newarrow.png') !important;
+    margin: 0 auto;
+    background-repeat: no-repeat !important;
+  }
+  .deal.svg-icon {
+    font-size: 18px;
+  }
 }
 </style>
 

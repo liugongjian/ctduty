@@ -55,6 +55,7 @@ export default {
         var name = this.name
         var nameLength = this.nameLength
         img.onload = function() {
+          console.log(img.width, img.height)
           this.width = 1920
           this.height = 1080
           canvas.width = 1920
