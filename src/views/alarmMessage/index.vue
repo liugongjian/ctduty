@@ -26,7 +26,7 @@
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:32px;"
+            style="font-size:12px; width: 20%;height:36px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -39,7 +39,7 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:178 + 'px', height: 32 + 'px'}"
+              :style="{width:178 + 'px', height: 36 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
               range-separator="~"
@@ -55,7 +55,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px',height:'32px'}"
+              :style="{width:95 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -71,7 +71,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px', height: 32 + 'px'}"
+              :style="{width:95 + 'px', height: 36 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -930,7 +930,7 @@ td {
   }
 }
 .sureItem {
-  height: 32px;
+  height: 36px;
 }
 .pull-left.alarmmsgleft {
   width: 75%;
