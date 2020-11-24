@@ -777,7 +777,42 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        this.listLoading = false
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 346) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+                dom.style.width =
+                  (((document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11) *
+                    16) /
+                    9 +
+                  'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+              }
+            })
+          })
+        }, 300)
       })
     },
     handleSelectionChange(val) {
@@ -846,12 +881,17 @@ export default {
 .el-input__inner {
   text-indent: 0px;
 }
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
+  .alaMesTable.el-table--medium {
+    td {
+      padding: 0px;
+      .el-image {
+        vertical-align: middle;
+      }
+    }
+    th {
+      padding: 0px;
+    }
   }
-}
-
 .title {
   width: 100%;
   height: 50px;
