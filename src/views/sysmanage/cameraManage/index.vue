@@ -622,8 +622,8 @@ export default {
      .camerainfo {
        height: 100%;
        border: 1px solid #D8D8D8;
-       border-radius: 5px;
-       border-radius: 5px;
+   border-radius: 4px;
+   border-radius: 4px;
        margin-left:20px;
        .infotitle {
          height: 50px;

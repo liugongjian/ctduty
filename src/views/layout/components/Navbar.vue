@@ -92,7 +92,7 @@
           </el-form-item>
           <el-form-item label="内容">
             <span
-              style="margin-left:10px;margin-top:8px;padding:0 10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;"
+              style="margin-left:10px;margin-top:8px;padding:0 10px;border-radius: 4px;display:block;border:1px dashed #ccc;width: 300px;"
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
@@ -508,7 +508,7 @@ label {
     text-align: center;
     color: #fff;
     position: absolute;
-    border-radius: 5px 5px 5px 0;
+border-radius: 4px 5px 5px 0;
     background-color: red;
     top: 5px;
     right: -20px;
