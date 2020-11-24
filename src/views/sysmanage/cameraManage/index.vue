@@ -6,9 +6,14 @@
           <div class="filter-container clearfix">
             <div class="pull-left">
               <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
-              <el-button v-waves class="filter-item" type="warning" @click="onSearch">
-                {{ '搜索' }}
-              </el-button>
+              <el-button
+                v-waves
+                class="filter-item"
+                size="mini"
+                style="height: 36px"
+                type="warning"
+                @click="onSearch"
+              >{{ '搜索' }}</el-button>
             </div>
             <div class="pull-right">
               <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">

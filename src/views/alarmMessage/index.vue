@@ -26,7 +26,7 @@
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
+            style="font-size:12px; width: 20%;height:32px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -42,7 +42,7 @@
               :style="{width:178 + 'px', height: 32 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -168,7 +168,7 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'设备名称'"
+                :label="'摄像头地址'"
                 align="center"
                 min-width="18%"
                 prop="camera.name"
@@ -892,7 +892,7 @@ td {
   }
 }
 .sureItem {
-  height: 28px;
+  height: 32px;
 }
 .pull-left.alarmmsgleft {
   width: 75%;
@@ -924,9 +924,10 @@ td {
   // border-left: none;
   border-radius: 4px;
 }
-// .el-input--mini .el-input__inner {
-//   text-indent: 0px;
-// }
+.el-input--mini .el-input__inner {
+  height: 32px;
+  line-height: 32px;
+}
 .el-range-editor.el-input__inner {
   padding: 5px 5px;
 }

@@ -5,17 +5,13 @@
         <div class="pull-right">
           <el-button
             v-waves
-            class="filter-item"
+            class="filter-item sureItem"
             size="mini"
             type="warning"
+            style="margin-bottom: 10px; margin-left: 10px"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
-          <el-button
-            class="filter-item"
-            style="font-size:12px"
-            icon="el-icon-refresh"
-            @click="onClear"
-          >重置</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
         </div>
         <div class="pull-left">
           <div class="block filter-item">
@@ -28,7 +24,7 @@
               :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -596,7 +592,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 32px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -703,5 +699,8 @@ export default {
     object-fit: contain; //cover;
     background-color: rgb(245, 247, 250);
   }
+}
+.sureItem {
+  height: 36px;
 }
 </style>

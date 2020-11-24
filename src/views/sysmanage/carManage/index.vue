@@ -10,8 +10,15 @@
             style="width: 260px;"
             @keyup.enter.native="onSearch"
           ></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 10px; margin-left: 10px"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
         </div>
 
         <div class="pull-right">
@@ -677,5 +684,9 @@ export default {
   width: 360px;
   margin: 0 auto;
 }
+.sureItem {
+  height: 36px;
+}
+
 </style>
 
