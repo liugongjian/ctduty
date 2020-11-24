@@ -24,59 +24,113 @@
               >确 定</el-button>
               <el-button @click="dialogQuxiao">取 消</el-button>
             </div>
-          </el-dialog> -->
+          </el-dialog>-->
         </div>
       </div>
 
-      <el-table :data="tableData" v-loading="tableLoading" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" >
+      <el-table
+        :data="tableData"
+        v-loading="tableLoading"
+        :header-cell-class-name="tableRowClassHeader"
+        class="amountdetailTable"
+        style="width: 100%"
+        tooltip-effect="dark"
+        fit
+        @filter-change="filerStatus"
+      >
         <!--批量操作事件 @selection-change="handleSelectionChange" -->
         <!-- <el-table-column
           type="selection"
           width="55">
-        </el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'会话编号'" style="text-align: center" prop="code">
+        </el-table-column>-->
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'会话编号'"
+          style="text-align: center"
+          prop="code"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.code }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'登录名称'" style="text-align: center" prop="username">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'登录名称'"
+          style="text-align: center"
+          prop="username"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.username }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'部门名称'" style="text-align: center" prop="name">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'部门名称'"
+          style="text-align: center"
+          prop="name"
+        >
           <template slot-scope="scope">
-            <span>{{ scope.row.department ? scope.row.department.name : '' }} </span>
+            <span>{{ scope.row.department ? scope.row.department.name : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'主机'" style="text-align: center" prop="ip">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'主机'"
+          style="text-align: center"
+          prop="ip"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.ip }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'浏览器'" style="text-align: center" prop="browser">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'浏览器'"
+          style="text-align: center"
+          prop="browser"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.browser }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作系统'" style="text-align: center" prop="system">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'操作系统'"
+          style="text-align: center"
+          prop="system"
+        >
           <template slot-scope="scope">
             <span>{{ scope.row.system }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'登录时间'" style="text-align: center" prop="firstLoginTime">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'登录时间'"
+          style="text-align: center"
+          prop="firstLoginTime"
+        >
           <template slot-scope="scope">
             <span>{{ renderTime(scope.row.firstLoginTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'最近访问时间'" style="text-align: center" prop="lastAccessTime">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'最近访问时间'"
+          style="text-align: center"
+          prop="lastAccessTime"
+        >
           <template slot-scope="scope">
             <span>{{ renderTime(scope.row.lastAccessTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'" style="text-align: center">
           <template slot-scope="scope">
-            <el-button class="forced" type="warning" size="small" @click="delAlert(scope.row.code)">{{ $t('login.logout') }}</el-button>
+            <el-button
+              class="forced"
+              type="warning"
+              size="small"
+              @click="delAlert(scope.row.code)"
+            >{{ $t('login.logout') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,39 +140,39 @@
         :page.sync="page"
         :limit.sync="limit"
         @pagination="pageChange()"
-      /> -->
+      />-->
       <!-- @pagination="pageChange()" -->
     </div>
   </div>
 </template>
 
 <script>
-import { Message } from 'element-ui'
-import Cookies from 'js-cookie'
-import Pagination from '@/components/Pagination'
-import 'element-ui/lib/theme-chalk/index.css'
-import { renderTime } from '@/utils'
-import { fetchOnlineList, fetchOnlineLogout } from '@/api/user'
+import { Message } from "element-ui";
+import Cookies from "js-cookie";
+import Pagination from "@/components/Pagination";
+import "element-ui/lib/theme-chalk/index.css";
+import { renderTime } from "@/utils";
+import { fetchOnlineList, fetchOnlineLogout } from "@/api/user";
 export default {
   components: { Pagination },
   data() {
     return {
-       tableLoading: null,
+      tableLoading: null,
       listLoading: false,
       filteredValue: [],
       tableData: [],
-      code: '',
+      code: "",
       dialogVisable: false,
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 20,
-      userId: Cookies.get('userId'),
-      originCode: '',
+      userId: Cookies.get("userId"),
+      originCode: "",
       oldSize: 20,
       renderTime,
       dialogVisible: false,
-      code: ''
-    }
+      code: ""
+    };
   },
   // watch: {
   //   limit() {
@@ -127,57 +181,57 @@ export default {
   //   }
   // },
   created() {
-    Message.closeAll()
-    this.getList()
+    Message.closeAll();
+    this.getList();
   },
   methods: {
     create() {
-      this.dialogVisable = true
+      this.dialogVisable = true;
     },
     closeDialog() {
-      this.dialogVisable = false
+      this.dialogVisable = false;
     },
     // 强退
     delAlert(code) {
-      const token = Cookies.get('token')
-      this.code = code
+      const token = Cookies.get("token");
+      this.code = code;
       if (token === this.code) {
-        this.$confirm('此操作将强制退出本账号, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$confirm("此操作将强制退出本账号, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }).then(() => {
-          this.lineLogout()
-        })
+          this.lineLogout();
+        });
       } else {
-        this.$confirm('此操作将强制退出该用户, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$confirm("此操作将强制退出该用户, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }).then(() => {
-          this.forcedSure()
-        })
+          this.forcedSure();
+        });
       }
     },
     forcedSure() {
-      const token = Cookies.get('token')
+      const token = Cookies.get("token");
       fetchOnlineLogout(this.code).then(response => {
         if (response.code === 0) {
-          this.getList()
+          this.getList();
         }
-      })
+      });
     },
     lineLogout() {
       // window.location.href = `${process.env.LOGOUT_URL}`;
-      Cookies.remove('token')
-      Cookies.remove('username')
-      Cookies.remove('userId')
-      Cookies.remove('level')
-      this.$router.push('/login')
+      Cookies.remove("token");
+      Cookies.remove("username");
+      Cookies.remove("userId");
+      Cookies.remove("level");
+      this.$router.push("/login");
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return 'tableRowClassHeader'
+      return "tableRowClassHeader";
     },
     // pageChange() {
     //   if (this.oldSize !== this.limit) {
@@ -187,48 +241,49 @@ export default {
     //   this.getList(this.$route.query._id)
     // },
     goBack() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'consumeTime') {
-          return v[j] + 'ms'
-        } else {
-          return v[j]
-        }
-      }))
+      return jsonData.map(v =>
+        filterVal.map(j => {
+          if (j === "consumeTime") {
+            return v[j] + "ms";
+          } else {
+            return v[j];
+          }
+        })
+      );
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
+        this.originCode = columnObj[key][0];
       }
-      this.page = 1
-      let columnObjKey = ''
+      this.page = 1;
+      let columnObjKey = "";
       for (var i in columnObj) {
-        columnObjKey = i
+        columnObjKey = i;
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getList(this.$route.query._id)
+        this.filteredValue = [];
+        this.getList(this.$route.query._id);
       } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getList(this.$route.query._id)
+        this.filteredValue = columnObj[columnObjKey];
+        this.getList(this.$route.query._id);
       }
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true;
       fetchOnlineList().then(response => {
-        this.tableLoading = true;
-        this.tableData = []
+        this.tableData = [];
         for (let i = 0; i < response.body.data.length; i++) {
-          this.code = response.body.data[i].code
-          this.tableData.push(Object.assign(response.body.data[i]))
-        
+          this.code = response.body.data[i].code;
+          this.tableData.push(Object.assign(response.body.data[i]));
         }
         this.tableLoading = false;
         // this.total = response.body.data.pageInfo.totalItems
         // this.listLoading = false
-      })
+      });
     },
 
     // 批量操作
@@ -236,13 +291,13 @@ export default {
     //   this.multipleSelection = val
     // },
     dialogQuxiao() {
-      this.dialogVisable = false
+      this.dialogVisable = false;
     },
     dialogConfirm() {
-      this.dialogVisable = false
+      this.dialogVisable = false;
     }
   }
-}
+};
 </script>
 
 <style lang='scss' scoped>

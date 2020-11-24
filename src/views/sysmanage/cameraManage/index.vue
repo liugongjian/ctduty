@@ -6,9 +6,14 @@
           <div class="filter-container clearfix">
             <div class="pull-left">
               <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
-              <el-button v-waves class="filter-item" type="warning" @click="onSearch">
-                {{ '搜索' }}
-              </el-button>
+              <el-button
+                v-waves
+                class="filter-item"
+                size="mini"
+                style="height: 36px"
+                type="warning"
+                @click="onSearch"
+              >{{ '搜索' }}</el-button>
             </div>
             <div class="pull-right">
               <el-select v-model="formInline.typeValue" style="width:120px;" class="filter-item" @change="checkModel">
@@ -574,6 +579,9 @@ export default {
   height: 100%;
 }
 .cameraIndex {
+  .el-button--text {
+  color: #fa8334 !important;
+}
 .camera {
   height: calc(100vh - 90px) !important;
 }
@@ -614,8 +622,8 @@ export default {
      .camerainfo {
        height: 100%;
        border: 1px solid #D8D8D8;
-       border-radius: 5px;
-       border-radius: 5px;
+   border-radius: 4px;
+   border-radius: 4px;
        margin-left:20px;
        .infotitle {
          height: 50px;

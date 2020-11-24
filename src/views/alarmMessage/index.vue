@@ -27,7 +27,7 @@
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
+            style="font-size:12px; width: 20%;height:36px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -40,10 +40,10 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:178 + 'px', height: 32 + 'px'}"
+              :style="{width:210 + 'px', height: 36 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -56,7 +56,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px',height:'32px'}"
+              :style="{width:95 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -72,7 +72,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px', height: 32 + 'px'}"
+              :style="{width:95 + 'px', height: 36 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -194,13 +194,13 @@
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
+                prop="handler.name"
                 width="100"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.handler ? scope.row.handler.name:'-' }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -966,32 +966,17 @@ export default {
       vertical-align: middle;
     }
   }
-  .sureItem {
-    height: 28px;
-  }
-  .pull-left.alarmmsgleft {
-    width: 75%;
-  }
-  .pull-right.alarmmsgright {
-    position: relative;
-    width: 25%;
-    .clearsearch {
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      height: 34px;
-      width: 60px;
-      // margin-left: 16px;
-      border: 1px solid #ccc;
-      background: none;
-      border-radius: 3px;
-      outline: none;
-    }
-    .clearsearch:active {
-      background-color: rgb(243, 241, 241);
-    }
-  }
-  .searchsure {
+}
+.sureItem {
+  height: 36px;
+}
+.pull-left.alarmmsgleft {
+  width: 78%;
+}
+.pull-right.alarmmsgright {
+  position: relative;
+  width: 22%;
+  .clearsearch {
     position: absolute;
     top: 1px;
     height: 34px;
@@ -1005,20 +990,25 @@ export default {
   .el-range-editor.el-input__inner {
     padding: 5px 5px;
   }
-  .mesdialog {
-    .el-dialog__header {
-      padding: 0 !important;
-    }
-    .el-dialog .el-dialog__body {
-      padding: 0 !important;
-      overflow: hidden;
-    }
-    .el-dialog__footer {
-      padding: 0 !important;
-    }
-    .dialog-footer {
-      padding: 10px 0 !important;
-    }
+}
+.searchsure {
+  position: absolute;
+  top: 1px;
+  height: 34px;
+  right: 22%;
+  // border-left: none;
+  border-radius: 4px;
+}
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-range-editor.el-input__inner {
+  padding: 5px 5px;
+}
+.mesdialog {
+  .el-dialog__header {
+    padding: 0 !important;
   }
   .popfooter {
     padding-top: 4px;

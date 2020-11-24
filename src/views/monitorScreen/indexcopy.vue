@@ -430,7 +430,7 @@ export default {
       font-size: 14px !important;
       color: #ccc;
       border: 1px dashed #9b9b9b;
-      border-radius: 5px 5px 0 0;
+  border-radius: 4px 5px 0 0;
       cursor: pointer;
       i {
         font-size: 56px;

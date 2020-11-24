@@ -83,7 +83,7 @@
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>

@@ -13,8 +13,15 @@
             style="width: 260px;"
             @keyup.enter.native="onSearch"
           ></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 10px; margin-left: 10px"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
         </div>
         <div class="pull-right">
           <el-button
@@ -733,108 +740,114 @@ export default {
 }
 .faceindexlist {
   overflow: auto !important;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
   .avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 160px;
-  height: 210px;
-  display: block;
-}
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
-.el-dialog__body {
-  width: 100%;
-}
-.el-popover.el-popover--plain {
-  z-index: 9999999999999999999999 !important;
-}
-.face-col {
-  width: 14.8%;
-  margin: 10px 0.8%;
-}
-.face-card:hover {
-  .face-checkbox {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 160px;
+    height: 210px;
     display: block;
   }
-}
-.face-card {
-  position: relative;
-  border-radius: 4px;
-  img {
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
+  }
+  .el-dialog__body {
     width: 100%;
   }
-  .face-info {
-    font-size: 14px;
-    height: 30px;
-    padding: 0 10px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    background-color: #fafafa;
+  .el-popover.el-popover--plain {
+    z-index: 9999999999999999999999 !important;
   }
-
-  .face-name {
-    padding: 5px 0;
-    font-size: 12px;
-    margin-right: 5px;
+  .face-col {
+    width: 14.8%;
+    margin: 10px 0.8%;
   }
-  .face-kind {
-    font-size: 12px;
+  .face-card:hover {
+    .face-checkbox {
+      display: block;
+    }
   }
-  .btn-box {
-    width: 30px;
-    display: flex;
-    justify-content: space-between;
-    margin-right: 10px;
-    margin-bottom: 5px;
-  }
-  .image {
-    width: 100%;
-    // max-width: 250px;
-    height: 200px;
+  .face-card {
+    position: relative;
+    border-radius: 4px;
     img {
-      object-fit: contain; //cover;
+      width: 100%;
+    }
+    .face-info {
+      font-size: 14px;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      background-color: #fafafa;
+    }
+
+    .face-name {
+      padding: 5px 0;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+    .face-kind {
+      font-size: 12px;
+    }
+    .btn-box {
+      width: 30px;
+      display: flex;
+      justify-content: space-between;
+      margin-right: 10px;
+      margin-bottom: 5px;
+    }
+    .image {
+      width: 100%;
+      // max-width: 250px;
+      height: 200px;
+      img {
+        object-fit: contain; //cover;
+      }
+    }
+  }
+  .face-nodata {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+  .face-card {
+    label {
+      width: 15px;
+    }
+    .el-checkbox {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 5px;
+    }
+    .is-checked {
+      display: inline-block;
     }
   }
 }
-.face-nodata {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-}
-.face-card {
-  label {
-    width: 15px;
-  }
-  .el-checkbox {
-  display: none;
-  position: absolute;
-  top: 4px;
-  right: 5px;
-}
-.is-checked {
-  display: inline-block;
-}
-}
+.sureItem {
+  height: 36px;
 }
 </style>
 

@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="to"
+          range-separator="~"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -97,8 +97,15 @@
         </el-time-picker>
       </span>
       <span style="float:right;">
-        <el-button type="primary" @click="onSearch">搜索</el-button>
-        <el-button type="" @click="onClear">重置</el-button>
+        <el-button
+          v-waves
+          class="filter-item sureItem"
+          size="mini"
+          type="warning"
+          style="margin-bottom: 10px; margin-left: 10px"
+          @click="onSearch"
+        >{{ '搜索' }}</el-button>
+        <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
       </span>
     </div>
     <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">
@@ -388,6 +395,9 @@ export default {
 
 <style lang='scss'>
 .carHistory {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
   .filter-wrapper{
     margin:20px;
     &>span{
