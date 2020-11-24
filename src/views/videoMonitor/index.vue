@@ -132,7 +132,7 @@
         </div>
       </div>
       <div class="rightPanel">
-        <div class="realTimeData">
+        <div v-loading="realTimeDataLoading" class="realTimeData">
           <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
@@ -176,20 +176,20 @@
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.today.in : '-' }}人</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.today.out : '-' }}人</div>
                   </div>
                 </div>
               </div>
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.realTime.in : '-' }}人</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.realTime.out : '-' }}人</div>
                   </div>
                 </div>
               </div>
@@ -203,11 +203,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.in : '-' }}辆</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.out : '-' }}辆</div>
                   </div>
                 </div>
               </div>
@@ -218,11 +218,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.in : '-' }}辆</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.out : '-' }}辆</div>
                   </div>
                 </div>
               </div>
@@ -348,7 +348,30 @@ export default {
       tableColumn: [],
       tableData: [],
       heightByAuto: '',
-      slide: 0
+      slide: 0,
+      realTimeDataLoading: true,
+      realTimeData: {
+        people: {
+          today: {
+            in: 0,
+            out: 0
+          },
+          realTime: {
+            in: 0,
+            out: 0
+          }
+        },
+        vehicle: {
+          today: {
+            in: 0,
+            out: 0
+          },
+          realTime: {
+            in: 0,
+            out: 0
+          }
+        }
+      }
     }
   },
   computed: {
@@ -403,6 +426,7 @@ export default {
   },
   methods: {
     getRealTimeData() {
+      this.realTimeDataLoading = true
       const { cameraId } = this.$route.query
       const param = [
         {
@@ -433,9 +457,18 @@ export default {
       getAlertRealtimeStatics(params)
         .then(res => {
           console.log('realTimeData, ', res)
+          const { code, body: { data } = {}, message } = res
+          if (code !== 0) {
+            this.$message(message)
+            this.realTimeDataLoading = false
+            return
+          }
+          this.realTimeData = data
+          this.realTimeDataLoading = false
         })
         .catch(err => {
-          console.log(err)
+          this.realTimeDataLoading = false
+          // this.$message(err.message || '获取实时分析数据失败') TODO
         })
     },
     setVideoHeight() {
@@ -888,7 +921,7 @@ export default {
         .photoList-image:hover {
           cursor: zoom-in;
         }
-        @media screen and (max-width: 1400px) {
+        @media screen and (max-width: 1430px) {
           .photoList {
             // display: inline-block;
             width: 31%;
@@ -897,7 +930,7 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1401px) and (max-width: 1600px) {
+        @media screen and (min-width: 1431px) and (max-width: 1600px) {
           .photoList {
             // display: inline-block;
             width: 23%;
@@ -1007,18 +1040,28 @@ export default {
     position: absolute;
     bottom: 20px;
     width: calc(100% - 20px);
+    .showTotal {
+      line-height:28px;
+    }
+    .el-input--mini{
+      width: 85px;
+      line-height: 24px;
+    }
+    .el-input--mini .el-input__inner{
+        height: 24px;
+    }
     .el-pagination--small {
       height: 28px;
     }
     @media screen and (max-width: 1600px) {
       .el-pagination__jump {
-        display: none;
+        display: none !important;
       }
     }
     @media screen and (max-width: 1400px) {
       bottom: 40px;
       .showTotal {
-        display: none;
+        display: none !important;
       }
     }
   }
