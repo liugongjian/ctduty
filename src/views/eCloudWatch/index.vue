@@ -326,8 +326,8 @@ export default {
       xData: [
       ],
       isDisableAllAlarmBtn: false,
-      zoom: 8,
-      zooms: [0, 15.5],
+      zoom: 9,
+      zooms: [9, 15.5],
       hasMarker: false,
       showZwMes: true,
       center: [110.170143, 34.567009],
