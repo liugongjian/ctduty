@@ -391,7 +391,6 @@ export default {
       this.editForm.address = v.address
       this.editForm.name = v.name
       this.editForm.url = v.url
-      console.log(v)
       this.editVisable = true
     },
     editCloseDialog() {
@@ -402,8 +401,8 @@ export default {
         {
           id: this.editForm.id,
           inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.latitude,
-          longitude: this.editForm.longitude,
+          latitude: this.editForm.tude.split(',')[1].trim(),
+          longitude: this.editForm.tude.split(',')[0].trim(),
           url: this.editForm.url,
           name: this.editForm.name,
           creatorId: this.editForm.creatorId
