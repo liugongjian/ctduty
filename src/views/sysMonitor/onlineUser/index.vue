@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="onlinelist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">

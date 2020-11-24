@@ -575,17 +575,21 @@ export default {
 </script>
 
 <style lang='scss'>
- .filter-item  {
-   input {
-    font-size: 12px !important;
-   }
- }
 .main-container {
   height: 100%;
+}
+.cameraIndex {
+  .el-button--text {
+  color: #fa8334 !important;
 }
 .camera {
   height: calc(100vh - 90px) !important;
 }
+.filter-item  {
+   input {
+    font-size: 12px !important;
+   }
+ }
  .title {
    width: 100%;
    height: 50px;
@@ -682,4 +686,6 @@ export default {
   .formMargin {
     margin-bottom: 5px !important;
   }
+}
+
 </style>

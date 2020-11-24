@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="cameralist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -58,7 +58,7 @@
             <span>{{ scope.row.online ? "离线":"在线" }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.username"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'负责人'" prop="inCharge.name"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头经度'" prop="longitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头纬度'" prop="latitude"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="address"></el-table-column>
@@ -596,17 +596,17 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
+.cameralist {
   overflow: auto !important;
-}
-.app-main {
-  padding-top: 50px;
-}
-.el-button--text {
+  .el-button--text {
   color: #FA8334 !important;
 }
 .el-button.is-disabled {
   color: #C0C4CC !important;
+}
+}
+.app-main {
+  padding-top: 50px;
 }
 </style>
 

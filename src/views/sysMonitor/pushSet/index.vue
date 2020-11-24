@@ -122,8 +122,7 @@ export default {
     padding: 20px;
     width: 100%;
     height: calc(100vh - 50px);
-  }
-  .title {
+    .title {
    width: 100%;
    height: 50px;
    line-height: 50px;
@@ -142,5 +141,6 @@ export default {
   background: #FFF;
   margin-bottom: 20px;
 }
+  }
 
 </style>

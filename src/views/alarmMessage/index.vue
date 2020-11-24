@@ -171,7 +171,7 @@
                 :label="'摄像头地址'"
                 align="center"
                 min-width="18%"
-                prop="camera.name"
+                prop="camera.address"
               ></el-table-column>
               <el-table-column :label="'图片'" align="center" min-width="12%">
                 <template slot-scope="scope">
@@ -192,13 +192,13 @@
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
+                prop="handler.name"
                 width="100"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.handler ? scope.row.handler.name:'-' }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -253,10 +253,10 @@
             <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
           </div>
           <div class="popfooter">
-            <el-tooltip :content="temp.camera.name" class="item" effect="light" placement="top-start">
+            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
               <div class="popfooteraddress">
                 <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                <span style="width: 260px;">{{ temp.camera?temp.camera.name : '' }}</span>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
               </div>
             </el-tooltip>
             <div class="popfootertime">
@@ -414,7 +414,7 @@ export default {
           },
           params: [
             {
-              field: 'camera.name',
+              field: 'camera.address',
               operator: 'LIKE',
               value: `%${this.formInline.searchkey}%`
             },
@@ -777,7 +777,42 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        this.listLoading = false
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 346) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+                dom.style.width =
+                  (((document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11) *
+                    16) /
+                    9 +
+                  'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+              }
+            })
+          })
+        }, 300)
       })
     },
     handleSelectionChange(val) {
@@ -842,15 +877,21 @@ export default {
 </script>
 
 <style lang='scss'>
+.list {
 .el-input__inner {
   text-indent: 0px;
 }
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
+  .alaMesTable.el-table--medium {
+    td {
+      padding: 0px;
+      .el-image {
+        vertical-align: middle;
+      }
+    }
+    th {
+      padding: 0px;
+    }
   }
-}
-
 .title {
   width: 100%;
   height: 50px;
@@ -877,9 +918,6 @@ export default {
 }
 .untreated {
   fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
 }
 .buttonText {
   color: #409eff;
@@ -978,4 +1016,5 @@ td {
 //   top: 4px;
 //   left: 85%;
 // }
+}
 </style>

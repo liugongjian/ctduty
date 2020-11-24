@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="faceindexlist">
     <!--  <div class="title">
       摄像头管理
     </div>-->
@@ -735,113 +735,116 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
-  overflow: auto !important;
-}
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 160px;
-  height: 210px;
-  display: block;
-}
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
-.el-dialog__body {
-  width: 100%;
-}
-.el-popover.el-popover--plain {
-  z-index: 9999999999999999999999 !important;
-}
-.face-col {
-  width: 14.8%;
-  margin: 10px 0.8%;
-}
-.face-card:hover {
-  .face-checkbox {
+.faceindexlist {
+  overflow: auto !important;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 160px;
+    height: 210px;
     display: block;
   }
-}
-.face-card {
-  position: relative;
-  border-radius: 4px;
-  img {
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
+  }
+  .el-dialog__body {
     width: 100%;
   }
-  .face-info {
-    font-size: 14px;
-    height: 30px;
-    padding: 0 10px;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    background-color: #fafafa;
+  .el-popover.el-popover--plain {
+    z-index: 9999999999999999999999 !important;
   }
-
-  .face-name {
-    padding: 5px 0;
-    font-size: 12px;
-    margin-right: 5px;
+  .face-col {
+    width: 14.8%;
+    margin: 10px 0.8%;
   }
-  .face-kind {
-    font-size: 12px;
-  }
-  .btn-box {
-    width: 30px;
-    display: flex;
-    justify-content: space-between;
-    margin-right: 10px;
-    margin-bottom: 5px;
-  }
-  .image {
-    width: 100%;
-    // max-width: 250px;
-    height: 200px;
-    img {
-      object-fit: contain; //cover;
+  .face-card:hover {
+    .face-checkbox {
+      display: block;
     }
   }
-}
-.face-nodata {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-}
-.face-card {
-  label {
-    width: 15px;
+  .face-card {
+    position: relative;
+    border-radius: 4px;
+    img {
+      width: 100%;
+    }
+    .face-info {
+      font-size: 14px;
+      height: 30px;
+      padding: 0 10px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      background-color: #fafafa;
+    }
+
+    .face-name {
+      padding: 5px 0;
+      font-size: 12px;
+      margin-right: 5px;
+    }
+    .face-kind {
+      font-size: 12px;
+    }
+    .btn-box {
+      width: 30px;
+      display: flex;
+      justify-content: space-between;
+      margin-right: 10px;
+      margin-bottom: 5px;
+    }
+    .image {
+      width: 100%;
+      // max-width: 250px;
+      height: 200px;
+      img {
+        object-fit: contain; //cover;
+      }
+    }
   }
-}
-.el-checkbox {
-  display: none;
-  position: absolute;
-  top: 4px;
-  right: 5px;
-}
-.is-checked {
-  display: inline-block;
+  .face-nodata {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+  .face-card {
+    label {
+      width: 15px;
+    }
+    .el-checkbox {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 5px;
+    }
+    .is-checked {
+      display: inline-block;
+    }
+  }
 }
 .sureItem {
   height: 36px;

@@ -13,7 +13,7 @@
             ref="queryOperatorRef"
             v-model="username"
             class="searchinput"
-            placeholder="创建者姓名"
+            placeholder="创建者"
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
@@ -63,7 +63,7 @@
         <el-table-column label="状态" prop="state">
           <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
         </el-table-column>
-        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建者" prop="creator.name"></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="row_data">
@@ -411,20 +411,14 @@ export default {
         ]
       }
       if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title
+        query.params['title'] = this.queryInfo.params.title.trim()
       }
       if (this.queryInfo.params.type !== null) {
         query.params['type'] = this.queryInfo.params.type
       }
 
       if (this.username.trim() !== '') {
-        await this.searchUserId()
-        if (this.userid !== null) {
-          query.params['creatorId'] = this.userid
-        } else {
-          this.userid = {}
-          return
-        }
+        query.params['name'] = this.username.trim()
       }
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error('获取通知信息失败')
@@ -586,38 +580,38 @@ export default {
 <style lang='scss' scoped>
 .notice {
   padding: 10px 20px;
+  .input_title {
+    width: 360px;
+  }
+  .el-button--text {
+  color: #fa8334 !important;
 }
-.input_title {
-  width: 360px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  width: 250px;
-}
-/* .addNotice {
-  float: right;
-} */
-.quill-editor {
-  display: inline-block;
-  width: 360px;
-  height: 150px;
-}
-.el-row {
-  margin-top: 20px;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    width: 250px;
+  }
+  /* .addNotice {
+    float: right;
+  } */
+  .quill-editor {
+    display: inline-block;
+    width: 360px;
+    height: 150px;
+  }
+  .el-row {
+    margin-top: 20px;
+  }
 }
 </style>
