@@ -192,13 +192,13 @@
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
+                prop="handler.name"
                 width="100"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.handler ? scope.row.handler.name:'-' }}</span>
                 </template>
               </el-table-column>
               <el-table-column

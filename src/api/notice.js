@@ -3,7 +3,7 @@ import qs from 'qs'
 
 export function fetchNoticeList(query) {
   return request({
-    url: '/nvsapi/Notice/QueryFilter',
+    url: '/nvsapi/Notice/QueryActive',
     method: 'post',
     data: query
   })
