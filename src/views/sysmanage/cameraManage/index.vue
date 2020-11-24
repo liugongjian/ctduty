@@ -574,6 +574,9 @@ export default {
   height: 100%;
 }
 .cameraIndex {
+  .el-button--text {
+  color: #fa8334 !important;
+}
 .camera {
   height: calc(100vh - 90px) !important;
 }

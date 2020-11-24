@@ -388,6 +388,9 @@ export default {
 
 <style lang='scss'>
 .carHistory {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
   .filter-wrapper{
     margin:20px;
     &>span{

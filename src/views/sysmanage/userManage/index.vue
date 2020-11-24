@@ -445,6 +445,9 @@ export default {
 <style lang='scss' scoped>
 .userManage {
   padding: 10px 20px;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
   .title {
   width: 150px;
   height: 100px;
