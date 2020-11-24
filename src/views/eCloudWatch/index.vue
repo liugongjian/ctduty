@@ -282,10 +282,8 @@ import hintMusic from './assets/hint.mp3'
 import newarrow from './assets/newarrow.png'
 import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
-  resizeEnable: true, // 是否监控地图容器尺寸变化
-  zoom: 14 // 初始地图级别
+  resizeEnable: true
 })
-
 export default {
   name: 'ECloudWatch',
   components: { Pagination, VideoPlayer, CanvasDialog },
@@ -328,8 +326,8 @@ export default {
       xData: [
       ],
       isDisableAllAlarmBtn: false,
-      zoom: 13,
-      zooms: [13, 15.5],
+      zoom: 8,
+      zooms: [0, 15.5],
       hasMarker: false,
       showZwMes: true,
       center: [110.170143, 34.567009],
@@ -377,6 +375,8 @@ export default {
             item.classList.remove('clickgif')
             item.classList.remove('markerClickImg')
           })
+        },
+        init(o) {
         }
       },
       window: {
@@ -401,14 +401,10 @@ export default {
       }, 300)
     },
     hasMarker(v) {
-      const that = this
       if (v) {
-        [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
-          if (index === 0) {
-            that.center = [that.form.longitude, that.form.latitude]
-            that.showZwMes = false
-          }
-        })
+        const o = amapManager.getMap()
+        o.setFitView(/* this.markers */)
+        this.showZwMes = false
       }
     },
     limit() {
@@ -610,8 +606,9 @@ export default {
           if (index === 0 && this.isFirDom) {
             this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
-            this.center = [item.longitude, item.latitude]
-            this.zoom = 15
+            const o = amapManager.getMap()
+            o.setFitView()
+            o.setZoomAndCenter(15, [item.longitude, item.latitude])
           }
           if (item.undealSum === '0') {
             this.markers.push({
@@ -794,8 +791,9 @@ export default {
           } else {
             this.cameraState = '此摄像头已离线'
           }
-          this.center = [this.form.longitude, this.form.latitude]
-          this.zoom = 15
+          const o = amapManager.getMap()
+          o.setFitView()
+          o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
             cascade: true,
@@ -905,8 +903,9 @@ export default {
           } else {
             this.cameraState = '此摄像头已离线'
           }
-          this.zoom = 15
-          this.center = [this.form.longitude, this.form.latitude]
+          const o = amapManager.getMap()
+          o.setFitView()
+          o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
             cascade: true,
@@ -1000,9 +999,10 @@ export default {
           this.closeDialog()
         }, 5000)
       }
-      this.center = [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006]
       this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
-      this.zoom = 15
+      const o = amapManager.getMap()
+      o.setFitView()
+      o.setZoomAndCenter(15, [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006])
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
         item.classList.remove('markerClickImg')
