@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <el-table :data="tableData" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" >
+      <el-table :data="tableData" v-loading="tableLoading" :header-cell-class-name="tableRowClassHeader" class="amountdetailTable" style="width: 100%" tooltip-effect="dark" fit @filter-change="filerStatus" >
         <!--批量操作事件 @selection-change="handleSelectionChange" -->
         <!-- <el-table-column
           type="selection"
@@ -103,6 +103,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+       tableLoading: null,
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -217,11 +218,14 @@ export default {
     // 获取列表数据
     getList() {
       fetchOnlineList().then(response => {
+        this.tableLoading = true;
         this.tableData = []
         for (let i = 0; i < response.body.data.length; i++) {
           this.code = response.body.data[i].code
           this.tableData.push(Object.assign(response.body.data[i]))
+        
         }
+        this.tableLoading = false;
         // this.total = response.body.data.pageInfo.totalItems
         // this.listLoading = false
       })

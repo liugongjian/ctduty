@@ -111,6 +111,7 @@
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
               :data="tableData"
+              v-loading="tableLoading"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
               style="width: 100%"
@@ -279,9 +280,9 @@
             </el-tooltip>
             <div class="popfootertime">
               <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-              <span style="width: 260px;">
+              <span :formatter="formatTime">
                 {{
-                renderTime(temp.createTime)
+                formatTime(temp.createTime)
                 }}
               </span>
             </div>
@@ -340,6 +341,7 @@ export default {
       alarmtext: "当日告警总计",
       renderTime,
       else: "其他",
+      tableLoading: null,
       temp: {
         camera: {},
         createTime: "",
@@ -747,6 +749,7 @@ export default {
     // 获取列表数据
     getList(s, e, h) {
       // console.log('se', s , e)
+      this.tableLoading = true;
       let oper;
       if (h === "settled") {
         oper = "NOT_NULL";
@@ -810,7 +813,43 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data;
         this.total = response.body.page.total;
-        this.listLoading = false;
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName("cell");
+          var arr = Array.from(cellArr);
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName("html")[0].clientHeight - 346) /
+                11 +
+              "px";
+            item.style.paddingTop = "2px";
+            item.style.paddingBottom = "2px";
+            const child = item.children;
+            const childArr = Array.from(child);
+            childArr.forEach(dom => {
+              if (dom.className === "el-image") {
+                dom.style.height =
+                  (document.getElementsByTagName("html")[0].clientHeight -
+                    346) /
+                    11 +
+                  "px";
+                dom.style.width =
+                  (((document.getElementsByTagName("html")[0].clientHeight -
+                    346) /
+                    11) *
+                    16) /
+                    9 +
+                  "px";
+              } else if (dom.className === "el-tag") {
+                dom.style.lineHeight =
+                  (document.getElementsByTagName("html")[0].clientHeight -
+                    346) /
+                    11 +
+                  "px";
+              }
+            });
+          });
+        }, 300);
+        this.tableLoading = false;
       });
     },
     handleSelectionChange(val) {
@@ -879,12 +918,17 @@ export default {
   .el-input__inner {
     text-indent: 0px;
   }
-  .alaMesTable {
+  .alaMesTable.el-table--medium {
     td {
-      padding: 2px 0 !important;
+      padding: 0px;
+      .el-image {
+        vertical-align: middle;
+      }
+    }
+    th {
+      padding: 0px;
     }
   }
-
   .title {
     width: 100%;
     height: 50px;
@@ -980,6 +1024,7 @@ export default {
     padding-top: 4px;
     padding-left: 4px;
     display: flex;
+
     .popfooteraddress {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -988,6 +1033,7 @@ export default {
     }
     .popfootertime {
       width: 150px;
+      padding-left: 65px;
     }
   }
   .el-button--text {
