@@ -17,6 +17,10 @@
             icon="el-icon-refresh"
             @click="onClear"
           >重置</button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
@@ -65,10 +69,7 @@
               :value="item._id"
             ></el-option>
           </el-select>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i class="el-icon-arrow-down"></i>
-          </span>
+
           <transition name="fade">
             <div v-show="flag">
               <div class="block filter-item">
@@ -1033,7 +1034,7 @@ export default {
   }
   .pull-right.alarmmsgright {
     position: relative;
-    right: 66px;
+    right: 0px;
     .clearsearch {
       position: absolute;
       top: 0px;
@@ -1120,7 +1121,7 @@ export default {
     line-height: 36px;
   }
   .open {
-    margin-left: 10px;
+    margin-left: 80px;
     color: #ff9832;
     cursor: pointer;
   }
