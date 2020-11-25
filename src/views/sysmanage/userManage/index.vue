@@ -412,6 +412,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        this.tableLoading = false
       })
     },
     pageChange() {
