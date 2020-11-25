@@ -643,7 +643,9 @@ export default {
           index: this.page,
           size: this.limit
         },
-        params: {}
+        params: {
+          inChargeId: this.userId
+        }
       }
       fetchAllCameraList(params).then(res => {
         this.tableData = res.body.data
