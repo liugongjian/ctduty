@@ -72,23 +72,23 @@
                 </div>
                 <el-form v-else :model="form" label-position="right">
                   <el-form-item class="formMargin" label="摄像头ID：">
-                    <el-tooltip :content="form.id+''" placement="top" disabled>
+                    <el-tooltip :content="form.id+''" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="负责人：">
-                    <el-tooltip :content="form.inCharge.username" placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.username }}</div>
+                    <el-tooltip :content="form.inCharge.name" placement="top" disabled>
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.name }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="添加人：" disabled>
-                    <el-tooltip :content="form.creator.username " placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.username }}</div>
+                    <el-tooltip :content="form.creator.name " placement="top" disabled>
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.name }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="经纬度信息：">
-                    <el-tooltip :content="form.longitude+''" placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude.toFixed(2)+ ', ' + form.latitude.toFixed(2) }}</div>
+                    <el-tooltip :content="form.longitude+''" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude+ ', ' + form.latitude }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <!-- <el-form-item label="纬度信息：">
@@ -135,7 +135,7 @@
                   </el-form-item>
                   <el-form-item label="负责人：" prop="creator">
                     <el-select
-                      v-model="editForm.inChargeId"
+                      v-model="editForm.name"
                       :value="editForm.inChargeId"
                       style="width:300px;"
                       placeholder="请选择负责人"
@@ -143,7 +143,7 @@
                       <el-option
                         v-for="item in userList"
                         :value="item.id"
-                        :label="item.username"
+                        :label="item.name"
                         :key="item.id"
                       ></el-option>
                     </el-select>
@@ -212,7 +212,6 @@ export default {
         url: '',
         inChargeId: '',
         manufacturer: '',
-        model: '',
         phone: ''
       },
       editVisable: false,
@@ -245,9 +244,9 @@ export default {
         manufacturer: [
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
-        model: [
+        /* model: [
           { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
-        ],
+        ], */
         id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
           { required: true, trigger: 'blur', message: '负责人ID不能为空' }
@@ -313,32 +312,32 @@ export default {
     },
     hasMarker(v) {
       const that = this
-      const o = amapManager.getMap()
-      o.setFitView()
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0 && !that.highLightMarkerId) {
-            item.classList.add('markerClickImg')
             that.highLightMarkerId = that.form.id
-            /*  that.center = [that.form.longitude, that.form.latitude]
-            that.zoom = 15 */
-            // o.setCenter([that.form.longitude, that.form.latitude])
+            const o = amapManager.getMap()
+            o.setFitView()
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
+            item.classList.add('markerClickImg')
             that.editForm = that.form
             that.showZwMes = false
           } else {
             setTimeout(() => {
-              const markers = document.getElementsByClassName('markerImg');
+              const markers = document.getElementsByClassName('markerImg')
+              if (markers.length === 1) {
+                that.highLightMarkerId = markers[0].attributes[1].nodeValue
+                markers[0].classList.add('markerClickImg')
+                const o = amapManager.getMap()
+                o.on('click', markers[0])
+              }
               [].forEach.call(markers, (item, index) => {
                 if (item.id === that.highLightMarkerId) {
+                  item.setAttribute('width', 50)
+                  item.setAttribute('height', 50)
                   that.editForm = JSON.parse(item.attributes[1].nodeValue)
                   that.showZwMes = false
-                  item.classList.add('markerClickImg')
-                } else if (index === 0) {
-                  that.editForm = JSON.parse(item.attributes[1].nodeValue)
-                  that.showZwMes = false
-                  item.classList.add('markerClickImg')
                 }
               })
             }, 200)
@@ -386,7 +385,7 @@ export default {
             {
               field: 'name',
               operator: 'LIKE',
-              value: `%${keyword}%`
+              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
             },
             {
               field: 'inChargeId',
@@ -472,22 +471,22 @@ export default {
           this.highLightMarkerId = this.form.id
           const o = amapManager.getMap()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
-          // this.center = [this.form.longitude, this.form.latitude]
           this.editForm = this.form
           this.showZwMes = false
         }
       })
     },
     editDialog(v) {
-      // this.editForm.id = v.id
-      this.editForm.creatorId = v.creatorId
-      this.editForm.tude = v.longitude + ',' + v.latitude
-      this.editForm.inChargeId = v.inChargeId
-      this.editForm.longitude = v.longitude
-      this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
-      this.editForm.name = v.name
-      this.editForm.url = v.url
+      this.form.id = v.id + ''
+      this.form.creatorId = v.creatorId + ''
+      this.form.tude = v.longitude + ',' + v.latitude
+      this.form.inChargeId = v.inChargeId + ''
+      this.form.longitude = v.longitude + ''
+      this.form.latitude = v.latitude + ''
+      this.form.address = v.address
+      this.form.name = v.inCharge.name
+      this.form.url = v.url
+      this.editForm = this.form
       this.editVisable = true
     },
     editCloseDialog() {
@@ -512,14 +511,6 @@ export default {
         })
         this.highLightMarkerId = this.editForm.id
         this.getList()
-        setTimeout(() => {
-          const markers = document.getElementsByClassName('markerImg');
-          [].forEach.call(markers, (item) => {
-            if (this.form.id === this.highLightMarkerId) {
-              item.classList.add('markerClickImg')
-            }
-          })
-        }, 200)
         this.editVisable = false
       }).catch(() => {
         this.$notify({
@@ -536,47 +527,15 @@ export default {
     create() {
       this.dialogVisable = true
     },
-    onSearch() {
+    async onSearch() {
       this.hasMarker = true
-      const params = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 999999
-        },
-        params: [
-          {
-            field: 'name',
-            operator: 'LIKE',
-            value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
-          },
-          {
-            field: 'inChargeId',
-            operator: 'EQUALS',
-            value: this.userId
-          }
-        ]
-      }
-      searchCameraList(params).then(res => {
-        this.formInfo = res.body.data
-        this.markers = []
-        this.showZwMes = true
-        if (this.formInline.typeValue === 'map' && document.getElementsByClassName('markerClickImg').length) {
-          document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
-        }
-        this.formInfo.forEach((item, index) => {
-          if (index === 0) {
-            this.form = item
-            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
-            this.center = [item.longitude, item.latitude]
-          }
-          this.markers.push({
-            position: [item.longitude, item.latitude],
-            extData: item,
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg' id=${item.id}  t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
-          })
-        })
+      const markers = document.getElementsByClassName('markerImg');
+      [].forEach.call(markers, (item) => {
+        item.setAttribute('width', 40)
+        item.setAttribute('height', 40)
+        item.classList.remove('markerClickImg')
       })
+      await this.getList()
       if (this.formInline.searchkey === '所有摄像头') {
         this.formInline.searchkey = ''
       }
@@ -596,7 +555,6 @@ export default {
         url: '',
         inChargeId: '',
         manufacturer: '',
-        model: '',
         phone: ''
       }
       this.dialogVisable = false
@@ -636,7 +594,6 @@ export default {
             url: '',
             inChargeId: '',
             manufacturer: '',
-            model: '',
             phone: ''
           }
           this.$notify({
@@ -662,6 +619,12 @@ export default {
     markerClick(a) {
     },
     getList() {
+      const markers = document.getElementsByClassName('markerImg');
+      [].forEach.call(markers, (item) => {
+        item.setAttribute('width', 40)
+        item.setAttribute('height', 40)
+        item.classList.remove('markerClickImg')
+      })
       const params = {
         cascade: true,
         page: {
@@ -672,7 +635,7 @@ export default {
           {
             field: 'name',
             operator: 'LIKE',
-            value: `%${this.formInline.searchkey}%`
+            value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
           },
           {
             field: 'inChargeId',
@@ -689,15 +652,21 @@ export default {
           document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
         }
         this.formInfo.forEach((item, index) => {
-          if (index === 0) {
+          if (item.id === this.highLightMarkerId) {
             this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
-            this.center = [item.longitude, item.latitude]
+            const o = amapManager.getMap()
+            o.setZoomAndCenter(15, [item.longitude, item.latitude])
+          } else if (!this.highLightMarkerId && index === 0) {
+            this.form = item
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            const o = amapManager.getMap()
+            o.setZoomAndCenter(15, [item.longitude, item.latitude])
           }
           this.markers.push({
             position: [item.longitude, item.latitude],
             extData: item,
-            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg'  id=${item.id} t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
+            content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg ${item.id === this.highLightMarkerId ? 'markerClickImg' : ''}'  id=${item.id} t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
           })
         })
         this.hasMarker = false
