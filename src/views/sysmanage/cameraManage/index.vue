@@ -93,33 +93,58 @@
                     </el-tooltip>
                   </el-form-item>
                   <div>
-                    <el-button style="margin-left: 60px;" @click="editDialog">编辑</el-button>
+                    <el-button style="margin-left: 60px;" @click="editDialog(form)">编辑</el-button>
                     <el-button type="text" @click="delAlert">删除</el-button>
                   </div>
                 </el-form>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-                <el-form :model="editForm" label-position="right">
-                  <el-form-item label-width="130px" label="负责人：">
-                    <el-select v-model="editForm.inChargeId" :value="editForm.inChargeId" style="width:300px;" placeholder="请选择负责人">
-                      <el-option v-for="item in userList" :value="item.id" :label="item.name" :key="item.id">
-                      </el-option>
+                <el-form :model="editForm" :rules="editFormRules" label-position="right" label-width="130px">
+                  <el-form-item label="摄像头ID：" prop="id">
+                    <el-input
+                      v-model="editForm.id"
+                      placeholder="请输入摄像头ID"
+                      class="filter-item"
+                      style="width: 300px;"
+                    ></el-input>
+                  </el-form-item>
+                  <el-form-item label="负责人：" prop="creator">
+                    <el-select
+                      v-model="editForm.inChargeId"
+                      :value="editForm.inChargeId"
+                      style="width:300px;"
+                      placeholder="请选择负责人"
+                    >
+                      <el-option
+                        v-for="item in userList"
+                        :value="item.id"
+                        :label="item.username"
+                        :key="item.id"
+                      ></el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label-width="130px" label="摄像头经度："><el-input v-model="editForm.longitude" placeholder="请输入摄像头经度" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="摄像头经纬度：" prop="tude">
+                    <el-input
+                      v-model="editForm.tude"
+                      type="text"
+                      placeholder="请输入摄像头经度"
+                      style="width:300px;"
+                      class="filter-item"
+                    ></el-input>
                   </el-form-item>
-                  <el-form-item label-width="130px" label="摄像头纬度："><el-input v-model="editForm.latitude" placeholder="请输入摄像头纬度" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item>
-                  <!-- <el-form-item label-width="130px" label="视频流信息："><el-input v-model="editForm.url" placeholder="请输入视频流信息" class="filter-item" style="width: 300px;"></el-input>
-                  </el-form-item> -->
-                  <el-form-item label-width="130px" label="地址："><el-input v-model="editForm.address" :rows="4" type="textarea" placeholder="请输入地址" class="filter-item" style="width: 300px;"></el-input>
+                  <el-form-item label="地址：" prop="address">
+                    <el-input
+                      v-model="editForm.address"
+                      :rows="4"
+                      type="textarea"
+                      placeholder="请输入地址"
+                      class="filter-item"
+                      style="width: 300px;"
+                    ></el-input>
                   </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                  <el-button
-                    type="primary"
-                    @click="editDialogConfirm"
-                  >确 定</el-button>
+                  <el-button type="primary" @click="editDialogConfirm">确 定</el-button>
                   <el-button @click="editDialogQuxiao">取 消</el-button>
                 </div>
               </el-dialog>
@@ -173,30 +198,31 @@ export default {
         address: '',
         url: '',
         name: '',
-        creatorId: ''
+        creatorId: '',
+        tude: ''
       },
-      addrules: {
-        creatorId: [
-          { required: true, trigger: 'blur', message: '创建人ID不能为空' }
+      editFormRules: {
+        creator: [
+          { required: true, trigger: 'change', message: '请选择负责人' }
         ],
-        name: [
-          { required: true, trigger: 'blur', message: '摄像头名称不能为空' }
+        url: [
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        // url: [
-        //   { required: true, trigger: 'blur', message: '视频流信息不能为空' }
-        // ],
-        phone: [
-          { required: true, trigger: 'blur', message: '手机号不能为空' }
+        tude: [
+          { required: true, trigger: 'blur', message: '经纬度信息不能为空' },
+          {
+            pattern: /^[\-\+]?(0?\d{1,2}\.\d{1,6}|1[0-7]?\d{1}\.\d{1,6}|180\.0{1,6})\,[\-\+]?([0-8]?\d{1}\.\d{1,6}|90\.0{1,6})/g,
+            message: '请输入正确经纬度信息',
+            trigger: 'blur'
+          }
         ],
         manufacturer: [
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: 'blur', message: '设备型号不能为空' }
+          { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
         ],
-        id: [
-          { required: true, trigger: 'blur', message: '摄像头ID不能为空' }
-        ],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
           { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
@@ -206,9 +232,7 @@ export default {
         latitude: [
           { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [
-          { required: true, trigger: 'blur', message: '地址不能为空' }
-        ]
+        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
         searchkey: '',
@@ -374,7 +398,16 @@ export default {
         }
       })
     },
-    editDialog() {
+    editDialog(v) {
+      // this.editForm.id = v.id
+      this.editForm.creatorId = v.creatorId
+      this.editForm.tude = v.longitude + ',' + v.latitude
+      this.editForm.inChargeId = v.inChargeId
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.name = v.name
+      this.editForm.url = v.url
       this.editVisable = true
     },
     editCloseDialog() {
@@ -384,8 +417,8 @@ export default {
       const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inChargeId,
-        latitude: this.editForm.latitude,
-        longitude: this.editForm.longitude,
+        latitude: this.editForm.tude.split(',')[1].trim(),
+        longitude: this.editForm.tude.split(',')[0].trim(),
         url: this.editForm.url,
         name: this.editForm.name,
         creatorId: this.editForm.creatorId
