@@ -5,12 +5,36 @@
         <div class="serachbox">
           <div class="filter-container clearfix">
             <div class="pull-left">
-              <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
+              <!-- <el-input v-model="formInline.searchkey" placeholder="请输入摄像头地址" class="filter-item" style="width: 400px;" @keyup.enter.native="onSearch"></el-input>
               <el-button
                 v-waves
                 class="filter-item"
                 size="mini"
                 style="height: 36px"
+                type="warning"
+                @click="onSearch"
+              >{{ '搜索' }}</el-button> -->
+              <el-select
+                v-model="formInline.searchkey"
+                :remote-method="getCameraList"
+                :loading="loading"
+                style="width: 400px;"
+                filterable
+                remote
+                placeholder="请输入摄像头地址"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+              <el-button
+                v-waves
+                class="filter-item"
+                size="mini"
+                style="height: 36px;margin-bottom:6px;"
                 type="warning"
                 @click="onSearch"
               >{{ '搜索' }}</el-button>
@@ -44,6 +68,7 @@
                   摄像头信息
                 </div>
                 <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
+                  暂无数据
                 </div>
                 <el-form v-else :model="form" label-position="right">
                   <el-form-item class="formMargin" label="摄像头ID：">
@@ -167,7 +192,7 @@ import CameraList from './list.vue'
 import moment from 'moment'
 import EllipsisTooltip from '@/components/EllipsisTooltip'
 import {
-  fetchAllCameraList, editCamera, addCamera, delCamera
+  searchCameraList, editCamera, addCamera, delCamera
 } from '@/api/camera'
 import { fetchUserList } from '@/api/users'
 const amapManager = new VueAMap.AMapManager()
@@ -176,6 +201,7 @@ export default {
   data() {
     return {
       userList: [],
+      cameraId: '',
       dialogForm: {
         address: '',
         creatorId: '',
@@ -255,6 +281,7 @@ export default {
       highLightMarkerId: NaN,
       hasMarker: false,
       showZwMes: true,
+      options: [],
       typeOptions: [{ name: '地图模式', _id: 'map' },
         { name: '列表模式', _id: 'list' }],
       zoom: 11,
@@ -262,11 +289,14 @@ export default {
       dialogVisable: false,
       markersDom: null,
       markers: [],
+      loading: null,
       amapManager,
       events: {
         click: info => {
           this.form = info.target.G.extData
           this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+        },
+        init(o) {
         }
       }
     }
@@ -283,13 +313,16 @@ export default {
     },
     hasMarker(v) {
       const that = this
+      const o = amapManager.getMap()
+      o.setFitView()
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0 && !that.highLightMarkerId) {
             item.classList.add('markerClickImg')
             that.highLightMarkerId = that.form.id
-            that.center = [that.form.longitude, that.form.latitude]
-            that.zoom = 15
+            /*  that.center = [that.form.longitude, that.form.latitude]
+            that.zoom = 15 */
+            o.setZoomAndCenter(15, [that.form.longitude, that.form.latitude])
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
             that.editForm = that.form
@@ -297,8 +330,12 @@ export default {
           } else {
             setTimeout(() => {
               const markers = document.getElementsByClassName('markerImg');
-              [].forEach.call(markers, (item) => {
+              [].forEach.call(markers, (item, index) => {
                 if (item.id === that.highLightMarkerId) {
+                  that.editForm = JSON.parse(item.attributes[1].nodeValue)
+                  that.showZwMes = false
+                  item.classList.add('markerClickImg')
+                } else if (index === 0) {
                   that.editForm = JSON.parse(item.attributes[1].nodeValue)
                   that.showZwMes = false
                   item.classList.add('markerClickImg')
@@ -335,6 +372,47 @@ export default {
           }
         })
       })
+    },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 20
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'LIKE',
+              value: `%${keyword}%`
+            },
+            {
+              field: 'inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          this.options = data.map(item => {
+            return {
+              value: item.name,
+              label: item.address,
+              name: item.name
+            }
+          })
+          this.options.unshift({
+            value: '所有摄像头',
+            name: '所有摄像头'
+          })
+          this.loading = false
+        })
+      } else {
+        this.options = []
+      }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -392,7 +470,9 @@ export default {
           item.childNodes[1].setAttribute('width', 50)
           item.childNodes[1].setAttribute('height', 50)
           this.highLightMarkerId = this.form.id
-          this.center = [this.form.longitude, this.form.latitude]
+          const o = amapManager.getMap()
+          o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
+          // this.center = [this.form.longitude, this.form.latitude]
           this.editForm = this.form
           this.showZwMes = false
         }
@@ -464,11 +544,20 @@ export default {
           index: 1,
           size: 999999
         },
-        params: {
-          address: this.formInline.searchkey ? this.formInline.searchkey : null
-        }
+        params: [
+          {
+            field: 'name',
+            operator: 'LIKE',
+            value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+          },
+          {
+            field: 'inChargeId',
+            operator: 'EQUALS',
+            value: this.userId
+          }
+        ]
       }
-      fetchAllCameraList(params).then(res => {
+      searchCameraList(params).then(res => {
         this.formInfo = res.body.data
         this.markers = []
         this.showZwMes = true
@@ -488,7 +577,9 @@ export default {
           })
         })
       })
-      this.formInline.searchkey = ''
+      if (this.formInline.searchkey === '所有摄像头') {
+        this.formInline.searchkey = ''
+      }
       this.hasMarker = false
     },
     checkModel() {
@@ -577,11 +668,20 @@ export default {
           index: 1,
           size: 999999
         },
-        params: {
-          address: this.formInline.searchkey ? this.formInline.searchkey : null
-        }
+        params: [
+          {
+            field: 'name',
+            operator: 'LIKE',
+            value: `%${this.formInline.searchkey}%`
+          },
+          {
+            field: 'inChargeId',
+            operator: 'EQUALS',
+            value: this.userId
+          }
+        ]
       }
-      fetchAllCameraList(params).then(res => {
+      searchCameraList(params).then(res => {
         this.formInfo = res.body.data
         this.markers = []
         this.showZwMes = true
