@@ -390,7 +390,4 @@ export default {
 .addbtn {
   float: right;
 }
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
 </style>

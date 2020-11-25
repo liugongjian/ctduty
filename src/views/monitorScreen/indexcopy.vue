@@ -20,7 +20,7 @@
                 v-else-if="item.flvSrc"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
-              :flv="item.flvSrc"/>-->
+                :flv="item.flvSrc"/> -->
               <div
                 v-else
                 style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
@@ -35,7 +35,7 @@
             <div class="screen-head">
               <div class="head-label">
                 <!-- <i class="el-icon-location-information"></i> -->
-                <span :title="item.name">{{ item.name }}</span>
+                <span :title="item.address">{{ item.address }}</span>
               </div>
               <div class="head-btn">
                 <div class="btn" @click="updateMonitorDialog(item)">
@@ -53,11 +53,7 @@
         </div>
       </template>
       <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
-        <div
-          :style="{height: `${parseInt(heightByAuto,10)+36}px`}"
-          class="screen-add"
-          @click="addMonitorDialog"
-        >
+        <div :style="{height: `${parseInt(heightByAuto,10)+36}px`}" class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
@@ -69,7 +65,7 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
+        <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
           <el-select
             v-model="form.cameraId"
             :remote-method="getCameraList"
@@ -81,10 +77,10 @@
             <el-option
               v-for="item in options"
               :key="item.value"
-              :label="item.name"
+              :label="item.label"
               :value="item.value"
-            ></el-option>
-          </el-select>
+            >
+          </el-option></el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -98,7 +94,6 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoFlv from '@/components/VideoFlv'
-import Cookies from 'js-cookie'
 import {
   fetchAllMonitor,
   updateMonitor,
@@ -119,7 +114,7 @@ export default {
       form: {},
       rules: {
         cameraId: [
-          { required: true, message: '请选择摄像头名称', trigger: 'change' }
+          { required: true, message: '请选择摄像头地址', trigger: 'change' }
         ]
       },
       nosrc,
@@ -142,8 +137,7 @@ export default {
         // }
       },
       allCameraList: [],
-      heightByAuto: '',
-      userId: ''
+      heightByAuto: ''
     }
   },
   watch: {
@@ -151,7 +145,7 @@ export default {
       v.map(item => {
         this.allCameraList.forEach(one => {
           if (one.id === item.cameraId) {
-            item.name = one.name
+            item.address = one.address
           }
         })
       })
@@ -172,7 +166,6 @@ export default {
     }
   },
   async mounted() {
-    this.userId = Cookies.get('userId')
     await this.loadFakeImg()
     await this.getAllCamera()
   },
@@ -185,11 +178,9 @@ export default {
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
-              image: item.image
-                ? 'data:image/png;base64,' + item.image
-                : fakeimg,
+              image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
               id: item.id,
-              name: item.name
+              name: item.address
             })
           })
           // const a = staticImg.filter((item, index) => {
@@ -211,7 +202,6 @@ export default {
           size: 999999
         },
         params: {
-          inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -239,11 +229,6 @@ export default {
               field: 'online',
               operator: 'EQUALS',
               value: 0
-            },
-            {
-              field: 'inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             }
           ]
         }
@@ -257,7 +242,7 @@ export default {
             return {
               value: item.id,
               label: item.address,
-              name: item.name
+              name: item.address
             }
           })
           this.loading = false
@@ -283,9 +268,13 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri : '')
+                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
+                // {
+                //   src: item.rtmpuri,
+                //   type: 'application/x-mpegURL'
+                // }
               ]
             }
           }
@@ -298,15 +287,14 @@ export default {
       })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.name
+      this.form.cameraId = item.address
       this.dialogFormVisible = true
       this.id = item.id
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+        cancelButtonText: '取消'
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
@@ -402,7 +390,7 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
-  // height: 100%;
+  height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
     width: 360px;
@@ -410,13 +398,14 @@ export default {
   /deep/.el-form-item__content {
     margin-left: 90px;
   }
-  .monitorScreen {
+}
+.monitorScreen {
   overflow: auto;
   padding: 10px 10px;
   background: #fff;
   display: flex;
   flex-wrap: wrap;
-  flex-direction: row;
+  flex-direction:row;
   // justify-content: center;
 
   .screen {
@@ -431,7 +420,7 @@ export default {
     }
     .screen-add {
       // height: calc(35vh + 36.4px);
-      height: 210px;
+      // height: 210px;
       margin: 10px;
       // width: 100%;
       // height: 100%;
@@ -441,7 +430,7 @@ export default {
       font-size: 14px !important;
       color: #ccc;
       border: 1px dashed #9b9b9b;
-      border-radius: 5px 5px 0 0;
+  border-radius: 4px 5px 0 0;
       cursor: pointer;
       i {
         font-size: 56px;
@@ -491,6 +480,4 @@ export default {
 .screen-body {
   overflow: hidden;
 }
-}
-
 </style>

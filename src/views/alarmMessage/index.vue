@@ -3,30 +3,18 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <!-- <el-input
-            v-model="formInline.searchkey"
-            placeholder="请输入..."
-            class="filter-item alarmInp"
-            style="width: 60%; height: 32px"
-            @keyup.enter.native="searchAlarm"
-          ></el-input>
-          <el-button
-            class="filter-item searchsure"
-            style="font-size:12px; width: 16%"
-            icon="el-icon-search"
-            @click="searchAlarm"
-          ></el-button> -->
           <el-input
             v-model="formInline.searchkey"
-            placeholder="设备名称"
+            placeholder="摄像头地址"
             class="searchinp"
             size="mini"
-            @keyup.enter.native="searchAlarm">
+            @keyup.enter.native="searchAlarm"
+          >
             <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
           </el-input>
           <button
             class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
+            style="font-size:12px; width: 20%;height:36px;"
             icon="el-icon-refresh"
             @click="resetQuery"
           >重置</button>
@@ -39,10 +27,10 @@
             <el-date-picker
               v-model="value1"
               :clearable="false"
-              :style="{width:178 + 'px', height: 32 + 'px'}"
+              :style="{width:210 + 'px', height: 36 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -55,7 +43,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px',height:'32px'}"
+              :style="{width:95 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -71,7 +59,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:95 + 'px', height: 32 + 'px'}"
+              :style="{width:95 + 'px', height: 36 + 'px'}"
               v-model="endTime"
               :picker-options="{
                 selectableRange:startTime+ ':00' + '-23:59:00'
@@ -109,6 +97,7 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -123,7 +112,7 @@
                 align="center"
                 min-width="7.5%"
                 prop="id"
-              ></el-table-column> -->
+              ></el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatTime"
@@ -152,7 +141,7 @@
                 <template slot-scope="scope">
                   <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
                 </template>
-              </el-table-column> -->
+              </el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
@@ -168,7 +157,7 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头'"
+                :label="'摄像头地址'"
                 align="center"
                 min-width="18%"
                 prop="camera.address"
@@ -192,13 +181,13 @@
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
+                prop="handler.name"
                 width="100"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.handler ? scope.row.handler.name:'-' }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -230,7 +219,7 @@
               :tabs-arr="tabsArr"
               :all-total="allTotal"
               :limit.sync="limit"
-              :alarmtext = "alarmtext"
+              :alarmtext="alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -246,14 +235,31 @@
       style="height:100%;"
       @close="closeDialog"
     >
-      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+      <div style="width:500px;height:360px; padding: 10px 10px 0px">
         <div :model="temp" label-position="right" label-width="100px">
-          <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
-            <img :src="temp.image" width="480" height="270" style="z-index:1;">
-            <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+          <div
+            prop="image"
+            style="width:480px;height:270px;position:relative;"
+            @click="()=>{openBig(temp.image)}"
+          >
+            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
+            <CanvasDialog
+              v-if="dialogVisable"
+              :img-url="temp.image"
+              :left-top="[points[0],points[1]]"
+              :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'"
+              :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
+              :right-bottom="[points[2],points[3]]"
+              style="z-index:2;position:absolute;top:0;left:0;"
+            ></CanvasDialog>
           </div>
           <div class="popfooter">
-            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
+            <el-tooltip
+              :content="temp.camera.address"
+              class="item"
+              effect="light"
+              placement="top-start"
+            >
               <div class="popfooteraddress">
                 <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
                 <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
@@ -261,17 +267,32 @@
             </el-tooltip>
             <div class="popfootertime">
               <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-              <span style="width: 260px;">
+              <span :formatter="formatTime">
                 {{
-                  renderTime(temp.createTime)
+                  formatTime(temp.createTime)
                 }}
               </span>
             </div>
           </div>
         </div>
         <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
-          <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
-          <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
+          <el-button
+            class="warnnormal popwarn"
+            round
+            style="border-radius: 2px"
+            @click="dialogConfirm"
+          >
+            <span class="spantext">正 常</span>
+          </el-button>
+          <el-button
+            class="warnunnormal popwarn"
+            type="warning"
+            round
+            style="border-radius: 2px"
+            @click="dialogQuxiao"
+          >
+            <span class="spantext">异 常</span>
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -307,6 +328,7 @@ export default {
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
+      tableLoading: null,
       temp: {
         camera: {},
         createTime: '',
@@ -414,7 +436,7 @@ export default {
           },
           params: [
             {
-              field: 'camera.name',
+              field: 'camera.address',
               operator: 'LIKE',
               value: `%${this.formInline.searchkey}%`
             },
@@ -542,8 +564,8 @@ export default {
       this.formInline.searchkey = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + " " + this.startTime + ":00"
-      const e = this.currentTab + " " + this.endTime + ":00"
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
     },
     // 重置起止时间的搜索
@@ -714,6 +736,7 @@ export default {
     // 获取列表数据
     getList(s, e, h) {
       // console.log('se', s , e)
+      this.tableLoading = true
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -777,7 +800,43 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        this.listLoading = false
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 346) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+                dom.style.width =
+                  (((document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11) *
+                    16) /
+                    9 +
+                  'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+              }
+            })
+          })
+        }, 300)
+        this.tableLoading = false
       })
     },
     handleSelectionChange(val) {
@@ -842,139 +901,131 @@ export default {
 </script>
 
 <style lang='scss'>
-.el-input__inner {
-  text-indent: 0px;
-}
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
-  }
-}
-
-.title {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  font-family: MicrosoftYaHei;
-  font-size: 22px;
-  color: #333333;
-  font-weight: 500;
-  border-bottom: 1px solid #ccc;
-  background: #fff;
-  padding: 0 20px;
-}
-.el-date-editor {
-  // height: 32px !important;
-}
-.el-range-separator {
-  width: 30px !important;
-}
-.el-select-dropdown__item {
-  font-size: 12px !important;
-}
-.deal {
-  fill: #44bd32 !important;
-}
-.untreated {
-  fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
-}
-.buttonText {
-  color: #409eff;
-  text-decoration: underline;
-}
-
-td {
-  .el-image {
-    vertical-align: middle;
-  }
-}
-.sureItem {
-  height: 28px;
-}
-.pull-left.alarmmsgleft {
-  width: 75%;
-}
-.pull-right.alarmmsgright {
-  position: relative;
-  width: 25%;
-  .clearsearch {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    height: 34px;
-    width: 60px;
-    // margin-left: 16px;
-    border: 1px solid #ccc;
-    background: none;
-    border-radius: 3px;
-    outline: none;
-  }
-  .clearsearch:active {
-    background-color: rgb(243, 241, 241);
-  }
-}
-.searchsure {
-  position: absolute;
-  top: 1px;
-  height: 34px;
-  right: 22%;
-  // border-left: none;
-  border-radius: 4px;
-}
-// .el-input--mini .el-input__inner {
-//   text-indent: 0px;
-// }
-.el-range-editor.el-input__inner {
-  padding: 5px 5px;
-}
-.mesdialog {
-  .el-dialog__header {
-    padding: 0 !important;
-  }
-  .el-dialog .el-dialog__body {
-    padding: 0 !important;
-    overflow: hidden;
-  }
-  .el-dialog__footer {
-    padding: 0 !important;
-  }
-  .dialog-footer {
-    padding: 10px 0 !important;
-  }
-}
-.popfooter {
-  padding-top: 4px;
-  padding-left: 4px;
-  display: flex;
-  .popfooteraddress {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 330px;
-  }
-  .popfootertime {
-    width: 150px;
-  }
-}
-.el-button--text {
-  color: #fa8334 !important;
-}
-.el-button--small {
-  font-size: 14px;
-}
-.searchinp {
-  width: 75%;
-}
 .list {
-  height: 100%;
+  .el-input__inner {
+    text-indent: 0px;
+  }
+  .alaMesTable.el-table--medium {
+    td {
+      padding: 0px;
+      .el-image {
+        vertical-align: middle;
+      }
+    }
+    th {
+      padding: 0px;
+    }
+  }
+  .title {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-family: MicrosoftYaHei;
+    font-size: 22px;
+    color: #333333;
+    font-weight: 500;
+    border-bottom: 1px solid #ccc;
+    background: #fff;
+    padding: 0 20px;
+  }
+  .el-range-separator {
+    width: 30px !important;
+  }
+  .el-select-dropdown__item {
+    font-size: 12px !important;
+  }
+  .deal {
+    fill: #44bd32 !important;
+  }
+  .untreated {
+    fill: #ff9832 !important;
+  }
+  .buttonText {
+    color: #409eff;
+    text-decoration: underline;
+  }
+
+  td {
+    .el-image {
+      vertical-align: middle;
+    }
+  }
+  .sureItem {
+    height: 32px;
+  }
+  .pull-left.alarmmsgleft {
+    width: 75%;
+  }
+  .pull-right.alarmmsgright {
+    position: relative;
+    width: 25%;
+    .clearsearch {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      height: 34px;
+      width: 60px;
+      // margin-left: 16px;
+      border: 1px solid #ccc;
+      background: none;
+      border-radius: 3px;
+      outline: none;
+    }
+    .clearsearch:active {
+      background-color: rgb(243, 241, 241);
+    }
+  }
+  .searchsure {
+    position: absolute;
+    top: 1px;
+    height: 34px;
+    right: 22%;
+    border-radius: 4px;
+  }
+  .el-input--mini .el-input__inner {
+    height: 36px;
+    line-height: 36px;
+  }
+  .el-range-editor.el-input__inner {
+    padding: 5px 5px;
+  }
+  .mesdialog {
+    .el-dialog__header {
+      padding: 0 !important;
+    }
+    .el-dialog .el-dialog__body {
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .el-dialog__footer {
+      padding: 0 !important;
+    }
+    .dialog-footer {
+      padding: 10px 0 !important;
+    }
+  }
+  .popfooter {
+    padding-top: 4px;
+    padding-left: 4px;
+    display: flex;
+    .popfooteraddress {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 330px;
+    }
+    .popfootertime {
+      width: 150px;
+    }
+  }
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .el-button--small {
+    font-size: 14px;
+  }
+  .searchinp {
+    width: 75%;
+  }
 }
-// .el-dialog__headerbtn {
-//   // display: none;
-//   position: relative;
-//   top: 4px;
-//   left: 85%;
-// }
 </style>

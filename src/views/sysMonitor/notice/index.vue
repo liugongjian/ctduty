@@ -9,25 +9,33 @@
             class="searchinput"
             placeholder="公告标题"
           ></el-input>
-          <el-input
-            ref="queryOperatorRef"
-            v-model="username"
-            class="searchinput"
-            placeholder="创建者姓名"
-          ></el-input>
+          <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者"></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
             <el-option :value="0" label="公告">通知</el-option>
             <el-option :value="1" label="通知">公告</el-option>
           </el-select>
-          <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
-          <el-button @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="getNoticeList"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
         </div>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="noticeList"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -36,8 +44,8 @@
         style="width: 120vw"
         @filter-change="filerStatus"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column label="公告标题">
+        <!-- <el-table-column type="index" label="序号"></el-table-column> -->
+        <el-table-column label="公告标题" min-width="70%">
           <template slot-scope="row_data">
             <el-link
               type="primary"
@@ -51,7 +59,7 @@
         <el-table-column label="状态" prop="state">
           <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
         </el-table-column>
-        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建者" prop="creator.name"></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="row_data">
@@ -113,7 +121,7 @@
       </el-table-column>
     </el-table>-->
 
-    <el-pagination
+    <!-- <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
       :page-size="queryInfo.pagesize"
@@ -121,7 +129,14 @@
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    ></el-pagination>
+    ></el-pagination>-->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryInfo.pagenum"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
@@ -246,6 +261,7 @@
 </template>
 
 <script>
+import Pagination from '@/components/Pagination'
 import {
   fetchNoticeList,
   postAddNotices,
@@ -256,8 +272,12 @@ import {
 import { fetchUserList } from '@/api/users'
 import { notReadNotices } from '@/api/notice'
 export default {
+  components: { Pagination },
   data() {
     return {
+      page: 1,
+      limit: 10,
+      oldSize: 10,
       searchName: '',
       searchUserIds: [],
       addFormRules: {
@@ -270,7 +290,7 @@ export default {
           { required: true, message: '紧急程度不能为空', trigger: 'blur' }
         ]
       },
-
+      total: 0,
       editor_content: '',
       editorOption: {
         modules: {
@@ -305,7 +325,6 @@ export default {
           type: null
         }
       },
-      totalnum: 0,
       addNoticeDialogVisible: false,
       addNoticeForm: {
         content: '',
@@ -321,6 +340,7 @@ export default {
       deleteNoticeTitle: '',
       deleteNoticerId: 0,
       modifiable: false,
+      tableLoading: null,
 
       departmentInfo: [
         {
@@ -354,18 +374,31 @@ export default {
           message: '内容长度不能大于500!'
         })
       }
+    },
+    limit(v) {
+      this.page = 1
+      this.limit = v
+      this.pageChange()
     }
   },
   created() {
     this.getNoticeList()
   },
   methods: {
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1
+      }
+      this.oldSize = this.limit
+      this.getNoticeList()
+    },
     async getNoticeList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          size: this.limit
         },
         params: {},
         sorts: [
@@ -375,22 +408,15 @@ export default {
           }
         ]
       }
-
       if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title
+        query.params['title'] = this.queryInfo.params.title.trim()
       }
       if (this.queryInfo.params.type !== null) {
         query.params['type'] = this.queryInfo.params.type
       }
 
       if (this.username.trim() !== '') {
-        await this.searchUserId()
-        if (this.userid !== null) {
-          query.params['creatorId'] = this.userid
-        } else {
-          this.userid = {}
-          return
-        }
+        query.params['name'] = this.username.trim()
       }
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error('获取通知信息失败')
@@ -398,7 +424,8 @@ export default {
         this.noticeList.map(item => {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
         })
-        this.totalnum = response.body.page.total
+        this.total = response.body.page.total
+        this.tableLoading = false
       })
     },
     tableRowClassHeader({ row, rowIndex }) {
@@ -551,39 +578,39 @@ export default {
 
 <style lang='scss' scoped>
 .notice {
-  padding: 10px 20px;
-}
-.input_title {
-  width: 360px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  width: 250px;
-}
-/* .addNotice {
-  float: right;
-} */
-.quill-editor {
-  display: inline-block;
-  width: 360px;
-  height: 150px;
-}
-.el-row {
-  margin-top: 20px;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
+  padding: 20px;
+  .input_title {
+    width: 360px;
+  }
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    width: 250px;
+  }
+  /* .addNotice {
+    float: right;
+  } */
+  .quill-editor {
+    display: inline-block;
+    width: 360px;
+    height: 150px;
+  }
+  .el-row {
+    margin-top: 20px;
+  }
 }
 </style>

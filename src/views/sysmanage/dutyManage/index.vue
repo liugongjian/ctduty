@@ -4,7 +4,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
+          <el-button style="border-radius:4px;height:36px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -60,7 +60,9 @@
                 class="dlTem"
                 style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
               >
-                <a :href="`#`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+                <a :href="`#`" @click="dlTem">
+                  <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
+                </a>
               </p>
             </div>
             <div v-if="isUpSuccess" slot="footer" class="dialog-footer">
@@ -70,6 +72,7 @@
         </div>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -236,7 +239,8 @@ export default {
       },
       bulkimportVisble: false,
       value: '',
-      isUpSuccess: false
+      isUpSuccess: false,
+      tableLoading: null
     }
   },
   watch: {
@@ -251,7 +255,10 @@ export default {
   },
   methods: {
     dlTem() {
-      downLoadByUrl('http://36.41.71.26:8920/Schedule/Template', '值班管理导入模板')
+      downLoadByUrl(
+        'http://36.41.71.26:8920/Schedule/Template',
+        '值班管理导入模板'
+      )
       fetchDutyTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',
@@ -261,6 +268,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         page: {
           index: this.page,
@@ -272,6 +280,7 @@ export default {
         this.importData = res.body.data
         this.total = res.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     importConfirm() {
@@ -413,59 +422,55 @@ export default {
 </script>
 
 <style  lang='scss' scoped>
-.dutyManage {
-  padding: 0px 20px;
-}
-.el-dialog__body {
-  margin: 0 auto;
-}
-.list {
-  overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
-}
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-.carDialog {
-  margin: 0 auto;
-}
-.el-dialog__body {
-  width: 100%;
-}
-.carInput {
-  height: 36.8px !important;
-}
-.el-form-item__content {
-  display: flex;
-  .xuanze {
-    width: 20vw !important;
+.dutyManage {
+  .el-dialog__body {
+    margin: 0 auto;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .carDialog {
+    margin: 0 auto;
+  }
+  .el-dialog__body {
+    width: 100%;
+  }
+  .carInput {
+    height: 36.8px !important;
+  }
+  .el-form-item__content {
+    display: flex;
+    .xuanze {
+      width: 20vw !important;
+    }
+  }
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
   }
 }
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
+
 </style>

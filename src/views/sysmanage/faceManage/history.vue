@@ -1,21 +1,17 @@
 <template>
-  <div class="list">
+  <div class="facelist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container facehistory-box clearfix">
         <div class="pull-right">
           <el-button
             v-waves
-            class="filter-item"
+            class="filter-item sureItem"
             size="mini"
             type="warning"
+            style="margin-bottom: 10px; margin-left: 10px"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
-          <el-button
-            class="filter-item"
-            style="font-size:12px"
-            icon="el-icon-refresh"
-            @click="onClear"
-          >重置</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
         </div>
         <div class="pull-left">
           <div class="block filter-item">
@@ -28,7 +24,7 @@
               :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -41,7 +37,7 @@
           </div>
           <div class="block filter-item">
             <el-time-picker
-              :style="{width:100 + 'px',height:'10px'}"
+              :style="{width:100 + 'px',height:'36px'}"
               v-model="startTime"
               :picker-options="{
                 selectableRange:'00:00:00-23:59:00'
@@ -583,125 +579,134 @@ export default {
 </script>
 
 <style lang='scss'>
-.title {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  font-family: MicrosoftYaHei;
-  font-size: 22px;
-  color: #333333;
-  font-weight: 500;
-  border-bottom: 1px solid #ccc;
-  background: #fff;
-  padding: 0 20px;
-}
-.el-date-editor {
-  height: 28px !important;
-}
-.el-range-separator {
-  width: 30px !important;
-}
-.el-select-dropdown__item {
-  font-size: 12px !important;
-}
-.deal {
-  fill: #44bd32 !important;
-}
-.untreated {
-  fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
-}
-.buttonText {
-  color: #409eff;
-  text-decoration: underline;
-}
-.kb {
-  margin-block-end: 14px;
-}
-.history-box {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
-.history-col {
-  width: 19%;
-  margin: 10px 0.5%;
-  white-space: space break-all;
-}
-.history-card {
-  position: relative;
-  img {
+.facelist {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .title {
     width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-family: MicrosoftYaHei;
+    font-size: 22px;
+    color: #333333;
+    font-weight: 500;
+    border-bottom: 1px solid #ccc;
+    background: #fff;
+    padding: 0 20px;
   }
-  .history-info {
-    font-size: 14px;
-    padding: 7px 5px;
+  .el-date-editor {
+    height: 36px !important;
   }
-  .history-name {
-    font-size: 12px;
-    // padding: 5px 0;
+  .el-range-separator {
+    width: 30px !important;
   }
-  .font {
-    font-size: 13px;
-    color: #8c8c8c;
+  .el-select-dropdown__item {
+    font-size: 12px !important;
   }
-  .history-time {
-    margin-top: 5px;
+  .deal {
+    fill: #44bd32 !important;
   }
-  .btn-box {
-    display: none;
+  .untreated {
+    fill: #ff9832 !important;
   }
-  &:hover .btn-box {
-    display: inline-block;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 99;
+  .buttonText {
+    color: #409eff;
+    text-decoration: underline;
   }
-}
-.history-nodata {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
-}
-.card-desp {
-  padding: 10px;
-  &-title {
-    font-size: 14px;
-    & > span {
+  .kb {
+    margin-block-end: 14px;
+  }
+  .history-box {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .history-col {
+    width: 19%;
+    margin: 10px 0.5%;
+    white-space: space break-all;
+  }
+  .history-card {
+    position: relative;
+    img {
+      width: 100%;
+    }
+    .history-info {
+      font-size: 14px;
+      padding: 7px 5px;
+    }
+    .history-name {
+      font-size: 12px;
+      // padding: 5px 0;
+    }
+    .font {
+      font-size: 13px;
+      color: #8c8c8c;
+    }
+    .history-time {
+      margin-top: 5px;
+    }
+    .btn-box {
+      display: none;
+    }
+    &:hover .btn-box {
       display: inline-block;
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      z-index: 99;
     }
   }
-  .button {
-    font-size: 16px;
-    float: right;
-    padding: 0;
+  .history-nodata {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
   }
-  .bottom {
-    margin-top: 5px;
-    line-height: 20px;
-    font-size: 13px;
-    color: #999;
+  .card-desp {
+    padding: 10px;
+    &-title {
+      font-size: 14px;
+      & > span {
+        display: inline-block;
+      }
+    }
+    .button {
+      font-size: 16px;
+      float: right;
+      padding: 0;
+    }
+    .bottom {
+      margin-top: 5px;
+      line-height: 20px;
+      font-size: 13px;
+      color: #999;
+    }
+    .clearfix:before,
+    .clearfix:after {
+      display: table;
+      content: "";
+    }
+    .clearfix:after {
+      clear: both;
+    }
   }
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-  .clearfix:after {
-    clear: both;
+  .image {
+    width: 100%;
+    // max-width: 250px;
+    height: 120px;
+    img {
+      object-fit: contain; //cover;
+      background-color: rgb(245, 247, 250);
+    }
   }
 }
-.image {
-  width: 100%;
-  // max-width: 250px;
-  height: 120px;
-  img {
-    object-fit: contain; //cover;
-    background-color: rgb(245, 247, 250);
-  }
+.sureItem {
+  height: 36px;
+}
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
 }
 </style>

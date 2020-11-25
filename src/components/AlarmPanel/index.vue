@@ -145,7 +145,7 @@ export default {
       position: relative;
       margin-left: 10px;
       font-size: 12px;
-      line-height: 28px;
+      line-height: 32px;
       color: #333;
       cursor: pointer;
       span {

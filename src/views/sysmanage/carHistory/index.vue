@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="～"
+          range-separator="~"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -80,7 +80,7 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="开始时间">
         </el-time-picker>
       </span>
@@ -92,13 +92,20 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="结束时间">
         </el-time-picker>
       </span>
       <span style="float:right;">
-        <el-button type="primary" @click="onSearch">搜索</el-button>
-        <el-button type="" @click="onClear">重置</el-button>
+        <el-button
+          v-waves
+          class="filter-item sureItem"
+          size="mini"
+          type="warning"
+          style="margin-bottom: 10px; margin-left: 10px"
+          @click="onSearch"
+        >{{ '搜索' }}</el-button>
+        <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
       </span>
     </div>
     <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">
@@ -388,6 +395,9 @@ export default {
 
 <style lang='scss'>
 .carHistory {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
   .filter-wrapper{
     margin:20px;
     &>span{
@@ -471,6 +481,15 @@ export default {
   }
   .location {
     overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
+  }
+  .el-input--suffix .el-input__inner {
+    padding-right: 0px;
+  }
+  .el-date-editor--daterange.el-input__inner {
+    width: 300px;
+  }
+  .el-date-editor .el-range-separator {
+    width: 6%;
   }
 //   overflow: auto !important;
 //   min-height: calc(100vh - 90px) !important;

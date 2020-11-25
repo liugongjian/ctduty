@@ -5,8 +5,20 @@
       <div class="clearfix">
         <div class="pull-left">
           <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
-          <el-button class="searchbtn" type="warning" @click="getUserList">搜索</el-button>
-          <el-button class="searchbtn" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item searchbtn"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="getUserList"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item searchbtn"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button class="addbtn" type="warning" @click="addUserDialogVisible = true">+新增用户</el-button>
@@ -14,7 +26,11 @@
       </div>
     </div>
 
-    <el-table :data="userList" :header-cell-style="{ background: '#ecedee', color: '#717171' }">
+    <el-table
+      v-loading="tableLoading"
+      :data="userList"
+      :header-cell-style="{ background: '#ecedee', color: '#717171' }"
+    >
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="手机号码" prop="phone"></el-table-column>
@@ -207,6 +223,7 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
@@ -373,6 +390,7 @@ export default {
     //   this.getgetPoliceList()
     // },
     getUserList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
@@ -485,42 +503,45 @@ export default {
 
 <style lang='scss' scoped>
 .userManage {
-  padding: 10px 20px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-divider--horizontal {
-  margin-top: 0px;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  float: left;
-  width: 250px;
-}
-.searchbtn {
-  float: left;
-  margin-left: 5px;
-}
-.addbtn {
-  float: right;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
-label {
-  display: inline-block;
-  width: 100px !important;
-  text-align: left !important;
+  padding: 20px;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .el-input__inner {
+    height: 38px;
+  }
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-divider--horizontal {
+    margin-top: 0px;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    float: left;
+    width: 250px;
+  }
+  .searchbtn {
+    float: left;
+    margin-left: 5px;
+  }
+  .addbtn {
+    float: right;
+  }
+  label {
+    display: inline-block;
+    width: 100px !important;
+    text-align: left !important;
+  }
 }
 </style>
 
