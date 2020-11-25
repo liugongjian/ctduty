@@ -44,3 +44,4 @@ export function fetchOnlineLogout(code) {
     method: 'get'
   })
 }
+
