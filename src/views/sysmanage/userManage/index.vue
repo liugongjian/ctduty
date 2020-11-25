@@ -47,7 +47,7 @@
       width="50%"
       @close="addDialogClosed"
     >
-      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
+      <el-form v-loading="departmentInfoLoading || permissionInfoLoading || postInfoLoading" ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
@@ -74,17 +74,23 @@
           <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
             <el-option
               v-for="item in postInfo"
-              :value="item.postId"
-              :label="item.post"
-              :key="item.postId"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
-            <el-radio :label="3274944196083712">系统管理员</el-radio>
+            <el-radio
+              v-for="item in permissionInfo"
+              :value="item.id"
+              :label="item.id"
+              :key="item.id"
+            >{{ item.name }}</el-radio>
+            <!-- <el-radio :label="3274944196083712">系统管理员</el-radio>
             <el-radio :label="3274944196083713">管理员</el-radio>
-            <el-radio :label="3274944196083714">普通用户</el-radio>
+            <el-radio :label="3274944196083714">普通用户</el-radio> -->
           </el-radio-group>
         </el-form-item>
         <!-- <el-form-item label="备注">
@@ -104,6 +110,7 @@
       @close="editDialogClosed"
     >
       <el-form
+        v-loading="departmentInfoLoading || permissionInfoLoading || postInfoLoading"
         ref="editFormRef"
         :rules="addUserFormRules"
         :model="editUserForm"
@@ -130,9 +137,9 @@
           >
             <el-option
               v-for="item in this.departmentInfo"
-              :value="item.departmentId"
-              :label="item.department"
-              :key="item.departmentId"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -140,17 +147,20 @@
           <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
             <el-option
               v-for="item in this.postInfo"
-              :value="item.postId"
-              :label="item.post"
-              :key="item.postId"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
-            <el-radio :label="3274944196083712">系统管理员</el-radio>
-            <el-radio :label="3274944196083713">管理员</el-radio>
-            <el-radio :label="3274944196083714">普通用户</el-radio>
+            <el-radio
+              v-for="item in permissionInfo"
+              :value="item.id"
+              :label="item.id"
+              :key="item.id"
+            >{{ item.name }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <!-- <el-form-item label="备注">
@@ -283,32 +293,10 @@ export default {
       deleteUserId: 0,
       departmentInfo: [],
       departmentInfoLoading: true,
-      postInfo: [
-        {
-          postId: 3275699862609920,
-          post: '所长'
-        },
-        {
-          postId: 3275699862609921,
-          post: '副所长'
-        },
-        {
-          postId: 3275699862609922,
-          post: '民警'
-        },
-        {
-          postId: 3275699862609923,
-          post: '普通员工'
-        },
-        {
-          postId: 3275699862611968,
-          post: '管控中心'
-        },
-        {
-          postId: 3275699862611969,
-          post: '监控中心'
-        }
-      ]
+      postInfoLoading: true,
+      postInfo: [],
+      permissionInfoLoading: true,
+      permissionInfo: []
     }
   },
   watch: {
@@ -317,28 +305,78 @@ export default {
       this.pageChange()
     }
   },
-  watch: {
-    limit() {
-      this.page = 1
-      this.pageChange()
-    }
+  // watch: {
+  //   limit() {
+  //     this.page = 1;
+  //     this.pageChange();
+  //   }
+  // },
+  mounted() {
+    this.getDepartmentList()
+    this.getPostsList()
+    this.getPermissionList()
   },
   created() {
     this.getUserList()
   },
   methods: {
-    pageChange() {
-      if (this.oldSize !== this.limit) {
-        this.page = 1
-      }
-      this.oldSize = this.limit
-      this.getgetPoliceList()
+    getDepartmentList() {
+      getDepartments().then(res => {
+        const { body: { data }, code, message } = res
+        if (code !== 0) {
+          this.$message.error(message || '获取部门列表失败')
+          return
+        } else {
+          this.departmentInfo = data
+          this.departmentInfoLoading = false
+        }
+      }).catch(err => {
+        this.departmentInfoLoading = false
+        this.$message.error(err.message || '获取部门列表失败')
+      })
     },
+    getPermissionList() {
+      getPermissions().then(res => {
+        const { body: { data }, code, message } = res
+        if (code !== 0) {
+          this.$message.error(message || '获取权限列表失败')
+          return
+        } else {
+          this.permissionInfo = data
+          this.permissionInfoLoading = false
+        }
+      }).catch(err => {
+        this.permissionInfoLoading = false
+        this.$message.error(err.message || '获取权限列表失败')
+      })
+    },
+    getPostsList() {
+      getPosts().then(res => {
+        const { body: { data }, code, message } = res
+        if (code !== 0) {
+          this.$message.error(message || '获取岗位列表失败')
+          return
+        } else {
+          this.postInfo = data
+          this.postInfoLoading = false
+        }
+      }).catch(err => {
+        this.postInfoLoading = false
+        this.$message.error(err.message || '获取岗位列表失败')
+      })
+    },
+    // pageChange() {
+    //   if (this.oldSize !== this.limit) {
+    //     this.page = 1
+    //   }
+    //   this.oldSize = this.limit
+    //   this.getgetPoliceList()
+    // },
     getUserList() {
       const query = {
         cascade: true,
         page: {
-          index: this.pagenum,
+          index: this.page,
           size: this.limit
         },
         params: {},
