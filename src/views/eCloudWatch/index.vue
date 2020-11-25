@@ -402,8 +402,8 @@ export default {
     },
     hasMarker(v) {
       if (v) {
-        // const o = amapManager.getMap()
-        o.setFitView(/* this.markers */)
+        const o = amapManager.getMap()
+        o.setFitView(this.markers)
         this.showZwMes = false
       }
     },
@@ -1231,7 +1231,7 @@ body {
 
         .bottom-left {
           width: 100%;
-          height: 50%;
+          height: calc(100% - 287px);
           float: left;
           padding: 0 8px;
           overflow: auto;
