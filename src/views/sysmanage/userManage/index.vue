@@ -51,7 +51,7 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="username">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="addUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -119,7 +119,7 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="username">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="editUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
