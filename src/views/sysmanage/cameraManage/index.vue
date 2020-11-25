@@ -322,7 +322,7 @@ export default {
             that.highLightMarkerId = that.form.id
             /*  that.center = [that.form.longitude, that.form.latitude]
             that.zoom = 15 */
-            o.setZoomAndCenter(15, [that.form.longitude, that.form.latitude])
+            // o.setCenter([that.form.longitude, that.form.latitude])
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
             that.editForm = that.form
