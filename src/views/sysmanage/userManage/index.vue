@@ -19,7 +19,7 @@
       <el-table-column label="姓名" prop="name"></el-table-column>
       <el-table-column label="手机号码" prop="phone"></el-table-column>
       <el-table-column label="岗位" prop="post.name"></el-table-column>
-      <el-table-column label="区域/部门" prop="department.name"></el-table-column>
+      <el-table-column label="部门" prop="department.name"></el-table-column>
       <el-table-column label="权限" prop="permissions.name"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
@@ -60,8 +60,8 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
-          <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
+        <el-form-item label="部门" prop="departmentId">
+          <el-select v-model="addUserForm.departmentId" placeholder="请选择部门">
             <el-option
               v-for="item in departmentInfo"
               :value="item.id"
@@ -128,12 +128,12 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
-          <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
+        <el-form-item label="部门" prop="departmentId">
+          <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择部门"> -->
           <el-select
             v-model="editUserForm.departmentId"
             :value="editUserForm.departmentId"
-            placeholder="请选择区域/部门"
+            placeholder="请选择部门"
           >
             <el-option
               v-for="item in this.departmentInfo"
@@ -255,7 +255,7 @@ export default {
           { required: true, message: '权限不能为空', trigger: 'blur' }
         ],
         departmentId: [
-          { required: true, message: '区域/部门不能为空', trigger: 'blur' }
+          { required: true, message: '部门不能为空', trigger: 'blur' }
         ],
         postId: [
           { required: true, message: '岗位不能为空', trigger: 'blur' }
