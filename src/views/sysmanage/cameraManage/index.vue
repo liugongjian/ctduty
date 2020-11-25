@@ -331,6 +331,7 @@ export default {
                 markers[0].classList.add('markerClickImg')
                 const o = amapManager.getMap()
                 o.on('click', markers[0])
+                o.setZoomAndCenter(15, [that.form.longitude, that.form.latitude])
               }
               [].forEach.call(markers, (item, index) => {
                 if (item.id === that.highLightMarkerId) {
@@ -403,10 +404,13 @@ export default {
               name: item.name
             }
           })
-          this.options.unshift({
-            value: '所有摄像头',
-            name: '所有摄像头'
-          })
+          if (this.options.length > 0) {
+            this.options.unshift({
+              value: '所有摄像头',
+              name: '所有摄像头'
+            })
+          }
+
           this.loading = false
         })
       } else {

@@ -607,7 +607,6 @@ export default {
             this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
-            o.setFitView()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
           }
           if (item.undealSum === '0') {
@@ -792,7 +791,6 @@ export default {
             this.cameraState = '此摄像头已离线'
           }
           const o = amapManager.getMap()
-          o.setFitView()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
@@ -904,7 +902,6 @@ export default {
             this.cameraState = '此摄像头已离线'
           }
           const o = amapManager.getMap()
-          o.setFitView()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
@@ -1001,7 +998,6 @@ export default {
       }
       this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
       const o = amapManager.getMap()
-      o.setFitView()
       o.setZoomAndCenter(15, [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006])
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
