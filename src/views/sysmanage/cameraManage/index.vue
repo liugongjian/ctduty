@@ -331,6 +331,7 @@ export default {
                 markers[0].classList.add('markerClickImg')
                 const o = amapManager.getMap()
                 o.on('click', markers[0])
+                o.setZoomAndCenter(15, [that.form.longitude, that.form.latitude])
               }
               [].forEach.call(markers, (item, index) => {
                 if (item.id === that.highLightMarkerId) {
