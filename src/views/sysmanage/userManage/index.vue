@@ -261,7 +261,9 @@ export default {
         departmentId: [
           { required: true, message: '区域/部门不能为空', trigger: 'blur' }
         ],
-        postId: [{ required: true, message: '岗位不能为空', trigger: 'blur' }]
+        postId: [
+          { required: true, message: '岗位不能为空', trigger: 'blur' }
+        ]
       },
       addUserForm: {
         username: '',
@@ -342,10 +344,23 @@ export default {
       this.pageChange()
     }
   },
+  // watch: {
+  //   limit() {
+  //     this.page = 1;
+  //     this.pageChange();
+  //   }
+  // },
   created() {
     this.getUserList()
   },
   methods: {
+    // pageChange() {
+    //   if (this.oldSize !== this.limit) {
+    //     this.page = 1
+    //   }
+    //   this.oldSize = this.limit
+    //   this.getgetPoliceList()
+    // },
     getUserList() {
       this.tableLoading = true
       const query = {
@@ -369,7 +384,6 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-        this.tableLoading = false
       })
     },
     pageChange() {
