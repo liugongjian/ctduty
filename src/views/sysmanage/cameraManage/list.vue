@@ -289,7 +289,7 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get('userId'),
+      userId: '',
       originCode: '',
       oldSize: 10,
       delIDArr: [],
@@ -325,6 +325,7 @@ export default {
     }
   },
   async created() {
+    this.userId = Cookies.get('userId')
     await Message.closeAll()
     await this.getUserList()
     await this.getList()

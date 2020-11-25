@@ -403,10 +403,13 @@ export default {
               name: item.name
             }
           })
-          this.options.unshift({
-            value: '所有摄像头',
-            name: '所有摄像头'
-          })
+          if (this.options.length > 0) {
+            this.options.unshift({
+              value: '所有摄像头',
+              name: '所有摄像头'
+            })
+          }
+
           this.loading = false
         })
       } else {
