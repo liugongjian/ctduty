@@ -292,8 +292,10 @@ export default {
       amapManager,
       events: {
         click: info => {
-          this.form = info.target.G.extData
-          this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+          if (info.target.G.extData.id) {
+            this.form = info.target.G.extData
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+          }
         },
         init(o) {
         }
