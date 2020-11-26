@@ -440,8 +440,8 @@ export default {
       if (code !== 0) {
         this.$message.error(message || '获取当前摄像头已配置算法失败。')
       } else {
-        const peopleExist = data.find(({ id }) => id === 8)
-        const carExist = data.find(({ id }) => id === 9)
+        const peopleExist = data.find(({ taskId }) => taskId === 8)
+        const carExist = data.find(({ taskId }) => taskId === 9)
         this.carIsPick = carExist && carExist.isPick
         this.peopleIsPick = peopleExist && peopleExist.isPick
         if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
