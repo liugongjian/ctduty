@@ -138,7 +138,7 @@
               <el-option
                 v-for="item in userList"
                 :value="item.id"
-                :label="item.username"
+                :label="item.name"
                 :key="item.id"
               ></el-option>
             </el-select>
@@ -147,7 +147,7 @@
             <el-input
               v-model="editForm.tude"
               type="text"
-              placeholder="请输入摄像头经度"
+              placeholder="请输入摄像头经纬度"
               style="width:300px;"
               class="filter-item"
             ></el-input>
@@ -243,7 +243,7 @@ export default {
       },
       editFormRules: {
         creator: [
-          { required: true, trigger: 'change', message: '请选择负责人' }
+          { required: true, trigger: 'blur', message: '请选择负责人' }
         ],
         url: [
           { required: true, trigger: 'blur', message: '视频流信息不能为空' }

@@ -152,7 +152,7 @@
                     <el-input
                       v-model="editForm.tude"
                       type="text"
-                      placeholder="请输入摄像头经度"
+                      placeholder="请输入摄像头经纬度"
                       style="width:300px;"
                       class="filter-item"
                     ></el-input>
@@ -244,9 +244,6 @@ export default {
         manufacturer: [
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
-        /* model: [
-          { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
-        ], */
         id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
           { required: true, trigger: 'blur', message: '负责人ID不能为空' }
@@ -293,7 +290,7 @@ export default {
       events: {
         click: info => {
           if (info.target.G.extData.id) {
-            this.form = info.target.G.extData
+            this.form = this.objDeepCopy(info.target.G.extData)
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
           }
         },
@@ -323,7 +320,7 @@ export default {
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
             item.classList.add('markerClickImg')
-            that.editForm = that.form
+            that.editForm = that.objDeepCopy(that.form)
             that.showZwMes = false
           } else {
             setTimeout(() => {
@@ -339,7 +336,7 @@ export default {
                 if (item.id === that.highLightMarkerId) {
                   item.setAttribute('width', 50)
                   item.setAttribute('height', 50)
-                  that.editForm = JSON.parse(item.attributes[1].nodeValue)
+                  that.editForm = that.objDeepCopy(JSON.parse(item.attributes[1].nodeValue))
                   that.showZwMes = false
                 }
               })
@@ -356,6 +353,11 @@ export default {
   mounted() {
   },
   methods: {
+    objDeepCopy(source) {
+      var sourceCopy = {}
+      for (var item in source) sourceCopy[item] = typeof source[item] === 'object' ? this.objDeepCopy(source[item]) : source[item]
+      return sourceCopy
+    },
     getUserList() {
       const query = {
         cascade: true,
@@ -477,22 +479,15 @@ export default {
           this.highLightMarkerId = this.form.id
           const o = amapManager.getMap()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
-          this.editForm = this.form
+          this.editForm = this.objDeepCopy(this.form)
           this.showZwMes = false
         }
       })
     },
     editDialog(v) {
-      this.form.id = v.id + ''
-      this.form.creatorId = v.creatorId + ''
-      this.form.tude = v.longitude + ',' + v.latitude
-      this.form.inChargeId = v.inChargeId + ''
-      this.form.longitude = v.longitude + ''
-      this.form.latitude = v.latitude + ''
-      this.form.address = v.address
-      this.form.name = v.inCharge.name
-      this.form.url = v.url
-      this.editForm = this.form
+      this.editForm = this.objDeepCopy(v)
+      this.editForm.tude = v.longitude + ', ' + v.latitude
+      this.editForm.name = v.inCharge.name
       this.editVisable = true
     },
     editCloseDialog() {
@@ -572,6 +567,8 @@ export default {
         const markers = document.getElementsByClassName('markerImg');
         [].forEach.call(markers, (item) => {
           if (item.id === this.highLightMarkerId) {
+            const o = amapManager.getMap()
+            o.setFitView()
             item.classList.add('markerClickImg')
             item.setAttribute('width', 50)
             item.setAttribute('height', 50)
@@ -659,12 +656,12 @@ export default {
         }
         this.formInfo.forEach((item, index) => {
           if (item.id === this.highLightMarkerId) {
-            this.form = item
+            this.form = this.objDeepCopy(item)
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
           } else if (!this.highLightMarkerId && index === 0) {
-            this.form = item
+            this.form = this.objDeepCopy(item)
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
