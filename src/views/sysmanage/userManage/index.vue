@@ -242,8 +242,8 @@ export default {
           { required: true, message: '姓名不能为空', trigger: 'blur' },
           {
             min: 2,
-            max: 4,
-            message: '姓名长度在2-4个字符之间',
+            max: 10,
+            message: '姓名长度在2-10个字符之间',
             trigger: 'blur'
           }
         ],
