@@ -230,11 +230,20 @@ export default {
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' },
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
           {
             min: 5,
-            max: 10,
+            max: 12,
             message: '用户名长度在5-12个字符之间',
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          {
+            min: 2,
+            max: 4,
+            message: '姓名长度在2-4个字符之间',
             trigger: 'blur'
           }
         ],
