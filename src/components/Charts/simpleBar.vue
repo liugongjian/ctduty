@@ -102,6 +102,16 @@ export default {
           ...yAxis
         }
       }
+
+      const rtnRotate = () => {
+        if (this.id === 'times-bar') {
+          const boxWidth = document.querySelector('#times-bar').offsetWidth - 84
+          return boxWidth > 185 ? 0 : 20
+        } else {
+          return 0
+        }
+      }
+
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
@@ -124,7 +134,7 @@ export default {
           axisLabel: {
             color: '#4a4a4a',
             interval: 0,
-            rotate: document.querySelector('#times-bar').offsetWidth - 84 > 185 ? 0 : 20
+            rotate: rtnRotate()
           },
           splitLine: {
             lineStyle: {
