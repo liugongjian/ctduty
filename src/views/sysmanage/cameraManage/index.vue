@@ -87,7 +87,7 @@
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="经纬度信息：">
-                    <el-tooltip :content="form.longitude+''" placement="top">
+                    <el-tooltip :content="form.longitude+', '+form.latitude" placement="top">
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude+ ', ' + form.latitude }}</div>
                     </el-tooltip>
                   </el-form-item>
@@ -150,7 +150,7 @@
                   </el-form-item>
                   <el-form-item label="摄像头经纬度：" prop="tude">
                     <el-input
-                      v-model="editForm.tude"
+                      v-model="tude"
                       type="text"
                       placeholder="请输入摄像头经纬度"
                       style="width:300px;"
@@ -200,6 +200,7 @@ export default {
   components: { CameraList, EllipsisTooltip },
   data() {
     return {
+      tude: '',
       userList: [],
       cameraId: '',
       dialogForm: {
@@ -486,7 +487,7 @@ export default {
     },
     editDialog(v) {
       this.editForm = this.objDeepCopy(v)
-      this.editForm.tude = v.longitude + ', ' + v.latitude
+      this.tude = v.longitude + ', ' + v.latitude
       this.editForm.name = v.inCharge.name
       this.editVisable = true
     },
@@ -497,8 +498,8 @@ export default {
       const params = [{
         id: this.editForm.id,
         inChargeId: this.editForm.inChargeId,
-        latitude: this.editForm.tude.split(',')[1].trim(),
-        longitude: this.editForm.tude.split(',')[0].trim(),
+        latitude: this.tude.split(',')[1].trim(),
+        longitude: this.tude.split(',')[0].trim(),
         url: this.editForm.url,
         name: this.editForm.name,
         creatorId: this.editForm.creatorId
