@@ -311,6 +311,7 @@ export default {
       }, 200)
     },
     hasMarker(v) {
+      console.log(v, '哈哈')
       const that = this
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
@@ -337,6 +338,7 @@ export default {
                 if (item.id === that.highLightMarkerId) {
                   item.setAttribute('width', 50)
                   item.setAttribute('height', 50)
+                  item.classList.add('markerClickImg')
                   that.editForm = that.objDeepCopy(JSON.parse(item.attributes[1].nodeValue))
                   that.showZwMes = false
                 }
@@ -623,12 +625,6 @@ export default {
     markerClick(a) {
     },
     getList() {
-      const markers = document.getElementsByClassName('markerImg');
-      [].forEach.call(markers, (item) => {
-        item.setAttribute('width', 40)
-        item.setAttribute('height', 40)
-        item.classList.remove('markerClickImg')
-      })
       const params = {
         cascade: true,
         page: {
