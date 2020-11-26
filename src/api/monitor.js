@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function fetchAllMonitor(query) {
+export function fetchAllMonitor(id) {
   return request({
-    url: '/nvsapi/camera/live/query',
-    method: 'get',
-    data: query
+    url: `/nvsapi/camera/live/query?inChargeId=${id}`,
+    method: 'get'
   })
 }
 

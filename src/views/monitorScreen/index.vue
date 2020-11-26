@@ -261,7 +261,7 @@ export default {
       }
     },
     getLiveList() {
-      fetchAllMonitor().then(res => {
+      fetchAllMonitor(this.userId).then(res => {
         const data = res.body.data || []
         this.deviceList = data.map(item => {
           return {
