@@ -280,6 +280,7 @@
             :total="total"
             :page.sync="page"
             :limit.sync="limit"
+            layout="sizes, prev, pager, next"
             small
             @pagination="pageChange()"
           />
@@ -969,6 +970,36 @@ export default {
             }
           }
         }
+        /deep/.pagination-container {
+          position: absolute;
+          bottom: 20px;
+          width: calc(100% - 20px);
+          margin-top: 20px;
+          .showTotal {
+            line-height:28px;
+          }
+          .el-input--mini{
+            width: 85px;
+            line-height: 24px;
+          }
+          .el-input--mini .el-input__inner{
+              height: 24px;
+          }
+          .el-pagination--small {
+            height: 28px;
+          }
+          @media screen and (max-width: 1600px) {
+            .el-pagination__jump {
+              display: none !important;
+            }
+          }
+          @media screen and (max-width: 1400px) {
+            bottom: 40px;
+            .showTotal {
+              display: none !important;
+            }
+          }
+        }
       }
     }
   }
@@ -1036,35 +1067,6 @@ export default {
     }
   }
 
-  .pagination-container {
-    position: absolute;
-    bottom: 20px;
-    width: calc(100% - 20px);
-    .showTotal {
-      line-height:28px;
-    }
-    .el-input--mini{
-      width: 85px;
-      line-height: 24px;
-    }
-    .el-input--mini .el-input__inner{
-        height: 24px;
-    }
-    .el-pagination--small {
-      height: 28px;
-    }
-    @media screen and (max-width: 1600px) {
-      .el-pagination__jump {
-        display: none !important;
-      }
-    }
-    @media screen and (max-width: 1400px) {
-      bottom: 40px;
-      .showTotal {
-        display: none !important;
-      }
-    }
-  }
   .video-panel {
     position: relative;
     height: calc(100% - 35px);
