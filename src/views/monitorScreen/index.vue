@@ -180,8 +180,7 @@ export default {
     loadFakeImg() {
       this.pageLoading = true
       loadingImg().then(res => {
-        if (res.body.data.length > 0) {
-          // const staticImg = []
+        if (res.code === 0) {
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
@@ -192,12 +191,6 @@ export default {
               name: item.name
             })
           })
-          // const a = staticImg.filter((item, index) => {
-          //   this.deviceList.find(val => item.id !== val.id)
-          // })
-          // if (a.length > 1) {
-          //   this.deviceList.push(a)
-          // }
           this.getLiveList()
           this.pageLoading = false
         }
@@ -215,6 +208,7 @@ export default {
         }
       }
       fetchAllCameraList(params).then(res => {
+        console.log(res)
         if (res.code === 0) {
           this.allCameraList = res.body.data
         }
