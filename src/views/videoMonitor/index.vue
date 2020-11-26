@@ -353,22 +353,22 @@ export default {
       realTimeData: {
         people: {
           today: {
-            in: 0,
-            out: 0
+            in: '-',
+            out: '-'
           },
           realTime: {
-            in: 0,
-            out: 0
+            in: '-',
+            out: '-'
           }
         },
         vehicle: {
           today: {
-            in: 0,
-            out: 0
+            in: '-',
+            out: '-'
           },
           realTime: {
-            in: 0,
-            out: 0
+            in: '-',
+            out: '-'
           }
         }
       }
