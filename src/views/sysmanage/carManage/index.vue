@@ -111,7 +111,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-input v-model="addCarForm.carWord" style="width:130px;" placeholder="请输入车牌号"></el-input>
+              <el-input v-model="addCarForm.carWord" style="width:130px;top:-3.6px;" placeholder="请输入车牌号"></el-input>
             </el-form-item>
             <el-form-item label="所属名单：" prop="carlist">
               <el-select
