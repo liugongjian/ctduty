@@ -122,7 +122,9 @@ export default {
             }
           },
           axisLabel: {
-            color: '#4a4a4a'
+            color: '#4a4a4a',
+            interval: 0,
+            rotate: document.querySelector('#times-bar').offsetWidth - 84 > 185 ? 0 : 20
           },
           splitLine: {
             lineStyle: {
