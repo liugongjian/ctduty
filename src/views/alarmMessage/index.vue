@@ -19,11 +19,11 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头地址:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
-            placeholder="摄像头名称"
+            placeholder="摄像头地址"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
@@ -961,9 +961,6 @@ export default {
     .el-date-editor {
       width: 205px !important;
       padding-right: 0px !important;
-      .el-range-input {
-        margin-bottom: 2px;
-      }
     }
     .el-date-editor--time {
       width: 180px !important;
@@ -1079,5 +1076,12 @@ export default {
   }
 .el-range-editor--mini.el-input__inner {
   height: 36px;
+}
+.el-range-editor--mini .el-range-separator {
+  line-height: 24px;
+  font-size: 14px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 24px;
 }
 </style>

@@ -709,4 +709,11 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+.el-range-editor--mini .el-range-separator {
+  line-height: 28px;
+  font-size: 14px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 28px;
+}
 </style>
