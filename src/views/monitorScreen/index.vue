@@ -277,8 +277,8 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri : '')
+                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
               ]
             }
