@@ -143,7 +143,7 @@
                 :data="upSingleData"
                 class="avatar-uploader"
               >
-                <el-image v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="avatar" />
+                <el-image v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="image" style="height: 200px;" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -287,7 +287,7 @@
                   :data="upSingleData"
                   class="avatar-uploader"
                 >
-                  <el-image v-if="editForm.image" :src="editForm.image" class="avatar" />
+                  <el-image v-if="editForm.image" :src="editForm.image" class="image" style="height: 200px;" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </div>
@@ -851,6 +851,9 @@ export default {
 }
 .sureItem {
   height: 36px;
+}
+.editPictrue {
+  width: 180px;
 }
 </style>
 
