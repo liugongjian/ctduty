@@ -3,73 +3,53 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
-          <el-input
-            v-model="formInline.searchkey"
-            placeholder="摄像头地址"
-            class="searchinp"
+          <el-button
+            v-waves
+            class="filter-item sureItem"
             size="mini"
-            @keyup.enter.native="searchAlarm"
-          >
-            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
-          </el-input>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
+            type="warning"
+            style="margin-bottom: 10px; margin-left: 10px"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
+          <span id="openId" class="open" @click="opendraw">
+            {{ openname }}
+            <i class="el-icon-arrow-down"></i>
+          </span>
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
           </div>
+          <el-input
+            v-model="formInline.searchkey"
+            placeholder="摄像头名称"
+            class="searchinp"
+            size="mini"
+            @keyup.enter.native="onSearch"
+          ></el-input>
           <div class="block filter-item">
-            <el-date-picker
-              v-model="value1"
-              :clearable="false"
-              :style="{width:210 + 'px', height: 36 + 'px'}"
-              :picker-options="pickerOptions"
-              type="daterange"
-              range-separator="~"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              size="mini"
-              @change="timeChange"
-            ></el-date-picker>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
+          <el-select
+            v-model="algorithmList.typeValue"
+            multiple
+            placeholder="请选择事件名称"
+            min-width="300px"
+            collapse-tags
+            style="margin-bottom: 10px;"
+            @change="checkModel"
+          >
+            <el-option
+              v-for="item in algorithm"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id"
+            ></el-option>
+          </el-select>
           <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">处理结果:</div>
           </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px',height:'36px'}"
-              v-model="startTime"
-              :picker-options="{
-                selectableRange:'00:00:00-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px', height: 36 + 'px'}"
-              v-model="endTime"
-              :picker-options="{
-                selectableRange:startTime+ ':00' + '-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
-
           <el-select
             v-model="formInline.typeValue"
             style="width:95px; margin-left:10px; margin-right: 10px"
@@ -84,13 +64,59 @@
               :value="item._id"
             ></el-option>
           </el-select>
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            @click="onSearch"
-          >{{ '确定' }}</el-button>
+
+          <transition name="fade">
+            <div v-show="flag">
+              <div class="block filter-item">
+                <div style="margin-right: 20px;font-size: 12px;">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  style="width:210px, height: 36px"
+                  :picker-options="pickerOptions"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  style="width: 210px, height: 36px;"
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  style="width:95px, height: 36px"
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
       <div>
@@ -325,6 +351,8 @@ export default {
   },
   data() {
     return {
+      flag: false,
+      openname: '展开',
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
@@ -359,7 +387,30 @@ export default {
         { name: '已处理', _id: 'settled' },
         { name: '未处理', _id: 'unsettled' }
       ],
+      algorithmList: {
+        searchkey: '',
+        typeValue: '行人'
+      },
+      algorithm: [
+        { name: '行人', _id: 1 },
+        { name: '机动车', _id: 2 },
+        { name: '非机动车', _id: 3 },
+        { name: '翻墙', _id: 4 },
+        { name: '人员逗留', _id: 5 },
+        { name: '人员聚集', _id: 6 },
+        { name: '区域划线', _id: 7 },
+        { name: '安全帽', _id: 8 },
+        { name: '打架斗殴', _id: 9 },
+        { name: '摔倒', _id: 10 },
+        { name: '占道经营', _id: 11 }
+      ],
+      algorithmNameList: {
+        searchkey: '',
+        typeValue: '移动侦测'
+      },
+      algorithmName: [
 
+      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -419,58 +470,13 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
-    searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      this.page = 1
-      this.limit = 10
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
-          cascade: true,
-          page: {
-            index: this.page,
-            size: this.limit
-          },
-          params: [
-            {
-              field: 'camera.address',
-              operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
-            },
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ],
-          sorts: [
-            {
-              field: 'create_Time',
-              type: 'desc'
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
-              operator: 'EQUALS',
-              value: this.formInline.searchkey
-            }
-          ]
-        }
+    opendraw() {
+      this.flag = !this.flag
+      if (this.openname == '展开') {
+        this.openname = '收起'
+      } else if (this.openname == '收起') {
+        this.openname = '展开'
       }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
     },
     openBig(url) {
       window.open(url)
@@ -491,7 +497,7 @@ export default {
     },
     formatType(row, column, cellValue) {
       if (cellValue === 1) {
-        return '人员'
+        return '行人'
       } else if (cellValue === 2) {
         return '机动车'
       } else if (cellValue === 3) {
@@ -558,59 +564,57 @@ export default {
 
       return result
     },
-    // 重置搜索
-    // 重置
-    resetQuery() {
+    // 重置起止时间的搜索
+    onClear() {
+      (this.value1 = [
+        new Date(new Date().setDate(new Date().getDate() - 29)),
+        new Date(new Date().setDate(new Date().getDate()))
+      ]),
+      (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
+      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
+      (this.value1 = ''),
+      // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+      // this.defaultTab=this.endDate
+      // this.getList(s1, end1, h1)
+      (this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse())
+      this.defaultTab = this.tabsArr[0]
+      this.currentTab = this.defaultTab
+      this.getPushSetTime()
+
       this.formInline.searchkey = ''
+      this.algorithmNameList.typeValue = ''
+      this.algorithmList.typeValue = ''
       this.page = 1
       this.limit = 10
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
-    },
-    // 重置起止时间的搜索
-    // onClear() {
-    //   (this.value1 = [
-    //     new Date(new Date().setDate(new Date().getDate() - 29)),
-    //     new Date(new Date().setDate(new Date().getDate()))
-    //   ]),
-    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
-    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-    //   (this.value1 = ""),
-    //   (this.page = 1),
-    //     // this.startTime = '02:00'
-    //     // this.endTime = '05:00'
-    //   (this.formInline.typeValue = "all");
-    //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    //   // this.defaultTab=this.endDate
-    //   // this.getList(s1, end1, h1)
-    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
-    //   this.defaultTab = this.tabsArr[0];
-    //   this.currentTab = this.defaultTab;
-    //   this.getPushSetTime();
-    //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    //   // const h = this.formInline.typeValue
-    //   // this.getList(s, e, h)
+      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+      // const h = this.formInline.typeValue
+      // this.getList(s, e, h)
 
-    //   // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-    //   // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-    //   // this.getTimeAllTotal(s1, e1, h)
-    // },
+      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      // this.getTimeAllTotal(s1, e1, h)
+    },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
-      // this.tabsArr = this.tabsDateArr
-      // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
-      // this.value1=[this.startDate,this.endDate]
       if (this.tabsArr.indexOf(this.currentTab) === -1) {
         this.defaultTab = this.tabsArr[0]
         this.currentTab = this.defaultTab
       }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
       this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+      this.page = 1
+      this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
@@ -666,7 +670,12 @@ export default {
     pageChange(e) {
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
       this.oldSize = this.limit
       this.getList(s, end, h)
     },
@@ -735,54 +744,35 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      // console.log('se', s , e)
       this.tableLoading = true
-      let oper
-      if (h === 'settled') {
-        oper = 'NOT_NULL'
-      } else if (h === 'unsettled') {
-        oper = 'NULL'
-      }
-      const ss = {
-        field: 'handlerId',
-        operator: oper,
-        value: 'null'
-      }
-      const param =
-        h == 'all'
-          ? [
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            }
-          ]
-          : [
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            ss
-          ]
+      const { type, taskId } = h
+      const param = [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'taskId',
+          operator: 'IN',
+          value: taskId
+        }
+      ]
       const params = {
         cascade: true,
         page: {
@@ -901,21 +891,15 @@ export default {
 </script>
 
 <style lang='scss'>
-.list {
-  .el-input__inner {
-    text-indent: 0px;
+ .el-input__inner {
+  text-indent: 0px;
   }
-  .alaMesTable.el-table--medium {
-    td {
-      padding: 0px;
-      .el-image {
-        vertical-align: middle;
-      }
-    }
-    th {
-      padding: 0px;
-    }
-  }
+  // .alaMesTable {
+  //   td {
+  //     padding: 2px 0 !important;
+  //   }
+  // }
+
   .title {
     width: 100%;
     height: 50px;
@@ -927,6 +911,9 @@ export default {
     border-bottom: 1px solid #ccc;
     background: #fff;
     padding: 0 20px;
+  }
+  .el-date-editor {
+    // height: 32px !important;
   }
   .el-range-separator {
     width: 30px !important;
@@ -944,27 +931,48 @@ export default {
     color: #409eff;
     text-decoration: underline;
   }
-
-  td {
-    .el-image {
-      vertical-align: middle;
+  .alaMesTable.el-table--medium {
+    td {
+      padding: 0px;
+      .el-image {
+        vertical-align: middle;
+      }
+    }
+    th {
+      padding: 0px;
     }
   }
+
   .sureItem {
-    height: 32px;
+    height: 36px !important;
   }
   .pull-left.alarmmsgleft {
-    width: 75%;
+    width: 80%;
+    .el-select {
+      width: 180px;
+    }
+    .el-date-editor {
+      width: 205px !important;
+      padding-right: 0px !important;
+      .el-range-input {
+        margin-bottom: 2px;
+      }
+    }
+    .el-date-editor--time {
+      width: 180px !important;
+    }
   }
   .pull-right.alarmmsgright {
     position: relative;
-    width: 25%;
+    right: 0px;
+    width: 20%;
     .clearsearch {
       position: absolute;
       top: 0px;
-      right: 0px;
+      // right: 0px;
       height: 34px;
-      width: 60px;
+      margin-left: 10px;
+      width: 56px !important;
       // margin-left: 16px;
       border: 1px solid #ccc;
       background: none;
@@ -980,12 +988,12 @@ export default {
     top: 1px;
     height: 34px;
     right: 22%;
+    // border-left: none;
     border-radius: 4px;
   }
-  .el-input--mini .el-input__inner {
-    height: 36px;
-    line-height: 36px;
-  }
+  // .el-input--mini .el-input__inner {
+  //   text-indent: 0px;
+  // }
   .el-range-editor.el-input__inner {
     padding: 5px 5px;
   }
@@ -1025,7 +1033,43 @@ export default {
     font-size: 14px;
   }
   .searchinp {
-    width: 75%;
+    width: 205px;
   }
+  .el-select.el-select--medium {
+    width: 260px;
+  }
+  .el-input--mini .el-input__inner {
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+  .el-select.el-select--medium {
+    margin-bottom: 10px;
+  }
+  .filter-container .filter-item {
+    vertical-align: initial;
+  }
+  .el-input--mini .el-input__icon {
+    line-height: 36px;
+  }
+  .open {
+    margin-left: 5px;
+    color: #ff9832;
+    cursor: pointer;
+  }
+  .draw {
+    display: none;
+  }
+  .tdimage {
+    object-fit: contain !important;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all 0.8s ease 0.2s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+    opacity: 0;
+  }
+.el-range-editor--mini.el-input__inner {
+  height: 36px;
 }
 </style>
