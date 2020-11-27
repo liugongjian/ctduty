@@ -208,7 +208,6 @@ export default {
         }
       }
       fetchAllCameraList(params).then(res => {
-        console.log(res)
         if (res.code === 0) {
           this.allCameraList = res.body.data
         }

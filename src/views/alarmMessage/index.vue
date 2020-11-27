@@ -170,12 +170,19 @@
               ></el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :formatter="formatTime"
                 :label="'时间'"
                 align="center"
                 min-width="10%"
                 prop="createTime"
-              ></el-table-column>
+              >
+                <template slot-scope="scope">
+                  <span>
+                    {{
+                      renderTime(scope.row.createTime).substring(renderTime(scope.row.createTime).length-8)
+                    }}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理人'"
@@ -267,9 +274,9 @@
             </el-tooltip>
             <div class="popfootertime">
               <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-              <span :formatter="formatTime">
+              <span>
                 {{
-                  formatTime(temp.createTime)
+                  renderTime(temp.createTime).substring(renderTime(temp.createTime).length-8)
                 }}
               </span>
             </div>
