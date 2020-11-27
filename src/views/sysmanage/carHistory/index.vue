@@ -138,7 +138,7 @@
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
-                    <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
+                    <el-button :disabled="!item.plateType" type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
                       <svg-icon icon-class="import"></svg-icon>
                       <!-- <i class="el-icon-upload" /> -->
                     </el-button>
@@ -393,7 +393,7 @@ export default {
 <style lang='scss'>
 .carHistory {
   .el-button--text {
-    color: #fa8334 !important;
+    // color: #fa8334 !important;
   }
   .filter-wrapper{
     margin:20px;

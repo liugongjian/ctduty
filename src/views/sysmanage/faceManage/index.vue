@@ -748,7 +748,7 @@ export default {
 .faceindexlist {
   overflow: auto !important;
   .el-button--text {
-    color: #fa8334 !important;
+    // color: #fa8334 !important;
   }
   .el-input__inner {
     height: 38px;
@@ -812,9 +812,10 @@ export default {
     }
 
     .face-name {
-      padding: 5px 0;
+      padding: 7px 0;
       font-size: 12px;
       margin-right: 5px;
+      cursor: pointer;
     }
     .face-kind {
       font-size: 12px;

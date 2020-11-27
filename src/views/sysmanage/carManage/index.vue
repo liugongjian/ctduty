@@ -451,7 +451,7 @@ export default {
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择需要删除的车牌!',
           type: 'warning'
         })
       } else {
@@ -539,7 +539,7 @@ export default {
       this.$refs[formName].clearValidate()
     },
     onSearch() {
-      const query = {
+      const query = this.formInline.searchkey ? {
         page: {
           index: this.page,
           size: this.limit
@@ -550,6 +550,24 @@ export default {
             operator: 'LIKE',
             value: `%${this.formInline.searchkey}%`
           }
+        ],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
+      } : {
+        page: {
+          index: this.page,
+          size: this.limit
+        },
+        params: [],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
         ]
       }
       searchList(query).then(response => {
@@ -558,7 +576,7 @@ export default {
         this.importData = response.body.data
         this.total = response.body.page.total
         this.page = 1
-        this.formInline.searchkey = ''
+        // this.formInline.searchkey = ''
       })
     },
     // 表头样式
