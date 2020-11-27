@@ -274,7 +274,6 @@ export default {
     },
     applyAlgorithms(flag) {
       if (flag) {
-        console.log('调用后端接口保存标注坐标列表')
         // 先组装参数，包含删除、增加、修改
         // var allDatas = []
         // var nowAlgorithmList = [].concat.apply([], this.algorithmListTwoDim)
@@ -311,20 +310,17 @@ export default {
           } else if (algorithmObject.originalPickStatus && algorithmObject.isPick && !algorithmObject.isCommitStatus) {
             // 修改、肯定需要标注（检查，如果该配置的没有配置需要弹窗告警）
             param['action'] = 'update'
-            console.log('algorithmObject', algorithmObject)
             const areas = algorithmObject['areas']
             if (areas === undefined || areas.length === 0) {
               alert(algorithmObject.cnName + '没有标注，请标注再提交或者取消选择')
               flag = false
               break
             }
-            console.log('原来的areas', algorithmObject['areas'])
             param['areas'] = this.formatAreas(areas, algorithmObject.ratiox, algorithmObject.ratioy)
             params.push(param)
           }
         }
         if (flag) {
-          console.log(params)
           if (params.length > 0) {
             // console.log('组装的参数是-----', params)
             var finalBody = {
@@ -355,7 +351,6 @@ export default {
       return newAreas
     },
     formatPoints(points, ratiox, ratioy) {
-      console.log('参数值', points, ratiox, ratiox)
       var newPoints = []
       for (var i = 0; i < points.length; i++) {
         newPoints.push({
