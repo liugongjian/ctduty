@@ -44,7 +44,7 @@
                   <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
                   <span style="width: 260px;">
                     {{
-                      renderTime(dataDia.createTime)
+                      renderTime(dataDia.createTime).substring(renderTime(dataDia.createTime).length-8)
                     }}
                   </span>
                 </div>
@@ -1497,6 +1497,7 @@ body {
     padding-top: 4px;
     padding-left: 4px;
     display: flex;
+    justify-content: space-between;
     .popfooteraddress {
       overflow: hidden;
       text-overflow:ellipsis;
@@ -1504,7 +1505,7 @@ body {
       width: 330px;
     }
     .popfootertime {
-      width: 150px;
+      width: 80px;
     }
   }
   .amap-info-content {

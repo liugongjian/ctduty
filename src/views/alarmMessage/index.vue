@@ -1008,6 +1008,7 @@ export default {
     padding-top: 4px;
     padding-left: 4px;
     display: flex;
+    justify-content: space-between;
     .popfooteraddress {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1015,7 +1016,7 @@ export default {
       width: 330px;
     }
     .popfootertime {
-      width: 150px;
+      width: 80px;
     }
   }
   .el-button--text {

@@ -179,7 +179,7 @@ export default {
   methods: {
     loadFakeImg() {
       this.pageLoading = true
-      loadingImg().then(res => {
+      loadingImg(this.userId).then(res => {
         if (res.code === 0) {
           res.body.data.forEach(item => {
             this.deviceList.push({

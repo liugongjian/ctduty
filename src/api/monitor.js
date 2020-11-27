@@ -44,9 +44,9 @@ export function stop(id) {
   })
 }
 
-export function loadingImg() {
+export function loadingImg(id) {
   return request({
-    url: `/nvsapi/camera/live/image`,
+    url: `/nvsapi/camera/live/image?inChargeId=${id}`,
     // url: `http://192.168.50.152:10001/camera/live/image`,
     method: 'get'
   })
