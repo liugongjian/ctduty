@@ -19,11 +19,11 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头地址:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
-            placeholder="摄像头地址"
+            placeholder="摄像头名称"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
