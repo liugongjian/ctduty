@@ -195,13 +195,25 @@ export default {
             'operator': 'LIKE',
             'value': `%${this.queryKeyword.trim()}%`
 
-          }]
+          }],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
       } : {
         'page': {
           'index': this.page,
           'size': this.limit
         },
-        'params': []
+        'params': [],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
+        ]
       }
       getCameraList(query).then(res => {
         if (res.code === 0) {
