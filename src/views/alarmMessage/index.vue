@@ -19,11 +19,11 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头地址:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
-            placeholder="摄像头地址"
+            placeholder="摄像头名称"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
@@ -189,10 +189,10 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头地址'"
+                :label="'摄像头名称'"
                 align="center"
                 min-width="18%"
-                prop="camera.address"
+                prop="camera.name"
               ></el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
@@ -280,7 +280,7 @@
               v-if="dialogVisable"
               :img-url="temp.image"
               :left-top="[points[0],points[1]]"
-              :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'"
+              :name="temp.type === 1?'行人':temp.type === 2?'机动车':'非机动车'"
               :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
               :right-bottom="[points[2],points[3]]"
               style="z-index:2;position:absolute;top:0;left:0;"
@@ -288,14 +288,14 @@
           </div>
           <div class="popfooter">
             <el-tooltip
-              :content="temp.camera.address"
+              :content="temp.camera.name"
               class="item"
               effect="light"
               placement="top-start"
             >
               <div class="popfooteraddress">
                 <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.name : '' }}</span>
               </div>
             </el-tooltip>
             <div class="popfootertime">
@@ -346,7 +346,8 @@ import {
   deleteAlertInfo,
   getPushSet,
   notifyState,
-  getAllTotal
+  getAllTotal,
+  fetchType
 } from '@/api/alarm'
 export default {
   components: { Pagination, CanvasDialog },
@@ -399,17 +400,6 @@ export default {
         typeValue: '人员'
       },
       algorithm: [
-        { name: '人员', _id: 1 },
-        { name: '机动车', _id: 2 },
-        { name: '非机动车', _id: 3 }
-        /*    { name: '翻墙', _id: 4 },
-        { name: '人员逗留', _id: 5 },
-        { name: '人员聚集', _id: 6 },
-        { name: '区域划线', _id: 7 },
-        { name: '安全帽', _id: 8 },
-        { name: '打架斗殴', _id: 9 },
-        { name: '摔倒', _id: 10 },
-        { name: '占道经营', _id: 11 } */
       ],
       algorithmNameList: {
         searchkey: '',
@@ -468,6 +458,7 @@ export default {
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
     this.getPushSetTime()
+    this.getType()
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     // const h = this.formInline.typeValue
@@ -477,6 +468,19 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
+    // fetchType
+    getType() {
+      fetchType().then(res => {
+        if (res.code === 0) {
+          res.body.data.forEach(item => {
+            this.algorithm.push({
+              name: item.value,
+              _id: item.key
+            })
+          })
+        }
+      })
+    },
     opendraw() {
       this.flag = !this.flag
       if (this.openname == '展开') {
@@ -504,7 +508,7 @@ export default {
     },
     formatType(row, column, cellValue) {
       if (cellValue === 1) {
-        return '人员'
+        return '行人'
       } else if (cellValue === 2) {
         return '机动车'
       } else if (cellValue === 3) {
@@ -752,10 +756,37 @@ export default {
     // 获取列表数据
     getList(s, e, h) {
       this.tableLoading = true
-      const { type, taskId } = h
-      const param = [
+      const { type } = h
+      // if (this.formInline.typeValue === 'all')
+      const param = this.formInline.typeValue !== 'all' ? [
         {
-          field: 'camera.address',
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'handlerId',
+          operator: this.formInline.typeValue === 'settled' ? 'NOT_NULL' : 'NULL',
+          value: 'null'
+        }
+      ] : [
+        {
+          field: 'camera.name',
           operator: 'LIKE',
           value: `%${this.formInline.searchkey}%`
         },
