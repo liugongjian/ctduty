@@ -91,6 +91,13 @@ export function fetchWeek() {
   })
 }
 
+export function fetchType() {
+  return request({
+    url: '/nvsapi/Alert/type',
+    method: 'get'
+  })
+}
+
 export function alarmImg(id) {
   return '/nvsapi' + '/image/' + id
 }

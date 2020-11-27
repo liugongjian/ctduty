@@ -449,3 +449,29 @@ html {
 .el-tabs__nav-wrap::after {
     height: 1px !important;
 }
+
+.el-input__inner {
+    &::placeholder {
+        font-size: 12px;
+    }
+
+    &::-webkit-input-placeholder {
+        /* WebKit browsers 适配谷歌 */
+        font-size: 12px;
+    }
+
+    &:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 适配火狐 */
+        font-size: 12px;
+    }
+
+    &::-moz-placeholder {
+        /* Mozilla Firefox 19+ 适配火狐 */
+        font-size: 12px;
+    }
+
+    &:-ms-input-placeholder {
+        /* Internet Explorer 10+  适配ie*/
+        font-size: 12px;
+    }
+}
