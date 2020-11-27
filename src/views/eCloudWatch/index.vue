@@ -31,7 +31,7 @@
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
                 <img :src="dataDia.imageCompress" width="480" height="270" style="z-index:1;">
-                <CanvasDialog :img-url="dataDia.imageCompress" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+                <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
               </div>
               <div class="popfooter">
                 <el-tooltip :content="dataDia.camera.address" class="item" effect="light" placement="top-start">
@@ -44,7 +44,7 @@
                   <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
                   <span style="width: 260px;">
                     {{
-                      renderTime(dataDia.createTime)
+                      renderTime(dataDia.createTime).substring(renderTime(dataDia.createTime).length-8)
                     }}
                   </span>
                 </div>
@@ -403,7 +403,7 @@ export default {
     hasMarker(v) {
       if (v) {
         const o = amapManager.getMap()
-        o.setFitView(this.markers)
+        o.setFitView()
         this.showZwMes = false
       }
     },
@@ -607,7 +607,6 @@ export default {
             this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
-            o.setFitView()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
           }
           if (item.undealSum === '0') {
@@ -792,7 +791,6 @@ export default {
             this.cameraState = '此摄像头已离线'
           }
           const o = amapManager.getMap()
-          o.setFitView()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
@@ -904,7 +902,6 @@ export default {
             this.cameraState = '此摄像头已离线'
           }
           const o = amapManager.getMap()
-          o.setFitView()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           this.showZwMes = false
           const params = {
@@ -1001,7 +998,6 @@ export default {
       }
       this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
       const o = amapManager.getMap()
-      o.setFitView()
       o.setZoomAndCenter(15, [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006])
       const markers = document.getElementsByClassName('markerImg');
       [].forEach.call(markers, function(item) {
@@ -1501,6 +1497,7 @@ body {
     padding-top: 4px;
     padding-left: 4px;
     display: flex;
+    justify-content: space-between;
     .popfooteraddress {
       overflow: hidden;
       text-overflow:ellipsis;
@@ -1508,7 +1505,7 @@ body {
       width: 330px;
     }
     .popfootertime {
-      width: 150px;
+      width: 80px;
     }
   }
   .amap-info-content {

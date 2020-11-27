@@ -190,27 +190,28 @@ export default {
 </script>
 
 <style lang="scss">
-.el-input__inner {
-  text-indent: 15px;
-}
+
 body {
   height:100%;
   overflow-y: hidden;
-  .leftLogo {
-    position: fixed;
-    .logo {
-      position: absolute;
-      top: 20px;
-      left: 40px;
-      width: 200px;
-      height: 24px;
-      img {
-        width: 100%;
-        height: 100%;
+  .loginContainer {
+    .el-input__inner {
+      text-indent: 15px;
+    }
+    .leftLogo {
+      position: fixed;
+      .logo {
+        position: absolute;
+        top: 20px;
+        left: 40px;
+        width: 200px;
+        height: 24px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
     }
-  }
-  .loginContainer {
     width: 100%;
     height: 100%;
     background-color: #9db0c4;

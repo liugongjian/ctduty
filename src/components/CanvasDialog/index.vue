@@ -55,12 +55,13 @@ export default {
         var name = this.name
         var nameLength = this.nameLength
         img.onload = function() {
-          this.width = 1920
-          this.height = 1080
-          canvas.width = 1920
-          canvas.height = 1080
+          console.log(img.width, img.height)
+          this.width = img.width
+          this.height = img.height
+          canvas.width = img.width
+          canvas.height = img.height
           ctx.globalCompositeOperation = 'source-over'
-          ctx.drawImage(img, 1920, 1080)
+          ctx.drawImage(img, img.width, img.height)
           ctx.lineWidth = 4
           ctx.strokeStyle = 'red'
           ctx.textBaseline = 'top'
@@ -80,7 +81,7 @@ export default {
               ctx.fillText(name, Math.ceil(coor.leftTop[0]) + 10, Math.ceil(coor.leftTop[1]) - 65)
             }
             setTimeout(() => {
-              ctx.clearRect(0, 0, 1920, 1080)
+              ctx.clearRect(0, 0, img.width, img.height)
             }, 300)
           }, 600)
         }

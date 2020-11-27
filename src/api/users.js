@@ -112,3 +112,37 @@ export function getPolice(ids) {
   })
 }
 
+// 查询所有区域
+// export function getAreas() {
+//   return request({
+//     url: `/nvsapi/Area/QueryActive`,
+//     method: 'post'
+//   })
+// }
+
+// 查询所有部门
+export function getDepartments() {
+  return request({
+    url: `/nvsapi/Department/QueryActive`,
+    method: 'post',
+    data: {}
+  })
+}
+
+// 查询所有岗位
+export function getPosts() {
+  return request({
+    url: `/nvsapi/Post/QueryActive`,
+    method: 'post',
+    data: {}
+  })
+}
+
+// 查询所有权限
+export function getPermissions() {
+  return request({
+    url: `/nvsapi/Permissions/QueryActive`,
+    method: 'post',
+    data: {}
+  })
+}

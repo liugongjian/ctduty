@@ -1,10 +1,9 @@
 import request from '@/utils/request'
 
-export function fetchAllMonitor(query) {
+export function fetchAllMonitor(id) {
   return request({
-    url: '/nvsapi/camera/live/query',
-    method: 'get',
-    data: query
+    url: `/nvsapi/camera/live/query?inChargeId=${id}`,
+    method: 'get'
   })
 }
 
@@ -45,9 +44,9 @@ export function stop(id) {
   })
 }
 
-export function loadingImg() {
+export function loadingImg(id) {
   return request({
-    url: `/nvsapi/camera/live/image`,
+    url: `/nvsapi/camera/live/image?inChargeId=${id}`,
     // url: `http://192.168.50.152:10001/camera/live/image`,
     method: 'get'
   })
