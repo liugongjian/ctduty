@@ -52,7 +52,7 @@
           </div>
           <el-select
             v-model="formInline.typeValue"
-            style="width:95px; margin-left:10px; margin-right: 10px"
+            style="width:95px; margin-right: 10px"
             size="mini"
             class="filter-item"
             @change="checkModel"
