@@ -30,7 +30,7 @@
           <div style="width:500px;height:350px; padding: 10px 10px 0px">
             <div :model="dataDia" label-position="right" label-width="100px">
               <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(dataDia.image)}">
-                <img :src="dataDia.imageCompress" width="480" height="270" style="z-index:1;">
+                <img :src="dataDia.image" width="480" height="270" style="z-index:1;">
                 <CanvasDialog :img-url="dataDia.image" :left-top="[points[0],points[1]]" :name="dataDia.type === 1?'人员':dataDia.type === 2?'机动车':'非机动车'" :name-length="dataDia.type === 1?'2':dataDia.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
               </div>
               <div class="popfooter">

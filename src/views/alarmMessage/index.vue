@@ -21,13 +21,29 @@
           <div class="block filter-item">
             <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
           </div>
-          <el-input
+          <!-- <el-input
             v-model="formInline.searchkey"
             placeholder="摄像头名称"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
-          ></el-input>
+          ></el-input> -->
+          <el-select
+            v-model="formInline.searchkey"
+            :remote-method="getCameraList"
+            :loading="loading"
+            class="searchinp"
+            filterable
+            remote
+            placeholder="请输入摄像头名称"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value"
+            ></el-option>
+          </el-select>
           <div class="block filter-item">
             <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
@@ -349,6 +365,9 @@ import {
   getAllTotal,
   fetchType
 } from '@/api/alarm'
+import {
+  searchCameraList, editCamera
+} from '@/api/camera'
 export default {
   components: { Pagination, CanvasDialog },
   filters: {
@@ -420,6 +439,7 @@ export default {
       originCode: '',
       oldSize: 10,
       editVisable: false,
+      loading: false,
       editForm: {
         id: '',
         inCharge: '',
@@ -428,6 +448,7 @@ export default {
         // address: '',
         url: ''
       },
+      options: [],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
@@ -480,6 +501,49 @@ export default {
           })
         }
       })
+    },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 20
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'LIKE',
+              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
+            },
+            {
+              field: 'inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          this.options = data.map(item => {
+            return {
+              value: item.name,
+              label: item.name,
+              name: item.name
+            }
+          })
+          if (this.options.length > 0) {
+            this.options.unshift({
+              value: '所有摄像头',
+              name: '所有摄像头'
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        this.options = []
+      }
     },
     opendraw() {
       this.flag = !this.flag
@@ -762,7 +826,7 @@ export default {
         {
           field: 'camera.name',
           operator: 'LIKE',
-          value: `%${this.formInline.searchkey}%`
+          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
         },
         {
           field: 'createTime',
@@ -788,7 +852,7 @@ export default {
         {
           field: 'camera.name',
           operator: 'LIKE',
-          value: `%${this.formInline.searchkey}%`
+          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
         },
         {
           field: 'createTime',
@@ -860,6 +924,9 @@ export default {
           })
         }, 300)
         this.tableLoading = false
+        if (this.formInline.searchkey === '所有摄像头') {
+          this.formInline.searchkey = ''
+        }
       })
     },
     handleSelectionChange(val) {
