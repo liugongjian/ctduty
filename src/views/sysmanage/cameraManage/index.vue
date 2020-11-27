@@ -26,7 +26,7 @@
                 <el-option
                   v-for="item in options"
                   :key="item.value"
-                  :label="item.name"
+                  :label="item.address"
                   :value="item.value"
                 ></el-option>
               </el-select>
@@ -97,8 +97,8 @@
                     </el-tooltip>
                   </el-form-item> -->
                   <el-form-item class="formMargin" label="地址：">
-                    <el-tooltip :content="form.name" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.name }}</div>
+                    <el-tooltip :content="form.address" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="添加时间：">
@@ -144,7 +144,7 @@
                   </el-form-item>
                   <el-form-item label="地址：" prop="address">
                     <el-input
-                      v-model="editForm.name"
+                      v-model="editForm.address"
                       :rows="4"
                       type="textarea"
                       placeholder="请输入地址"
@@ -279,6 +279,8 @@ export default {
           if (info.target.G.extData.id) {
             this.form = info.target.G.extData
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            const o = amapManager.getMap()
+            o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
           }
         },
         init(o) {
@@ -313,18 +315,19 @@ export default {
             setTimeout(() => {
               const markers = document.getElementsByClassName('markerImg')
               if (markers.length === 1) {
+                console.log('一个')
                 that.highLightMarkerId = markers[0].attributes[1].nodeValue
                 markers[0].classList.add('markerClickImg')
                 const o = amapManager.getMap()
+                console.log(markers[0])
                 o.on('click', markers[0])
-                o.setZoomAndCenter(15, [that.form.longitude, that.form.latitude])
               }
-              [].forEach.call(markers, (item, index) => {
+              [].forEach.call(markers, (item, index, arr) => {
                 if (item.id === that.highLightMarkerId) {
                   item.setAttribute('width', 50)
                   item.setAttribute('height', 50)
                   item.classList.add('markerClickImg')
-                  that.editForm = that.objDeepCopy(JSON.parse(item.attributes[1].nodeValue))
+                  that.editForm = JSON.parse(item.attributes[1].nodeValue)
                   that.showZwMes = false
                 }
               })
@@ -376,7 +379,7 @@ export default {
           },
           params: [
             {
-              field: 'name',
+              field: 'address',
               operator: 'LIKE',
               value: `%${keyword === '所有摄像头' ? '' : keyword}%`
             },
@@ -391,9 +394,9 @@ export default {
           const data = res.body.data || []
           this.options = data.map(item => {
             return {
-              value: item.name,
-              label: item.name,
-              name: item.name
+              value: item.address,
+              label: item.address,
+              name: item.address
             }
           })
           if (this.options.length > 0) {
@@ -620,7 +623,7 @@ export default {
         },
         params: [
           {
-            field: 'name',
+            field: 'address',
             operator: 'LIKE',
             value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
           },
@@ -639,7 +642,13 @@ export default {
           document.getElementsByClassName('markerClickImg')[0].classList.remove('markerClickImg')
         }
         this.formInfo.forEach((item, index) => {
-          if (item.id === this.highLightMarkerId) {
+          if (res.body.page.total === 1) {
+            this.form = item
+            this.form = item
+            this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
+            const o = amapManager.getMap()
+            o.setZoomAndCenter(15, [item.longitude, item.latitude])
+          } else if (item.id === this.highLightMarkerId) {
             this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
@@ -650,6 +659,7 @@ export default {
             const o = amapManager.getMap()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
           }
+
           this.markers.push({
             position: [item.longitude, item.latitude],
             extData: item,

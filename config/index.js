@@ -11,9 +11,9 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/nvsapi': {
-                target: 'http://61.185.80.26:8620',
+                // target: 'http://61.185.80.26:8620',
                 // target: 'http://host31.880508.xyz:10000',
-                // target: 'http://36.41.71.26:8920',
+                target: 'http://36.41.71.26:8920',
                 // target: 'http://192.168.1.222:10000',
                 // target: 'http://192.168.44.1:10001',
                 changeOrigin: true,
