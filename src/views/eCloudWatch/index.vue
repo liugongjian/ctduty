@@ -780,8 +780,8 @@ export default {
                   // m3u8uri
                   sources: [
                     {
-                      src: res.body.data.rtmpuri,
-                      type: this.video_type(res.body.data.rtmpuri)
+                      src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
+                      type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                     }
                   ]
                 }
