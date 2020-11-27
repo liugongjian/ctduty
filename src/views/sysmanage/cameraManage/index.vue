@@ -297,12 +297,11 @@ export default {
       }, 200)
     },
     hasMarker(v) {
-      console.log(v, '哈哈')
       const that = this
       if (v) {
         [].forEach.call(document.getElementsByClassName('markerImg'), function(item, index) {
           if (index === 0 && !that.highLightMarkerId) {
-            that.highLightMarkerId = that.form.id
+            that.highLightMarkerId = item.attributes[1].nodeValue
             const o = amapManager.getMap()
             o.setFitView()
             item.setAttribute('width', 50)
@@ -553,16 +552,18 @@ export default {
     getdata(v, v2) {
       this.formInline.typeValue = v
       setTimeout(() => {
-        const markers = document.getElementsByClassName('markerImg');
-        [].forEach.call(markers, (item) => {
-          if (item.id === this.highLightMarkerId) {
-            const o = amapManager.getMap()
-            o.setFitView()
-            item.classList.add('markerClickImg')
-            item.setAttribute('width', 50)
-            item.setAttribute('height', 50)
-          }
-        })
+        const o = amapManager.getMap()
+        o.setFitView()
+        setTimeout(() => {
+          const markers = document.getElementsByClassName('markerImg');
+          [].forEach.call(markers, (item) => {
+            if (item.id === this.highLightMarkerId) {
+              item.classList.add('markerClickImg')
+              item.setAttribute('width', 50)
+              item.setAttribute('height', 50)
+            }
+          })
+        }, 300)
       }, 200)
     },
     dialogQuxiao() {
