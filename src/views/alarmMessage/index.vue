@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="alalist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-right alarmmsgright">
@@ -19,11 +19,11 @@
         </div>
         <div class="pull-left alarmmsgleft">
           <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
+            <div style=" margin-right: 8px; font-size: 12px;">摄像头地址:</div>
           </div>
           <el-input
             v-model="formInline.searchkey"
-            placeholder="摄像头名称"
+            placeholder="摄像头地址"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
@@ -52,7 +52,7 @@
           </div>
           <el-select
             v-model="formInline.typeValue"
-            style="width:95px; margin-right: 10px"
+            style="width:180px; margin-right: 10px"
             size="mini"
             class="filter-item"
             @change="checkModel"
@@ -74,8 +74,8 @@
                 <el-date-picker
                   v-model="value1"
                   :clearable="false"
-                  style="width:210px, height: 36px"
                   :picker-options="pickerOptions"
+                  style="width:210px, height: 36px"
                   type="daterange"
                   range-separator="~"
                   start-placeholder="开始日期"
@@ -90,11 +90,11 @@
               </div>
               <div class="block filter-item">
                 <el-time-picker
-                  style="width: 210px, height: 36px;"
                   v-model="startTime"
                   :picker-options="{
                     selectableRange:'00:00:00-23:59:00'
                   }"
+                  style="width: 210px, height: 36px;"
                   size="mini"
                   format="HH:mm"
                   value-format="HH:mm"
@@ -105,11 +105,11 @@
               </div>
               <div class="block filter-item">
                 <el-time-picker
-                  style="width:95px, height: 36px"
                   v-model="endTime"
                   :picker-options="{
                     selectableRange:startTime+ ':00' + '-23:59:00'
                   }"
+                  style="width:95px, height: 36px"
                   size="mini"
                   format="HH:mm"
                   value-format="HH:mm"
@@ -396,20 +396,20 @@ export default {
       ],
       algorithmList: {
         searchkey: '',
-        typeValue: '行人'
+        typeValue: '人员'
       },
       algorithm: [
-        { name: '行人', _id: 1 },
+        { name: '人员', _id: 1 },
         { name: '机动车', _id: 2 },
-        { name: '非机动车', _id: 3 },
-        { name: '翻墙', _id: 4 },
+        { name: '非机动车', _id: 3 }
+        /*    { name: '翻墙', _id: 4 },
         { name: '人员逗留', _id: 5 },
         { name: '人员聚集', _id: 6 },
         { name: '区域划线', _id: 7 },
         { name: '安全帽', _id: 8 },
         { name: '打架斗殴', _id: 9 },
         { name: '摔倒', _id: 10 },
-        { name: '占道经营', _id: 11 }
+        { name: '占道经营', _id: 11 } */
       ],
       algorithmNameList: {
         searchkey: '',
@@ -504,7 +504,7 @@ export default {
     },
     formatType(row, column, cellValue) {
       if (cellValue === 1) {
-        return '行人'
+        return '人员'
       } else if (cellValue === 2) {
         return '机动车'
       } else if (cellValue === 3) {
@@ -898,186 +898,178 @@ export default {
 </script>
 
 <style lang='scss'>
- .el-input__inner {
-  text-indent: 0px;
-  }
-  // .alaMesTable {
-  //   td {
-  //     padding: 2px 0 !important;
-  //   }
-  // }
-
-  .title {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    font-family: MicrosoftYaHei;
-    font-size: 22px;
-    color: #333333;
-    font-weight: 500;
-    border-bottom: 1px solid #ccc;
-    background: #fff;
-    padding: 0 20px;
-  }
-  .el-date-editor {
-    // height: 32px !important;
-  }
-  .el-range-separator {
-    width: 30px !important;
-  }
-  .el-select-dropdown__item {
-    font-size: 12px !important;
-  }
-  .deal {
-    fill: #44bd32 !important;
-  }
-  .untreated {
-    fill: #ff9832 !important;
-  }
-  .buttonText {
-    color: #409eff;
-    text-decoration: underline;
-  }
-  .alaMesTable.el-table--medium {
-    td {
-      padding: 0px;
-      .el-image {
-        vertical-align: middle;
+.alalist {
+  .el-input__inner {
+    text-indent: 0px;
+    }
+    .title {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-family: MicrosoftYaHei;
+      font-size: 22px;
+      color: #333333;
+      font-weight: 500;
+      border-bottom: 1px solid #ccc;
+      background: #fff;
+      padding: 0 20px;
+    }
+    .el-range-separator {
+      width: 30px !important;
+    }
+    .el-select-dropdown__item {
+      font-size: 12px !important;
+    }
+    .deal {
+      fill: #44bd32 !important;
+    }
+    .untreated {
+      fill: #ff9832 !important;
+    }
+    .buttonText {
+      color: #409eff;
+      text-decoration: underline;
+    }
+    .alaMesTable.el-table--medium {
+      td {
+        padding: 0px;
+        .el-image {
+          vertical-align: middle;
+        }
+      }
+      th {
+        padding: 0px;
       }
     }
-    th {
-      padding: 0px;
-    }
-  }
 
-  .sureItem {
-    height: 36px !important;
-  }
-  .pull-left.alarmmsgleft {
-    width: 80%;
-    .el-select {
-      width: 180px;
+    .sureItem {
+      height: 36px !important;
     }
-    .el-date-editor {
-      width: 205px !important;
-      padding-right: 0px !important;
-      .el-range-input {
-        margin-bottom: 2px;
+    .pull-left.alarmmsgleft {
+      width: 80%;
+      .el-select {
+        width: 180px;
+      }
+      .el-date-editor {
+        width: 205px !important;
+        padding-right: 0px !important;
+        .el-range-input {
+          margin-bottom: 2px;
+        }
+      }
+      .el-date-editor--time {
+        width: 180px !important;
       }
     }
-    .el-date-editor--time {
-      width: 180px !important;
+    .pull-right.alarmmsgright {
+      position: relative;
+      right: 0px;
+      .clearsearch {
+        position: absolute;
+        top: 0px;
+        // right: 0px;
+        height: 34px;
+        margin-left: 10px;
+        width: 56px !important;
+        // margin-left: 16px;
+        border: 1px solid #ccc;
+        background: none;
+        border-radius: 3px;
+        outline: none;
+      }
+      .clearsearch:active {
+        background-color: rgb(243, 241, 241);
+      }
     }
-  }
-  .pull-right.alarmmsgright {
-    position: relative;
-    right: 0px;
-    width: 20%;
-    .clearsearch {
+    .searchsure {
       position: absolute;
-      top: 0px;
-      // right: 0px;
+      top: 1px;
       height: 34px;
-      margin-left: 10px;
-      width: 56px !important;
-      // margin-left: 16px;
-      border: 1px solid #ccc;
-      background: none;
-      border-radius: 3px;
-      outline: none;
+      right: 22%;
+      // border-left: none;
+      border-radius: 4px;
     }
-    .clearsearch:active {
-      background-color: rgb(243, 241, 241);
+    // .el-input--mini .el-input__inner {
+    //   text-indent: 0px;
+    // }
+    .el-range-editor.el-input__inner {
+      padding: 5px 5px;
     }
-  }
-  .searchsure {
-    position: absolute;
-    top: 1px;
-    height: 34px;
-    right: 22%;
-    // border-left: none;
-    border-radius: 4px;
-  }
-  // .el-input--mini .el-input__inner {
-  //   text-indent: 0px;
-  // }
-  .el-range-editor.el-input__inner {
-    padding: 5px 5px;
-  }
-  .mesdialog {
-    .el-dialog__header {
-      padding: 0 !important;
+    .mesdialog {
+      .el-dialog__header {
+        padding: 0 !important;
+      }
+      .el-dialog .el-dialog__body {
+        padding: 0 !important;
+        overflow: hidden;
+      }
+      .el-dialog__footer {
+        padding: 0 !important;
+      }
+      .dialog-footer {
+        padding: 10px 0 !important;
+      }
     }
-    .el-dialog .el-dialog__body {
-      padding: 0 !important;
-      overflow: hidden;
+    .popfooter {
+      padding-top: 4px;
+      padding-left: 4px;
+      display: flex;
+      justify-content: space-between;
+      .popfooteraddress {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 330px;
+      }
+      .popfootertime {
+        width: 80px;
+      }
     }
-    .el-dialog__footer {
-      padding: 0 !important;
+    .el-button--text {
+      color: #fa8334 !important;
     }
-    .dialog-footer {
-      padding: 10px 0 !important;
+    .el-button--small {
+      font-size: 14px;
     }
-  }
-  .popfooter {
-    padding-top: 4px;
-    padding-left: 4px;
-    display: flex;
-    justify-content: space-between;
-    .popfooteraddress {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      width: 330px;
+    .searchinp {
+      width: 205px;
     }
-    .popfootertime {
-      width: 80px;
+    .el-select.el-select--medium {
+      width: 260px;
     }
+    .el-input--mini .el-input__inner {
+      height: 36px !important;
+      line-height: 36px !important;
+    }
+    .el-select.el-select--medium {
+      margin-bottom: 10px;
+    }
+    .filter-container .filter-item {
+      vertical-align: initial;
+    }
+    .el-input--mini .el-input__icon {
+      line-height: 36px;
+    }
+    .open {
+      margin-left: 5px;
+      color: #ff9832;
+      cursor: pointer;
+    }
+    .draw {
+      display: none;
+    }
+    .tdimage {
+      object-fit: contain !important;
+    }
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: all 0.8s ease 0.2s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+      opacity: 0;
+    }
+  .el-range-editor--mini.el-input__inner {
+    height: 36px;
   }
-  .el-button--text {
-    color: #fa8334 !important;
-  }
-  .el-button--small {
-    font-size: 14px;
-  }
-  .searchinp {
-    width: 205px;
-  }
-  .el-select.el-select--medium {
-    width: 260px;
-  }
-  .el-input--mini .el-input__inner {
-    height: 36px !important;
-    line-height: 36px !important;
-  }
-  .el-select.el-select--medium {
-    margin-bottom: 10px;
-  }
-  .filter-container .filter-item {
-    vertical-align: initial;
-  }
-  .el-input--mini .el-input__icon {
-    line-height: 36px;
-  }
-  .open {
-    margin-left: 5px;
-    color: #ff9832;
-    cursor: pointer;
-  }
-  .draw {
-    display: none;
-  }
-  .tdimage {
-    object-fit: contain !important;
-  }
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: all 0.8s ease 0.2s;
-  }
-  .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
-    opacity: 0;
-  }
-.el-range-editor--mini.el-input__inner {
-  height: 36px;
 }
 </style>
