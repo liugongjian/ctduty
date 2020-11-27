@@ -758,6 +758,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
+        console.log('视频信息-------->', data)
         console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
