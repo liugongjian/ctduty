@@ -31,7 +31,7 @@
               </div>
             </li>
           </ul>
-          <div v-else class="noResult">暂无视频</div>
+          <div v-else class="noResult">暂无摄像头</div>
           <!-- <pagination
                 v-show="total>0"
                 :total="total"
