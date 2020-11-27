@@ -119,7 +119,7 @@
                     <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
                     <el-image
                       slot="reference"
-                      :src="scope.row.imageCut"
+                      :src="scope.row.imageCompress"
                       class="amimage"
                       @click="openBig(scope.row.image)"
                     />
@@ -127,7 +127,6 @@
                   <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
                 </template>
               </el-table-column>
-
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatType"
