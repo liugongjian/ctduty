@@ -124,20 +124,17 @@
                   <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
                   <el-tag
                     :type="item.label === '1' ? 'success' : item.label === '2' ? 'danger' : ''"
-                    style="margin-left:-8px;"
                     size="mini"
                   >{{ item.label? listType[item.label] : '' }}</el-tag>
                 </span>
                 <div class="bottom clearfix">
-                  <el-tooltip
-                    :content="item.camera.address"
-                    placement="top-start"
+                  <div
+                    class="location"
+                    style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                   >
-                    <div class="location">
-                      <i class="el-icon-map-location" />
-                      <span class="locationtext">{{ item.camera && item.camera.address || '未知' }}</span>
-                    </div>
-                  </el-tooltip>
+                    <i class="el-icon-map-location" />
+                    <span>{{ item.camera && item.camera.address || '未知' }}</span>
+                  </div>
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
