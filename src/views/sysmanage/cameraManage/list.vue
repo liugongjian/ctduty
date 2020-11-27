@@ -27,7 +27,7 @@
               </el-form-item>
               <el-form-item label="摄像头纬度："><el-input v-model="dialogForm.latitude" type="num" placeholder="请输入摄像头纬度" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="地址："><el-input v-model="dialogForm.address" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
+              <el-form-item label="地址："><el-input v-model="dialogForm.name" placeholder="请输入地址" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -128,21 +128,6 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="负责人：" prop="creator">
-            <el-select
-              v-model="editForm.inChargeId"
-              :value="editForm.inChargeId"
-              style="width:300px;"
-              placeholder="请选择负责人"
-            >
-              <el-option
-                v-for="item in userList"
-                :value="item.id"
-                :label="item.name"
-                :key="item.id"
-              ></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="摄像头经纬度：" prop="tude">
             <el-input
               v-model="editForm.tude"
@@ -162,7 +147,7 @@
           </el-form-item>
           <el-form-item label="地址：" prop="address">
             <el-input
-              v-model="editForm.address"
+              v-model="editForm.name"
               :rows="4"
               type="textarea"
               placeholder="请输入地址"
@@ -560,7 +545,7 @@ export default {
       this.editForm.inChargeId = v.inChargeId
       this.editForm.longitude = v.longitude
       this.editForm.latitude = v.latitude
-      this.editForm.address = v.address
+      this.editForm.name = v.name
       this.editForm.name = v.name
       this.editForm.url = v.url
       this.editVisable = true

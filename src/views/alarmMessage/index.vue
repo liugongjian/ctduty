@@ -113,14 +113,21 @@
                 min-width="7.5%"
                 prop="id"
               ></el-table-column>-->
-              <el-table-column
-                :show-overflow-tooltip="true"
-                :formatter="formatTime"
-                :label="'时间'"
-                align="center"
-                min-width="10%"
-                prop="createTime"
-              ></el-table-column>
+              <el-table-column :label="'图片'" align="center" min-width="12%">
+                <template slot-scope="scope">
+                  <el-popover placement="left" trigger="hover">
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
+                    <el-image
+                      slot="reference"
+                      :src="scope.row.imageCut"
+                      class="amimage"
+                      @click="openBig(scope.row.image)"
+                    />
+                  </el-popover>
+                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
+                </template>
+              </el-table-column>
+
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatType"
@@ -162,20 +169,14 @@
                 min-width="18%"
                 prop="camera.address"
               ></el-table-column>
-              <el-table-column :label="'图片'" align="center" min-width="12%">
-                <template slot-scope="scope">
-                  <el-popover placement="left" trigger="hover">
-                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
-                    <el-image
-                      slot="reference"
-                      :src="scope.row.imageCut"
-                      class="amimage"
-                      @click="openBig(scope.row.image)"
-                    />
-                  </el-popover>
-                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
-                </template>
-              </el-table-column>
+              <el-table-column
+                :show-overflow-tooltip="true"
+                :formatter="formatTime"
+                :label="'时间'"
+                align="center"
+                min-width="10%"
+                prop="createTime"
+              ></el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'处理人'"

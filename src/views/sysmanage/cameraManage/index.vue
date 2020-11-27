@@ -81,9 +81,9 @@
                       <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.name }}</div>
                     </el-tooltip>
                   </el-form-item>
-                  <el-form-item class="formMargin" label="添加人：" disabled>
+                  <el-form-item class="formMargin" label="添加人：">
                     <el-tooltip :content="form.creator.name " placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.name }}</div>
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.name ? form.creator.name: '-' }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="经纬度信息：">
@@ -97,8 +97,8 @@
                     </el-tooltip>
                   </el-form-item> -->
                   <el-form-item class="formMargin" label="地址：">
-                    <el-tooltip :content="form.address" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
+                    <el-tooltip :content="form.name" placement="top">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.name }}</div>
                     </el-tooltip>
                   </el-form-item>
                   <el-form-item class="formMargin" label="添加时间：">
@@ -133,21 +133,6 @@
                       style="width: 300px;"
                     ></el-input>
                   </el-form-item>
-                  <el-form-item label="负责人：" prop="creator">
-                    <el-select
-                      v-model="editForm.name"
-                      :value="editForm.inChargeId"
-                      style="width:300px;"
-                      placeholder="请选择负责人"
-                    >
-                      <el-option
-                        v-for="item in userList"
-                        :value="item.id"
-                        :label="item.name"
-                        :key="item.id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
                   <el-form-item label="摄像头经纬度：" prop="tude">
                     <el-input
                       v-model="tude"
@@ -159,7 +144,7 @@
                   </el-form-item>
                   <el-form-item label="地址：" prop="address">
                     <el-input
-                      v-model="editForm.address"
+                      v-model="editForm.name"
                       :rows="4"
                       type="textarea"
                       placeholder="请输入地址"
@@ -203,6 +188,7 @@ export default {
       tude: '',
       userList: [],
       cameraId: '',
+      inChargeId: '',
       dialogForm: {
         address: '',
         creatorId: '',
@@ -291,7 +277,7 @@ export default {
       events: {
         click: info => {
           if (info.target.G.extData.id) {
-            this.form = this.objDeepCopy(info.target.G.extData)
+            this.form = info.target.G.extData
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
           }
         },
@@ -407,7 +393,7 @@ export default {
           this.options = data.map(item => {
             return {
               value: item.name,
-              label: item.address,
+              label: item.name,
               name: item.name
             }
           })
@@ -482,13 +468,13 @@ export default {
           this.highLightMarkerId = this.form.id
           const o = amapManager.getMap()
           o.setZoomAndCenter(15, [this.form.longitude, this.form.latitude])
-          this.editForm = this.objDeepCopy(this.form)
+          this.editForm = this.form
           this.showZwMes = false
         }
       })
     },
     editDialog(v) {
-      this.editForm = this.objDeepCopy(v)
+      this.editForm = v
       this.tude = v.longitude + ', ' + v.latitude
       this.editForm.name = v.inCharge.name
       this.editVisable = true
@@ -653,12 +639,12 @@ export default {
         }
         this.formInfo.forEach((item, index) => {
           if (item.id === this.highLightMarkerId) {
-            this.form = this.objDeepCopy(item)
+            this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
           } else if (!this.highLightMarkerId && index === 0) {
-            this.form = this.objDeepCopy(item)
+            this.form = item
             this.form.createTime = moment(this.form.createTime).format('YYYY-MM-DD HH:mm:SS')
             const o = amapManager.getMap()
             o.setZoomAndCenter(15, [item.longitude, item.latitude])
