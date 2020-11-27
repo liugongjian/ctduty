@@ -755,7 +755,7 @@ export default {
       const { type, taskId } = h
       const param = [
         {
-          field: 'camera.name',
+          field: 'camera.address',
           operator: 'LIKE',
           value: `%${this.formInline.searchkey}%`
         },
@@ -773,11 +773,6 @@ export default {
           field: 'type',
           operator: 'IN',
           value: type
-        },
-        {
-          field: 'taskId',
-          operator: 'IN',
-          value: taskId
         }
       ]
       const params = {
