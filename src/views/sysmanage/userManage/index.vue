@@ -60,7 +60,7 @@
     <el-dialog
       :visible.sync="addUserDialogVisible"
       title="新增用户"
-      width="50%"
+      width="520px"
       @close="addDialogClosed"
     >
       <el-form v-loading="departmentInfoLoading || permissionInfoLoading || postInfoLoading" ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
@@ -77,7 +77,7 @@
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="部门" prop="departmentId">
-          <el-select v-model="addUserForm.departmentId" placeholder="请选择部门">
+          <el-select v-model="addUserForm.departmentId" style="width:338px;" placeholder="请选择部门">
             <el-option
               v-for="item in departmentInfo"
               :value="item.id"
@@ -87,7 +87,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位" prop="postId">
-          <el-select v-model="addUserForm.postId" placeholder="请选择岗位">
+          <el-select v-model="addUserForm.postId" style="width:338px;" placeholder="请选择岗位">
             <el-option
               v-for="item in postInfo"
               :value="item.id"
@@ -122,7 +122,7 @@
     <el-dialog
       :visible.sync="editUserDialogVisible"
       title="修改用户"
-      width="50%"
+      width="520px"
       @close="editDialogClosed"
     >
       <el-form
@@ -150,6 +150,7 @@
             v-model="editUserForm.departmentId"
             :value="editUserForm.departmentId"
             placeholder="请选择部门"
+            style="width:338px;"
           >
             <el-option
               v-for="item in this.departmentInfo"
@@ -160,7 +161,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位" prop="postId">
-          <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
+          <el-select v-model="editUserForm.postId" :value="editUserForm.postId" style="width:338px;" placeholder="请选择岗位">
             <el-option
               v-for="item in this.postInfo"
               :value="item.id"
@@ -189,7 +190,7 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="50%">
+    <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="520px">
       <span>确认删除用户{{ this.deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
@@ -549,8 +550,10 @@ export default {
   }
   label {
     display: inline-block;
-    width: 100px !important;
     text-align: left !important;
+  }
+  .el-radio {
+    margin-right: 20px !important;
   }
 }
 </style>
