@@ -38,15 +38,10 @@
             :remote-method="getCameraList"
             :loading="loading"
             class="searchinp"
-            <<<<<<<
-            head
             style="width:205px;font-size:12px;"
-            =="====="
-            style="width: 205px"
-          >>>>>>> 7a8c5a84e474d838576005fa6e33acd28fb3105d
-          filterable
-          remote
-          placeholder="请输入摄像头名称"
+            filterable
+            remote
+            placeholder="请输入摄像头名称"
           >
             <el-option
               v-for="item in options"
