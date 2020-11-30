@@ -30,7 +30,7 @@
           ></el-input> -->
           <el-tooltip
             :content="formInline.searchkey"
-            :disabled="!formInline.searchkey"
+            :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
             class="item"
             placement="top-start"
           >  <el-select
@@ -51,6 +51,7 @@
             >
               <el-tooltip
                 :content="item.name"
+                :disabled="item.name === '所有摄像头'"
                 class="item"
                 placement="top-start"
               >
