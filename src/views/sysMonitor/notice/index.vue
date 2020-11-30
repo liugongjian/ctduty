@@ -7,9 +7,10 @@
             ref="queryTitleRef"
             v-model="queryInfo.params.title"
             class="searchinput"
+            @keyup.enter.native="getNoticeList"
             placeholder="公告标题"
           ></el-input>
-          <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者"></el-input>
+          <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者" @keyup.enter.native="getNoticeList"></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
             <el-option :value="0" label="公告">通知</el-option>
