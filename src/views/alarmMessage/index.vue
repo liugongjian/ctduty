@@ -84,7 +84,7 @@
           </div>
           <el-select
             v-model="formInline.typeValue"
-            style="width:180px; margin-right: 10px"
+            style="width:165px; margin-right: 10px"
             size="mini"
             class="filter-item"
             @change="checkModel"
@@ -1058,14 +1058,14 @@ export default {
     .pull-left.alarmmsgleft {
       width: 80%;
       .el-select {
-        width: 180px;
+        width: 165px;
       }
       .el-date-editor {
         width: 205px !important;
         padding-right: 0px !important;
       }
       .el-date-editor--time {
-        width: 180px !important;
+        width: 165px !important;
       }
     }
     .pull-right.alarmmsgright {
