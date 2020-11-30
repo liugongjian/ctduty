@@ -28,12 +28,17 @@
             size="mini"
             @keyup.enter.native="onSearch"
           ></el-input> -->
-          <el-select
+          <el-tooltip
+            :content="formInline.searchkey"
+            :disabled="!formInline.searchkey"
+            class="item"
+            placement="top-start"
+          >  <el-select
             v-model="formInline.searchkey"
             :remote-method="getCameraList"
             :loading="loading"
             class="searchinp"
-            style="width:205px"
+            style="width:205px;font-size:12px;"
             filterable
             remote
             placeholder="请输入摄像头名称"
@@ -43,8 +48,17 @@
               :key="item.value"
               :label="item.name"
               :value="item.value"
-            ></el-option>
+            >
+              <el-tooltip
+                :content="item.name"
+                class="item"
+                placement="top-start"
+              >
+                <span>{{ item.name }}</span>
+              </el-tooltip>
+            </el-option>
           </el-select>
+          </el-tooltip>
           <div class="block filter-item">
             <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
           </div>
@@ -993,8 +1007,10 @@ export default {
 
 <style lang='scss'>
 .alalist {
+
   .el-input__inner {
     text-indent: 0px;
+    font-size: 12px !important;
     }
     .title {
       width: 100%;

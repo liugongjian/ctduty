@@ -403,6 +403,10 @@ html {
     z-index: 999999999999999999999999999999999 !important;
 }
 
+.el-tooltip__popper {
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 !important;
+}
+
 .disable {
     pointer-events: none !important;
     color: gray !important;
