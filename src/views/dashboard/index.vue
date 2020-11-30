@@ -909,9 +909,7 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          // formatter: '{b0}: {c0}',
           confine: true,
-          extraCssText: 'z-index:999',
           position: function(pos, params, el, elRect, size) {
             var obj = { top: pos[1] / 2.5 }
             obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 50
