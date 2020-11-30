@@ -33,6 +33,7 @@
             :remote-method="getCameraList"
             :loading="loading"
             class="searchinp"
+            style="width: 205px"
             filterable
             remote
             placeholder="请输入摄像头名称"
@@ -1120,9 +1121,6 @@ export default {
     }
     .el-button--small {
       font-size: 14px;
-    }
-    .searchinp {
-      width: 205px;
     }
     .el-select.el-select--medium {
       width: 260px;
