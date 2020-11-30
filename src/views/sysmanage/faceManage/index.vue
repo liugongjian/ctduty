@@ -189,12 +189,11 @@
               <div style="display:flex;">
                 <el-tooltip
                   :content="item.name"
-                  :disabled="item.name.length <4"
                   placement="bottom-start"
                 >
-                  <div
-                    class="face-name"
-                  >{{ item.name.length >3 ?item.name.substr(0,3)+'...' :item.name }}</div>
+                  <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
+                    {{ item.name }}
+                  </div>
                 </el-tooltip>
                 <el-tag
                   :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
@@ -855,12 +854,15 @@ export default {
       display: inline-block;
     }
   }
-}
-.sureItem {
-  height: 36px;
-}
-.editPictrue {
-  width: 180px;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .sureItem {
+    height: 36px;
+  }
+  .editPictrue {
+    width: 180px;
+  }
 }
 </style>
 
