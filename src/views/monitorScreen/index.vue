@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div class="monitorScreen-wrap">
     <div class="monitorScreen">
       <template v-for="(item,index) in deviceList">
         <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
@@ -347,8 +347,9 @@ export default {
             this.options.forEach(item => {
               if (item.value === this.form.cameraId) {
                 this.deviceList.push({
-                  address: item.label,
-                  image: fakeimg
+                  name: item.name,
+                  image: fakeimg,
+                  id: item.value
                 })
               }
             })
@@ -395,6 +396,7 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
+  min-height:100%;
   // height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
@@ -424,7 +426,7 @@ export default {
     }
     .screen-add {
       // height: calc(35vh + 36.4px);
-      height: 210px;
+      height: 460px;
       margin: 10px;
       // width: 100%;
       // height: 100%;
