@@ -854,12 +854,15 @@ export default {
       display: inline-block;
     }
   }
-}
-.sureItem {
-  height: 36px;
-}
-.editPictrue {
-  width: 180px;
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .sureItem {
+    height: 36px;
+  }
+  .editPictrue {
+    width: 180px;
+  }
 }
 </style>
 
