@@ -33,6 +33,7 @@
             :remote-method="getCameraList"
             :loading="loading"
             class="searchinp"
+            style="width:205px"
             filterable
             remote
             placeholder="请输入摄像头名称"
@@ -292,7 +293,7 @@
             @click="()=>{openBig(temp.image)}"
           >
             <img :src="temp.image" width="480" height="270" style="z-index:1;" >
-            <CanvasDialog
+            <!--  <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
               :left-top="[points[0],points[1]]"
@@ -300,7 +301,7 @@
               :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
               :right-bottom="[points[2],points[3]]"
               style="z-index:2;position:absolute;top:0;left:0;"
-            ></CanvasDialog>
+            ></CanvasDialog> -->
           </div>
           <div class="popfooter">
             <el-tooltip
