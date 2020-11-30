@@ -99,7 +99,7 @@
         <el-table-column :show-overflow-tooltip="true" :label="'视频流信息'" prop="isDeal">
           <template slot-scope="scope">
             <svg-icon v-if="scope.row.isDeal" class="deal" icon-class="deal" />
-            <svg-icon v-else class="untreated" icon-class="untreated" />
+            <svg-icon v-else class="untreated" icon-class="untreated2" />
             <span>{{ scope.row.isDeal ? "已处理":"未处理" }}</span>
           </template>
         </el-table-column>
