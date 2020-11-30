@@ -805,7 +805,7 @@ export default {
             value: 100,
             itemStyle: {
               normal: {
-                color: '#E1E8EE'
+                color: '#F0F2F5'
               }
             }
           }, {

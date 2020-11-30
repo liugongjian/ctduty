@@ -85,7 +85,7 @@ export default {
                 function() {
                   var colors = ['#4AA8FF', '#55DDCD', '#86DCA0', '#FCE172', '#F3A46B']
                   return (
-                    colors[parseInt(Math.random() * 6)]
+                    colors[parseInt(Math.random() * 5)]
                   )
                 }
                 // function() {

@@ -22,6 +22,7 @@
                 filterable
                 remote
                 placeholder="请输入摄像头地址"
+                @change="searchChange"
               >
                 <el-option
                   v-for="item in options"
@@ -344,6 +345,9 @@ export default {
   mounted() {
   },
   methods: {
+    searchChange(v) {
+      console.log(v, '值')
+    },
     objDeepCopy(source) {
       var sourceCopy = {}
       for (var item in source) sourceCopy[item] = typeof source[item] === 'object' ? this.objDeepCopy(source[item]) : source[item]

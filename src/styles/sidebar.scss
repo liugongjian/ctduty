@@ -6,6 +6,9 @@
     margin-left: 240px;
     position: relative;
     overflow: auto !important;
+    &::-webkit-scrollbar {
+      display: none; /* Chrome Safari */
+    }
   }
   .navbar{
     width: 100%;
