@@ -38,10 +38,15 @@
             :remote-method="getCameraList"
             :loading="loading"
             class="searchinp"
+            <<<<<<<
+            head
             style="width:205px;font-size:12px;"
-            filterable
-            remote
-            placeholder="请输入摄像头名称"
+            =="====="
+            style="width: 205px"
+          >>>>>>> 7a8c5a84e474d838576005fa6e33acd28fb3105d
+          filterable
+          remote
+          placeholder="请输入摄像头名称"
           >
             <el-option
               v-for="item in options"
@@ -1007,7 +1012,6 @@ export default {
 
 <style lang='scss'>
 .alalist {
-
   .el-input__inner {
     text-indent: 0px;
     font-size: 12px !important;
@@ -1137,9 +1141,6 @@ export default {
     }
     .el-button--small {
       font-size: 14px;
-    }
-    .searchinp {
-      width: 205px;
     }
     .el-select.el-select--medium {
       width: 260px;
