@@ -858,8 +858,8 @@ export default {
         borderWidth: 1
       }
       const labelStyle = {
-        show: true,
-        position: 'top',
+        show: false,
+        position: 'insideBottomRight',
         lineHeight: 10,
         borderRadius: 5,
         backgroundColor: 'rgba(255,255,255,.9)',
@@ -870,7 +870,7 @@ export default {
         fontSize: 12,
         fontWeight: 'normal'
       }
-      let total = yData
+      let total = yData.length ? yData : [0, 0]
       const seriesData = []
       total = total.sort(function(a, b) {
         return a - b
@@ -888,8 +888,8 @@ export default {
             borderWidth: 1
           }
           ob.label = {
-            show: true,
-            position: 'top',
+            show: false,
+            position: 'insideBottomRight',
             lineHeight: 10,
             backgroundColor: '#1890FF',
             borderRadius: 5,
@@ -907,17 +907,37 @@ export default {
         title: {
           left: 'left'
         },
+        tooltip: {
+          trigger: 'item',
+          // formatter: '{b0}: {c0}',
+          confine: true,
+          extraCssText: 'z-index:999',
+          position: function(pos, params, el, elRect, size) {
+            var obj = { top: pos[1] / 2.5 }
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 50
+            return obj
+          }
+
+        },
+
         grid: {
-          top: '15%',
-          left: '20%',
-          right: '10%',
-          bottom: '18%'
+          // top: '15%',
+          // left: '20%',
+          // right: '10%',
+          // bottom: '18%'
+          left: 20,
+          top: 20,
+          bottom: 20,
+          right: 20,
+          containLabel: true
+
         },
         xAxis: [{
           type: 'category',
           axisTick: {
             show: false
           },
+          boundaryGap: false,
           splitLine: {
             show: false,
             lineStyle: {
@@ -928,9 +948,10 @@ export default {
         }],
         yAxis: [{
           type: 'value',
-          min: 0,
-          max: 20000,
+          // min: 0,
+          // max: 20000,
           splitNumber: 3,
+          minInterval: 1,
           axisLine: {
             show: false
           },
@@ -946,7 +967,8 @@ export default {
         }],
         series: [{
           type: 'line',
-          showAllSymbol: true,
+          // showAllSymbol: true,
+          smooth: true,
           symbol: 'circle',
           symbolSize: 6,
           lineStyle: {
@@ -956,7 +978,7 @@ export default {
             }
           },
           tooltip: {
-            show: false
+            show: true
           },
           areaStyle: {
             normal: {
@@ -971,7 +993,7 @@ export default {
                 },
                 {
                   offset: 1,
-                  color: '#1890FF'
+                  color: '#ffffff'
                 }
                 ],
                 false
