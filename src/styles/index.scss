@@ -409,7 +409,9 @@ html {
     fill: #95afc0 !important;
     // cursor: no-drop;
 }
-
+.el-notification {
+    z-index: 9999999999999999999999999999999999 !important;
+}
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
 }
