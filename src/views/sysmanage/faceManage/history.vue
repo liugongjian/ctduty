@@ -713,10 +713,10 @@ export default {
   line-height: 36px;
 }
 .el-range-editor--mini .el-range-separator {
-  line-height: 30px;
+  line-height: 26px;
 }
 .el-range-editor--mini .el-range__icon {
-  line-height: 30px;
+  line-height: 26px;
 }
 .el-input--mini .el-input__icon {
   line-height: 36px;
