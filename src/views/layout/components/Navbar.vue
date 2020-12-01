@@ -66,7 +66,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog v-if="dialogVisable" :visible="dialogVisable" title="公告" width="520px" style="z-index:100000000" @close="closeDialog">
+      <el-dialog v-if="dialogVisable" :visible="dialogVisable" class="el-dialog__wrapper" title="公告" width="520px" style="z-index:100000000;" @close="closeDialog">
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -105,7 +105,7 @@
         </div>
       </el-dialog>
     </div>
-    <div v-if="isShowMark" class="mark"></div>
+    <div v-if="isShowMark" class="v-modal mark"></div>
   </div>
 </template>
 
@@ -525,6 +525,6 @@ label {
   height: 100%;
   opacity: .5;
   background: #000;
-  z-index: 99999999 !important;
+  z-index: 9999999;
 }
 </style>
