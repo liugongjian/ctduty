@@ -1,36 +1,5 @@
 <template>
   <div class="videomonitorWrap">
-    <!-- <el-dialog
-      key="monitor-device"
-      :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
-      :visible.sync="deviceChosenVisible"
-      width="540px"
-      @closed="onClose"
-    >
-      <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
-          <el-select
-            v-model="form.cameraId"
-            :remote-method="getCameraList"
-            :loading="loading"
-            filterable
-            remote
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-          </el-option></el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="onClose">取 消</el-button>
-        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
-      </div>
-    </el-dialog>-->
     <el-dialog
       key="photo"
       :visible.sync="bigPhotoVisible"
@@ -163,7 +132,7 @@
         </div>
       </div>
       <div class="rightPanel">
-        <div class="realTimeData">
+        <div v-loading="realTimeDataLoading" :style="{display: showTrafficPanel? 'block' : 'none' }" class="realTimeData">
           <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
@@ -207,20 +176,20 @@
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.in +'人' : '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.out +'人': '-' }}</div>
                   </div>
                 </div>
               </div>
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.in +'人': '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.out+'人' : '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -234,11 +203,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.in +'辆' : '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.out +'辆': '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -249,11 +218,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.in +'辆': '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.out +'辆': '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -311,6 +280,7 @@
             :total="total"
             :page.sync="page"
             :limit.sync="limit"
+            layout="sizes, prev, pager, next"
             small
             @pagination="pageChange()"
           />
@@ -333,8 +303,10 @@ import moment from 'moment'
 import { getAlertStatics } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
-import { getAlertInfos } from '@/api/alarm'
+import { getAlertInfos, getAlertRealtimeStatics } from '@/api/alarm'
 import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+// import { videoListByAlgorithmId } from '@/api/algorithm'
+import { getInstanceList, getAlgoSelList } from '@/api/vedioAlgoNew'
 import { taskList } from '@/api/algorithm'
 import { play } from '@/api/monitor'
 import nosrc from '@/assets/images/nosrc.png'
@@ -379,7 +351,33 @@ export default {
       tableColumn: [],
       tableData: [],
       heightByAuto: '',
-      slide: 0
+      slide: 0,
+      carIsPick: false,
+      peopleIsPick: false,
+      showTrafficPanel: false,
+      realTimeDataLoading: true,
+      realTimeData: {
+        people: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        },
+        vehicle: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        }
+      }
     }
   },
   computed: {
@@ -420,6 +418,7 @@ export default {
       this.getAlertDetailList()
       this.getLiveStream()
       this.getCameraById()
+      this.getPanelShow()
       console.log('crreated', this.$route)
     })
   },
@@ -432,6 +431,73 @@ export default {
     }
   },
   methods: {
+    async getPanelShow() {
+      this.realTimeDataLoading = true
+      this.showTrafficPanel = false
+      const { cameraId } = this.$route.query
+      const algorithmRes = await getInstanceList(cameraId)
+      const { body: { data }, code, message } = algorithmRes
+      if (code !== 0) {
+        this.$message.error(message || '获取当前摄像头已配置算法失败。')
+      } else {
+        const peopleExist = data.find(({ taskId }) => taskId === 8)
+        const carExist = data.find(({ taskId }) => taskId === 9)
+        this.carIsPick = carExist && carExist.isPick
+        this.peopleIsPick = peopleExist && peopleExist.isPick
+        if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
+          this.showTrafficPanel = true
+          this.getRealTimeData()
+        } else {
+          this.showTrafficPanel = false
+          this.realTimeDataLoading = false
+        }
+      }
+    },
+    getRealTimeData() {
+      const { cameraId } = this.$route.query
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: {
+            start: moment()
+              .subtract(1, 'h')
+              .format(dateTimeFormat),
+            end: moment()
+              .format(dateTimeFormat)
+          }
+        },
+        {
+          field: 'cameraId',
+          operator: 'EQUALS',
+          value: cameraId
+        }
+      ]
+      const params = {
+        // cascade: true,
+        // page: {
+        //   index: this.page,
+        //   size: this.limit
+        // },
+        params: param
+      }
+      getAlertRealtimeStatics(params)
+        .then(res => {
+          console.log('realTimeData, ', res)
+          const { code, body: { data } = {}, message } = res
+          if (code !== 0) {
+            this.$message(message)
+            this.realTimeDataLoading = false
+            return
+          }
+          this.realTimeData = data
+          this.realTimeDataLoading = false
+        })
+        .catch(err => {
+          this.realTimeDataLoading = false
+          this.$message.error(err.message || '获取实时分析数据失败')
+        })
+    },
     setVideoHeight() {
       const boxHeight = document.querySelector('.video-panel').offsetHeight
       console.log('test---->', boxHeight)
@@ -535,27 +601,43 @@ export default {
       return target.cnName
     },
     getTaskList() {
-      const query = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 100
-        },
-        params: {}
-      }
-      taskList(query)
-        .then(res => {
-          if (res.code === 0) {
-            this.taskData = res.body.data
-            //   this.algorithmId = res.body.data[0].id
-            // this. = false
-          } else {
-            this.taskData = []
-          }
-        })
+      // const query = {
+      //   cascade: true,
+      //   page: {
+      //     index: 1,
+      //     size: 100
+      //   },
+      //   params: {}
+      // }
+      const { cameraId } = this.$route.query
+      getAlgoSelList(cameraId).then(res => {
+        if (res.code === 0) {
+          const resData = res.body && res.body.data || []
+          // 筛选掉人流识别和车流识别
+          this.taskData = resData.filter(({ id }) => id !== 8 && id !== 9)
+          //   this.algorithmId = res.body.data[0].id
+          // this. = false
+        } else {
+          this.taskData = []
+        }
+      })
         .catch(err => {
           console.log(err)
+          this.$message.error(err.message || '获取今日实时抓拍可筛选算法失败。')
         })
+      // taskList(query)
+      //   .then(res => {
+      //     if (res.code === 0) {
+      //       this.taskData = res.body.data
+      //       //   this.algorithmId = res.body.data[0].id
+      //       // this. = false
+      //     } else {
+      //       this.taskData = []
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     },
     pageChange(e) {
       console.log('change')
@@ -676,6 +758,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
+        console.log('视频信息-------->', data)
         console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
@@ -694,7 +777,7 @@ export default {
         // }
         this.videoLoading = false
       }).catch(err => {
-        this.$message(err.message || '获取摄像头播放流失败.')
+        this.$message.error(err.message || '获取摄像头播放流失败.')
         this.videoLoading = false
       })
     },
@@ -793,6 +876,7 @@ export default {
       .realTimeData {
         // flex-grow: 1;
         // width:50%;
+        margin-bottom: 20px;
         height:195px;
         margin-left: 20px;
         background: #ffffff;
@@ -852,7 +936,7 @@ export default {
       width: calc(100% - 20px);
       height: calc(100% - 340px);
       // min-height: 200px;
-      margin: 20px 20px 0 20px;
+      margin: 0 20px 0 20px;
       // height:100%;
       padding: 20px;
       .showPhoto {
@@ -882,7 +966,7 @@ export default {
         .photoList-image:hover {
           cursor: zoom-in;
         }
-        @media screen and (max-width: 1400px) {
+        @media screen and (max-width: 1430px) {
           .photoList {
             // display: inline-block;
             width: 31%;
@@ -891,7 +975,7 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1401px) and (max-width: 1600px) {
+        @media screen and (min-width: 1431px) and (max-width: 1600px) {
           .photoList {
             // display: inline-block;
             width: 23%;
@@ -927,6 +1011,36 @@ export default {
               color: #b2b2b2;
               text-align: center;
               vertical-align: middle;
+            }
+          }
+        }
+        /deep/.pagination-container {
+          position: absolute;
+          bottom: 20px;
+          width: calc(100% - 20px);
+          margin-top: 20px;
+          .showTotal {
+            line-height:28px;
+          }
+          .el-input--mini{
+            width: 85px;
+            line-height: 24px;
+          }
+          .el-input--mini .el-input__inner{
+              height: 24px;
+          }
+          .el-pagination--small {
+            height: 28px;
+          }
+          @media screen and (max-width: 1600px) {
+            .el-pagination__jump {
+              display: none !important;
+            }
+          }
+          @media screen and (max-width: 1400px) {
+            bottom: 40px;
+            .showTotal {
+              display: none !important;
             }
           }
         }
@@ -997,25 +1111,6 @@ export default {
     }
   }
 
-  .pagination-container {
-    position: absolute;
-    bottom: 20px;
-    width: calc(100% - 20px);
-    .el-pagination--small {
-      height: 28px;
-    }
-    @media screen and (max-width: 1600px) {
-      .el-pagination__jump {
-        display: none;
-      }
-    }
-    @media screen and (max-width: 1400px) {
-      bottom: 40px;
-      .showTotal {
-        display: none;
-      }
-    }
-  }
   .video-panel {
     position: relative;
     height: calc(100% - 35px);
