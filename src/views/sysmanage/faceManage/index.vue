@@ -632,7 +632,6 @@ export default {
         this.tableData = res.body.data
         this.page = 1
         this.total = res.body.page.total
-        this.addFaceForm.searchkey = ''
       })
     },
     // 表头样式

@@ -615,7 +615,6 @@ export default {
         this.importData = response.body.data
         this.total = response.body.page.total
         this.page = 1
-        this.formInline.searchkey = ''
       })
     },
     // 表头样式
