@@ -356,6 +356,7 @@ export default {
       this.areaCount = 1
       this.markName = ''
       this.historyPoints = []
+      this.tempChoosePoint=[]
       this.clearCanvas()
     },
     revoke() {
@@ -380,7 +381,8 @@ export default {
       }
 
       this.drawAll()
-    },
+      this.tempChoosePoint=[]
+},
     // 从后端获取的点坐标格式化
     formatHistoryPoints(historyPoints) {
       // 每个坐标按照比列缩小或者放大
@@ -525,6 +527,7 @@ export default {
             var chooseHisArea = this.getChooseArea(this.historyPoints, event.offsetX, event.offsetY)
             if (chooseHisArea != null) {
               this.tempChoosePoint = this.formatPoints(chooseHisArea.points)
+              this.markWallAndForb(chooseHisArea)
             } else {
               this.tempChoosePoint = []
             }
@@ -533,6 +536,18 @@ export default {
           }
         } else {
           this.tempChoosePoint = this.formatPoints(chooseArea.points)
+          this.markWallAndForb(chooseArea)
+
+        }
+       
+      }
+    },
+    markWallAndForb(chooseArea){
+      if(this.currentPickAlgorithm.name=="stepWallCheck"){
+        if(chooseArea.name.startsWith("wall")){
+          this.value="1"
+        }else if(chooseArea.name.startsWith("forb")){
+          this.value="2"
         }
       }
     },

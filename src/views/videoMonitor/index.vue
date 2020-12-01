@@ -132,7 +132,7 @@
         </div>
       </div>
       <div class="rightPanel">
-        <div v-loading="realTimeDataLoading" class="realTimeData">
+        <div v-loading="realTimeDataLoading" :style="{display: showTrafficPanel? 'block' : 'none' }" class="realTimeData">
           <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
@@ -176,20 +176,20 @@
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>{{ realTimeData.people ? realTimeData.people.today.in : '-' }}人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.in +'人' : '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>{{ realTimeData.people ? realTimeData.people.today.out : '-' }}人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.out +'人': '-' }}</div>
                   </div>
                 </div>
               </div>
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>{{ realTimeData.people ? realTimeData.people.realTime.in : '-' }}人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.in +'人': '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>{{ realTimeData.people ? realTimeData.people.realTime.out : '-' }}人</div>
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.out+'人' : '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -203,11 +203,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.in : '-' }}辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.in +'辆' : '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.out : '-' }}辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.out +'辆': '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -218,11 +218,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.in : '-' }}辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.in +'辆': '-' }}</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.out : '-' }}辆</div>
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.out +'辆': '-' }}</div>
                   </div>
                 </div>
               </div>
@@ -305,6 +305,8 @@ import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
 import { getAlertInfos, getAlertRealtimeStatics } from '@/api/alarm'
 import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+// import { videoListByAlgorithmId } from '@/api/algorithm'
+import { getInstanceList, getAlgoSelList } from '@/api/vedioAlgoNew'
 import { taskList } from '@/api/algorithm'
 import { play } from '@/api/monitor'
 import nosrc from '@/assets/images/nosrc.png'
@@ -350,6 +352,9 @@ export default {
       tableData: [],
       heightByAuto: '',
       slide: 0,
+      carIsPick: false,
+      peopleIsPick: false,
+      showTrafficPanel: false,
       realTimeDataLoading: true,
       realTimeData: {
         people: {
@@ -413,7 +418,7 @@ export default {
       this.getAlertDetailList()
       this.getLiveStream()
       this.getCameraById()
-      this.getRealTimeData()
+      this.getPanelShow()
       console.log('crreated', this.$route)
     })
   },
@@ -426,8 +431,29 @@ export default {
     }
   },
   methods: {
-    getRealTimeData() {
+    async getPanelShow() {
       this.realTimeDataLoading = true
+      this.showTrafficPanel = false
+      const { cameraId } = this.$route.query
+      const algorithmRes = await getInstanceList(cameraId)
+      const { body: { data }, code, message } = algorithmRes
+      if (code !== 0) {
+        this.$message.error(message || '获取当前摄像头已配置算法失败。')
+      } else {
+        const peopleExist = data.find(({ taskId }) => taskId === 8)
+        const carExist = data.find(({ taskId }) => taskId === 9)
+        this.carIsPick = carExist && carExist.isPick
+        this.peopleIsPick = peopleExist && peopleExist.isPick
+        if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
+          this.showTrafficPanel = true
+          this.getRealTimeData()
+        } else {
+          this.showTrafficPanel = false
+          this.realTimeDataLoading = false
+        }
+      }
+    },
+    getRealTimeData() {
       const { cameraId } = this.$route.query
       const param = [
         {
@@ -469,7 +495,7 @@ export default {
         })
         .catch(err => {
           this.realTimeDataLoading = false
-          // this.$message(err.message || '获取实时分析数据失败') TODO
+          this.$message.error(err.message || '获取实时分析数据失败')
         })
     },
     setVideoHeight() {
@@ -575,27 +601,43 @@ export default {
       return target.cnName
     },
     getTaskList() {
-      const query = {
-        cascade: true,
-        page: {
-          index: 1,
-          size: 100
-        },
-        params: {}
-      }
-      taskList(query)
-        .then(res => {
-          if (res.code === 0) {
-            this.taskData = res.body.data
-            //   this.algorithmId = res.body.data[0].id
-            // this. = false
-          } else {
-            this.taskData = []
-          }
-        })
+      // const query = {
+      //   cascade: true,
+      //   page: {
+      //     index: 1,
+      //     size: 100
+      //   },
+      //   params: {}
+      // }
+      const { cameraId } = this.$route.query
+      getAlgoSelList(cameraId).then(res => {
+        if (res.code === 0) {
+          const resData = res.body && res.body.data || []
+          // 筛选掉人流识别和车流识别
+          this.taskData = resData.filter(({ id }) => id !== 8 && id !== 9)
+          //   this.algorithmId = res.body.data[0].id
+          // this. = false
+        } else {
+          this.taskData = []
+        }
+      })
         .catch(err => {
           console.log(err)
+          this.$message.error(err.message || '获取今日实时抓拍可筛选算法失败。')
         })
+      // taskList(query)
+      //   .then(res => {
+      //     if (res.code === 0) {
+      //       this.taskData = res.body.data
+      //       //   this.algorithmId = res.body.data[0].id
+      //       // this. = false
+      //     } else {
+      //       this.taskData = []
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     },
     pageChange(e) {
       console.log('change')
@@ -716,6 +758,7 @@ export default {
         //     ...data,
         //     image: null,
         //     flvSrc: data.rtmpuri,
+        console.log('视频信息-------->', data)
         console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
           autoplay: true,
@@ -734,7 +777,7 @@ export default {
         // }
         this.videoLoading = false
       }).catch(err => {
-        this.$message(err.message || '获取摄像头播放流失败.')
+        this.$message.error(err.message || '获取摄像头播放流失败.')
         this.videoLoading = false
       })
     },
@@ -833,6 +876,7 @@ export default {
       .realTimeData {
         // flex-grow: 1;
         // width:50%;
+        margin-bottom: 20px;
         height:195px;
         margin-left: 20px;
         background: #ffffff;
@@ -892,7 +936,7 @@ export default {
       width: calc(100% - 20px);
       height: calc(100% - 340px);
       // min-height: 200px;
-      margin: 20px 20px 0 20px;
+      margin: 0 20px 0 20px;
       // height:100%;
       padding: 20px;
       .showPhoto {
