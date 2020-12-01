@@ -347,7 +347,9 @@ code {
     /*高宽分别对应横竖滚动条的尺寸*/
     height: 4px;
 }
-
+.el-tooltip__popper {
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 !important;
+}
 .el-dialog__body::-webkit-scrollbar-thumb {
     /*滚动条里面小方块*/
     border-radius: 5px;
