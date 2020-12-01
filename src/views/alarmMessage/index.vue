@@ -1028,7 +1028,8 @@ export default {
 <style lang='scss'>
 .alalist {
  .el-input__inner {
-  text-indent: 0px;
+   font-size: 12px;
+   text-indent: 0px;
   }
   // .alaMesTable {
   //   td {
