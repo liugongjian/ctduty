@@ -708,5 +708,17 @@ export default {
   }
 }
 }
-
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-range-editor--mini .el-range-separator {
+  line-height: 26px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 26px;
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
+}
 </style>

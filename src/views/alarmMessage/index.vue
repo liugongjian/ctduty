@@ -2,76 +2,102 @@
   <div class="alalist">
     <div class="app-container" style="padding: 20px;">
       <div class="filter-container clearfix">
-        <div class="pull-right alarmmsgright">
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            style="margin-bottom: 2px"
-            @click="onSearch"
-          >{{ '查询' }}</el-button>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:36px;"
-            icon="el-icon-refresh"
-            @click="onClear"
-          >重置</button>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i class="el-icon-arrow-down"></i>
-          </span>
-        </div>
-        <div class="pull-left alarmmsgleft">
-          <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
-          </div>
-          <el-input
-            v-model="formInline.searchkey"
-            placeholder="摄像头名称"
-            class="searchinp"
-            size="mini"
-            @keyup.enter.native="onSearch"
-          ></el-input>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
-          </div>
-          <el-select
-            v-model="algorithmList.typeValue"
-            multiple
-            placeholder="请选择事件名称"
-            min-width="300px"
-            collapse-tags
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in algorithm"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
-          </div>
-          <el-select
-            v-model="algorithmNameList.typeValue"
-            multiple
-            placeholder="请选择算法名称"
-            min-width="350px"
-            collapse-tags
-            @change="algorithmCheck"
-          >
-            <el-option
-              v-for="item in algorithmName"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-
-          <transition name="fade">
-            <div v-show="flag" style="margin-top:10px;">
+        <el-collapse v-model="activeNames" @change="collapseChange">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <div class="pull-left alarmmsgleft">
+                <div class="block filter-item">
+                  <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
+                </div>
+                <el-tooltip
+                  :content="formInline.searchkey"
+                  :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
+                  class="item"
+                  placement="top-start"
+                >  <el-select
+                  v-model="formInline.searchkey"
+                  :remote-method="getCameraList"
+                  :loading="loading"
+                  class="searchinp"
+                  style="width:205px;font-size:12px;"
+                  filterable
+                  remote
+                  placeholder="请输入摄像头名称"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  >
+                    <el-tooltip
+                      :content="item.name"
+                      :disabled="item.name === '所有摄像头'"
+                      class="item"
+                      placement="top-start"
+                    >
+                      <span>{{ item.name }}</span>
+                    </el-tooltip>
+                  </el-option>
+                </el-select>
+                </el-tooltip>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
+                </div>
+                <el-select
+                  v-model="algorithmList.typeValue"
+                  multiple
+                  placeholder="请选择事件名称"
+                  min-width="300px"
+                  collapse-tags
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in algorithm"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">算法名称:</div>
+                </div>
+                <el-select
+                  v-model="algorithmNameList.typeValue"
+                  multiple
+                  placeholder="请选择算法名称"
+                  min-width="350px"
+                  collapse-tags
+                  @change="algorithmCheck"
+                >
+                  <el-option
+                    v-for="item in algorithmName"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
+              </div>
+              <div class="pull-right alarmmsgright" @click.stop.native="()=>{return null}">
+                <el-button
+                  v-waves
+                  class="filter-item sureItem"
+                  size="mini"
+                  type="warning"
+                  style="margin-bottom: 2px"
+                  @click.stop.native="onSearch"
+                >{{ '查询' }}</el-button>
+                <el-button
+                  class="filter-item clearsearch"
+                  size="mini"
+                  @click.stop.native="onClear"
+                >重置</el-button>
+                <span id="openId" class="open">
+                  {{ openname }}
+                </span>
+              </div>
+            </template>
+            <div class="pull-left alarmmsgleft">
               <div class="block filter-item">
                 <div style="margin-right: 20px;font-size: 12px">选择日期:</div>
               </div>
@@ -121,8 +147,8 @@
                 ></el-time-picker>
               </div>
             </div>
-          </transition>
-        </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
@@ -362,9 +388,9 @@ import Cookies from "js-cookie";
 import Pagination from "@/components/Pagination";
 import CanvasDialog from "@/components/CanvasDialog";
 // import 'element-ui/lib/theme-chalk/index.css'
-import moment from "moment";
-import { mapGetters } from "vuex";
-import { taskList } from "@/api/camera";
+import moment from 'moment'
+import { mapGetters } from 'vuex'
+import { taskList, searchCameraList } from '@/api/camera'
 import {
   getAlertInfos,
   deleteAlertInfo,
@@ -384,8 +410,9 @@ export default {
     return {
       tableLoading: null,
       flag: false,
-      openname: "展开",
-      alarmtext: "当日告警总计",
+      options: [],
+      openname: '展开',
+      alarmtext: '当日告警总计',
       renderTime,
       else: "其他",
       temp: {
@@ -422,18 +449,19 @@ export default {
         searchkey: "",
         typeValue: "行人"
       },
+      activeNames: [],
       algorithm: [
-        { name: "行人", _id: 1 },
-        { name: "机动车", _id: 2 },
-        { name: "非机动车", _id: 3 },
-        { name: "翻墙", _id: 4 },
-        { name: "人员逗留", _id: 5 },
-        { name: "人员聚集", _id: 6 },
-        { name: "区域划线", _id: 7 },
-        { name: "安全帽", _id: 8 },
-        { name: "打架斗殴", _id: 9 },
-        { name: "摔倒", _id: 10 },
-        { name: "占道经营", _id: 11 }
+        { name: '行人', _id: 1 },
+        { name: '机动车', _id: 2 },
+        { name: '非机动车', _id: 3 },
+        { name: '翻墙', _id: 4 },
+        { name: '人员逗留', _id: 5 },
+        { name: '人员聚集', _id: 6 },
+        { name: '区域入侵', _id: 7 },
+        { name: '未带安全帽', _id: 8 },
+        { name: '打架斗殴', _id: 9 },
+        { name: '摔倒', _id: 10 },
+        { name: '占道经营', _id: 11 }
       ],
       algorithmNameList: {
         searchkey: "",
@@ -468,17 +496,17 @@ export default {
         }
       },
       warngingKind: {
-        1: "行人",
-        2: "机动车",
-        3: "非机动车",
-        4: "翻墙",
-        5: "人员逗留",
-        6: "人员聚集",
-        7: "区域划线",
-        8: "安全帽",
-        9: "打架斗殴",
-        10: "摔倒",
-        11: "占道经营"
+        1: '行人',
+        2: '机动车',
+        3: '非机动车',
+        4: '翻墙',
+        5: '人员逗留',
+        6: '人员聚集',
+        7: '区域入侵',
+        8: '未带安全帽',
+        9: '打架斗殴',
+        10: '摔倒',
+        11: '占道经营'
       },
       warngingname: {}
     };
@@ -530,11 +558,10 @@ export default {
   },
   methods: {
     opendraw() {
-      this.flag = !this.flag;
-      if (this.openname == "展开") {
-        this.openname = "收起";
-      } else if (this.openname == "收起") {
-        this.openname = "展开";
+      if (this.openname === '展开') {
+        this.openname = '收起'
+      } else if (this.openname === '收起') {
+        this.openname = '展开'
       }
     },
     openBig(url) {
@@ -721,6 +748,56 @@ export default {
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
     },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 20
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'LIKE',
+              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
+            },
+            {
+              field: 'inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          this.options = data.map(item => {
+            return {
+              value: item.name,
+              label: item.name,
+              name: item.name
+            }
+          })
+          if (this.options.length > 0) {
+            this.options.unshift({
+              value: '所有摄像头',
+              name: '所有摄像头'
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        this.options = []
+      }
+    },
+    collapseChange(v) {
+      if (v[0] === '1') {
+        this.openname = '收起'
+      } else {
+        this.openname = '展开'
+      }
+    },
     pageChange(e) {
       const s = this.currentTab + " " + this.startTime + ":00";
       const end = this.currentTab + " " + this.endTime + ":00";
@@ -801,9 +878,9 @@ export default {
       const { type, taskId } = h;
       const param = [
         {
-          field: "camera.name",
-          operator: "LIKE",
-          value: `%${this.formInline.searchkey}%`
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
         },
         {
           field: "createTime",
@@ -878,11 +955,14 @@ export default {
                     11 +
                   "px";
               }
-            });
-          });
-        }, 300);
-        this.tableLoading = false;
-      });
+            })
+          })
+        }, 300)
+        if (this.formInline.searchkey === '所有摄像头') {
+          this.formInline.searchkey = ''
+        }
+        this.tableLoading = false
+      })
     },
     dialogQuxiao(val) {
       this.state = 1;
@@ -1015,16 +1095,12 @@ export default {
     }
   }
   .pull-right.alarmmsgright {
-    position: relative;
-    right: 0px;
+    position: fixed;
+    right: 50px;
     .clearsearch {
-      position: absolute;
-      top: 0px;
-      // right: 0px;
       height: 34px;
       margin-left: 10px;
       width: 56px !important;
-      // margin-left: 16px;
       border: 1px solid #ccc;
       background: none;
       border-radius: 3px;
@@ -1104,7 +1180,7 @@ export default {
     line-height: 36px;
   }
   .open {
-    margin-left: 80px;
+    margin-left: 10px;
     color: #ff9832;
     cursor: pointer;
   }
@@ -1120,6 +1196,15 @@ export default {
   }
   .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
     opacity: 0;
+  }
+  .el-collapse {
+    border: none;
+  }
+  .el-collapse-item__header {
+    border: none;
+  }
+  .el-collapse-item__wrap {
+    border: none;
   }
 }
 </style>
