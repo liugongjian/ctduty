@@ -362,6 +362,7 @@ export default {
       hasCameraDom: false,
       isPushOff: null,
       points: [],
+      okeys: [],
       cameraAlarmObj: {
 
       },
@@ -534,7 +535,6 @@ export default {
     window.clearInterval(this.timer)
   },
   methods: {
-
     allAlarm() {
       this.getalarmList()
       this.isDisableAllAlarmBtn = true
@@ -966,7 +966,6 @@ export default {
                   this.xData.push(item)
                 }
               })
-              // 两分钟后自动恢复默认全部列表
               this.isOnlyCameraData = true
             }
           })
