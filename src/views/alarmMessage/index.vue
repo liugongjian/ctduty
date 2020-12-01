@@ -5,7 +5,7 @@
         <el-collapse v-model="activeNames" @change="collapseChange">
           <el-collapse-item name="1">
             <template slot="title">
-              <div class="pull-left alarmmsgleft">
+              <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
                 <div class="block filter-item">
                   <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
                 </div>
@@ -14,32 +14,33 @@
                   :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
                   class="item"
                   placement="top-start"
-                >  <el-select
-                  v-model="formInline.searchkey"
-                  :remote-method="getCameraList"
-                  :loading="loading"
-                  class="searchinp"
-                  style="width:205px;font-size:12px;"
-                  filterable
-                  remote
-                  placeholder="请输入摄像头名称"
                 >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value"
+                  <el-select
+                    v-model="formInline.searchkey"
+                    :remote-method="getCameraList"
+                    :loading="loading"
+                    class="searchinp"
+                    style="width:205px;font-size:12px;"
+                    filterable
+                    remote
+                    placeholder="请输入摄像头名称"
                   >
-                    <el-tooltip
-                      :content="item.name"
-                      :disabled="item.name === '所有摄像头'"
-                      class="item"
-                      placement="top-start"
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
                     >
-                      <span>{{ item.name }}</span>
-                    </el-tooltip>
-                  </el-option>
-                </el-select>
+                      <el-tooltip
+                        :content="item.name"
+                        :disabled="item.name === '所有摄像头'"
+                        class="item"
+                        placement="top-start"
+                      >
+                        <span>{{ item.name }}</span>
+                      </el-tooltip>
+                    </el-option>
+                  </el-select>
                 </el-tooltip>
                 <div class="block filter-item">
                   <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
@@ -92,12 +93,10 @@
                   size="mini"
                   @click.stop.native="onClear"
                 >重置</el-button>
-                <span id="openId" class="open">
-                  {{ openname }}
-                </span>
+                <span id="openId" class="open">{{ openname }}</span>
               </div>
             </template>
-            <div class="pull-left alarmmsgleft">
+            <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
               <div class="block filter-item">
                 <div style="margin-right: 20px;font-size: 12px">选择日期:</div>
               </div>
@@ -424,6 +423,7 @@ export default {
       points: [],
       rowId: 0,
       defaultTab: '',
+      loading: false,
       state: '',
       value1: [
         new Date(new Date().setDate(new Date().getDate() - 29)),
@@ -467,9 +467,7 @@ export default {
         searchkey: '',
         typeValue: '移动侦测'
       },
-      algorithmName: [
-
-      ],
+      algorithmName: [],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -510,9 +508,7 @@ export default {
         10: '摔倒',
         11: '占道经营'
       },
-      warngingname: {
-
-      }
+      warngingname: {}
     }
   },
   watch: {
@@ -522,11 +518,11 @@ export default {
     }
   },
   created() {
-    this.userId = Cookies.get('userId');
-    (this.value1 = [
+    this.userId = Cookies.get('userId')
+    this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
       new Date(new Date().setDate(new Date().getDate()))
-    ])
+    ]
     const query = {
       cascade: true,
       page: {
@@ -884,7 +880,11 @@ export default {
         {
           field: 'camera.name',
           operator: 'LIKE',
-          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+          value: `%${
+            this.formInline.searchkey === '所有摄像头'
+              ? ''
+              : this.formInline.searchkey
+          }%`
         },
         {
           field: 'createTime',
@@ -1027,8 +1027,9 @@ export default {
 
 <style lang='scss'>
 .alalist {
- .el-input__inner {
-  text-indent: 0px;
+  .el-input__inner {
+    font-size: 12px;
+    text-indent: 0px;
   }
   // .alaMesTable {
   //   td {
@@ -1102,7 +1103,7 @@ export default {
     position: fixed;
     right: 50px;
     .clearsearch {
-      height: 34px;
+      height: 36px;
       margin-left: 10px;
       width: 56px !important;
       border: 1px solid #ccc;
@@ -1173,9 +1174,10 @@ export default {
     height: 36px;
     line-height: 36px;
   }
-  .el-select.el-select--medium {
-    margin-bottom: 10px;
-  }
+
+  // .el-select__tags {
+  //   max-width: 170px !important;
+  // }
   .filter-container .filter-item {
     vertical-align: initial;
   }
@@ -1210,5 +1212,4 @@ export default {
     border: none;
   }
 }
-
 </style>
