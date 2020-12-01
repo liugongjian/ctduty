@@ -161,7 +161,7 @@ export function fetchNormalStatus(id, state) {
   })
 }
 
-export function getAlertStatics(query) {
+export function getAlertRealtimeStatics(query) {
   return request({
     url: '/nvsapi/Alert/Traffic',
     method: 'post',

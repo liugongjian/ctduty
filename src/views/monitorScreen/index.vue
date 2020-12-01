@@ -196,8 +196,8 @@ export default {
           //   this.deviceList.push(a)
           // }
           this.getLiveList()
-          this.pageLoading = false
         }
+        this.pageLoading = false
       })
     },
     getAllCamera() {

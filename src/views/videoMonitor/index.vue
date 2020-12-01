@@ -1,36 +1,5 @@
 <template>
   <div class="videomonitorWrap">
-    <!-- <el-dialog
-      key="monitor-device"
-      :title="cameraId ? '修改监控摄像头' : '添加监控摄像头' "
-      :visible.sync="deviceChosenVisible"
-      width="540px"
-      @closed="onClose"
-    >
-      <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
-          <el-select
-            v-model="form.cameraId"
-            :remote-method="getCameraList"
-            :loading="loading"
-            filterable
-            remote
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-          </el-option></el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="onClose">取 消</el-button>
-        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
-      </div>
-    </el-dialog>-->
     <el-dialog
       key="photo"
       :visible.sync="bigPhotoVisible"
@@ -163,7 +132,7 @@
         </div>
       </div>
       <div class="rightPanel">
-        <div class="realTimeData">
+        <div v-loading="realTimeDataLoading" class="realTimeData">
           <div class="panelTitle">实时分析</div>
           <div class="streamData-wrapper">
             <div class="streamData">
@@ -207,20 +176,20 @@
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.today.in : '-' }}人</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.today.out : '-' }}人</div>
                   </div>
                 </div>
               </div>
               <div class="dataPanel">
                 <div class="dataText">
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.realTime.in : '-' }}人</div>
                   </div>
                   <div class="dataShow displayIB">
-                    <div>0人</div>
+                    <div>{{ realTimeData.people ? realTimeData.people.realTime.out : '-' }}人</div>
                   </div>
                 </div>
               </div>
@@ -234,11 +203,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.in : '-' }}辆</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.today.out : '-' }}辆</div>
                   </div>
                 </div>
               </div>
@@ -249,11 +218,11 @@
                 <div class="dataText">
                   <div class="dataShow displayIB">
                     <!-- <p>流入</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.in : '-' }}辆</div>
                   </div>
                   <div class="dataShow displayIB">
                     <!-- <p>流出</p> -->
-                    <div>0辆</div>
+                    <div>{{ realTimeData.vehicle ? realTimeData.vehicle.realTime.out : '-' }}辆</div>
                   </div>
                 </div>
               </div>
@@ -311,6 +280,7 @@
             :total="total"
             :page.sync="page"
             :limit.sync="limit"
+            layout="sizes, prev, pager, next"
             small
             @pagination="pageChange()"
           />
@@ -333,7 +303,7 @@ import moment from 'moment'
 import { getAlertStatics } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
-import { getAlertInfos } from '@/api/alarm'
+import { getAlertInfos, getAlertRealtimeStatics } from '@/api/alarm'
 import { fetchAllCameraList, searchCameraList } from '@/api/camera'
 import { taskList } from '@/api/algorithm'
 import { play } from '@/api/monitor'
@@ -379,7 +349,30 @@ export default {
       tableColumn: [],
       tableData: [],
       heightByAuto: '',
-      slide: 0
+      slide: 0,
+      realTimeDataLoading: true,
+      realTimeData: {
+        people: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        },
+        vehicle: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        }
+      }
     }
   },
   computed: {
@@ -420,6 +413,7 @@ export default {
       this.getAlertDetailList()
       this.getLiveStream()
       this.getCameraById()
+      this.getRealTimeData()
       console.log('crreated', this.$route)
     })
   },
@@ -432,6 +426,52 @@ export default {
     }
   },
   methods: {
+    getRealTimeData() {
+      this.realTimeDataLoading = true
+      const { cameraId } = this.$route.query
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: {
+            start: moment()
+              .subtract(1, 'h')
+              .format(dateTimeFormat),
+            end: moment()
+              .format(dateTimeFormat)
+          }
+        },
+        {
+          field: 'cameraId',
+          operator: 'EQUALS',
+          value: cameraId
+        }
+      ]
+      const params = {
+        // cascade: true,
+        // page: {
+        //   index: this.page,
+        //   size: this.limit
+        // },
+        params: param
+      }
+      getAlertRealtimeStatics(params)
+        .then(res => {
+          console.log('realTimeData, ', res)
+          const { code, body: { data } = {}, message } = res
+          if (code !== 0) {
+            this.$message(message)
+            this.realTimeDataLoading = false
+            return
+          }
+          this.realTimeData = data
+          this.realTimeDataLoading = false
+        })
+        .catch(err => {
+          this.realTimeDataLoading = false
+          // this.$message(err.message || '获取实时分析数据失败') TODO
+        })
+    },
     setVideoHeight() {
       const boxHeight = document.querySelector('.video-panel').offsetHeight
       console.log('test---->', boxHeight)
@@ -882,7 +922,7 @@ export default {
         .photoList-image:hover {
           cursor: zoom-in;
         }
-        @media screen and (max-width: 1400px) {
+        @media screen and (max-width: 1430px) {
           .photoList {
             // display: inline-block;
             width: 31%;
@@ -891,7 +931,7 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1401px) and (max-width: 1600px) {
+        @media screen and (min-width: 1431px) and (max-width: 1600px) {
           .photoList {
             // display: inline-block;
             width: 23%;
@@ -927,6 +967,36 @@ export default {
               color: #b2b2b2;
               text-align: center;
               vertical-align: middle;
+            }
+          }
+        }
+        /deep/.pagination-container {
+          position: absolute;
+          bottom: 20px;
+          width: calc(100% - 20px);
+          margin-top: 20px;
+          .showTotal {
+            line-height:28px;
+          }
+          .el-input--mini{
+            width: 85px;
+            line-height: 24px;
+          }
+          .el-input--mini .el-input__inner{
+              height: 24px;
+          }
+          .el-pagination--small {
+            height: 28px;
+          }
+          @media screen and (max-width: 1600px) {
+            .el-pagination__jump {
+              display: none !important;
+            }
+          }
+          @media screen and (max-width: 1400px) {
+            bottom: 40px;
+            .showTotal {
+              display: none !important;
             }
           }
         }
@@ -997,25 +1067,6 @@ export default {
     }
   }
 
-  .pagination-container {
-    position: absolute;
-    bottom: 20px;
-    width: calc(100% - 20px);
-    .el-pagination--small {
-      height: 28px;
-    }
-    @media screen and (max-width: 1600px) {
-      .el-pagination__jump {
-        display: none;
-      }
-    }
-    @media screen and (max-width: 1400px) {
-      bottom: 40px;
-      .showTotal {
-        display: none;
-      }
-    }
-  }
   .video-panel {
     position: relative;
     height: calc(100% - 35px);
