@@ -191,8 +191,14 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="车牌号：">
+        <el-form
+          :model="editForm"
+          label-position="right"
+          label-width="130px"
+          :rules="carRules"
+          ref="editCarForm"
+        >
+          <el-form-item label="车牌号：" prop="carNumber">
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
@@ -331,7 +337,6 @@ export default {
               if (!value || !carWord) {
                 return cb(new Error('车牌号不能为空'))
               }
-
               return cb()
             },
             trigger: 'change'
@@ -342,6 +347,11 @@ export default {
         ],
         color: [
           { required: true, trigger: 'blur', message: '车牌颜色不能为空' }
+        ]
+      },
+      carRules: {
+        carNumber: [
+          { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ]
       },
       formInline: {
@@ -533,26 +543,29 @@ export default {
       this.editVisable = true
     },
     editDialogConfirm() {
-      const params = [
-        {
-          id: this.editForm.id,
-          licenseNo: this.editForm.carNumber,
-          type: this.editForm.carList,
-          color: this.editForm.carColor
-          // carNumber: this.editForm.carNumber,
-          // carList: this.editForm.carList,
-          // carColor: this.editForm.carColor
-        }
-      ]
-      carEditConfirm(params).then(response => {
-        this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success',
-          duration: 2000
+      this.$refs.editCarForm.validate(valid => {
+        if (!valid) return
+        const params = [
+          {
+            id: this.editForm.id,
+            licenseNo: this.editForm.carNumber,
+            type: this.editForm.carList,
+            color: this.editForm.carColor
+            // carNumber: this.editForm.carNumber,
+            // carList: this.editForm.carList,
+            // carColor: this.editForm.carColor
+          }
+        ]
+        carEditConfirm(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.editVisable = false
         })
-        this.getList()
-        this.editVisable = false
       })
     },
     submit() {},
@@ -587,6 +600,12 @@ export default {
             field: 'license_no',
             operator: 'LIKE',
             value: `%${this.formInline.searchkey}%`
+          }
+        ],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
           }
         ]
       }
