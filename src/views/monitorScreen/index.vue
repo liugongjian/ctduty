@@ -332,6 +332,7 @@ export default {
     },
     addMonitorDialog() {
       this.form = {}
+      this.options = []
       this.dialogFormVisible = true
     },
     saveMonitor() {
