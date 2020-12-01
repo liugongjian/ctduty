@@ -472,18 +472,22 @@ export default {
       this.upSingleData.name = file.name.split('.')[0]
       const isJPG = file.type === 'image/png'
       const isLt1M = file.size / 1024 / 1024 < 1
-      if (!isJPG) {
+      if (!isJPG && !isLt1M) {
+        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+      } else if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
-      }
-      if (!isLt1M) {
+      } else if (!isLt1M) {
         this.$message.error('上传人脸图片大小不能超过 1MB!')
       }
+
       return isJPG && isLt1M
     },
     beforeMulUpload(file) {
       const isJPG = file.type === 'image/png'
       const isLt1M = file.size / 1024 / 1024 < 1
-      if (!isJPG) {
+      if (!isJPG && !isLt1M) {
+        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+      } else if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
       } else if (!isLt1M) {
         this.$message.error('上传人脸图片大小不能超过 1MB!')
@@ -628,7 +632,6 @@ export default {
         this.tableData = res.body.data
         this.page = 1
         this.total = res.body.page.total
-        this.addFaceForm.searchkey = ''
       })
     },
     // 表头样式

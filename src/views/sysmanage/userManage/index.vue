@@ -4,7 +4,7 @@
     <div class="container">
       <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
-          <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名"></el-input>
+          <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名" @keyup.enter.native="getUserList"></el-input>
           <el-button
             v-waves
             class="filter-item searchbtn"

@@ -326,7 +326,6 @@ code {
 .el-dialog__wrapper {
     z-index: 100000000 !important;
 }
-
 .el-dialog {
     z-index: 100000000 !important;
 }
@@ -389,7 +388,10 @@ code {
         color: #fff;
     }
 }
-
+.el-input__inner {
+    font-size: 12px;
+    text-indent: 0px;
+}
 .el-menu--collapse .logo-con {
     margin-left: 4px !important;
 }
@@ -406,7 +408,9 @@ html {
     fill: #95afc0 !important;
     // cursor: no-drop;
 }
-
+.el-notification {
+    z-index: 9999999999999999999999999999999999 !important;
+}
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
 }

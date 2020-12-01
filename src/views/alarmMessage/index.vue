@@ -5,7 +5,7 @@
         <el-collapse v-model="activeNames" @change="collapseChange">
           <el-collapse-item name="1">
             <template slot="title">
-              <div class="pull-left alarmmsgleft">
+              <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
                 <div class="block filter-item">
                   <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
                 </div>
@@ -14,32 +14,34 @@
                   :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
                   class="item"
                   placement="top-start"
-                >  <el-select
-                  v-model="formInline.searchkey"
-                  :remote-method="getCameraList"
-                  :loading="loading"
-                  class="searchinp"
-                  style="width:205px;font-size:12px;"
-                  filterable
-                  remote
-                  placeholder="请输入摄像头名称"
                 >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value"
+                  <el-select
+                    v-model="formInline.searchkey"
+                    :remote-method="getCameraList"
+                    :loading="loading"
+                    class="searchinp"
+                    style="width:205px;font-size:12px;"
+                    filterable
+                    remote
+                    placeholder="请输入摄像头名称"
+                    @focus="getCameraList"
                   >
-                    <el-tooltip
-                      :content="item.name"
-                      :disabled="item.name === '所有摄像头'"
-                      class="item"
-                      placement="top-start"
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
                     >
-                      <span>{{ item.name }}</span>
-                    </el-tooltip>
-                  </el-option>
-                </el-select>
+                      <el-tooltip
+                        :content="item.name"
+                        :disabled="item.name === '所有摄像头'"
+                        class="item"
+                        placement="top-start"
+                      >
+                        <span>{{ item.name }}</span>
+                      </el-tooltip>
+                    </el-option>
+                  </el-select>
                 </el-tooltip>
                 <div class="block filter-item">
                   <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
@@ -92,12 +94,10 @@
                   size="mini"
                   @click.stop.native="onClear"
                 >重置</el-button>
-                <span id="openId" class="open">
-                  {{ openname }}
-                </span>
+                <span id="openId" class="open">{{ openname }}</span>
               </div>
             </template>
-            <div class="pull-left alarmmsgleft">
+            <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
               <div class="block filter-item">
                 <div style="margin-right: 20px;font-size: 12px">选择日期:</div>
               </div>
@@ -424,6 +424,7 @@ export default {
       points: [],
       rowId: 0,
       defaultTab: '',
+      loading: false,
       state: '',
       value1: [
         new Date(new Date().setDate(new Date().getDate() - 29)),
@@ -457,8 +458,8 @@ export default {
         { name: '翻墙', _id: 4 },
         { name: '人员逗留', _id: 5 },
         { name: '人员聚集', _id: 6 },
-        { name: '区域划线', _id: 7 },
-        { name: '安全帽', _id: 8 },
+        { name: '区域入侵', _id: 7 },
+        { name: '未带安全帽', _id: 8 },
         { name: '打架斗殴', _id: 9 },
         { name: '摔倒', _id: 10 },
         { name: '占道经营', _id: 11 }
@@ -467,9 +468,7 @@ export default {
         searchkey: '',
         typeValue: '移动侦测'
       },
-      algorithmName: [
-
-      ],
+      algorithmName: [],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -504,15 +503,13 @@ export default {
         4: '翻墙',
         5: '人员逗留',
         6: '人员聚集',
-        7: '区域划线',
-        8: '安全帽',
+        7: '区域入侵',
+        8: '未带安全帽',
         9: '打架斗殴',
         10: '摔倒',
         11: '占道经营'
       },
-      warngingname: {
-
-      }
+      warngingname: {}
     }
   },
   watch: {
@@ -522,11 +519,11 @@ export default {
     }
   },
   created() {
-    this.userId = Cookies.get('userId');
-    (this.value1 = [
+    this.userId = Cookies.get('userId')
+    this.value1 = [
       new Date(new Date().setDate(new Date().getDate() - 29)),
       new Date(new Date().setDate(new Date().getDate()))
-    ])
+    ]
     const query = {
       cascade: true,
       page: {
@@ -753,6 +750,9 @@ export default {
       return 'tableRowClassHeader'
     },
     getCameraList(keyword) {
+      if (typeof keyword !== 'string' && this.formInline.searchkey) {
+        return
+      }
       if (keyword !== '') {
         this.loading = true
         const params = {
@@ -765,7 +765,7 @@ export default {
             {
               field: 'name',
               operator: 'LIKE',
-              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
+              value: `%${typeof keyword === 'string' ? (keyword === '所有摄像头' ? '' : keyword) : ''}%`
             },
             {
               field: 'inChargeId',
@@ -884,7 +884,11 @@ export default {
         {
           field: 'camera.name',
           operator: 'LIKE',
-          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+          value: `%${
+            this.formInline.searchkey === '所有摄像头'
+              ? ''
+              : this.formInline.searchkey
+          }%`
         },
         {
           field: 'createTime',
@@ -1027,8 +1031,9 @@ export default {
 
 <style lang='scss'>
 .alalist {
- .el-input__inner {
-  text-indent: 0px;
+  .el-input__inner {
+    font-size: 12px;
+    text-indent: 0px;
   }
   // .alaMesTable {
   //   td {
@@ -1102,7 +1107,7 @@ export default {
     position: fixed;
     right: 50px;
     .clearsearch {
-      height: 34px;
+      height: 36px;
       margin-left: 10px;
       width: 56px !important;
       border: 1px solid #ccc;
@@ -1173,9 +1178,10 @@ export default {
     height: 36px;
     line-height: 36px;
   }
-  .el-select.el-select--medium {
-    margin-bottom: 10px;
-  }
+
+  // .el-select__tags {
+  //   max-width: 170px !important;
+  // }
   .filter-container .filter-item {
     vertical-align: initial;
   }
@@ -1210,5 +1216,4 @@ export default {
     border: none;
   }
 }
-
 </style>
