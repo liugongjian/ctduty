@@ -423,6 +423,7 @@ export default {
       points: [],
       rowId: 0,
       defaultTab: '',
+      loading: false,
       state: '',
       value1: [
         new Date(new Date().setDate(new Date().getDate() - 29)),
