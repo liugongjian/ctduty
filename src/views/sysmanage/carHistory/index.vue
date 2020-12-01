@@ -407,7 +407,7 @@ export default {
         .el-date-editor {
             height: 36px !important;
         }
-        font-size: 12px;
+        font-size: 14px;
         padding-right: 10px;
     }
   }
@@ -453,7 +453,7 @@ export default {
         .card-desp{
             padding:10px;
             &-title{
-                font-size:12px;
+                font-size:14px;
                 &>span{
                     display:inline-block;
                 }
