@@ -14,32 +14,33 @@
                   :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
                   class="item"
                   placement="top-start"
-                >  <el-select
-                  v-model="formInline.searchkey"
-                  :remote-method="getCameraList"
-                  :loading="loading"
-                  class="searchinp"
-                  style="width:205px;font-size:12px;"
-                  filterable
-                  remote
-                  placeholder="请输入摄像头名称"
                 >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value"
+                  <el-select
+                    v-model="formInline.searchkey"
+                    :remote-method="getCameraList"
+                    :loading="loading"
+                    class="searchinp"
+                    style="width:205px;font-size:12px;"
+                    filterable
+                    remote
+                    placeholder="请输入摄像头名称"
                   >
-                    <el-tooltip
-                      :content="item.name"
-                      :disabled="item.name === '所有摄像头'"
-                      class="item"
-                      placement="top-start"
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value"
                     >
-                      <span>{{ item.name }}</span>
-                    </el-tooltip>
-                  </el-option>
-                </el-select>
+                      <el-tooltip
+                        :content="item.name"
+                        :disabled="item.name === '所有摄像头'"
+                        class="item"
+                        placement="top-start"
+                      >
+                        <span>{{ item.name }}</span>
+                      </el-tooltip>
+                    </el-option>
+                  </el-select>
                 </el-tooltip>
                 <div class="block filter-item">
                   <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
@@ -92,9 +93,7 @@
                   size="mini"
                   @click.stop.native="onClear"
                 >重置</el-button>
-                <span id="openId" class="open">
-                  {{ openname }}
-                </span>
+                <span id="openId" class="open">{{ openname }}</span>
               </div>
             </template>
             <div class="pull-left alarmmsgleft">
@@ -388,9 +387,9 @@ import Cookies from "js-cookie";
 import Pagination from "@/components/Pagination";
 import CanvasDialog from "@/components/CanvasDialog";
 // import 'element-ui/lib/theme-chalk/index.css'
-import moment from 'moment'
-import { mapGetters } from 'vuex'
-import { taskList, searchCameraList } from '@/api/camera'
+import moment from "moment";
+import { mapGetters } from "vuex";
+import { taskList, searchCameraList } from "@/api/camera";
 import {
   getAlertInfos,
   deleteAlertInfo,
@@ -411,8 +410,8 @@ export default {
       tableLoading: null,
       flag: false,
       options: [],
-      openname: '展开',
-      alarmtext: '当日告警总计',
+      openname: "展开",
+      alarmtext: "当日告警总计",
       renderTime,
       else: "其他",
       temp: {
@@ -451,17 +450,17 @@ export default {
       },
       activeNames: [],
       algorithm: [
-        { name: '行人', _id: 1 },
-        { name: '机动车', _id: 2 },
-        { name: '非机动车', _id: 3 },
-        { name: '翻墙', _id: 4 },
-        { name: '人员逗留', _id: 5 },
-        { name: '人员聚集', _id: 6 },
-        { name: '区域入侵', _id: 7 },
-        { name: '未带安全帽', _id: 8 },
-        { name: '打架斗殴', _id: 9 },
-        { name: '摔倒', _id: 10 },
-        { name: '占道经营', _id: 11 }
+        { name: "行人", _id: 1 },
+        { name: "机动车", _id: 2 },
+        { name: "非机动车", _id: 3 },
+        { name: "翻墙", _id: 4 },
+        { name: "人员逗留", _id: 5 },
+        { name: "人员聚集", _id: 6 },
+        { name: "区域入侵", _id: 7 },
+        { name: "未带安全帽", _id: 8 },
+        { name: "打架斗殴", _id: 9 },
+        { name: "摔倒", _id: 10 },
+        { name: "占道经营", _id: 11 }
       ],
       algorithmNameList: {
         searchkey: "",
@@ -496,17 +495,17 @@ export default {
         }
       },
       warngingKind: {
-        1: '行人',
-        2: '机动车',
-        3: '非机动车',
-        4: '翻墙',
-        5: '人员逗留',
-        6: '人员聚集',
-        7: '区域入侵',
-        8: '未带安全帽',
-        9: '打架斗殴',
-        10: '摔倒',
-        11: '占道经营'
+        1: "行人",
+        2: "机动车",
+        3: "非机动车",
+        4: "翻墙",
+        5: "人员逗留",
+        6: "人员聚集",
+        7: "区域入侵",
+        8: "未带安全帽",
+        9: "打架斗殴",
+        10: "摔倒",
+        11: "占道经营"
       },
       warngingname: {}
     };
@@ -558,10 +557,10 @@ export default {
   },
   methods: {
     opendraw() {
-      if (this.openname === '展开') {
-        this.openname = '收起'
-      } else if (this.openname === '收起') {
-        this.openname = '展开'
+      if (this.openname === "展开") {
+        this.openname = "收起";
+      } else if (this.openname === "收起") {
+        this.openname = "展开";
       }
     },
     openBig(url) {
@@ -749,8 +748,8 @@ export default {
       return "tableRowClassHeader";
     },
     getCameraList(keyword) {
-      if (keyword !== '') {
-        this.loading = true
+      if (keyword !== "") {
+        this.loading = true;
         const params = {
           cascade: true,
           page: {
@@ -759,43 +758,43 @@ export default {
           },
           params: [
             {
-              field: 'name',
-              operator: 'LIKE',
-              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
+              field: "name",
+              operator: "LIKE",
+              value: `%${keyword === "所有摄像头" ? "" : keyword}%`
             },
             {
-              field: 'inChargeId',
-              operator: 'EQUALS',
+              field: "inChargeId",
+              operator: "EQUALS",
               value: this.userId
             }
           ]
-        }
+        };
         searchCameraList(params).then(res => {
-          const data = res.body.data || []
+          const data = res.body.data || [];
           this.options = data.map(item => {
             return {
               value: item.name,
               label: item.name,
               name: item.name
-            }
-          })
+            };
+          });
           if (this.options.length > 0) {
             this.options.unshift({
-              value: '所有摄像头',
-              name: '所有摄像头'
-            })
+              value: "所有摄像头",
+              name: "所有摄像头"
+            });
           }
-          this.loading = false
-        })
+          this.loading = false;
+        });
       } else {
-        this.options = []
+        this.options = [];
       }
     },
     collapseChange(v) {
-      if (v[0] === '1') {
-        this.openname = '收起'
+      if (v[0] === "1") {
+        this.openname = "收起";
       } else {
-        this.openname = '展开'
+        this.openname = "展开";
       }
     },
     pageChange(e) {
@@ -878,9 +877,13 @@ export default {
       const { type, taskId } = h;
       const param = [
         {
-          field: 'camera.name',
-          operator: 'LIKE',
-          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+          field: "camera.name",
+          operator: "LIKE",
+          value: `%${
+            this.formInline.searchkey === "所有摄像头"
+              ? ""
+              : this.formInline.searchkey
+          }%`
         },
         {
           field: "createTime",
@@ -955,14 +958,14 @@ export default {
                     11 +
                   "px";
               }
-            })
-          })
-        }, 300)
-        if (this.formInline.searchkey === '所有摄像头') {
-          this.formInline.searchkey = ''
+            });
+          });
+        }, 300);
+        if (this.formInline.searchkey === "所有摄像头") {
+          this.formInline.searchkey = "";
         }
-        this.tableLoading = false
-      })
+        this.tableLoading = false;
+      });
     },
     dialogQuxiao(val) {
       this.state = 1;
@@ -1024,6 +1027,7 @@ export default {
 <style lang='scss'>
 .alalist {
   .el-input__inner {
+    font-size: 12px;
     text-indent: 0px;
   }
   // .alaMesTable {

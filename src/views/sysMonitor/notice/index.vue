@@ -455,27 +455,23 @@ export default {
         ]
       };
       if (this.queryInfo.params.type !== null) {
-<<<<<<< HEAD
-        query.params["type"] = this.queryInfo.params.type;
-=======
         query.params = [
           {
-            field: 'creator.name',
-            operator: 'LIKE',
+            field: "creator.name",
+            operator: "LIKE",
             value: `%${this.username.trim()}%`
           },
           {
-            field: 'title',
-            operator: 'LIKE',
+            field: "title",
+            operator: "LIKE",
             value: `%${this.queryInfo.params.title.trim()}%`
           },
           {
-            field: 'type',
-            operator: 'LIKE',
+            field: "type",
+            operator: "LIKE",
             value: `%${this.queryInfo.params.type}%`
           }
-        ]
->>>>>>> 3b0fa11da72a61564d3fc3eb50cfee6a59f59065
+        ];
       }
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error("获取通知信息失败");
