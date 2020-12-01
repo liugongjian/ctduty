@@ -177,7 +177,6 @@
               class="filter-item"
             ></el-input>
           </el-form-item>
-          <!-- <el-form-item label="摄像头纬度："></el-form-item> -->
           <el-form-item label="视频流信息：" prop="url">
             <el-input
               v-model="editForm.url"
@@ -320,9 +319,6 @@ export default {
     limit() {
       this.page = 1;
       this.pageChange();
-    },
-    "editForm.tude"(v) {
-      console.log(v);
     }
   },
   async created() {

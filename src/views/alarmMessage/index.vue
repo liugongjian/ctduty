@@ -1001,7 +1001,7 @@ export default {
   .pull-left.alarmmsgleft {
     width: 80%;
     .el-select {
-      width: 180px;
+      width: 186px;
     }
     .el-date-editor {
       width: 205px !important;
@@ -1011,7 +1011,7 @@ export default {
       }
     }
     .el-date-editor--time {
-      width: 180px !important;
+      width: 186px !important;
     }
   }
   .pull-right.alarmmsgright {
