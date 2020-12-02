@@ -388,7 +388,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .navToggle {
   padding-left: 85px !important;
   transition: all 0.18s linear;
@@ -398,6 +398,11 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .el-breadcrumb__inner {
+    .notice {
+        padding: 0px !important;
+     }
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px !important;
