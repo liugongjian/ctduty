@@ -291,7 +291,7 @@
             @click="()=>{openBig(temp.image)}"
           >
             <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
-            <CanvasDialog
+            <!--  <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
               :left-top="[points[0],points[1]]"
@@ -299,7 +299,7 @@
               :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
               :right-bottom="[points[2],points[3]]"
               style="z-index:2;position:absolute;top:0;left:0;"
-            ></CanvasDialog>
+            ></CanvasDialog> -->
           </div>
           <div class="popfooter">
             <el-tooltip

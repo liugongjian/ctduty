@@ -172,7 +172,6 @@
           </div>
         </el-dialog>
       </div>
-
       <el-row v-if="tableData.length>0">
         <el-col
           v-for="(item,index) in tableData"
@@ -229,9 +228,7 @@
           </el-card>
         </el-col>
       </el-row>
-
       <div v-else class="face-nodata">暂无数据</div>
-
       <!-- <el-table
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
