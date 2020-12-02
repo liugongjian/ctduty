@@ -303,6 +303,7 @@ export default {
     },
     updateMonitorDialog(item) {
       this.form = {}
+      this.options = []
       this.form.changeName = item.name
       this.id = item.id
       this.dialogFormVisible = true
@@ -317,7 +318,7 @@ export default {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
           this.$notify({
             title: '成功',
-            message: '删除成功',
+            message: '移除成功',
             type: 'success',
             duration: 2000
           })
@@ -350,6 +351,12 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
+              this.deviceList.forEach(item => {
+                if (item.id === this.id) {
+                  item.image = fakeimg
+                  item.name = this.form.changeName
+                }
+              })
               this.$notify({
                 title: '成功',
                 message: '修改成功',
