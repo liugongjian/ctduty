@@ -24,6 +24,7 @@
                     filterable
                     remote
                     placeholder="请输入摄像头名称"
+                    @focus="getCameraList"
                   >
                     <el-option
                       v-for="item in options"
@@ -749,6 +750,9 @@ export default {
       return 'tableRowClassHeader'
     },
     getCameraList(keyword) {
+      if (typeof keyword !== 'string' && this.formInline.searchkey) {
+        return
+      }
       if (keyword !== '') {
         this.loading = true
         const params = {
@@ -761,7 +765,7 @@ export default {
             {
               field: 'name',
               operator: 'LIKE',
-              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
+              value: `%${typeof keyword === 'string' ? (keyword === '所有摄像头' ? '' : keyword) : ''}%`
             },
             {
               field: 'inChargeId',
