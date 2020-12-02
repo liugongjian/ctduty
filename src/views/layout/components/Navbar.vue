@@ -399,9 +399,9 @@ export default {
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
   .el-breadcrumb__inner {
-    .notice {
-        padding: 0px !important;
-     }
+    i {
+      padding: 0px;
+    }
   }
   .hamburger-container {
     line-height: 58px;
