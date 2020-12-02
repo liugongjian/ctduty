@@ -496,5 +496,15 @@ export default {
 //   overflow: auto !important;
 //   min-height: calc(100vh - 90px) !important;
 }
+.el-range-editor--medium .el-range-input {
+  font-size: 12px;
+}
+.el-input--medium {
+  font-size: 12px;
+}
+.el-range-editor--medium .el-range-separator {
+  line-height: 28px;
+  font-size: 12px;
+}
 </style>
 

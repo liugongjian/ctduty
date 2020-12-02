@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div class="monitorScreen-wrap">
     <div class="monitorScreen">
       <template v-for="(item,index) in deviceList">
         <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
@@ -69,20 +69,21 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
+        <el-form-item label="摄像头名称" prop="changeName" label-width="100px">
           <el-select
-            v-model="form.cameraId"
+            v-model="form.changeName"
             :remote-method="getCameraList"
             :loading="loading"
             filterable
             remote
             placeholder="请选择"
+            @change="selChange"
           >
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.name"
-              :value="item.value"
+              :value="item.name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -98,6 +99,7 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoFlv from '@/components/VideoFlv'
+import Cookies from 'js-cookie'
 import {
   fetchAllMonitor,
   updateMonitor,
@@ -116,8 +118,9 @@ export default {
       pageLoading: true,
       dialogFormVisible: false,
       form: {},
+      changeName: '',
       rules: {
-        cameraId: [
+        changeName: [
           { required: true, message: '请选择摄像头名称', trigger: 'change' }
         ]
       },
@@ -141,7 +144,8 @@ export default {
         // }
       },
       allCameraList: [],
-      heightByAuto: ''
+      heightByAuto: '',
+      userId: ''
     }
   },
   watch: {
@@ -170,15 +174,24 @@ export default {
     }
   },
   async mounted() {
+    this.userId = Cookies.get('userId')
     await this.loadFakeImg()
     await this.getAllCamera()
   },
   methods: {
+    selChange(v) {
+      this.form = {}
+      this.form.changeName = v
+      this.options.filter(item => {
+        if (item.name === this.form.changeName) {
+          this.form.cameraId = item.value
+        }
+      })
+    },
     loadFakeImg() {
       this.pageLoading = true
-      loadingImg().then(res => {
-        if (res.body.data.length > 0) {
-          // const staticImg = []
+      loadingImg(this.userId).then(res => {
+        if (res.code === 0) {
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
@@ -189,15 +202,9 @@ export default {
               name: item.name
             })
           })
-          // const a = staticImg.filter((item, index) => {
-          //   this.deviceList.find(val => item.id !== val.id)
-          // })
-          // if (a.length > 1) {
-          //   this.deviceList.push(a)
-          // }
           this.getLiveList()
+          this.pageLoading = false
         }
-        this.pageLoading = false
       })
     },
     getAllCamera() {
@@ -207,7 +214,9 @@ export default {
           index: 1,
           size: 999999
         },
-        params: {}
+        params: {
+          inChargeId: this.userId
+        }
       }
       fetchAllCameraList(params).then(res => {
         if (res.code === 0) {
@@ -234,6 +243,11 @@ export default {
               field: 'online',
               operator: 'EQUALS',
               value: 0
+            },
+            {
+              field: 'inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
             }
           ]
         }
@@ -257,7 +271,7 @@ export default {
       }
     },
     getLiveList() {
-      fetchAllMonitor().then(res => {
+      fetchAllMonitor(this.userId).then(res => {
         const data = res.body.data || []
         this.deviceList = data.map(item => {
           return {
@@ -274,14 +288,8 @@ export default {
               sources: [
                 {
                   src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-                  type: this.video_type(
-                    item.rtmpuri ? item.rtmpuri + '&a.flv' : ''
-                  )
+                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
-                // {
-                //   src: item.rtmpuri,
-                //   type: 'application/x-mpegURL'
-                // }
               ]
             }
           }
@@ -294,9 +302,10 @@ export default {
       })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.name
-      this.dialogFormVisible = true
+      this.form = {}
+      this.form.changeName = item.name
       this.id = item.id
+      this.dialogFormVisible = true
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
@@ -323,6 +332,7 @@ export default {
     },
     addMonitorDialog() {
       this.form = {}
+      this.options = []
       this.dialogFormVisible = true
     },
     saveMonitor() {
@@ -350,8 +360,9 @@ export default {
             this.options.forEach(item => {
               if (item.value === this.form.cameraId) {
                 this.deviceList.push({
-                  address: item.label,
-                  image: fakeimg
+                  name: item.name,
+                  image: fakeimg,
+                  id: item.value
                 })
               }
             })
@@ -398,6 +409,7 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
+  min-height:100%;
   // height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
@@ -427,7 +439,7 @@ export default {
     }
     .screen-add {
       // height: calc(35vh + 36.4px);
-      height: 210px;
+      height: 460px;
       margin: 10px;
       // width: 100%;
       // height: 100%;

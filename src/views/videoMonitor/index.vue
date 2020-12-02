@@ -132,8 +132,10 @@
         </div>
       </div>
       <div class="rightPanel">
-        <div v-loading="realTimeDataLoading" :style="{display: showTrafficPanel? 'block' : 'none' }" class="realTimeData">
-          <div class="panelTitle">实时分析</div>
+        <div v-loading="realTimeDataLoading" :class="showTrafficPanel? 'realTimeData realTimeData-unfolded':'realTimeData realTimeData-folded'">
+          <div class="panelTitle" @click="handleFolded">
+            实时分析<i :class="showTrafficPanel ? 'fold-icon el-icon-arrow-down fold-icon-folded': 'fold-icon el-icon-arrow-down'"></i>
+          </div>
           <div class="streamData-wrapper">
             <div class="streamData">
               <div class="dataHeader"></div>
@@ -431,6 +433,9 @@ export default {
     }
   },
   methods: {
+    handleFolded() {
+      this.showTrafficPanel = !this.showTrafficPanel
+    },
     async getPanelShow() {
       this.realTimeDataLoading = true
       this.showTrafficPanel = false
@@ -873,16 +878,45 @@ export default {
       flex-shrink: 1.5;
       display: flex;
       flex-direction: column;
+      .realTimeData-unfolded{
+        height:195px;
+         .streamData-wrapper{
+          visibility:visible;
+        }
+      }
+      .realTimeData-folded{
+        overflow:hidden;
+        height: 60px;
+        .streamData-wrapper{
+          visibility:hidden;
+        }
+      }
       .realTimeData {
+        transition: height .5s;
         // flex-grow: 1;
         // width:50%;
         margin-bottom: 20px;
-        height:195px;
         margin-left: 20px;
         background: #ffffff;
         padding: 20px;
+         .streamData-wrapper{
+          transition:all 0.2s ease;
+        }
         .panelTitle {
           padding-bottom: 10px;
+          line-height: 20px;
+          cursor:pointer;
+          .fold-icon{
+            // padding-left: 10px;
+            float: right;
+            transition: transform .5s;
+            font-weight: 300;
+            font-size:12px;
+            line-height: 20px;
+            &-folded{
+              transform: rotate(180deg);
+            }
+          }
         }
         .streamData {
           width: 100%;

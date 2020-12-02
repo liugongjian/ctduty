@@ -88,10 +88,10 @@
                         size="mini"
                       >{{ val.nameList === "1" ? "白名单" : val.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
                     </div>
-                    <div class="bottom clearfix">
+                    <div class="bottom clearfix" style="height:40px">
                       <div
                         class="location"
-                        style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
+                        style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                       >
                         <i class="el-icon-map-location" />
                         <span>{{ val.camera && val.camera.name || '未知' }}</span>
@@ -684,7 +684,7 @@ export default {
     padding: 0;
   }
   .bottom {
-    margin-top: 5px;
+    margin-top: 13px;
     line-height: 20px;
     font-size: 13px;
     color: #999;
@@ -708,5 +708,17 @@ export default {
   }
 }
 }
-
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-range-editor--mini .el-range-separator {
+  line-height: 26px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 26px;
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
+}
 </style>
