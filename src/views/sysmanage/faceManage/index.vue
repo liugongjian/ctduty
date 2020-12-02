@@ -14,13 +14,13 @@
             v-waves
             class="filter-item"
             size="mini"
-            style="height: 36px"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            style="font-size:12px; height: 36px"
+            style="font-size:12px; height: 36px;"
             size="mini"
             @click="resetQuery"
           >重置</el-button>
@@ -868,6 +868,10 @@ export default {
     overflow:hidden !important;
     white-space:nowrap !important;
     text-overflow:ellipsis !important;
+  }
+  .el-input__inner {
+    height:36px;
+    border-radius: 2px;
   }
 }
 

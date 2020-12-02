@@ -7,7 +7,7 @@
             v-model="formInline.searchkey"
             placeholder="请输入车牌号"
             class="filter-item"
-            style="width: 260px;"
+            style="width: 260px;border-radius:2px;height:38px;"
             @keyup.enter.native="onSearch"
           ></el-input>
           <el-button
@@ -15,10 +15,10 @@
             class="filter-item sureItem"
             size="mini"
             type="warning"
-            style="margin-bottom: 2px"
+            style="margin-bottom: 2px;margin-left:5px;"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
+          <el-button class="searchbtn filter-item sureItem" style="margin-bottom:2px;" size="mini" @click="resetQuery">重置</el-button>
         </div>
 
         <div class="pull-right">
@@ -755,6 +755,10 @@ export default {
   }
   .sureItem {
     height: 36px;
+  }
+  .el-input__inner {
+    height:36px;
+    border-radius: 2px;
   }
 }
 
