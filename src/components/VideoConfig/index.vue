@@ -57,7 +57,13 @@
       </div>
     </div>
     <div v-if="canvasVisable" class="configchangebox">
-      <CanvasDraw :if-show="canvasVisable" :current-pick-device-id="deviceId" :current-pick-algorithm="currentItem" @saveAlgorithm="closeCanvas"></CanvasDraw>
+      <CanvasDraw
+        :if-show="canvasVisable"
+        :current-pick-device-id="deviceId"
+        :current-pick-algorithm="currentItem"
+        @saveAlgorithm="closeCanvas"
+        @cancelAlgorithm="cancelThis"
+        @sureSave="saveThis"></CanvasDraw>
     </div>
   </div>
 </template>
@@ -123,7 +129,13 @@ export default {
     },
     checkboxchange(bol, item, index) {
       item.beforePickStatus = bol
-
+      if (item.isPick === true && item.isNeedConfig === true && item.isConfigAlready === false) {
+        this.operateCanvas(item)
+      } else if (item.isPick === true && item.isNeedConfig === false) {
+        this.$emit('sureAlgorithm', true)
+      } else if (item.isPick === false) {
+        this.$emit('sureAlgorithm', true)
+      }
       // 刚开始选择后来不选择,由true->false的转变
     //   if(item.isConfigAlready && !bol ){
     //       console.log("xxxxsdcf",store)
@@ -167,6 +179,14 @@ export default {
       // console.log("操作之后的数据内容",this.algorithmListOrigin)
       this.canvasVisable = false
       this.$emit('canvasShow', false)
+    },
+    cancelThis() {
+      this.currentItem.isPick = false
+      this.currentItem.beforePickStatus = false
+      this.$emit('sureAlgorithm', true)
+    },
+    saveThis() {
+      this.$emit('sureAlgorithm', true)
     },
     async getAlgorithmList(deviceId) {
       const { body: res } = await client.getInstanceList(deviceId)
