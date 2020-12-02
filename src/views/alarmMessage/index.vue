@@ -1221,5 +1221,8 @@ export default {
   .el-collapse-item__wrap {
     border: none;
   }
+  .el-collapse-item__arrow {
+    margin-bottom: 2px;
+  }
 }
 </style>
