@@ -423,7 +423,16 @@ html {
 .not-allowed {
     cursor: not-allowed !important;
 }
-    
+.el-input__inner {
+    height:36px;
+    font-size: 12px;
+    border-radius: 2px;
+}   
+.el-button{
+    height:36px;
+    font-size: 12px;
+    border-radius: 2px;
+}
 .image {
  width:100%;
  height:39px;

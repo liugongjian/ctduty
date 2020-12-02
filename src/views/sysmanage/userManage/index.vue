@@ -9,13 +9,13 @@
             v-waves
             class="filter-item searchbtn"
             size="mini"
-            style="height: 36px"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="getUserList"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item searchbtn"
-            style="font-size:12px; height: 36px"
+            style="font-size:12px; height: 36px;"
             size="mini"
             @click="resetQuery"
           >重置</el-button>

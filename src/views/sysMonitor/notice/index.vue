@@ -19,7 +19,7 @@
             v-waves
             class="filter-item"
             size="mini"
-            style="height: 36px"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="getNoticeList"
           >{{ '搜索' }}</el-button>
