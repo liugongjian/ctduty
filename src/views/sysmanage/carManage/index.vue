@@ -437,6 +437,18 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.listLoading = false
         this.tableLoading = false
       })
@@ -769,6 +781,9 @@ export default {
   .el-input__inner {
     height:36px;
     border-radius: 2px;
+  }
+  th,td {
+    padding: 0px;
   }
 }
 </style>
