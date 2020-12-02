@@ -192,17 +192,17 @@
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form
+          ref="editCarForm"
           :model="editForm"
+          :rules="carRules"
           label-position="right"
           label-width="130px"
-          :rules="carRules"
-          ref="editCarForm"
         >
           <el-form-item label="车牌号：" prop="carNumber">
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
-            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
+            <el-select v-model="editForm.carList" :value="editForm.carList" style="width:203.8px;" placeholder="请选择所属名单">
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -212,7 +212,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车牌颜色：">
-            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
+            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色" style="width:203.8px;">
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -673,9 +673,11 @@ export default {
           .then(res => {
             this.getList()
             this.dialogVisable = false
-            this.$message({
+            this.$notify({
+              title: '成功',
               message: '添加成功',
-              type: 'success'
+              type: 'success',
+              duration: 2000
             })
             this.addCarForm = {
               carWord: '',

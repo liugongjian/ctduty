@@ -406,7 +406,12 @@ export default {
           if (response.code !== 0) {
             return this.$message.error('添加用户失败，请联系系统管理员')
           }
-          this.$message.success('添加用户成功')
+          this.$notify({
+            title: '成功',
+            message: '添加成功',
+            type: 'success',
+            duration: 2000
+          })
           this.addUserDialogVisible = false
           this.getUserList()
         })
@@ -433,8 +438,13 @@ export default {
             return this.$message.error('更新用户信息失败,请稍后再试')
           }
           this.editUserDialogVisible = false
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getUserList()
-          this.$message.success('更新用户信息成功')
         })
       })
     },
@@ -461,8 +471,13 @@ export default {
 
           this.deleteUserId = 0
           this.deleteUserName = ''
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getUserList()
-          this.$message.success('删除信息成功')
         })
       })
     },

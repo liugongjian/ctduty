@@ -566,6 +566,12 @@ export default {
         fetchDeleteFace(params).then(response => {
           this.getfaceList()
           this.delIDArr = []
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
       })
     },
