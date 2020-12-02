@@ -7,7 +7,7 @@
             v-model="formInline.searchkey"
             placeholder="请输入车牌号"
             class="filter-item"
-            style="width: 260px;"
+            style="width: 260px;border-radius:2px;height:38px;"
             @keyup.enter.native="onSearch"
           ></el-input>
           <el-button
@@ -15,10 +15,10 @@
             class="filter-item sureItem"
             size="mini"
             type="warning"
-            style="margin-bottom: 2px"
+            style="margin-bottom: 2px;margin-left:5px;"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
+          <el-button class="searchbtn filter-item sureItem" style="margin-bottom:2px;" size="mini" @click="resetQuery">重置</el-button>
         </div>
 
         <div class="pull-right">
@@ -192,17 +192,22 @@
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
         <el-form
+          ref="editCarForm"
           :model="editForm"
+          :rules="carRules"
           label-position="right"
           label-width="130px"
-          :rules="carRules"
-          ref="editCarForm"
         >
           <el-form-item label="车牌号：" prop="carNumber">
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
-            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
+            <el-select
+              v-model="editForm.carList"
+              :value="editForm.carList"
+              style="width:203.8px;"
+              placeholder="请选择所属名单"
+            >
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -212,7 +217,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车牌颜色：">
-            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
+            <el-select
+              v-model="editForm.carColor"
+              :value="editForm.carColor"
+              placeholder="请选择颜色"
+              style="width:203.8px;"
+            >
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -427,6 +437,18 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.listLoading = false
         this.tableLoading = false
       })
@@ -673,9 +695,11 @@ export default {
           .then(res => {
             this.getList()
             this.dialogVisable = false
-            this.$message({
+            this.$notify({
+              title: '成功',
               message: '添加成功',
-              type: 'success'
+              type: 'success',
+              duration: 2000
             })
             this.addCarForm = {
               carWord: '',
@@ -708,7 +732,7 @@ export default {
   }
   overflow: auto !important;
   .dlTem:hover {
-  a {
+    a {
       color: #409eff;
     }
   }
@@ -754,6 +778,12 @@ export default {
   .sureItem {
     height: 36px;
   }
+  .el-input__inner {
+    height:36px;
+    border-radius: 2px;
+  }
+  th,td {
+    padding: 0px;
+  }
 }
-
 </style>

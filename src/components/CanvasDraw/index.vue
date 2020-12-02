@@ -128,13 +128,13 @@ export default {
         {
           name: 'peopleTraffic',
           cnName: '人流识别',
-          message: '标记不正确,人流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,人流识别只能标注一条直线,请重新标注',
           need: 'line'
         },
         {
           name: 'plateTraffic',
           cnName: '车流识别',
-          message: '标记不正确,车流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,车流识别只能标注一条直线,请重新标注',
           need: 'line'
         }
       ],
@@ -331,7 +331,7 @@ export default {
             }
           }
         } else {
-          if (lineCount >= 1 && areaCount == 0) {
+          if (lineCount == 1 && areaCount == 0) {
             flag = true
           }
         }

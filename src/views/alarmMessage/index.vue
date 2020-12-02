@@ -162,14 +162,22 @@
               tooltip-effect="dark"
               fit
             >
-              <el-table-column
-                :show-overflow-tooltip="true"
-                :formatter="formatTime"
-                :label="'时间'"
-                align="center"
-                min-width="4%"
-                prop="createTime"
-              ></el-table-column>
+              <el-table-column :label="'图片'" align="center" min-width="6%">
+                <template slot-scope="scope">
+                  <!-- <el-popover
+                    placement="left"
+                    trigger="hover"
+                  >
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
+                    <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
+                  </el-popover>-->
+                  <el-image
+                    :src="scope.row.imageCompress"
+                    style="object-fit:contain;cursor: zoom-in;"
+                    @click="openBig(scope.row.image)"
+                  />
+                </template>
+              </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatType"
@@ -215,22 +223,14 @@
                 </template>
               </el-table-column>
               <!--  <el-table-column :show-overflow-tooltip="true" :label="'摄像头'" min-width="15%" prop="camera.name"></el-table-column> -->
-              <el-table-column :label="'图片'" align="center" min-width="6%">
-                <template slot-scope="scope">
-                  <!-- <el-popover
-                    placement="left"
-                    trigger="hover"
-                  >
-                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;"/>
-                    <el-image slot="reference" :src="scope.row.imageCut" class="image" @click="openBig(scope.row.image)" />
-                  </el-popover>-->
-                  <el-image
-                    :src="scope.row.imageCompress"
-                    style="object-fit:contain;"
-                    @click="openBig(scope.row.image)"
-                  />
-                </template>
-              </el-table-column>
+              <el-table-column
+                :show-overflow-tooltip="true"
+                :formatter="formatTime"
+                :label="'时间'"
+                align="center"
+                min-width="4%"
+                prop="createTime"
+              ></el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'算法名称'"
@@ -287,11 +287,11 @@
         <div :model="temp" label-position="right" label-width="100px">
           <div
             prop="image"
-            style="width:480px;height:270px;position:relative;"
+            style="width:480px;height:270px;position:relative;cursor:zoom-in;"
             @click="()=>{openBig(temp.image)}"
           >
             <img :src="temp.image" style="z-index:1;width:480px;height:270px;" >
-            <CanvasDialog
+            <!--  <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
               :left-top="[points[0],points[1]]"
@@ -299,7 +299,7 @@
               :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
               :right-bottom="[points[2],points[3]]"
               style="z-index:2;position:absolute;top:0;left:0;"
-            ></CanvasDialog>
+            ></CanvasDialog> -->
           </div>
           <div class="popfooter">
             <el-tooltip
@@ -828,6 +828,12 @@ export default {
         const s = this.currentTab + ' ' + this.startTime + ':00'
         const end = this.currentTab + ' ' + this.endTime + ':00'
         const h = this.formInline.typeValue
+        this.$notify({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
         this.getList(s, end, h)
       })
     },
@@ -1214,6 +1220,9 @@ export default {
   }
   .el-collapse-item__wrap {
     border: none;
+  }
+  .el-collapse-item__arrow {
+    margin-bottom: 2px;
   }
 }
 </style>

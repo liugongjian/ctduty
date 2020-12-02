@@ -9,13 +9,13 @@
             v-waves
             class="filter-item searchbtn"
             size="mini"
-            style="height: 36px"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="getUserList"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item searchbtn"
-            style="font-size:12px; height: 36px"
+            style="font-size:12px; height: 36px;"
             size="mini"
             @click="resetQuery"
           >重置</el-button>
@@ -380,6 +380,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.tableLoading = false
       })
     },
@@ -406,7 +418,12 @@ export default {
           if (response.code !== 0) {
             return this.$message.error('添加用户失败，请联系系统管理员')
           }
-          this.$message.success('添加用户成功')
+          this.$notify({
+            title: '成功',
+            message: '添加成功',
+            type: 'success',
+            duration: 2000
+          })
           this.addUserDialogVisible = false
           this.getUserList()
         })
@@ -433,8 +450,13 @@ export default {
             return this.$message.error('更新用户信息失败,请稍后再试')
           }
           this.editUserDialogVisible = false
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getUserList()
-          this.$message.success('更新用户信息成功')
         })
       })
     },
@@ -461,8 +483,13 @@ export default {
 
           this.deleteUserId = 0
           this.deleteUserName = ''
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getUserList()
-          this.$message.success('删除信息成功')
         })
       })
     },
@@ -490,7 +517,7 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .userManage {
   padding: 10px 20px;
   .title {
@@ -527,6 +554,9 @@ export default {
     display: inline-block;
     width: 100px !important;
     text-align: left !important;
+  }
+  td,th {
+    padding: 0px;
   }
 }
 

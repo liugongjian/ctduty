@@ -303,6 +303,7 @@ export default {
     },
     updateMonitorDialog(item) {
       this.form = {}
+      this.options = []
       this.form.changeName = item.name
       this.id = item.id
       this.dialogFormVisible = true
@@ -315,9 +316,11 @@ export default {
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
-          this.$message({
+          this.$notify({
+            title: '成功',
+            message: '移除成功',
             type: 'success',
-            message: '删除成功'
+            duration: 2000
           })
           this.getLiveList()
         })
@@ -328,7 +331,9 @@ export default {
       this.submiting = false
       this.form = {}
       this.dialogFormVisible = false
-      this.id = null
+      setTimeout(() => {
+        this.id = null
+      }, 200)
     },
     addMonitorDialog() {
       this.form = {}
@@ -348,9 +353,17 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.$message({
+              this.deviceList.forEach(item => {
+                if (item.id === this.id) {
+                  item.image = fakeimg
+                  item.name = this.form.changeName
+                }
+              })
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
                 type: 'success',
-                message: '修改成功'
+                duration: 2000
               })
               this.onClose()
               this.getLiveList()
@@ -373,9 +386,11 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.$message({
+              this.$notify({
+                title: '成功',
+                message: '添加成功',
                 type: 'success',
-                message: '添加成功'
+                duration: 2000
               })
               this.onClose()
               this.getLiveList()
