@@ -331,7 +331,9 @@ export default {
       this.submiting = false
       this.form = {}
       this.dialogFormVisible = false
-      this.id = null
+      setTimeout(() => {
+        this.id = null
+      }, 200)
     },
     addMonitorDialog() {
       this.form = {}
