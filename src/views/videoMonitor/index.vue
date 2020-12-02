@@ -133,8 +133,11 @@
       </div>
       <div class="rightPanel">
         <div v-loading="realTimeDataLoading" :class="showTrafficPanel? 'realTimeData realTimeData-unfolded':'realTimeData realTimeData-folded'">
-          <div class="panelTitle" @click="handleFolded">
-            实时分析<i :class="showTrafficPanel ? 'fold-icon el-icon-arrow-down fold-icon-folded': 'fold-icon el-icon-arrow-down'"></i>
+          <div class="panelTitle">
+            实时分析
+            <span class="fold-icon-wrapper" @click="handleFolded">
+              <i :class="showTrafficPanel ? 'fold-icon el-icon-arrow-down fold-icon-folded': 'fold-icon el-icon-arrow-down'"></i>
+            </span>
           </div>
           <div class="streamData-wrapper">
             <div class="streamData">
@@ -903,16 +906,34 @@ export default {
           transition:all 0.2s ease;
         }
         .panelTitle {
-          padding-bottom: 10px;
+          margin-bottom: 10px;
           line-height: 20px;
-          cursor:pointer;
+          height: 20px;
+          position:relative;
+
+          .fold-icon-wrapper{
+            cursor:pointer;
+            &:hover{
+               background-color: #d9d9d9;
+            }
+            // padding: 5px;
+            width: 28px;
+            height: 28px;
+            margin-top: -4px;
+            border-radius: 2px;
+            border-radius: 2px;
+            display: inline-block;
+            // float: right;
+            position:absolute;
+            right:0;
+            text-align: center;
+            background-color: #f0f2f5;
+          }
           .fold-icon{
-            // padding-left: 10px;
-            float: right;
             transition: transform .5s;
             font-weight: 300;
             font-size:12px;
-            line-height: 20px;
+            line-height: 28px;
             &-folded{
               transform: rotate(180deg);
             }
