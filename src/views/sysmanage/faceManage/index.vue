@@ -113,7 +113,7 @@
             </div>
             <div slot="tip" class="el-upload__tip" style="width: 400px">
               支持的格式：图片仅支持.png格式
-              <br >图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.png
+              <br />图片命名规则：使用图片中人脸的姓名进行图片命名，如张三.png
             </div>
           </el-upload>
           <div slot="footer" class="dialog-footer">
@@ -190,13 +190,11 @@
             <el-image :src="item.image" class="image" />
             <div class="face-info">
               <div style="display:flex;">
-                <el-tooltip
-                  :content="item.name"
-                  placement="bottom-start"
-                >
-                  <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
-                    {{ item.name }}
-                  </div>
+                <el-tooltip :content="item.name" placement="bottom-start">
+                  <div
+                    class="face-name"
+                    style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"
+                  >{{ item.name }}</div>
                 </el-tooltip>
                 <el-tag
                   :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
@@ -329,18 +327,18 @@
   </div>
 </template>
 <script>
-import { Message } from 'element-ui'
-import Cookies from 'js-cookie'
-import Pagination from '@/components/Pagination'
-import 'element-ui/lib/theme-chalk/index.css'
+import { Message } from "element-ui";
+import Cookies from "js-cookie";
+import Pagination from "@/components/Pagination";
+import "element-ui/lib/theme-chalk/index.css";
 import {
   fetchFaceList,
   fetchAddFace,
   fetchDeleteFace,
   fetchUpdateFace,
   fetchSearchFace
-} from '@/api/face'
-const token = Cookies.get('token')
+} from "@/api/face";
+const token = Cookies.get("token");
 export default {
   components: { Pagination },
   data() {
@@ -350,52 +348,52 @@ export default {
         Authorization: token
       },
       upSingleData: {
-        name: ''
+        name: ""
       },
       mulUpData: {
-        name: ''
+        name: ""
       },
       mulTableData: [],
-      upSingleUrl: process.env.LOT_ROOT + '/Userface/UploadImage',
-      upMulUrl: process.env.LOT_ROOT + '/Userface/UploadMultiImage',
+      upSingleUrl: process.env.LOT_ROOT + "/Userface/UploadImage",
+      upMulUrl: process.env.LOT_ROOT + "/Userface/UploadMultiImage",
       fileList: [
         {
-          name: 'food.jpeg',
+          name: "food.jpeg",
           url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
         },
         {
-          name: 'food2.jpeg',
+          name: "food2.jpeg",
           url:
-            'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
         }
       ],
       dialogForm: {
-        name: '',
-        image: '',
-        nameList: '',
-        id: ''
+        name: "",
+        image: "",
+        nameList: "",
+        id: ""
       },
       editForm: {},
       isBatchSuccess: false,
       typeOptions: [
-        { name: '白名单', _id: 1 },
-        { name: '黑名单', _id: 2 },
-        { name: '其他', _id: 3 }
+        { name: "白名单", _id: 1 },
+        { name: "黑名单", _id: 2 },
+        { name: "其他", _id: 3 }
       ],
       addFaceForm: {
-        name: '',
-        imageUrl: '',
-        searchkey: '',
+        name: "",
+        imageUrl: "",
+        searchkey: "",
         typeValue: 1
       },
       addrules: {
-        name: [{ required: true, trigger: 'blur', message: '名称不能为空' }],
+        name: [{ required: true, trigger: "blur", message: "名称不能为空" }],
         imageUrl: [
-          { required: true, trigger: 'blur', message: '图片不能为空' }
+          { required: true, trigger: "blur", message: "图片不能为空" }
         ],
         typeValue: [
-          { required: true, trigger: 'blur', message: '所属名单不能为空' }
+          { required: true, trigger: "blur", message: "所属名单不能为空" }
         ]
       },
       listLoading: false,
@@ -405,182 +403,182 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 12,
-      userId: Cookies.get('userId'),
-      originCode: '',
+      userId: Cookies.get("userId"),
+      originCode: "",
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       faceList: [],
       bulkimportVisble: false,
-      imageUrl: '',
+      imageUrl: "",
       delMulId: null
-    }
+    };
   },
   watch: {
     limit() {
-      this.page = 1
-      this.pageChange()
+      this.page = 1;
+      this.pageChange();
     }
   },
   async created() {
-    await Message.closeAll()
-    await this.getfaceList()
+    await Message.closeAll();
+    await this.getfaceList();
   },
   methods: {
     delmulTableInfo(id) {
-      this.delMulId = id
-      this.$confirm('你确定要删除此条数据吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.delMulId = id;
+      this.$confirm("你确定要删除此条数据吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
           this.mulTableData = this.mulTableData.filter(item => {
-            return item.id !== this.delMulId
-          })
+            return item.id !== this.delMulId;
+          });
         })
         .catch(() => {
-          return null
-        })
+          return null;
+        });
     },
     handleAvatarProgress(e, file) {},
     checkModel() {},
     batchUpSuccess(res, file) {
-      this.isBatchSuccess = true
+      this.isBatchSuccess = true;
       this.mulTableData.push({
-        name: file.name.split('.')[0],
-        image: res.body.data[file.name.split('.')[0]],
+        name: file.name.split(".")[0],
+        image: res.body.data[file.name.split(".")[0]],
         nameList: 1,
         typeOptions: [
-          { name: '白名单', _id: 1 },
-          { name: '黑名单', _id: 2 },
-          { name: '其他', _id: 3 }
+          { name: "白名单", _id: 1 },
+          { name: "黑名单", _id: 2 },
+          { name: "其他", _id: 3 }
         ],
         id: new Date().getTime()
-      })
+      });
     },
     handleAvatarSuccess(res, file) {
-      this.addFaceForm.imageUrl = res.body.data[file.name.split('.')[0]]
+      this.addFaceForm.imageUrl = res.body.data[file.name.split(".")[0]];
     },
     editAvatarSuccess(res, file) {
-      this.editForm.image = res.body.data[file.name.split('.')[0]]
+      this.editForm.image = res.body.data[file.name.split(".")[0]];
     },
     handleAvatarError(res, file) {
-      console.log(res, file, '哈哈')
+      console.log(res, file, "哈哈");
     },
     beforeAvatarUpload(file) {
-      this.upSingleData.name = file.name.split('.')[0]
-      const isJPG = file.type === 'image/png'
-      const isLt1M = file.size / 1024 / 1024 < 1
+      this.upSingleData.name = file.name.split(".")[0];
+      const isJPG = file.type === "image/png";
+      const isLt1M = file.size / 1024 / 1024 < 1;
       if (!isJPG && !isLt1M) {
-        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+        this.$message.error("上传人脸图片只能是 PNG 格式 且大小不能超过1M!");
       } else if (!isJPG) {
-        this.$message.error('上传人脸图片只能是 PNG 格式!')
+        this.$message.error("上传人脸图片只能是 PNG 格式!");
       } else if (!isLt1M) {
-        this.$message.error('上传人脸图片大小不能超过 1MB!')
+        this.$message.error("上传人脸图片大小不能超过 1MB!");
       }
 
-      return isJPG && isLt1M
+      return isJPG && isLt1M;
     },
     beforeMulUpload(file) {
-      const isJPG = file.type === 'image/png'
-      const isLt1M = file.size / 1024 / 1024 < 1
+      const isJPG = file.type === "image/png";
+      const isLt1M = file.size / 1024 / 1024 < 1;
       if (!isJPG && !isLt1M) {
-        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+        this.$message.error("上传人脸图片只能是 PNG 格式 且大小不能超过1M!");
       } else if (!isJPG) {
-        this.$message.error('上传人脸图片只能是 PNG 格式!')
+        this.$message.error("上传人脸图片只能是 PNG 格式!");
       } else if (!isLt1M) {
-        this.$message.error('上传人脸图片大小不能超过 1MB!')
+        this.$message.error("上传人脸图片大小不能超过 1MB!");
       } else {
-        this.mulUpData.name = file.name.split('.')[0]
-        this.isBatchSuccess = true
+        this.mulUpData.name = file.name.split(".")[0];
+        this.isBatchSuccess = true;
       }
-      return isJPG && isLt1M
+      return isJPG && isLt1M;
     },
     bulkimport() {
-      this.bulkimportVisble = true
+      this.bulkimportVisble = true;
     },
     closebulkimportDialog() {
-      this.bulkimportVisble = false
-      this.isBatchSuccess = false
-      this.mulTableData = []
+      this.bulkimportVisble = false;
+      this.isBatchSuccess = false;
+      this.mulTableData = [];
     },
     getfaceList() {
-      this.tableLoading = true
+      this.tableLoading = true;
       const query = {
         page: {
           index: this.page,
           size: this.limit
         },
         params: {}
-      }
+      };
       fetchFaceList(query).then(response => {
-        if (response.code !== 0) return
-        this.faceList = response.body.data
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        this.tableLoading = false
-      })
+        if (response.code !== 0) return;
+        this.faceList = response.body.data;
+        this.tableData = response.body.data;
+        this.total = response.body.page.total;
+        this.listLoading = false;
+        this.tableLoading = false;
+      });
     },
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的数据!',
-          type: 'warning'
-        })
+          message: "请选择需要删除的数据!",
+          type: "warning"
+        });
       } else {
-        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         }).then(() => {
-          const params = [...this.delIDArr]
+          const params = [...this.delIDArr];
           fetchDeleteFace(params)
             .then(response => {
-              this.getfaceList()
-              this.delIDArr = []
+              this.getfaceList();
+              this.delIDArr = [];
               if (response.code !== 0) {
-                return
+                return;
               }
               this.$notify({
-                title: '成功',
-                message: '批量删除成功',
-                type: 'success',
+                title: "成功",
+                message: "批量删除成功",
+                type: "success",
                 duration: 2000
-              })
+              });
             })
             .catch(() => {
-              this.delIDArr = []
-            })
-        })
+              this.delIDArr = [];
+            });
+        });
       }
     },
     delAlert(d) {
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
-        const params = [d]
+        const params = [d];
         fetchDeleteFace(params).then(response => {
-          this.getfaceList()
-          this.delIDArr = []
+          this.getfaceList();
+          this.delIDArr = [];
           this.$notify({
-            title: '成功',
-            message: '删除成功',
-            type: 'success',
+            title: "成功",
+            message: "删除成功",
+            type: "success",
             duration: 2000
-          })
-        })
-      })
+          });
+        });
+      });
     },
     editDialog(v) {
-      this.editForm = JSON.parse(JSON.stringify(v))
-      this.editVisable = true
+      this.editForm = JSON.parse(JSON.stringify(v));
+      this.editVisable = true;
     },
     editCloseDialog() {
-      this.editVisable = false
+      this.editVisable = false;
     },
     editFaceConfirm() {
       const params = [
@@ -590,36 +588,36 @@ export default {
           nameList: this.editForm.nameList,
           id: this.editForm.id
         }
-      ]
+      ];
       fetchUpdateFace(params).then(response => {
         this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success',
+          title: "成功",
+          message: "编辑成功",
+          type: "success",
           duration: 2000
-        })
-        this.getfaceList()
-        this.editVisable = false
-      })
+        });
+        this.getfaceList();
+        this.editVisable = false;
+      });
     },
     addFace() {
-      this.dialogVisable = true
+      this.dialogVisable = true;
     },
     closeDialog() {
       (this.addFaceForm = {
-        name: '',
-        imageUrl: '',
-        typeValue: '',
-        searchkey: ''
+        name: "",
+        imageUrl: "",
+        typeValue: "",
+        searchkey: ""
       }),
-      (this.dialogVisable = false)
-      this.clearValidate('addForm')
+        (this.dialogVisable = false);
+      this.clearValidate("addForm");
     },
     clearValidate(formName) {
-      this.$refs[formName].clearValidate()
+      this.$refs[formName].clearValidate();
     },
     onSearch() {
-      this.page = 1
+      this.page = 1;
       const params = {
         page: {
           index: this.page,
@@ -627,134 +625,134 @@ export default {
         },
         params: [
           {
-            field: 'name',
-            operator: 'LIKE',
+            field: "name",
+            operator: "LIKE",
             value: `%${this.addFaceForm.searchkey}%`
           }
         ]
-      }
+      };
       fetchSearchFace(params).then(res => {
-        this.faceList = res.body.data
-        this.tableData = res.body.data
-        this.page = 1
-        this.total = res.body.page.total
-      })
+        this.faceList = res.body.data;
+        this.tableData = res.body.data;
+        this.page = 1;
+        this.total = res.body.page.total;
+      });
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return 'tableRowClassHeader'
+      return "tableRowClassHeader";
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1
+        this.page = 1;
       }
-      this.oldSize = this.limit
-      this.getfaceList()
+      this.oldSize = this.limit;
+      this.getfaceList();
     },
     goBack() {
-      this.$router.go(-1)
+      this.$router.go(-1);
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
+        this.originCode = columnObj[key][0];
       }
-      this.page = 1
-      let columnObjKey = ''
+      this.page = 1;
+      let columnObjKey = "";
       for (var i in columnObj) {
-        columnObjKey = i
+        columnObjKey = i;
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getfaceList()
+        this.filteredValue = [];
+        this.getfaceList();
       } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getfaceList()
+        this.filteredValue = columnObj[columnObjKey];
+        this.getfaceList();
       }
     },
     handleSelectionChange(val) {
       val.forEach(item => {
         if (this.delIDArr.indexOf(item.id) === -1) {
-          this.delIDArr.push(item.id)
+          this.delIDArr.push(item.id);
         }
-      })
+      });
     },
     checkboxchange(e, val) {
       if (e) {
-        this.delIDArr.push(val.id)
+        this.delIDArr.push(val.id);
       } else {
-        const idx = this.delIDArr.indexOf(val.id)
-        this.delIDArr.splice(idx, 1)
+        const idx = this.delIDArr.indexOf(val.id);
+        this.delIDArr.splice(idx, 1);
       }
     },
     addFaceConfirm() {
       this.$refs.addForm.validate(valid => {
-        if (!valid) return
+        if (!valid) return;
         const params = [
           {
             name: this.addFaceForm.name,
             image: this.addFaceForm.imageUrl,
             nameList: this.addFaceForm.typeValue
           }
-        ]
+        ];
         fetchAddFace(params)
           .then(res => {
             this.addFaceForm = {
-              name: '',
-              imageUrl: ''
-            }
+              name: "",
+              imageUrl: ""
+            };
             this.$notify({
-              title: '成功',
-              message: '增加成功',
-              type: 'success',
+              title: "成功",
+              message: "增加成功",
+              type: "success",
               duration: 2000
-            })
-            this.getfaceList()
-            this.dialogVisable = false
+            });
+            this.getfaceList();
+            this.dialogVisable = false;
           })
           .catch(() => {
             this.$notify({
-              title: '失败',
-              message: '增加失败',
-              type: 'error',
+              title: "失败",
+              message: "增加失败",
+              type: "error",
               duration: 2000
-            })
-          })
-      })
+            });
+          });
+      });
     },
     dialogConfirm() {
       this.mulTableData.forEach(item => {
-        const { name, image, nameList } = item
+        const { name, image, nameList } = item;
         const params = [
           {
             name,
             image,
             nameList
           }
-        ]
+        ];
         fetchAddFace(params).then(res => {
           this.dialogForm = {
-            name: '',
-            image: '',
-            nameList: '',
-            id: ''
-          }
-          this.getfaceList()
-          this.bulkimportVisble = false
-        })
-      })
+            name: "",
+            image: "",
+            nameList: "",
+            id: ""
+          };
+          this.getfaceList();
+          this.bulkimportVisble = false;
+        });
+      });
     },
     // 重置
     resetQuery() {
-      this.addFaceForm.searchkey = ''
-      this.page = 1
-      this.limit = 12
-      this.getfaceList()
+      this.addFaceForm.searchkey = "";
+      this.page = 1;
+      this.limit = 12;
+      this.getfaceList();
     },
     gohistory() {
-      this.$router.push('/alarmMessage/faceHistory')
+      this.$router.push("/alarmMessage/faceHistory");
     }
   }
-}
+};
 </script>
 
 <style lang='scss'>
@@ -762,8 +760,8 @@ export default {
   padding-top: 50px;
 }
 .faceindexlist {
-    overflow: auto !important;
-    .avatar-uploader .el-upload {
+  overflow: auto !important;
+  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
@@ -864,12 +862,11 @@ export default {
     text-align: center;
   }
   .namespan {
-    width:35px;
-    overflow:hidden !important;
-    white-space:nowrap !important;
-    text-overflow:ellipsis !important;
+    width: 35px;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
   }
 }
-
 </style>
 
