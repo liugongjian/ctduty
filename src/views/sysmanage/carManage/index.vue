@@ -202,7 +202,12 @@
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
-            <el-select v-model="editForm.carList" :value="editForm.carList" style="width:203.8px;" placeholder="请选择所属名单">
+            <el-select
+              v-model="editForm.carList"
+              :value="editForm.carList"
+              style="width:203.8px;"
+              placeholder="请选择所属名单"
+            >
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -212,7 +217,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车牌颜色：">
-            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色" style="width:203.8px;">
+            <el-select
+              v-model="editForm.carColor"
+              :value="editForm.carColor"
+              placeholder="请选择颜色"
+              style="width:203.8px;"
+            >
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -710,7 +720,7 @@ export default {
   }
   overflow: auto !important;
   .dlTem:hover {
-  a {
+    a {
       color: #409eff;
     }
   }
@@ -761,5 +771,4 @@ export default {
     border-radius: 2px;
   }
 }
-
 </style>
