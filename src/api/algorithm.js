@@ -24,3 +24,12 @@ export function getCameraList(query) {
     data: query
   })
 }
+
+// 获取摄像头Tree
+export function getCameraTree(query) {
+  return request({
+    url: 'nvsapi/Camera/Tree',
+    method: 'post',
+    data: query
+  })
+}
