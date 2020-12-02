@@ -14,13 +14,13 @@
             v-waves
             class="filter-item"
             size="mini"
-            style="height: 36px"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            style="font-size:12px; height: 36px"
+            style="font-size:12px; height: 36px;"
             size="mini"
             @click="resetQuery"
           >重置</el-button>
@@ -172,7 +172,6 @@
           </div>
         </el-dialog>
       </div>
-
       <el-row v-if="tableData.length>0">
         <el-col
           v-for="(item,index) in tableData"
@@ -229,9 +228,7 @@
           </el-card>
         </el-col>
       </el-row>
-
       <div v-else class="face-nodata">暂无数据</div>
-
       <!-- <el-table
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
@@ -566,6 +563,12 @@ export default {
         fetchDeleteFace(params).then(response => {
           this.getfaceList()
           this.delIDArr = []
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
       })
     },
@@ -862,6 +865,10 @@ export default {
     overflow:hidden !important;
     white-space:nowrap !important;
     text-overflow:ellipsis !important;
+  }
+  .el-input__inner {
+    height:36px;
+    border-radius: 2px;
   }
 }
 

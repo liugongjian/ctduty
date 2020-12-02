@@ -105,7 +105,7 @@
         </div>
       </el-dialog>
     </div>
-    <div v-if="isShowMark" class="v-modal mark"></div>
+    <div v-if="isShowMark" class="mark"></div>
   </div>
 </template>
 

@@ -13,7 +13,7 @@
             </el-input>
 
           </div>
-          <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
+          <!-- <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
             <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)" @mouseover="checkNameLen(k)">
               <div>
                 <span class="displayIB">
@@ -30,7 +30,8 @@
                 </span>
               </div>
             </li>
-          </ul>
+          </ul> -->
+          <el-tree v-if="caremaTreeData.length>0" :style="styleObj" :data="caremaTreeData" @node-click="cameraTreeClick"></el-tree>
           <div v-else class="noResult">暂无摄像头</div>
           <!-- <pagination
                 v-show="total>0"
@@ -45,7 +46,7 @@
         </el-col>
         <el-col :span="17" class="algorithmConfigList totalLine">
           <div v-if="algorithmList.length>0" class="algorithmBox">
-            <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
+            <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow" @sureAlgorithm="applyAlgorithms"></VideoConfig>
             <div class="totalNum">算法总计：{{ algorithmList.length }}</div>
           </div>
           <div v-else class="nodata">
@@ -53,9 +54,9 @@
           </div>
         </el-col>
       </el-row>
-      <div class="listBtnBox">
+      <!-- <div class="listBtnBox">
         <el-button :loading="btnLoading" type="primary" @click="applyAlgorithms(true)">确定</el-button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -68,7 +69,7 @@ import VideoConfig from '@/components/VideoConfig'
 import client from '@/api/vedioAlgo'
 import SvgIcon from '@/components/SvgIcon'
 import {
-  taskList, videoListByAlgorithmId, getCameraList
+  taskList, videoListByAlgorithmId, getCameraList, getCameraTree
 } from '@/api/algorithm'
 
 export default {
@@ -102,7 +103,8 @@ export default {
         height: ''
       },
       btnLoading: false,
-      deviceShowTooltip: true
+      deviceShowTooltip: true,
+      caremaTreeData: []
     }
   },
   watch: {
@@ -237,6 +239,27 @@ export default {
           getId && this.getAlgorithmList(getId)
         }
       })
+      getCameraTree(query).then(res => {
+        if (res.code === 0) {
+          this.caremaTreeData = res.body.data.map(item => {
+            return {
+              label: item.name,
+              children: item.data.map(val => {
+                return {
+                  label: val.name,
+                  info: val,
+                  ifChild: true // 用来判断是否是子级
+                }
+              })
+            }
+          })
+        }
+      })
+    },
+    cameraTreeClick(data) {
+      if (data.ifChild) {
+        console.log('clickItem', data)
+      }
     },
     changeDeviceId(id, k) {
       this.controlShow = false
@@ -284,6 +307,9 @@ export default {
         [[]]
       )
     },
+    // applyAlgorithmsTest(val) {
+    //   console.log('测试----------->', val)
+    // },
     applyAlgorithms(flag) {
       if (flag) {
         // 先组装参数，包含删除、增加、修改
@@ -404,10 +430,8 @@ export default {
     checkNameLen(k) {
       const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth
       if (eleWidth > 179) {
-        // console.log('芜湖~')
         this.deviceShowTooltip = false
       } else {
-        // console.log('起飞')
         this.deviceShowTooltip = true
       }
     }
@@ -424,7 +448,12 @@ export default {
         background: #fff;
         // height: 100%;
         // min-height: 100%;
-
+      /deep/.el-tree{
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+      }
     }
     // /deep/.el-tabs__header{
     //     margin: 5px 0 5px;

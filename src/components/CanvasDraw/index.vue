@@ -128,13 +128,13 @@ export default {
         {
           name: 'peopleTraffic',
           cnName: '人流识别',
-          message: '标记不正确,人流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,人流识别只能标注一条直线,请重新标注',
           need: 'line'
         },
         {
           name: 'plateTraffic',
           cnName: '车流识别',
-          message: '标记不正确,车流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,车流识别只能标注一条直线,请重新标注',
           need: 'line'
         }
       ],
@@ -275,6 +275,7 @@ export default {
         this.currentPickAlgorithm.isCommitStatus = false
         this.currentPickAlgorithm.isConfigAlready = true
         this.$emit('saveAlgorithm')
+        this.$emit('sureSave')
         // if(this.areas.length==0 && this.currentPickAlgorithm.isCommitStatus){//如果曾经提交了，只是打开看了一下保存，直接发送事件
         //   this.$emit('saveAlgorithm');
         // }else{
@@ -294,10 +295,11 @@ export default {
     },
     cancleAlgorithm() {
       this.$emit('saveAlgorithm')
+      this.$emit('cancelAlgorithm')
     },
 
     checkMarkCorrectAndSave(algoName, areas) {
-      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name == algoName)
+      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name === algoName)
       var flag = false
       if (areas.length > 0) {
         var lineCount = 0
@@ -329,7 +331,7 @@ export default {
             }
           }
         } else {
-          if (lineCount >= 1 && areaCount == 0) {
+          if (lineCount == 1 && areaCount == 0) {
             flag = true
           }
         }
@@ -356,7 +358,7 @@ export default {
       this.areaCount = 1
       this.markName = ''
       this.historyPoints = []
-      this.tempChoosePoint=[]
+      this.tempChoosePoint = []
       this.clearCanvas()
     },
     revoke() {
@@ -381,8 +383,8 @@ export default {
       }
 
       this.drawAll()
-      this.tempChoosePoint=[]
-},
+      this.tempChoosePoint = []
+    },
     // 从后端获取的点坐标格式化
     formatHistoryPoints(historyPoints) {
       // 每个坐标按照比列缩小或者放大
@@ -537,17 +539,15 @@ export default {
         } else {
           this.tempChoosePoint = this.formatPoints(chooseArea.points)
           this.markWallAndForb(chooseArea)
-
         }
-       
       }
     },
-    markWallAndForb(chooseArea){
-      if(this.currentPickAlgorithm.name=="stepWallCheck"){
-        if(chooseArea.name.startsWith("wall")){
-          this.value="1"
-        }else if(chooseArea.name.startsWith("forb")){
-          this.value="2"
+    markWallAndForb(chooseArea) {
+      if (this.currentPickAlgorithm.name == 'stepWallCheck') {
+        if (chooseArea.name.startsWith('wall')) {
+          this.value = '1'
+        } else if (chooseArea.name.startsWith('forb')) {
+          this.value = '2'
         }
       }
     },
