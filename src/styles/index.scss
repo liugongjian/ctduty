@@ -398,7 +398,9 @@ html {
     fill: #95afc0 !important;
     // cursor: no-drop;
 }
-
+.el-notification {
+    z-index: 9999999999999999999999999999999999 !important;
+}
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
 }
@@ -453,7 +455,14 @@ html {
 .el-tabs__nav-wrap::after {
     height: 1px !important;
 }
-
+.el-input__inner {
+    font-size: 12px;
+    border-radius: 2px;
+}
+.el-button {
+    font-size: 12px;
+    border-radius: 2px;
+}
 .el-input__inner {
     &::placeholder {
         font-size: 12px;

@@ -2,103 +2,106 @@
   <div class="alalist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
-        <div class="pull-right alarmmsgright">
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            style="margin-bottom: 10px; margin-left: 10px"
-            @click="onSearch"
-          >{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
-          <span id="openId" class="open" @click="opendraw">
-            {{ openname }}
-            <i class="el-icon-arrow-down"></i>
-          </span>
-        </div>
-        <div class="pull-left alarmmsgleft">
-          <div class="block filter-item">
-            <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
-          </div>
-          <!-- <el-input
+        <el-collapse v-model="activeNames" @change="collapseChange">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <div class="pull-right alarmmsgright">
+                <el-button
+                  v-waves
+                  class="filter-item sureItem"
+                  size="mini"
+                  type="warning"
+                  style="margin-bottom: 10px; margin-left: 10px"
+                  @click.stop.native="onSearch"
+                >{{ '搜索' }}</el-button>
+                <el-button class="searchbtn filter-item sureItem" size="mini" @click.stop.native="onClear">重置</el-button>
+                <span id="openId" class="open" @click="opendraw">
+                  {{ openname }}
+                </span>
+              </div>
+              <div class="pull-left alarmmsgleft">
+                <div class="block filter-item">
+                  <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
+                </div>
+                <!-- <el-input
             v-model="formInline.searchkey"
             placeholder="摄像头名称"
             class="searchinp"
             size="mini"
             @keyup.enter.native="onSearch"
           ></el-input> -->
-          <el-tooltip
-            :content="formInline.searchkey"
-            :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
-            class="item"
-            placement="top-start"
-          >  <el-select
-            v-model="formInline.searchkey"
-            :remote-method="getCameraList"
-            :loading="loading"
-            class="searchinp"
-            style="width:205px;font-size:12px;"
-            filterable
-            remote
-            placeholder="请输入摄像头名称"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-              <el-tooltip
-                :content="item.name"
-                :disabled="item.name === '所有摄像头'"
-                class="item"
-                placement="top-start"
-              >
-                <span>{{ item.name }}</span>
-              </el-tooltip>
-            </el-option>
-          </el-select>
-          </el-tooltip>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
-          </div>
-          <el-select
-            v-model="algorithmList.typeValue"
-            multiple
-            placeholder="请选择事件名称"
-            min-width="300px"
-            collapse-tags
-            style="margin-bottom: 10px;"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in algorithm"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">处理结果:</div>
-          </div>
-          <el-select
-            v-model="formInline.typeValue"
-            style="width:165px; margin-right: 10px"
-            size="mini"
-            class="filter-item"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
+                <el-tooltip
+                  :content="formInline.searchkey"
+                  :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
+                  class="item"
+                  placement="top-start"
+                >  <el-select
+                  v-model="formInline.searchkey"
+                  :remote-method="getCameraList"
+                  :loading="loading"
+                  class="searchinp"
+                  style="width:205px;font-size:12px;"
+                  filterable
+                  remote
+                  placeholder="请输入摄像头名称"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  >
+                    <el-tooltip
+                      :content="item.name"
+                      :disabled="item.name === '所有摄像头'"
+                      class="item"
+                      placement="top-start"
+                    >
+                      <span>{{ item.name }}</span>
+                    </el-tooltip>
+                  </el-option>
+                </el-select>
+                </el-tooltip>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
+                </div>
+                <el-select
+                  v-model="algorithmList.typeValue"
+                  multiple
+                  placeholder="请选择事件名称"
+                  min-width="300px"
+                  collapse-tags
+                  style="margin-bottom: 10px;"
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in algorithm"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">处理结果:</div>
+                </div>
+                <el-select
+                  v-model="formInline.typeValue"
+                  style="width:165px; margin-right: 10px"
+                  size="mini"
+                  class="filter-item"
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in typeOptions"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
 
-          <transition name="fade">
-            <div v-show="flag">
+              </div>
+            </template>
+            <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
               <div class="block filter-item">
                 <div style="margin-right: 20px;font-size: 12px;">选择日期:</div>
               </div>
@@ -148,8 +151,9 @@
                 ></el-time-picker>
               </div>
             </div>
-          </transition>
-        </div>
+          </el-collapse-item>
+        </el-collapse>
+
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
@@ -450,6 +454,7 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       allTotal: 0,
       page: 1,
+      activeNames: [],
       limit: 10,
       userId: '',
       originCode: '',
@@ -517,6 +522,13 @@ export default {
           })
         }
       })
+    },
+    collapseChange(v) {
+      if (v[0] === '1') {
+        this.openname = '收起'
+      } else {
+        this.openname = '展开'
+      }
     },
     getCameraList(keyword) {
       if (keyword !== '') {
@@ -938,7 +950,7 @@ export default {
               }
             })
           })
-        }, 300)
+        }, 100)
         this.tableLoading = false
         if (this.formInline.searchkey === '所有摄像头') {
           this.formInline.searchkey = ''
@@ -1068,17 +1080,13 @@ export default {
         width: 165px !important;
       }
     }
-    .pull-right.alarmmsgright {
-      position: relative;
-      right: 0px;
+     .pull-right.alarmmsgright {
+      position: fixed;
+      right: 50px;
       .clearsearch {
-        position: absolute;
-        top: 0px;
-        // right: 0px;
-        height: 34px;
+        height: 36px;
         margin-left: 10px;
         width: 56px !important;
-        // margin-left: 16px;
         border: 1px solid #ccc;
         background: none;
         border-radius: 3px;
@@ -1172,15 +1180,27 @@ export default {
     .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
       opacity: 0;
     }
-  .el-range-editor--mini.el-input__inner {
-    height: 36px;
-  }
-}
-.el-range-editor--mini .el-range-separator {
-  line-height: 24px;
-  font-size: 14px;
-}
-.el-range-editor--mini .el-range__icon {
-  line-height: 24px;
+    .el-range-editor--mini.el-input__inner {
+      height: 36px;
+    }
+      .el-collapse {
+      border: none;
+    }
+    .el-collapse-item__header {
+      border: none;
+    }
+    .el-collapse-item__wrap {
+      border: none;
+    }
+    .el-collapse-item__arrow {
+      margin-bottom: 2px;
+    }
+    .el-range-editor--mini .el-range-separator {
+      line-height: 24px;
+      font-size: 14px;
+    }
+    .el-range-editor--mini .el-range__icon {
+      line-height: 24px;
+    }
 }
 </style>

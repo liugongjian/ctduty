@@ -69,20 +69,21 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="cameraId" label-width="100px">
+        <el-form-item label="摄像头名称" prop="changeName" label-width="100px">
           <el-select
-            v-model="form.cameraId"
+            v-model="form.changeName"
             :remote-method="getCameraList"
             :loading="loading"
             filterable
             remote
             placeholder="请选择"
+            @change="selChange"
           >
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.name"
-              :value="item.value"
+              :value="item.name"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -117,8 +118,9 @@ export default {
       pageLoading: true,
       dialogFormVisible: false,
       form: {},
+      changeName: '',
       rules: {
-        cameraId: [
+        changeName: [
           { required: true, message: '请选择摄像头名称', trigger: 'change' }
         ]
       },
@@ -177,6 +179,15 @@ export default {
     await this.getAllCamera()
   },
   methods: {
+    selChange(v) {
+      this.form = {}
+      this.form.changeName = v
+      this.options.filter(item => {
+        if (item.name === this.form.changeName) {
+          this.form.cameraId = item.value
+        }
+      })
+    },
     loadFakeImg() {
       this.pageLoading = true
       loadingImg(this.userId).then(res => {
@@ -291,9 +302,11 @@ export default {
       })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.name
-      this.dialogFormVisible = true
+      this.form = {}
+      this.options = []
+      this.form.changeName = item.name
       this.id = item.id
+      this.dialogFormVisible = true
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
@@ -303,9 +316,11 @@ export default {
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
-          this.$message({
+          this.$notify({
+            title: '成功',
+            message: '移除成功',
             type: 'success',
-            message: '删除成功'
+            duration: 2000
           })
           this.getLiveList()
         })
@@ -316,10 +331,13 @@ export default {
       this.submiting = false
       this.form = {}
       this.dialogFormVisible = false
-      this.id = null
+      setTimeout(() => {
+        this.id = null
+      }, 200)
     },
     addMonitorDialog() {
       this.form = {}
+      this.options = []
       this.dialogFormVisible = true
     },
     saveMonitor() {
@@ -335,9 +353,17 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.$message({
+              this.deviceList.forEach(item => {
+                if (item.id === this.id) {
+                  item.image = fakeimg
+                  item.name = this.form.changeName
+                }
+              })
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
                 type: 'success',
-                message: '修改成功'
+                duration: 2000
               })
               this.onClose()
               this.getLiveList()
@@ -360,9 +386,11 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.$message({
+              this.$notify({
+                title: '成功',
+                message: '添加成功',
                 type: 'success',
-                message: '添加成功'
+                duration: 2000
               })
               this.onClose()
               this.getLiveList()
@@ -406,86 +434,86 @@ export default {
     margin-left: 90px;
   }
   .monitorScreen {
-  overflow: auto;
-  padding: 10px 10px;
-  background: #fff;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  // justify-content: center;
+    overflow: auto;
+    padding: 10px 10px;
+    background: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    // justify-content: center;
 
-  .screen {
-    float: left;
-    width: 50%;
-    // height: 48%;
-    height: auto;
-    min-width: 420px;
-    .screen-inner {
-      margin: 10px 10px;
-      border-radius: 3px 3px 0 0;
-    }
-    .screen-add {
-      // height: calc(35vh + 36.4px);
-      height: 460px;
-      margin: 10px;
-      // width: 100%;
-      // height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 14px !important;
-      color: #ccc;
-      border: 1px dashed #9b9b9b;
-      border-radius: 5px 5px 0 0;
-      cursor: pointer;
-      i {
-        font-size: 56px;
-        margin-right: 5px;
+    .screen {
+      float: left;
+      width: 50%;
+      // height: 48%;
+      height: auto;
+      min-width: 420px;
+      .screen-inner {
+        margin: 10px 10px;
+        border-radius: 3px 3px 0 0;
       }
-    }
-    .screen-head {
-      position: relative;
-      display: flex;
-      width: calc(100% + 0.5px);
-      // width: 400px;
-      padding: 0 10px;
-      align-items: center;
-      border: 1px solid #ebeef5;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      border-radius: 0 0 3px 3px;
-      .head-label {
-        flex: 1;
-        font-size: 14px;
-        line-height: 30px;
-        color: #333;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .head-btn {
+      .screen-add {
+        // height: calc(35vh + 36.4px);
+        height: 460px;
+        margin: 10px;
+        // width: 100%;
+        // height: 100%;
         display: flex;
-        justify-content: space-around;
-        .btn {
-          flex: 1;
-          cursor: pointer;
-          font-size: 16px;
-          padding: 8px;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px !important;
+        color: #ccc;
+        border: 1px dashed #9b9b9b;
+        border-radius: 5px 5px 0 0;
+        cursor: pointer;
+        i {
+          font-size: 56px;
+          margin-right: 5px;
         }
       }
-    }
-    .screen-body {
-      // height: 35vh;
-      width: auto;
-      background: #333;
-    }
-    .el-icon-plus {
-      font-size: 14px !important;
+      .screen-head {
+        position: relative;
+        display: flex;
+        width: calc(100% + 0.5px);
+        // width: 400px;
+        padding: 0 10px;
+        align-items: center;
+        border: 1px solid #ebeef5;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 3px 3px;
+        .head-label {
+          flex: 1;
+          font-size: 14px;
+          line-height: 30px;
+          color: #333;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .head-btn {
+          display: flex;
+          justify-content: space-around;
+          .btn {
+            flex: 1;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+          }
+        }
+      }
+      .screen-body {
+        // height: 35vh;
+        width: auto;
+        background: #333;
+      }
+      .el-icon-plus {
+        font-size: 14px !important;
+      }
     }
   }
-}
-.screen-body {
-  overflow: hidden;
-}
+  .screen-body {
+    overflow: hidden;
+  }
 }
 
 </style>

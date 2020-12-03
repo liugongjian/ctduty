@@ -1,8 +1,5 @@
 <template>
   <div class="faceindexlist">
-    <!--  <div class="title">
-      摄像头管理
-    </div>-->
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -15,13 +12,18 @@
           ></el-input>
           <el-button
             v-waves
-            class="filter-item sureItem"
+            class="filter-item"
             size="mini"
+            style="height: 36px;margin-left:5px;"
             type="warning"
-            style="margin-bottom: 10px; margin-left: 10px"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item sureItem" size="mini" @click="resetQuery">重置</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px;"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button
@@ -42,6 +44,7 @@
           @close="closebulkimportDialog"
         >
           <el-table
+            v-loading="tableLoading"
             v-if="isBatchSuccess"
             :data="mulTableData"
             :header-cell-class-name="tableRowClassHeader"
@@ -143,7 +146,7 @@
                 :data="upSingleData"
                 class="avatar-uploader"
               >
-                <el-image v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="image" style="height: 200px;" />
+                <el-image v-if="addFaceForm.imageUrl" :src="addFaceForm.imageUrl" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -169,66 +172,65 @@
           </div>
         </el-dialog>
       </div>
-
       <el-row v-if="tableData.length>0">
-        <el-col
-          v-for="(item,index) in tableData"
-          :span="3"
-          :key="index"
-          :index="index"
-          class="face-col"
-        >
-          <el-card :body-style="{ padding: '0px' }" class="face-card" shadow="never">
-            <el-checkbox
-              :key="item.id"
-              class="face-checkbox"
-              @change="checked=>checkboxchange(checked,item)"
-            ></el-checkbox>
-            <el-image :src="item.image" class="image" />
-            <div class="face-info">
-              <div style="display:flex;">
-                <el-tooltip
-                  :content="item.name"
-                  placement="bottom-start"
-                >
-                  <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
-                    {{ item.name }}
-                  </div>
-                </el-tooltip>
-                <el-tag
-                  :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
-                  style="margin-top:3px;"
-                  size="mini"
-                >{{ item.nameList === "1" ? "白名单" : item.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
-              </div>
-              <div class="btn-box">
-                <el-button
-                  type="text"
-                  icon="el-icon-edit-outline"
-                  style="width:10px;height:10px;color: #898989; margin-right: 4px;"
-                  size="mini"
-                  @click="editDialog(item)"
-                ></el-button>
-                <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
-                  <div
-                    style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9; margin-right: 4px;"
-                  ></div>
+        <div class="colwrapper">
+          <el-col
+            v-for="(item,index) in tableData"
+            :span="3"
+            :key="index"
+            :index="index"
+            class="face-col"
+          >
+            <el-card :body-style="{ padding: '0px' }" class="face-card" shadow="never">
+              <el-checkbox
+                :key="item.id"
+                class="face-checkbox"
+                @change="checked=>checkboxchange(checked,item)"
+              ></el-checkbox>
+              <el-image :src="item.image" class="image" />
+              <div class="face-info">
+                <div style="display:flex;">
+                  <el-tooltip
+                    :content="item.name"
+                    placement="bottom-start"
+                  >
+                    <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
+                      {{ item.name }}
+                    </div>
+                  </el-tooltip>
+                  <el-tag
+                    :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
+                    style="margin-top:3px;"
+                    size="mini"
+                  >{{ item.nameList === 1 ? "白名单" : item.nameList === 2 ? "黑名单" : "其他" }}</el-tag>
                 </div>
-                <el-button
-                  type="text"
-                  icon="el-icon-delete"
-                  style="width:10px;height:10px;color: #a6a6a6;"
-                  size="mini"
-                  @click="delAlert(item.id)"
-                ></el-button>
+                <div class="btn-box">
+                  <el-button
+                    type="text"
+                    icon="el-icon-edit-outline"
+                    style="width:10px;height:10px;color: #898989; margin-right: 4px;margin-top:.2px;"
+                    size="mini"
+                    @click="editDialog(item)"
+                  ></el-button>
+                  <div style="width:16px;height:24px;padding-left:6px;padding-top:8px;">
+                    <div
+                      style="display:inline-block;width: 1px;height: 12px; background: #e9e9e9; margin-right: 4px;"
+                    ></div>
+                  </div>
+                  <el-button
+                    type="text"
+                    icon="el-icon-delete"
+                    style="width:10px;height:10px;color: #a6a6a6;"
+                    size="mini"
+                    @click="delAlert(item.id)"
+                  ></el-button>
+                </div>
               </div>
-            </div>
-          </el-card>
-        </el-col>
+            </el-card>
+          </el-col>
+        </div>
       </el-row>
-
       <div v-else class="face-nodata">暂无数据</div>
-
       <!-- <el-table
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
@@ -286,7 +288,7 @@
                   :data="upSingleData"
                   class="avatar-uploader"
                 >
-                  <el-image v-if="editForm.image" :src="editForm.image" class="image" style="height: 200px;" />
+                  <el-image v-if="editForm.image" :src="editForm.image" class="avatar" />
                   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </div>
@@ -316,10 +318,10 @@
       </el-dialog>
       <pagination
         v-show="total>0"
-        :page-sizes="[12,24,36,48]"
         :total="total"
         :page.sync="page"
         :limit.sync="limit"
+        :page-sizes="[12,24,36,48]"
         @pagination="pageChange()"
       />
     </div>
@@ -342,6 +344,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       upSingleHeaders: {
         Authorization: token
       },
@@ -416,19 +419,11 @@ export default {
     limit() {
       this.page = 1
       this.pageChange()
-    },
-    total() {
-      if (this.total === this.limit * (this.page - 1)) {
-        this.page--
-        this.getfaceList()
-      }
     }
-
   },
   async created() {
     await Message.closeAll()
     await this.getfaceList()
-    // await this.getfaceList()
   },
   methods: {
     delmulTableInfo(id) {
@@ -475,27 +470,31 @@ export default {
     beforeAvatarUpload(file) {
       this.upSingleData.name = file.name.split('.')[0]
       const isJPG = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (!isJPG && !isLt1M) {
+        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+      } else if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
+      } else if (!isLt1M) {
+        this.$message.error('上传人脸图片大小不能超过 1MB!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传人脸图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
+
+      return isJPG && isLt1M
     },
     beforeMulUpload(file) {
       const isJPG = file.type === 'image/png'
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isJPG) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (!isJPG && !isLt1M) {
+        this.$message.error('上传人脸图片只能是 PNG 格式 且大小不能超过1M!')
+      } else if (!isJPG) {
         this.$message.error('上传人脸图片只能是 PNG 格式!')
-      } else if (!isLt2M) {
-        this.$message.error('上传人脸图片大小不能超过 2MB!')
+      } else if (!isLt1M) {
+        this.$message.error('上传人脸图片大小不能超过 1MB!')
       } else {
         this.mulUpData.name = file.name.split('.')[0]
         this.isBatchSuccess = true
       }
-      return isJPG && isLt2M
+      return isJPG && isLt1M
     },
     bulkimport() {
       this.bulkimportVisble = true
@@ -506,6 +505,7 @@ export default {
       this.mulTableData = []
     },
     getfaceList() {
+      this.tableLoading = true
       const query = {
         page: {
           index: this.page,
@@ -519,12 +519,13 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: '请选择需要删除的摄像头!',
+          message: '请选择需要删除的数据!',
           type: 'warning'
         })
       } else {
@@ -538,6 +539,15 @@ export default {
             .then(response => {
               this.getfaceList()
               this.delIDArr = []
+              if (response.code !== 0) {
+                return
+              }
+              this.$notify({
+                title: '成功',
+                message: '批量删除成功',
+                type: 'success',
+                duration: 2000
+              })
             })
             .catch(() => {
               this.delIDArr = []
@@ -555,6 +565,12 @@ export default {
         fetchDeleteFace(params).then(response => {
           this.getfaceList()
           this.delIDArr = []
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
       })
     },
@@ -602,6 +618,7 @@ export default {
       this.$refs[formName].clearValidate()
     },
     onSearch() {
+      this.page = 1
       const params = {
         page: {
           index: this.page,
@@ -744,125 +761,134 @@ export default {
   padding-top: 50px;
 }
 .faceindexlist {
-  overflow: auto !important;
-  .el-button--text {
-    // color: #fa8334 !important;
-  }
-  .el-input__inner {
-    height: 38px;
-  }
-  .avatar-uploader .el-upload {
+    overflow: auto !important;
+    .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
   }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 160px;
-    height: 210px;
-    display: block;
-  }
-  .upload-demo {
-    width: 360px;
-    margin: 0 auto;
-  }
-  .el-dialog__body {
-    width: 100%;
-  }
-  .el-popover.el-popover--plain {
-    z-index: 9999999999999999999999 !important;
-  }
-  .face-col {
-    width: 14.8%;
-    margin: 10px 0.8%;
-  }
-  .face-card:hover {
-    .face-checkbox {
-      display: block;
-    }
-  }
-  .face-card {
-    position: relative;
-    border-radius: 4px;
-    img {
-      width: 100%;
-    }
-    .face-info {
-      font-size: 14px;
-      height: 30px;
-      padding: 0 10px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      background-color: #fafafa;
-    }
-
-    .face-name {
-      padding: 7px 0;
-      font-size: 12px;
-      margin-right: 5px;
-      cursor: pointer;
-    }
-    .face-kind {
-      font-size: 12px;
-    }
-    .btn-box {
-      width: 30px;
-      display: flex;
-      justify-content: space-between;
-      margin-right: 10px;
-      margin-bottom: 5px;
-    }
-    .image {
-      width: 100%;
-      // max-width: 250px;
-      height: 200px;
-      img {
-        object-fit: contain; //cover;
-      }
-    }
-  }
-  .face-nodata {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-  }
-  .face-card {
-    label {
+   .el-checkbox {
       width: 15px;
     }
-    .el-checkbox {
-      display: none;
-      position: absolute;
-      top: 4px;
-      right: 5px;
+    .el-button--text {
+      color: #fa8334 !important;
     }
-    .is-checked {
-      display: inline-block;
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
     }
-  }
-  .el-button--text {
-    color: #fa8334 !important;
-  }
-  .sureItem {
-    height: 36px;
-  }
-  .editPictrue {
-    width: 180px;
-  }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+    .avatar {
+      width: 160px;
+      height: 210px;
+      display: block;
+    }
+    .upload-demo {
+      width: 360px;
+      margin: 0 auto;
+    }
+    .el-dialog__body {
+      width: 100%;
+    }
+    .el-popover.el-popover--plain {
+      z-index: 9999999999999999999999 !important;
+    }
+    .face-col {
+      width: 15%;
+      margin: 10px 2%;
+    }
+    .face-col:nth-of-type(n+1) {
+      margin-left: 0px;
+    }
+    .face-col:nth-of-type(6n) {
+      margin-right: 0px;
+    }
+    .face-card:hover {
+      .face-checkbox {
+        display: block;
+      }
+    }
+    .face-card {
+      position: relative;
+      border-radius: 4px;
+      img {
+        width: 100%;
+      }
+      .face-info {
+        font-size: 14px;
+        height: 30px;
+        padding: 0 10px;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        background-color: #fafafa;
+      }
+
+      .face-name {
+        padding: 5px 0;
+        font-size: 12px;
+        margin-right: 5px;
+      }
+      .face-kind {
+        font-size: 12px;
+      }
+      .btn-box {
+        width: 30px;
+        display: flex;
+        justify-content: space-between;
+        margin-right: 10px;
+        margin-bottom: 5px;
+      }
+      .image {
+        width: 100%;
+        // max-width: 250px;
+        height: 200px;
+        img {
+          object-fit: contain; //cover;
+        }
+      }
+      /deep/.el-checkbox {
+        display: none;
+        position: absolute;
+        top: 4px;
+        right: 5px;
+      }
+      /deep/.is-checked {
+        display: block;
+      }
+    }
+    .face-nodata {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+    }
+    .namespan {
+      width:35px;
+      overflow:hidden !important;
+      white-space:nowrap !important;
+      text-overflow:ellipsis !important;
+    }
+    .el-input__inner {
+      height:36px;
+      border-radius: 2px;
+    }
+    .el-row {
+      height: 100%;
+    }
+    .colwrapper {
+      width: 100%;
+      display: flex;
+      flex-wrap:wrap;
+    }
 }
 </style>
 
