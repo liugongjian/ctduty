@@ -13,7 +13,7 @@
             </el-input>
 
           </div>
-          <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
+          <!-- <ul v-if="nameList.length>0" :style="styleObj" class="videoResult" @scroll="listenScroll">
             <li v-for="(v,k) in nameList" :key="k" :class="activeVideoResult === k ? 'active' :''" @click="changeDeviceId(v.id,k)" @mouseover="checkNameLen(k)">
               <div>
                 <span class="displayIB">
@@ -30,7 +30,34 @@
                 </span>
               </div>
             </li>
-          </ul>
+          </ul> -->
+          <el-tree
+            v-if="caremaTreeData.length>0"
+            :style="styleObj"
+            :data="caremaTreeData"
+            icon-class="el-icon-arrow-down"
+            class="cameraTree"
+            @node-click="cameraTreeClick">
+            <div slot-scope="{ node, data }">
+              <div v-if="data.ifChild" @mouseenter="checkTreeName">
+                <span class="displayIB">
+                  <svg-icon icon-class="monitorIcon" class="svgBtn"/>
+                </span>
+                <el-tooltip :disabled="deviceShowTooltip" placement="top">
+                  <div slot="content">{{ node.label }}</div>
+                  <span class="seviceName displayIB" >
+                    {{ node.label }}
+                  </span>
+                </el-tooltip>
+                <span @click.stop="toMonitorDetail(data.info.id)">
+                  <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
+                </span>
+              </div>
+              <div v-else>
+                {{ node.label }}
+              </div>
+            </div>
+          </el-tree>
           <div v-else class="noResult">暂无摄像头</div>
           <!-- <pagination
                 v-show="total>0"
@@ -45,7 +72,7 @@
         </el-col>
         <el-col :span="17" class="algorithmConfigList totalLine">
           <div v-if="algorithmList.length>0" class="algorithmBox">
-            <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow"></VideoConfig>
+            <VideoConfig :device-id="deviceId" :arr2="algorithmList" @canvasShow="setCanvasShow" @sureAlgorithm="applyAlgorithms"></VideoConfig>
             <div class="totalNum">算法总计：{{ algorithmList.length }}</div>
           </div>
           <div v-else class="nodata">
@@ -53,9 +80,9 @@
           </div>
         </el-col>
       </el-row>
-      <div class="listBtnBox">
+      <!-- <div class="listBtnBox">
         <el-button :loading="btnLoading" type="primary" @click="applyAlgorithms(true)">确定</el-button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -68,7 +95,7 @@ import VideoConfig from '@/components/VideoConfig'
 import client from '@/api/vedioAlgo'
 import SvgIcon from '@/components/SvgIcon'
 import {
-  taskList, videoListByAlgorithmId, getCameraList
+  taskList, videoListByAlgorithmId, getCameraList, getCameraTree
 } from '@/api/algorithm'
 
 export default {
@@ -102,7 +129,8 @@ export default {
         height: ''
       },
       btnLoading: false,
-      deviceShowTooltip: true
+      deviceShowTooltip: true,
+      caremaTreeData: []
     }
   },
   watch: {
@@ -215,28 +243,67 @@ export default {
           }
         ]
       }
-      getCameraList(query).then(res => {
-        if (res.code === 0) {
-          if (this.queryKeyword) {
-            const dataList = res.body.data
-            for (const val in dataList) {
-              this.nameList.push(dataList[val])
-            }
-          } else {
-            const dataList = res.body.data
-            for (const val in dataList) {
-              this.nameList.push(dataList[val])
-            }
-          }
+      // getCameraList(query).then(res => {
+      //   if (res.code === 0) {
+      //     if (this.queryKeyword) {
+      //       const dataList = res.body.data
+      //       for (const val in dataList) {
+      //         this.nameList.push(dataList[val])
+      //       }
+      //     } else {
+      //       const dataList = res.body.data
+      //       for (const val in dataList) {
+      //         this.nameList.push(dataList[val])
+      //       }
+      //     }
 
-          //   this.nameList.push(res.body.data)
-          this.total = res.body.page.total
-          this.listLoading = false
-          this.deviceId = this.deviceId ? this.deviceId : res.body.data[0].id
-          const getId = this.nameList[this.activeVideoResult] ? this.nameList[this.activeVideoResult].id : ''
-          getId && this.getAlgorithmList(getId)
+      //     //   this.nameList.push(res.body.data)
+      //     this.total = res.body.page.total
+      //     this.listLoading = false
+      //     this.deviceId = this.deviceId ? this.deviceId : res.body.data[0].id
+      //     const getId = this.nameList[this.activeVideoResult] ? this.nameList[this.activeVideoResult].id : ''
+      //     getId && this.getAlgorithmList(getId)
+      //   }
+      // })
+      getCameraTree(query).then(res => {
+        if (res.code === 0) {
+          const tempData = res.body.data.filter(item => item.data.length > 0)
+          this.caremaTreeData = tempData.map(item => {
+            return {
+              label: item.name,
+              children: item.data.map(val => {
+                return {
+                  label: val.name,
+                  info: val,
+                  ifChild: true // 用来判断是否是子级
+                  // ifTooltip: val.name.length > 13
+                }
+              })
+            }
+          })
+          this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
+          this.getAlgorithmList(this.deviceId)
         }
       })
+    },
+    cameraTreeClick(data) {
+      if (data.ifChild) {
+        console.log('clickItem', data.info.id)
+        this.deviceId = data.info.id
+        this.controlShow = false
+        this.canvasShowStatus = false
+        this.pageLoading = true
+        this.getAlgorithmList(this.deviceId)
+      }
+    },
+    checkTreeName(e) {
+      // console.log(e, e.target.offsetWidth)
+      const eleWidth = e.target.offsetWidth
+      if (eleWidth > 200) {
+        this.deviceShowTooltip = false
+      } else {
+        this.deviceShowTooltip = true
+      }
     },
     changeDeviceId(id, k) {
       this.controlShow = false
@@ -284,6 +351,9 @@ export default {
         [[]]
       )
     },
+    // applyAlgorithmsTest(val) {
+    //   console.log('测试----------->', val)
+    // },
     applyAlgorithms(flag) {
       if (flag) {
         // 先组装参数，包含删除、增加、修改
@@ -399,15 +469,14 @@ export default {
       return status === 1 ? '在线' : '离线'
     },
     toMonitorDetail(id) {
+      console.log('O ?', id)
       this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
     },
     checkNameLen(k) {
       const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth
       if (eleWidth > 179) {
-        // console.log('芜湖~')
         this.deviceShowTooltip = false
       } else {
-        // console.log('起飞')
         this.deviceShowTooltip = true
       }
     }
@@ -419,12 +488,16 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    // height: 100%;
+    height: 100%;
     .algorithmConfig{
         background: #fff;
-        // height: 100%;
-        // min-height: 100%;
-
+        height: 100%;
+      /deep/.el-tree{
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+      }
     }
     // /deep/.el-tabs__header{
     //     margin: 5px 0 5px;
@@ -440,6 +513,7 @@ export default {
             display: none;
         }
     }
+
     .tabCon{
         padding: 0 22px;
         min-width: 900px;
@@ -593,7 +667,8 @@ export default {
         &::-webkit-scrollbar {
             display: none;
         }
-        li{
+
+        li, /deep/.el-tree-node__content{
             margin: 5px 0;
             cursor: pointer;
             font-size: 13px;
@@ -622,11 +697,9 @@ export default {
             }
             .displayIB{
               display: inline-block;
-
               vertical-align: middle;
             }
             .seviceName{
-
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -643,6 +716,55 @@ export default {
                 }
             }
         }
+
+    }
+    .cameraTree{
+      /deep/.el-tree-node__content{
+        margin: 5px 0;
+        cursor: pointer;
+        font-size: 13px;
+        position: relative;
+       &:hover{
+          background: #f0f8ff;
+          .detailSvg{
+            display: inline;
+          }
+        }
+        div{
+            padding: 5px 7px;
+            // display: inline-block;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+        }
+        .detailSvg{
+          display: none;
+          position: absolute;
+          right: 12px;
+          &:hover{
+            font-size: 14px;
+            color: #FF9832;
+          }
+        }
+        .displayIB{
+          display: inline-block;
+          vertical-align: middle;
+        }
+        .seviceName{
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 180px;
+        }
+      }
+      /deep/.el-tree-node__children /deep/.is-current /deep/.el-tree-node__content{
+        background: #FF9832;
+        border-radius: 5px;
+        color: #FFFFFF;
+        .svgBtn{
+          fill: #fff;
+        }
+      }
     }
     .totalNum{
         color: #666666;
