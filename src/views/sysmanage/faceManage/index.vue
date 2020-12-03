@@ -769,6 +769,9 @@ export default {
     position: relative;
     overflow: hidden;
   }
+  .el-checkbox {
+    width: 15px;
+  }
   .el-button--text {
     color: #fa8334 !important;
   }
