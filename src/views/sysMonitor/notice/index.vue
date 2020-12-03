@@ -13,8 +13,8 @@
           <el-input ref="queryOperatorRef" v-model="username" class="searchinput" placeholder="创建者" @keyup.enter.native="getNoticeList"></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
-            <el-option :value="0" label="公告">通知</el-option>
-            <el-option :value="1" label="通知">公告</el-option>
+            <el-option :value="0" label="通知">通知</el-option>
+            <el-option :value="1" label="公告">公告</el-option>
           </el-select>
           <el-button
             v-waves
