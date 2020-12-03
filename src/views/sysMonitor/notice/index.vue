@@ -480,6 +480,18 @@ export default {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
         })
         this.total = response.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.tableLoading = false
       })
     },
@@ -671,8 +683,14 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .notice {
+  th {
+    padding:0px;
+  }
+  td {
+    padding:0px;
+  }
   padding: 10px 20px;
   .el-button--text {
     color: #fa8334 !important;

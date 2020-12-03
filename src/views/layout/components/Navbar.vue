@@ -30,7 +30,7 @@
       </div>
       <el-dropdown placement="bottom" class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
-          <div class="notice">
+          <div class="navnotice">
             <svg-icon icon-class="bells"></svg-icon>
             <span class="noticemsg">消息</span>
             <span
@@ -388,7 +388,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .navToggle {
   padding-left: 85px !important;
   transition: all 0.18s linear;
@@ -398,6 +398,11 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .el-breadcrumb__inner {
+    i {
+      padding: 0px;
+    }
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px !important;
@@ -479,7 +484,7 @@ export default {
       font-size: 14px;
       cursor: pointer;
     }
-    .notice {
+    .navnotice {
       margin-right: 24px;
       font-size: 14px;
       cursor: pointer;
@@ -496,7 +501,7 @@ export default {
 label {
   width: 100px;
 }
-.notice {
+.navnotice {
   position: relative;
   color: #000;
   .noRcount {
