@@ -950,7 +950,7 @@ export default {
               }
             })
           })
-        }, 300)
+        }, 100)
         this.tableLoading = false
         if (this.formInline.searchkey === '所有摄像头') {
           this.formInline.searchkey = ''

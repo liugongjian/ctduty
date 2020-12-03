@@ -647,7 +647,7 @@ export default {
             item.style.paddingTop = '2px'
             item.style.paddingBottom = '2px'
           })
-        }, 300)
+        }, 100)
         this.listLoading = false
         this.tableLoading = false
       })
