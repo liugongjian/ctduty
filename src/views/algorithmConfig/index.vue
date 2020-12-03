@@ -31,10 +31,13 @@
               </div>
             </li>
           </ul> -->
+          <!--default-expanded-keys-->
           <el-tree
             v-if="caremaTreeData.length>0"
             :style="styleObj"
             :data="caremaTreeData"
+            :default-expanded-keys="[expendId]"
+            node-key="expendId"
             icon-class="el-icon-arrow-down"
             class="cameraTree"
             @node-click="cameraTreeClick">
@@ -130,7 +133,8 @@ export default {
       },
       btnLoading: false,
       deviceShowTooltip: true,
-      caremaTreeData: []
+      caremaTreeData: [],
+      expendId: ''
     }
   },
   watch: {
@@ -271,6 +275,7 @@ export default {
           this.caremaTreeData = tempData.map(item => {
             return {
               label: item.name,
+              expendId: item.name,
               children: item.data.map(val => {
                 return {
                   label: val.name,
@@ -282,13 +287,13 @@ export default {
             }
           })
           this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
+          this.expendId = tempData[0].name
           this.getAlgorithmList(this.deviceId)
         }
       })
     },
     cameraTreeClick(data) {
       if (data.ifChild) {
-        console.log('clickItem', data.info.id)
         this.deviceId = data.info.id
         this.controlShow = false
         this.canvasShowStatus = false
@@ -442,18 +447,41 @@ export default {
       }
       return newPoints
     },
-    async configTask(body) {
-      const res = await client.configInstance(body)
-      //   console.log('任务实例配置调用接口返回-----', res)
-      const { deviceId } = body
-      if (res.code === 0) {
-        this.btnLoading = false
+    configTask(body) {
+      client.configInstance(body).then(res => {
+        if (res.code === 0) {
+          const { deviceId } = body
+          this.btnLoading = false
+          this.$message({
+            message: '更新成功',
+            type: 'success'
+          })
+          this.getAlgorithmList(deviceId)
+        }
+      }).catch(err => {
+        // this.pageLoading = false
+        this.getAlgorithmList(this.deviceId)
         this.$message({
-          message: '更新成功',
-          type: 'success'
+          message: err.message,
+          type: 'warning'
         })
-        this.getAlgorithmList(deviceId)
-      }
+      })
+      // console.log('任务实例配置调用接口返回-----', res)
+      // const { deviceId } = body
+      // if (res.code === 0) {
+      //   this.btnLoading = false
+      //   this.$message({
+      //     message: '更新成功',
+      //     type: 'success'
+      //   })
+      //   this.getAlgorithmList(deviceId)
+      // } else {
+      //   this.pageLoading = false
+      //   this.$message({
+      //     message: res.message,
+      //     type: 'warning'
+      //   })
+      // }
     },
     setCanvasShow(payload) {
       this.canvasShowStatus = payload
@@ -491,7 +519,7 @@ export default {
     height: 100%;
     .algorithmConfig{
         background: #fff;
-        height: 100%;
+        // height: 100%;
       /deep/.el-tree{
         overflow-y: auto;
         &::-webkit-scrollbar {
@@ -787,8 +815,8 @@ export default {
     .algorithmConfigList{
         // margin-left: 2.083335%;
         // padding-left: 2.083335%;
-        padding: 0 20px;
-        margin: 10px 0 10px;
+        padding: 24px 20px 14px;
+        margin: 24px 0 18px;
         .algorithmBox{
             padding-bottom: 20px;
         }
