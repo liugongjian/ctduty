@@ -796,6 +796,11 @@ export default {
         const s = this.currentTab + ' ' + this.startTime + ':00'
         const end = this.currentTab + ' ' + this.endTime + ':00'
         const h = this.formInline.typeValue
+        this.$notify({
+          title: '成功',
+          type: 'success',
+          message: '删除成功!'
+        })
         this.getList(s, end, h)
       })
     },

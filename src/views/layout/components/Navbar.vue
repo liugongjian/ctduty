@@ -398,6 +398,20 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .noRcount {
+    display: inline-block;
+    width: 20px;
+    height: 15px;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #fff;
+    position: absolute;
+    border-radius: 5px 5px 5px 0;
+    background-color: red;
+    top: 5px;
+    right: -20px;
+  }
   .el-breadcrumb__inner {
     i {
       padding: 0px;
@@ -441,6 +455,7 @@ export default {
       // right: 0px;
       cursor: pointer;
       margin-top: 12px;
+      margin-left:30px;
       .avatar-wrapper {
         margin-right: 20px;
         display: flex;
@@ -504,20 +519,7 @@ label {
 .navnotice {
   position: relative;
   color: #000;
-  .noRcount {
-    display: inline-block;
-    width: 20px;
-    height: 15px;
-    font-size: 12px;
-    line-height: 15px;
-    text-align: center;
-    color: #fff;
-    position: absolute;
-    border-radius: 5px 5px 5px 0;
-    background-color: red;
-    top: 5px;
-    right: -20px;
-  }
+
 }
 .noticeDrop {
   border: none !important;
