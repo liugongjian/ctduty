@@ -451,11 +451,8 @@ export default {
       vertical-align: 15px;
     }
     .avatar-container {
-      // position: absolute;
-      // right: 0px;
       cursor: pointer;
       margin-top: 12px;
-      margin-left:30px;
       .avatar-wrapper {
         margin-right: 20px;
         display: flex;

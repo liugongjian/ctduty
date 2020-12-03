@@ -183,6 +183,7 @@
                       slot="reference"
                       :src="scope.row.imageCompress"
                       class="amimage"
+                      style="cursor:zoom-in;"
                       @click="openBig(scope.row.image)"
                     />
                   </el-popover>
@@ -308,10 +309,10 @@
         <div :model="temp" label-position="right" label-width="100px">
           <div
             prop="image"
-            style="width:480px;height:270px;position:relative;"
+            style="width:480px;height:270px;position:relative;cursor:zoom-in;"
             @click="()=>{openBig(temp.image)}"
           >
-            <img :src="temp.image" width="480" height="270" style="z-index:1;" >
+            <el-image :src="temp.imageCompress" width="480" height="270" style="z-index:1;" />
             <!--  <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
