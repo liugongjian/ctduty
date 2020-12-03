@@ -23,7 +23,7 @@
                     style="width:205px;font-size:12px;"
                     filterable
                     remote
-                    placeholder="请输入摄像头名称"
+                    placeholder="请选择摄像头名称"
                     @focus="getCameraList"
                   >
                     <el-option
