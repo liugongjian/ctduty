@@ -494,8 +494,11 @@ export default {
           if (response.code !== 0) {
             return this.$message.error('添加失败，请联系系统管理员')
           }
-          this.$message.success('添加成功')
-
+          this.$notify({
+            title: '成功',
+            type: 'success',
+            message: '添加成功!'
+          })
           this.total++
           this.pagenum = Math.ceil(this.total / this.pagesize)
           this.addNoticeDialogVisible = false
@@ -571,8 +574,12 @@ export default {
         this.deleteNoticeDialogVisible = false
         this.deleteNoticerId = 0
         this.deleteNoticeTitle = ''
+        this.$notify({
+          title: '成功',
+          type: 'success',
+          message: '删除成功!'
+        })
         this.getNoticeList()
-        this.$message.success('删除信息成功')
       })
     },
     getCookie(objName) {
