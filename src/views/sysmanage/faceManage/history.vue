@@ -86,10 +86,17 @@
                     <div class="bottom clearfix">
                       <div
                         class="location"
-                        style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
+                        style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                       >
                         <i class="el-icon-map-location" />
-                        <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                        <el-tooltip 
+                          class="item"
+                          effect="dark" 
+                          :content="val.camera.address"
+                          placement="top-start"
+                        >
+                          <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                        </el-tooltip>    
                       </div>
                       <div class="location">
                         <i class="el-icon-time" />
@@ -678,7 +685,7 @@ export default {
       padding: 0;
     }
     .bottom {
-      margin-top: 5px;
+      margin-top: 10px;
       line-height: 20px;
       font-size: 13px;
       color: #999;
@@ -715,5 +722,8 @@ export default {
 }
 .el-range-editor--mini .el-range__icon {
   line-height: 28px;
+}
+.location {
+  overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
 }
 </style>

@@ -130,10 +130,17 @@
                 <div class="bottom clearfix">
                   <div
                     class="location"
-                    style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
+                    style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                   >
                     <i class="el-icon-map-location" />
-                    <span>{{ item.camera && item.camera.address || '未知' }}</span>
+                    <el-tooltip 
+                      class="item"
+                      effect="dark" 
+                      :content="item.camera.address"
+                      placement="top-start"
+                    >
+                      <span>{{ item.camera && item.camera.address || '未知' }}</span>
+                    </el-tooltip>
                   </div>
                   <div class="location">
                     <i class="el-icon-time" />
@@ -459,7 +466,7 @@ export default {
                 padding: 0;
             }
             .bottom {
-                margin-top: 13px;
+                margin-top: 10px;
                 line-height: 20px;
                 font-size:13px;
                 color:#999;
