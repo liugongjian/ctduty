@@ -57,7 +57,7 @@
       </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
         <div class="avatar-wrapper">
-          <img src="../../../assets/images/username_icon.png" alt >
+          <img src="../../../assets/images/username_icon.png" alt />
           <span class="user-name">{{ username }}</span>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -66,7 +66,14 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog v-if="dialogVisable" :visible="dialogVisable" title="公告" width="520px" style="z-index:100000000" @close="closeDialog">
+      <el-dialog
+        v-if="dialogVisable"
+        :visible="dialogVisable"
+        title="公告"
+        width="520px"
+        style="z-index:100000000"
+        @close="closeDialog"
+      >
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -508,7 +515,7 @@ label {
     text-align: center;
     color: #fff;
     position: absolute;
-border-radius: 4px 5px 5px 0;
+    border-radius: 4px 5px 5px 0;
     background-color: red;
     top: 5px;
     right: -20px;
@@ -523,7 +530,7 @@ border-radius: 4px 5px 5px 0;
   top: 0;
   width: 100%;
   height: 100%;
-  opacity: .5;
+  opacity: 0.5;
   background: #000;
   z-index: 99999999 !important;
 }
