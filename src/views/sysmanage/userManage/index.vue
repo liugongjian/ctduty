@@ -536,7 +536,7 @@ export default {
     color: #fa8334 !important;
   }
   .el-input__inner {
-    height: 38px;
+    height: 36px;
   }
   .title {
     width: 150px;
@@ -557,6 +557,7 @@ export default {
   .searchinput {
     float: left;
     width: 250px;
+    height: 36px;
   }
   .searchbtn {
     float: left;
