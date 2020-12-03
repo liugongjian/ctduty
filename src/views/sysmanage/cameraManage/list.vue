@@ -636,6 +636,18 @@ export default {
       fetchAllCameraList(params).then(res => {
         this.tableData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.listLoading = false
         this.tableLoading = false
       })
@@ -698,6 +710,9 @@ export default {
   }
   .el-button.is-disabled {
     color: #c0c4cc !important;
+  }
+  td,th {
+    padding:0px;
   }
 }
 .app-main {

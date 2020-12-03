@@ -1,11 +1,11 @@
 <template>
-  <div class="userManage">
+  <div class="policemanage">
     <div class="pull-left" style="margin:20px 0;">
       <el-button class="addbtn" type="warning" @click="addPoliceDialogVisible=true">+新增派出所</el-button>
     </div>
 
     <el-table
-    v-loading="tableLoading"
+      v-loading="tableLoading"
       :data="userList"
       :header-cell-style="{background:'#ecedee',color:'#717171'}"
       @filter-change="filerStatus"
@@ -306,6 +306,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.tableLoading = false
       })
     },
@@ -390,38 +402,38 @@ export default {
 }
 </script>
 
-<style scoped>
-.userManage {
+<style lang='scss'>
+.policemanage {
   padding: 0px 20px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-divider--horizontal {
-  margin-top: 0px;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  float: left;
-  width: 250px;
-}
-.searchbtn {
-  float: left;
-  margin-left: 5px;
-}
-.addbtn {
-  float: right;
-}
-td {
-  padding: 5px !important;
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-divider--horizontal {
+    margin-top: 0px;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    float: left;
+    width: 250px;
+  }
+  .searchbtn {
+    float: left;
+    margin-left: 5px;
+  }
+  .addbtn {
+    float: right;
+  }
+  td,th {
+    padding: 0px;
+  }
 }
 </style>

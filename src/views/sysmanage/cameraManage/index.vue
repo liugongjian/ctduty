@@ -35,7 +35,7 @@
                 v-waves
                 class="filter-item"
                 size="mini"
-                style="height: 36px;margin-bottom:6px;"
+                style="height: 36px;margin-bottom:4px;margin-left:5px;"
                 type="warning"
                 @click="onSearch"
               >{{ '搜索' }}</el-button>
@@ -689,7 +689,7 @@ export default {
   height: calc(100vh - 90px) !important;
 }
 .el-input__inner {
-  height: 38px;
+  height: 36px;
 }
 .filter-item  {
    input {

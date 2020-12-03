@@ -20,17 +20,17 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
       </template>-->
-      <div v-if="level < 2" class="full">
+      <!-- <div v-if="level < 2" class="full">
         <svg-icon icon-class="leadership"></svg-icon>
         <span class="leader-name">领导</span>
-      </div>
+      </div>-->
       <div class="fullscreen" @click="screenfull">
         <svg-icon icon-class="fullscreen"></svg-icon>
         <span class="screen">全屏</span>
       </div>
       <el-dropdown placement="bottom" class="noticeDrop" @command="handleCommand">
         <span class="el-dropdown-link">
-          <div class="notice">
+          <div class="navnotice">
             <svg-icon icon-class="bells"></svg-icon>
             <span class="noticemsg">消息</span>
             <span
@@ -66,7 +66,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog v-if="dialogVisable" :visible="dialogVisable" title="公告" width="520px" style="z-index:100000000" @close="closeDialog">
+      <el-dialog v-if="dialogVisable" :visible="dialogVisable" class="el-dialog__wrapper" title="公告" width="520px" style="z-index:100000000;" @close="closeDialog">
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -92,7 +92,7 @@
           </el-form-item>
           <el-form-item label="内容">
             <span
-              style="margin-left:10px;min-height:100px;margin-top:8px;padding:0 10px;border-radius: 4px;display:block;border:1px dashed #ccc;width: 300px;"
+              style="margin-left:10px;margin-top:8px;padding:0 10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;"
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
@@ -388,7 +388,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .navToggle {
   padding-left: 85px !important;
   transition: all 0.18s linear;
@@ -398,6 +398,11 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .el-breadcrumb__inner {
+    i {
+      padding: 0px;
+    }
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px !important;
@@ -479,7 +484,7 @@ export default {
       font-size: 14px;
       cursor: pointer;
     }
-    .notice {
+    .navnotice {
       margin-right: 24px;
       font-size: 14px;
       cursor: pointer;
@@ -496,7 +501,7 @@ export default {
 label {
   width: 100px;
 }
-.notice {
+.navnotice {
   position: relative;
   color: #000;
   .noRcount {
@@ -508,7 +513,7 @@ label {
     text-align: center;
     color: #fff;
     position: absolute;
-border-radius: 4px 5px 5px 0;
+    border-radius: 5px 5px 5px 0;
     background-color: red;
     top: 5px;
     right: -20px;
@@ -525,6 +530,6 @@ border-radius: 4px 5px 5px 0;
   height: 100%;
   opacity: .5;
   background: #000;
-  z-index: 99999999 !important;
+  z-index: 9999999;
 }
 </style>
