@@ -103,113 +103,113 @@ import {
   deletePolice,
   filterPoliceList,
   getAllPolice
-} from '@/api/areaManage'
-import Pagination from '@/components/Pagination'
+} from "@/api/areaManage";
+import Pagination from "@/components/Pagination";
 
 export default {
   components: { Pagination },
   data() {
     var checkMobile = (rule, value, cb) => {
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[5-7])[0-9]{8}$/;
       if (regMobile.test(value)) {
-        return cb()
+        return cb();
       }
-      cb(new Error('请输入合法的手机号'))
-    }
+      cb(new Error("请输入合法的手机号"));
+    };
     return {
       tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
       allPoliceArr: [],
-      filterName: '',
+      filterName: "",
       addPoliceDialogVisible: false,
       addPoliceFormRules: {
         username: [
-          { required: true, message: '派出所名称不能为空', trigger: 'blur' },
+          { required: true, message: "派出所名称不能为空", trigger: "blur" },
           {
             min: 5,
             max: 10,
-            message: '派出所名长度在5-12个字符之间',
-            trigger: 'blur'
+            message: "派出所名长度在5-12个字符之间",
+            trigger: "blur"
           }
         ],
         password: [
           {
             required: true,
-            message: '密码不能为空',
-            trigger: 'blur'
+            message: "密码不能为空",
+            trigger: "blur"
           },
           {
             min: 8,
             max: 20,
-            message: '密码长度在8-20个字符之间',
-            trigger: 'blur'
+            message: "密码长度在8-20个字符之间",
+            trigger: "blur"
           }
         ],
         permissionId: [
-          { required: true, message: '权限不能为空', trigger: 'blur' }
+          { required: true, message: "权限不能为空", trigger: "blur" }
         ]
       },
       addPoliceForm: {
-        username: '',
-        name: '',
-        password: '',
-        permissionId: '',
+        username: "",
+        name: "",
+        password: "",
+        permissionId: "",
         departmentId: null,
         postId: null,
-        phone: ''
+        phone: ""
       },
       editPoliceForm: {
         id: 0,
-        username: '',
-        name: '',
-        password: '',
-        permissionId: '',
+        username: "",
+        name: "",
+        password: "",
+        permissionId: "",
         departmentId: null,
         postId: null,
-        phone: ''
+        phone: ""
       },
       userList: [],
       queryInfo: {
         pagenum: 1,
         pagesize: 10
       },
-      queryName: '',
+      queryName: "",
       total: 0,
       editPoliceDialogVisible: false,
-      deletePoliceName: '',
+      deletePoliceName: "",
       deletePoliceDialogVisible: false,
       deletePoliceId: 0,
-      oldFilterName: '',
+      oldFilterName: "",
       departmentInfo: [
         {
           departmentId: 3275699862611970,
-          department: '华阴公安局'
+          department: "华阴公安局"
         },
         {
           departmentId: 3275699862611971,
-          department: '孟塬派出所'
+          department: "孟塬派出所"
         },
         {
           departmentId: 3275699862611972,
-          department: '华山镇派出所'
+          department: "华山镇派出所"
         }
       ]
-    }
+    };
   },
   watch: {
     limit() {
-      this.page = 1
-      this.pageChange()
+      this.page = 1;
+      this.pageChange();
     },
     filterName(v) {
-      this.oldFilterName = v
+      this.oldFilterName = v;
     }
   },
   created() {
-    this.getPoliceList()
-    this.getAllPolice()
+    this.getPoliceList();
+    this.getAllPolice();
   },
   methods: {
     getAllPolice() {
@@ -218,19 +218,19 @@ export default {
           this.allPoliceArr.push({
             text: item,
             value: item
-          })
-        })
-      })
+          });
+        });
+      });
     },
     filerStatus(columnObj) {
-      this.page = 1
+      this.page = 1;
       for (const key in columnObj) {
         if (!columnObj[key][0]) {
-          this.filterName = ''
-          this.getPoliceList()
-          return
+          this.filterName = "";
+          this.getPoliceList();
+          return;
         }
-        this.filterName = columnObj[key][0]
+        this.filterName = columnObj[key][0];
       }
       const query = {
         cascade: true,
@@ -240,27 +240,27 @@ export default {
         },
         params: [
           {
-            field: 'name',
-            operator: 'EQUALS',
+            field: "name",
+            operator: "EQUALS",
             value: this.filterName
           }
         ]
-      }
+      };
       filterPoliceList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
-        this.total = response.body.page.total
-        this.queryName = ''
-      })
+        if (response.code !== 0) return;
+        this.userList = response.body.data;
+        this.total = response.body.page.total;
+        this.queryName = "";
+      });
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1
+        this.page = 1;
       }
       if (this.filterName !== this.oldFilterName) {
-        this.page = 1
+        this.page = 1;
       }
-      this.oldSize = this.limit
+      this.oldSize = this.limit;
       if (this.filterName) {
         const query = {
           cascade: true,
@@ -270,27 +270,27 @@ export default {
           },
           params: [
             {
-              field: 'name',
-              operator: 'EQUALS',
+              field: "name",
+              operator: "EQUALS",
               value: this.filterName
             }
           ]
-        }
-        if (this.queryName.trim() !== '') {
-          query.params.name = this.queryName
+        };
+        if (this.queryName.trim() !== "") {
+          query.params.name = this.queryName;
         }
         filterPoliceList(query).then(response => {
-          if (response.code !== 0) return
-          this.userList = response.body.data
-          this.total = response.body.page.total
-          this.queryName = ''
-        })
+          if (response.code !== 0) return;
+          this.userList = response.body.data;
+          this.total = response.body.page.total;
+          this.queryName = "";
+        });
       } else {
-        this.getPoliceList()
+        this.getPoliceList();
       }
     },
     getPoliceList() {
-      this.tableLoading = true
+      this.tableLoading = true;
       const query = {
         cascade: true,
         page: {
@@ -298,108 +298,119 @@ export default {
           size: this.limit
         },
         params: {}
-      }
-      if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
+      };
+      if (this.queryName.trim() !== "") {
+        query.params.name = this.queryName;
       }
       getPoliceList(query).then(response => {
-        if (response.code !== 0) return
-        this.userList = response.body.data
-        this.total = response.body.page.total
+        if (response.code !== 0) return;
+        this.userList = response.body.data;
+        this.total = response.body.page.total;
         setTimeout(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
+          var cellArr = document.getElementsByClassName("cell");
+          var arr = Array.from(cellArr);
           arr.forEach(item => {
             item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+              (document.getElementsByTagName("html")[0].clientHeight - 260) /
                 11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        }, 100)
-        this.tableLoading = false
-      })
+              "px";
+            item.style.paddingTop = "2px";
+            item.style.paddingBottom = "2px";
+          });
+        }, 100);
+        this.tableLoading = false;
+      });
     },
     addAPolice() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return
-        const query = [{ ...this.addPoliceForm }]
+        if (!valid) return;
+        const query = [{ ...this.addPoliceForm }];
         addPolice(query).then(response => {
-          if (response.code !== 0) { return this.$message.error('添加派出所失败，请联系系统管理员') }
-          this.$message.success('添加派出所成功')
-          this.addPoliceDialogVisible = false
-          this.getPoliceList()
-        })
-      })
+          if (response.code !== 0) {
+            return this.$message.error("添加派出所失败，请联系系统管理员");
+          }
+          // this.$message.success('添加派出所成功')
+          this.$notify({
+            title: "成功",
+            type: "success",
+            message: "添加派出所成功!"
+          });
+          this.addPoliceDialogVisible = false;
+          this.getPoliceList();
+        });
+      });
     },
     addDialogClosed() {
-      this.addPoliceForm = {}
-      this.$refs.addFormRef.resetFields()
+      this.addPoliceForm = {};
+      this.$refs.addFormRef.resetFields();
     },
     showEditDialog(item) {
-      this.editPoliceForm = item
-      this.editPoliceDialogVisible = true
+      this.editPoliceForm = item;
+      this.editPoliceDialogVisible = true;
     },
     editAPolice() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
+        if (!valid) return;
         updatePolice([{ ...this.editPoliceForm }]).then(response => {
-          if (response.code !== 0) { return this.$message.error('更新派出所信息失败,请稍后再试') }
-          this.editPoliceDialogVisible = false
-          this.$message.success('更新派出所信息成功')
-          this.getPoliceList()
-        })
-      })
+          if (response.code !== 0) {
+            return this.$message.error("更新派出所信息失败,请稍后再试");
+          }
+          this.editPoliceDialogVisible = false;
+          this.$message.success("更新派出所信息成功");
+          this.getPoliceList();
+        });
+      });
     },
     editDialogClosed() {
-      this.editPoliceForm = {}
+      this.editPoliceForm = {};
     },
     deleatePolice(id) {
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
-        const params = [id]
+        const params = [id];
         deletePolice(params)
           .then(response => {
-            this.getPoliceList()
-            this.delIDArr = []
+            this.getPoliceList();
+            this.delIDArr = [];
             this.$message({
-              type: 'success',
-              message: '删除成功'
-            })
+              type: "success",
+              message: "删除成功"
+            });
           })
           .catch(() => {
             this.$message({
-              type: 'warning',
-              message: '删除失败'
-            })
-          })
-      })
+              type: "warning",
+              message: "删除失败"
+            });
+          });
+      });
     },
 
     deleteAPolice() {
-      const ids = []
-      ids.push(this.deletePoliceId)
+      const ids = [];
+      ids.push(this.deletePoliceId);
       deletePolice(ids).then(response => {
-        if (response.code !== 0) { return this.$message.error('删除派出所失败,请稍后再试') }
-        this.deletePoliceDialogVisible = false
-        this.deletePoliceId = 0
-        this.deletePoliceName = ''
-        this.getPoliceList()
-        this.$message.success('删除派出所信息')
-      })
+        if (response.code !== 0) {
+          return this.$message.error("删除派出所失败,请稍后再试");
+        }
+        this.deletePoliceDialogVisible = false;
+        this.deletePoliceId = 0;
+        this.deletePoliceName = "";
+        this.getPoliceList();
+        this.$message.success("删除派出所信息");
+      });
     },
 
     resetQuery() {
-      this.queryName = ''
+      this.queryName = "";
 
-      this.getPoliceList()
+      this.getPoliceList();
     }
   }
-}
+};
 </script>
 
 <style lang='scss'>
@@ -432,7 +443,8 @@ export default {
   .addbtn {
     float: right;
   }
-  td,th {
+  td,
+  th {
     padding: 0px;
   }
 }

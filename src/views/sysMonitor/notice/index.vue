@@ -554,8 +554,13 @@ export default {
             return this.$message.error("更新信息失败,请稍后再试");
           }
           this.editNoticeDialogVisible = false;
+          this.$notify({
+            title: "成功",
+            type: "success",
+            message: "更新成功!"
+          });
           this.getNoticeList();
-          this.$message.success("更新成功");
+          // this.$message.success("更新成功");
         });
       });
     },
@@ -575,19 +580,20 @@ export default {
       ids.push(this.deleteNoticerId);
       deleteNotices(ids).then(response => {
         if (response.code !== 0) {
-          return this.$message.error("删除失败,请稍后再试");
+          return;
         }
-        this.deleteNoticeDialogVisible = false;
-        this.deleteNoticerId = 0;
-        this.deleteNoticeTitle = "";
         this.$notify({
           title: "成功",
           type: "success",
           message: "删除成功!"
         });
         this.getNoticeList();
+        this.deleteNoticeDialogVisible = false;
+        this.deleteNoticerId = 0;
+        this.deleteNoticeTitle = "";
       });
     },
+
     getCookie(objName) {
       // 获取指定名称的cookie的值
       var arrStr = document.cookie.split("; ");
