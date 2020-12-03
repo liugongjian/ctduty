@@ -1152,6 +1152,11 @@ export default {
       notifyState(params, 0).then((res) => {
         this.getalarmList()
         this.getPanelList()
+        this.$notify({
+          title: '成功',
+          type: 'success',
+          message: '更新成功!'
+        })
         this.dialogVisable = false
       })
     },
@@ -1160,11 +1165,15 @@ export default {
         id: this.dataDia.id,
         state: 1,
         handlerId: this.userId
-
       }]
       notifyState(params, 1).then((res) => {
         this.getalarmList()
         this.getPanelList()
+        this.$notify({
+          title: '成功',
+          type: 'success',
+          message: '更新成功!'
+        })
         this.dialogVisable = false
       })
     }

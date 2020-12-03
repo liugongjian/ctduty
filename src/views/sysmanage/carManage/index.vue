@@ -181,8 +181,14 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="车牌号：">
+        <el-form
+          ref="editCarForm"
+          :rules="carRules"
+          :model="editForm"
+          label-position="right"
+          label-width="130px"
+        >
+          <el-form-item label="车牌号：" prop="carNumber">
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
@@ -323,6 +329,11 @@ export default {
           { required: true, trigger: 'blur', message: '车牌颜色不能为空' }
         ]
       },
+      carRules: {
+        carNumber: [
+          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+        ]
+      },
       formInline: {
         searchkey: '',
         typeValue: 'list'
@@ -395,6 +406,18 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 100)
         this.listLoading = false
         this.tableLoading = false
       })
@@ -496,26 +519,29 @@ export default {
       this.editVisable = true
     },
     editDialogConfirm() {
-      const params = [
-        {
-          id: this.editForm.id,
-          licenseNo: this.editForm.carNumber,
-          type: this.editForm.carList,
-          color: this.editForm.carColor
-          // carNumber: this.editForm.carNumber,
-          // carList: this.editForm.carList,
-          // carColor: this.editForm.carColor
-        }
-      ]
-      carEditConfirm(params).then(response => {
-        this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success',
-          duration: 2000
+      this.$refs.editCarForm.validate(valid => {
+        if (!valid) return
+        const params = [
+          {
+            id: this.editForm.id,
+            licenseNo: this.editForm.carNumber,
+            type: this.editForm.carList,
+            color: this.editForm.carColor
+            // carNumber: this.editForm.carNumber,
+            // carList: this.editForm.carList,
+            // carColor: this.editForm.carColor
+          }
+        ]
+        carEditConfirm(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.editVisable = false
         })
-        this.getList()
-        this.editVisable = false
       })
     },
     submit() {},
@@ -710,6 +736,9 @@ export default {
   .upload-demo {
     width: 360px;
     margin: 0 auto;
+  }
+  td,th {
+    padding: 0px;
   }
 }
 .sureItem {

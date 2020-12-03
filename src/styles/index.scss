@@ -455,7 +455,14 @@ html {
 .el-tabs__nav-wrap::after {
     height: 1px !important;
 }
-
+.el-input__inner {
+    font-size: 12px;
+    border-radius: 2px;
+}
+.el-button {
+    font-size: 12px;
+    border-radius: 2px;
+}
 .el-input__inner {
     &::placeholder {
         font-size: 12px;

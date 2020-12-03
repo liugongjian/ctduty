@@ -1,5 +1,5 @@
 <template>
-  <div class="notice">
+  <div class="noticelist">
     <div>
       <div class="clearfix">
         <div class="pull-left">
@@ -7,8 +7,8 @@
             ref="queryTitleRef"
             v-model="queryInfo.params.title"
             class="searchinput"
-            @keyup.enter.native="getNoticeList"
             placeholder="公告标题"
+            @keyup.enter.native="getNoticeList"
           ></el-input>
           <el-input
             ref="queryOperatorRef"
@@ -19,8 +19,8 @@
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
-            <el-option :value="0" label="公告">通知</el-option>
-            <el-option :value="1" label="通知">公告</el-option>
+            <el-option :value="0" label="通知">通知</el-option>
+            <el-option :value="1" label="公告">公告</el-option>
           </el-select>
           <el-button
             v-waves
@@ -432,6 +432,18 @@ export default {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
         });
         this.total = response.body.page.total;
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName("cell");
+          var arr = Array.from(cellArr);
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName("html")[0].clientHeight - 260) /
+                11 +
+              "px";
+            item.style.paddingTop = "2px";
+            item.style.paddingBottom = "2px";
+          });
+        }, 100);
         this.tableLoading = false;
       });
     },
@@ -490,11 +502,9 @@ export default {
           }
           this.$notify({
             title: "成功",
-            message: "添加成功",
             type: "success",
-            duration: 2000
+            message: "添加成功!"
           });
-
           this.total++;
           this.pagenum = Math.ceil(this.total / this.pagesize);
           this.addNoticeDialogVisible = false;
@@ -570,8 +580,12 @@ export default {
         this.deleteNoticeDialogVisible = false;
         this.deleteNoticerId = 0;
         this.deleteNoticeTitle = "";
+        this.$notify({
+          title: "成功",
+          type: "success",
+          message: "删除成功!"
+        });
         this.getNoticeList();
-        this.$message.success("删除信息成功");
       });
     },
     getCookie(objName) {
@@ -588,8 +602,8 @@ export default {
 };
 </script>
 
-<style lang='scss' scoped>
-.notice {
+<style lang='scss'>
+.noticelist {
   padding: 20px;
   .input_title {
     width: 360px;
@@ -623,6 +637,10 @@ export default {
   }
   .el-row {
     margin-top: 20px;
+  }
+  td,
+  th {
+    padding: 0px;
   }
 }
 </style>

@@ -422,6 +422,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 100)
         this.tableLoading = false
       })
     },
@@ -517,14 +529,14 @@ export default {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang='scss'>
 .userManage {
   padding: 20px;
   .el-button--text {
     color: #fa8334 !important;
   }
   .el-input__inner {
-    height: 38px;
+    height: 36px;
   }
   .title {
     width: 150px;
@@ -545,6 +557,7 @@ export default {
   .searchinput {
     float: left;
     width: 250px;
+    height: 36px;
   }
   .searchbtn {
     float: left;
@@ -552,6 +565,7 @@ export default {
   }
   .addbtn {
     float: right;
+    margin-right: 3px;
   }
   label {
     display: inline-block;
@@ -559,6 +573,9 @@ export default {
   }
   .el-radio {
     margin-right: 20px !important;
+  }
+  td,th {
+    padding:0px;
   }
 }
 </style>

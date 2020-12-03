@@ -4,7 +4,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button style="border-radius:4px;height:36px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
+          <el-button style="height:36px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -279,6 +279,18 @@ export default {
       fetchDutyList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 100)
         this.listLoading = false
         this.tableLoading = false
       })
@@ -421,11 +433,15 @@ export default {
 }
 </script>
 
-<style  lang='scss' scoped>
+<style  lang='scss'>
 .app-main {
   padding-top: 50px;
 }
 .dutyManage {
+  .el-button {
+    border-radius: 2px;
+    font-size: 12px;
+  }
   .el-dialog__body {
     margin: 0 auto;
   }
@@ -470,6 +486,9 @@ export default {
   .upload-demo {
     width: 360px;
     margin: 0 auto;
+  }
+  td,th {
+   padding:0px;
   }
 }
 
