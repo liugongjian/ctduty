@@ -821,7 +821,7 @@ export default {
   }
 }
 .videomonitorWrap {
-   min-height:540px;
+   min-height:590px;
   .el-dialog{
     .el-dialog__header{
       text-align: left;
@@ -859,7 +859,7 @@ export default {
       .monitorBox {
         // height: 330px;
         height: 50%;
-        // min-height: 200px;
+        min-height: 235px;
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
