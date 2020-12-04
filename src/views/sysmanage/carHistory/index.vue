@@ -133,10 +133,10 @@
                     style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                   >
                     <i class="el-icon-map-location" />
-                    <el-tooltip 
-                      class="item"
-                      effect="dark" 
+                    <el-tooltip
                       :content="item.camera.address"
+                      class="item"
+                      effect="dark"
                       placement="top-start"
                     >
                       <span>{{ item.camera && item.camera.address || '未知' }}</span>
@@ -145,7 +145,7 @@
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
-                    <el-button :disabled="!item.plateType" type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
+                    <el-button :disabled="!item.license" type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
                       <svg-icon icon-class="import"></svg-icon>
                       <!-- <i class="el-icon-upload" /> -->
                     </el-button>
