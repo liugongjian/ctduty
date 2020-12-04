@@ -110,7 +110,7 @@ import { renderTime, downLoadByUrl } from '@/utils'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import axios from 'axios'
+import { debounce } from '@/utils'
 import {
   fetchCarList,
   addCarData,
@@ -308,6 +308,10 @@ export default {
           }
         ]
         addDuty(params).then(res => {
+          this.$message({
+            type: 'success',
+            message: '值班表导入成功!'
+          })
           this.getList()
           this.bulkimportVisble = false
         })
@@ -316,7 +320,7 @@ export default {
     batchUpSuccess(res) {
       if (+res.code === 50000) {
         this.$message({
-          message: '文件上传失败',
+          message: '文件上传失败!',
           type: 'error'
         })
         this.isUpSuccess = false
