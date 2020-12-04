@@ -748,7 +748,9 @@ export default {
           return
         }
         this.tableData = res.body.data
-        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
+        this.tableColumn = res.body.data[0]
+          ? res.body.data[0].taskCount.sort((a, b) => (b.applied - a.applied) || (b.count - a.count))
+          : []
         this.tableLoading = false
         // this.total = res.body.page.total
       // eslint-disable-next-line handle-callback-err
