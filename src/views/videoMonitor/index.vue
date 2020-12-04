@@ -344,7 +344,7 @@ export default {
       videoLoading: false,
       total: 10,
       page: 0,
-      limit: 12,
+      limit: 24,
       showVideoSetting: false,
       videoOptions: {
         autoplay: true,
@@ -1051,23 +1051,51 @@ export default {
         //   }
         // }
           .photoContainer-noData{
-            min-height:90px;
+            // min-height:120px;
             &-text{
-              height:90px;
+              // height:120px;
               overflow:hidden;
-              &-icon{
-                 font-size: 48px;
-              }
+              // &-icon{
+              //    font-size: 80px;
+              // }
               &-content{
-                font-size: 16px;
+                // font-size: 18px;
                 padding-top: 10px;
               }
               width:100%;
               position:absolute;
-              top:calc(50% - 45px);
+              top:calc(50% - 60px);
               color: #b2b2b2;
               text-align: center;
               vertical-align: middle;
+            }
+            @media screen and (min-width: 1501px) {
+                min-height:180px;
+                &-text{
+                   top:calc(50% - 90px);
+                   height:180px;
+                  &-icon{
+                    font-size: 100px;
+                  }
+                  &-content{
+                    font-size: 22px;
+                    padding-top: 10px;
+                  }
+                }
+            }
+             @media screen and (max-width: 1500px) {
+                min-height:110px;
+                &-text{
+                   top:calc(50% - 55px);
+                    height:110px;
+                  &-icon{
+                    font-size: 60px;
+                  }
+                  &-content{
+                    font-size: 16px;
+                    padding-top: 10px;
+                  }
+                }
             }
           }
         }
