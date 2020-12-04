@@ -1200,7 +1200,7 @@ export default {
       border: none;
     }
     .el-collapse-item__arrow {
-      margin-bottom: 2px;
+      margin-bottom: 10px;
     }
     .el-range-editor--mini .el-range-separator {
       line-height: 24px;
