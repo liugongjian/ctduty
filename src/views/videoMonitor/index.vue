@@ -600,7 +600,8 @@ export default {
       this.id = null
     },
     gotoAiConfig() {
-      this.$router.push('/algorithmconfig')
+      const { cameraId } = this.$route.query
+      this.$router.push(`/algorithmconfig?cameraId=${cameraId}`)
     },
     sureThis() {
       this.showVideoSetting = true

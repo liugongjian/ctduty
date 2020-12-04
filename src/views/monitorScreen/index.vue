@@ -86,12 +86,9 @@ import {
   delMonitor,
   loadingImg
 } from '@/api/monitor'
-import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+import { fetchAllCameraList } from '@/api/camera'
 import fakeimg from '@/assets/images/fakeimg.png'
 import nosrc from '@/assets/images/nosrc.png'
-import {
-  getCameraTree
-} from '@/api/algorithm'
 export default {
   components: { VideoPlayer, VideoFlv, SelCamera },
   data() {
