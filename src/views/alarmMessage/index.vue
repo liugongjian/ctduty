@@ -1157,7 +1157,7 @@ export default {
       width: 260px;
     }
     .el-input--mini .el-input__inner {
-      height: 36px !important;
+      height: 36px;
       line-height: 36px !important;
     }
     .el-select.el-select--medium {
@@ -1166,9 +1166,7 @@ export default {
     .filter-container .filter-item {
       vertical-align: initial;
     }
-    .el-input--mini .el-input__icon {
-      line-height: 36px;
-    }
+
     .open {
       margin-left: 5px;
       color: #ff9832;
@@ -1199,12 +1197,18 @@ export default {
     .el-collapse-item__wrap {
       border: none;
     }
-    .el-collapse-item__arrow {
-      margin-bottom: 10px;
-    }
+
     .el-range-editor--mini .el-range-separator {
       line-height: 24px;
       font-size: 14px;
+    }
+    .el-collapse-item__header {
+      .el-input--mini .el-input__icon {
+        line-height: 36px;
+      }
+      .el-collapse-item__arrow {
+          margin-bottom: 10px;
+        }
     }
     .el-range-editor--mini .el-range__icon {
       line-height: 24px;
