@@ -89,14 +89,14 @@
                         style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                       >
                         <i class="el-icon-map-location" />
-                        <el-tooltip 
-                          class="item"
-                          effect="dark" 
+                        <el-tooltip
                           :content="val.camera.address"
+                          class="item"
+                          effect="dark"
                           placement="top-start"
                         >
                           <span>{{ val.camera && val.camera.address || '未知' }}</span>
-                        </el-tooltip>    
+                        </el-tooltip>
                       </div>
                       <div class="location">
                         <i class="el-icon-time" />
@@ -195,7 +195,6 @@ export default {
       allTotal: 0,
       page: 1,
       limit: 10,
-      userId: '',
       originCode: '',
       oldSize: 10,
       editVisable: false,
@@ -211,7 +210,8 @@ export default {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
         }
-      }
+      },
+      userId: Cookies.get('userId')
     }
   },
   // computed: {
@@ -491,6 +491,10 @@ export default {
             {
               field: 'username',
               operator: 'NOT_NULL'
+            }, {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
             }
           ]
           : [
@@ -502,6 +506,10 @@ export default {
             {
               field: 'username',
               operator: 'NOT_NULL'
+            }, {
+              field: 'camera.inChargeId',
+              operator: 'EQUALS',
+              value: this.userId
             },
             ss
           ]

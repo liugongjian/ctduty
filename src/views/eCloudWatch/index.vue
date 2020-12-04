@@ -551,6 +551,8 @@ export default {
         return 'video/mp4'
       } else if (url.endsWith('ogv')) {
         return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
       }
     },
     openBig(url) {
@@ -780,8 +782,8 @@ export default {
                   // m3u8uri
                   sources: [
                     {
-                      src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-                      type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+                      src: res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '',
+                      type: this.video_type(res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '')
                     }
                   ]
                 }
@@ -871,6 +873,7 @@ export default {
           item.childNodes[1].setAttribute('height', 50)
           if (this.form.online !== 1) {
             // this.cameraState = '请选择要查看的摄像头'
+
             if (this.currentcameraId === this.form.id && this.videoOpen) {
               this.hasUrl = null
               this.videoOpen = false
@@ -891,8 +894,8 @@ export default {
                   // m3u8uri
                   sources: [
                     {
-                      src: res.body.data.rtmpuri,
-                      type: this.video_type(res.body.data.rtmpuri)
+                      src: res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '',
+                      type: this.video_type(res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '')
                     }
                   ]
                 }
