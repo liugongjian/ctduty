@@ -88,6 +88,19 @@ export default {
       required: true,
       default: false
     }
+    // allOption: {
+    //   type: Array,
+    //   required: true,
+    //   default: () => {
+    //     return []
+    //   }
+    // },
+    // getList: {
+    //   type: Array,
+    //   required: true,
+    //   default: () => {
+    //   }
+    // }
   },
   data() {
     return {
@@ -118,18 +131,22 @@ export default {
   },
   watch: {
     curCamera() {
-      console.log('curCamera change')
       this.form = {
         selValue: this.curCamera && this.curCamera.id
       }
+    },
+    form({ selValue }) {
+      this.getList()
     }
   },
-  async created() {
-    await this.getList()
+  created() {
+    this.getList()
+    // this.form = {
+    //   selValue: this.curCamera && this.curCamera.id
+    // }
   },
   methods: {
     selChange(item) {
-      console.log(this.form.selValue)
       this.form = {
         selValue: item
       }
@@ -145,7 +162,6 @@ export default {
               break
             }
           }
-          console.log('cameraName', cameraName)
           this.onSubmit(this.form.selValue, cameraName, this.handleClose)
         } else {
           return false
@@ -156,14 +172,14 @@ export default {
       this.onClose()
       // this.$refs['ruleForm'].resetFields()
     },
-    async getList(keywords) {
+    getList(keywords) {
       this.selLoading = true
       const query = keywords ? {
         'params': [
           {
             'field': 'name',
             'operator': 'LIKE',
-            'value': `%${keywords}%`
+            'value': `%${keywords.trim()}%`
 
           }],
         sorts: [

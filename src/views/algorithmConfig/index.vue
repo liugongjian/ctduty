@@ -42,7 +42,7 @@
             class="cameraTree"
             @node-click="cameraTreeClick">
             <div slot-scope="{ node, data }">
-              <div v-if="data.ifChild" @mouseenter="checkTreeName" @click="chooseThis">
+              <div v-if="data.ifChild" :data-id="data.info.id" @mouseenter="checkTreeName">
                 <span class="displayIB">
                   <svg-icon icon-class="monitorIcon" class="svgBtn"/>
                 </span>
@@ -52,7 +52,7 @@
                     {{ node.label }}
                   </span>
                 </el-tooltip>
-                <span @click.stop="toMonitorDetail(data.info.id)">
+                <span @click.stop="toMonitorDetail(data.info.id,node)">
                   <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
                 </span>
               </div>
@@ -293,7 +293,14 @@ export default {
           this.$nextTick(function() {
             const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
             ele.classList.add('is-current')
+            const { cameraId } = this.$route.query
+            if (cameraId) {
+              console.log('test------>', document.querySelector(`[data-id="${cameraId}"]`).parentNode.parentNode.parentNode)
+            } else {
+              console.log(123)
+            }
           })
+
           this.getAlgorithmList(this.deviceId)
         }
       })
@@ -516,9 +523,9 @@ export default {
     getStatus(status) {
       return status === 1 ? '在线' : '离线'
     },
-    toMonitorDetail(id) {
-      console.log('O ?', id)
-      this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
+    toMonitorDetail(id, node) {
+      console.log('node--->', node)
+      // this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
     },
     checkNameLen(k) {
       const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth
