@@ -488,3 +488,16 @@ html {
         font-size: 12px;
     }
 }
+.el-pagination__sizes {
+    .el-input {
+        .el-input__inner {
+            height: 28px !important;
+            line-height: 28px !important;
+        }
+    }
+    .el-select__caret {
+        display:block;
+        height: 28px;
+        line-height: 28px;
+    }
+}
