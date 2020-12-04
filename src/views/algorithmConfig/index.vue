@@ -56,7 +56,7 @@
                   <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
                 </span>
               </div>
-              <div v-else :disabled="false">
+              <div v-else>
                 {{ node.label }}
               </div>
             </div>
