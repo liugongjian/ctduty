@@ -89,6 +89,7 @@ import echarts from 'echarts'
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
 import huayin from '@/json/weinan.json'
+import { debounce } from '@/utils'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -99,7 +100,6 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
-import { debouncefn } from '@/utils'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
@@ -135,7 +135,6 @@ export default {
       alarmTime: '',
       processed: '',
       offCamera: '',
-      debouncefn,
       total: '',
       datay: [10, 11, 12],
       pieData: [{ value: 10, name: '嘻嘻' }],
@@ -157,7 +156,9 @@ export default {
       mainWidth: null,
       rowHeight: null,
       isScreenChange: true,
-      timer: null
+      timer: null,
+      fun: null,
+      allCharts: []
     }
   },
   watch: {
@@ -189,18 +190,20 @@ export default {
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
     },
     mainWidth(v, oldv) {
-      const canvas = document.getElementsByTagName('canvas')
-      const chartsBox = []
-      const allCharts = [];
-      [].forEach.call(canvas, function(item) {
-        if (item.parentNode.parentNode.id !== 'echarts05') chartsBox.push(item.parentNode.parentNode)
-      })
-      chartsBox.forEach(item => {
-        allCharts.push(this.$echarts.init(item))
-      })
-      allCharts.forEach(item => {
-        item.resize()
-      })
+      if (v) {
+        const canvas = document.getElementsByTagName('canvas')
+        const chartsBox = []
+        this.allCharts = [];
+        [].forEach.call(canvas, function(item) {
+        /* if (item.parentNode.parentNode.id !== 'echarts05')  */chartsBox.push(item.parentNode.parentNode)
+        })
+        chartsBox.forEach(item => {
+          this.allCharts.push(this.$echarts.init(item))
+        })
+        this.allCharts.forEach(item => {
+          item.resize()
+        })
+      }
     }
   },
   async created() {
@@ -212,9 +215,6 @@ export default {
     this.mainHeight = mainHeight
     this.mainWidth = mainWidth
     this.rowHeight = Math.floor(mainHeight / 12)
-  },
-  mounted() {
-    // map, trend, dispose, classify, hotarea, net
   },
   methods: {
     resize() { // 当宽高变化时就会执行
@@ -238,6 +238,7 @@ export default {
         }
       })
     },
+
     goAlarmList() {
       this.$router.push('/alarmMessage')
     },
@@ -320,13 +321,6 @@ export default {
     },
     clickTagItem(tag) {
       // TODO
-    },
-    debounce(fn, wait) {
-      var timeout = null
-      return function() {
-        if (timeout !== null) clearTimeout(timeout)
-        timeout = setTimeout(fn, wait)
-      }
     },
     getMap(inData) {
       this.charts = echarts.init(document.getElementById('mapChart'))
