@@ -902,11 +902,6 @@ export default {
           value: { start: s || '', end: e || '' }
         },
         {
-          field: 'camera.inChargeId',
-          operator: 'EQUALS',
-          value: this.userId
-        },
-        {
           field: 'type',
           operator: 'IN',
           value: type

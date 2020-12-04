@@ -42,7 +42,7 @@
             class="cameraTree"
             @node-click="cameraTreeClick">
             <div slot-scope="{ node, data }">
-              <div v-if="data.ifChild" @mouseenter="checkTreeName">
+              <div v-if="data.ifChild" @mouseenter="checkTreeName" @click="chooseThis">
                 <span class="displayIB">
                   <svg-icon icon-class="monitorIcon" class="svgBtn"/>
                 </span>
@@ -56,7 +56,7 @@
                   <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
                 </span>
               </div>
-              <div v-else>
+              <div v-else :disabled="false">
                 {{ node.label }}
               </div>
             </div>
@@ -134,7 +134,8 @@ export default {
       btnLoading: false,
       deviceShowTooltip: true,
       caremaTreeData: [],
-      expendId: ''
+      expendId: '',
+      chooseEle: ''
     }
   },
   watch: {
@@ -146,6 +147,7 @@ export default {
   },
   mounted() {
 
+    // document.querySelector('.el-tree-node__children .el-tree-node.is-focusable').classList.add('is-current')
   },
   async created() {
     await this.getList()
@@ -287,19 +289,37 @@ export default {
             }
           })
           this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
-          this.expendId = tempData[0].name
+          this.expendId = tempData.length > 0 ? tempData[0].name : ''
+          this.$nextTick(function() {
+            const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
+            ele.classList.add('is-current')
+          })
           this.getAlgorithmList(this.deviceId)
         }
       })
     },
-    cameraTreeClick(data) {
+    cameraTreeClick(data, node, ele) {
       if (data.ifChild) {
+        this.chooseEle = ele.$el
         this.deviceId = data.info.id
         this.controlShow = false
         this.canvasShowStatus = false
         this.pageLoading = true
+        const eles = document.querySelectorAll('.el-tree-node__children .el-tree-node.is-focusable')
+        for (let i = 0; i < eles.length; i++) {
+          eles[i].classList.remove('is-current')
+        }
+        this.chooseEle.classList.add('is-current')
         this.getAlgorithmList(this.deviceId)
+      } else {
+        ele.$el.classList.remove('is-current')
+        if (this.chooseEle) {
+          this.chooseEle.classList.add('is-current')
+        }
       }
+    },
+    chooseThis(e) {
+      // console.log(e)
     },
     checkTreeName(e) {
       // console.log(e, e.target.offsetWidth)
