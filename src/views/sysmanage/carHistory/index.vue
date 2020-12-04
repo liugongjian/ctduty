@@ -251,7 +251,8 @@ export default {
           value: '其他',
           label: '其他'
         }
-      ]
+      ],
+      userId: Cookies.get('userId')
     }
   },
   watch: {
@@ -361,16 +362,21 @@ export default {
     },
     getList() {
       this.listLoading = true
-      const param = [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': `${this.currentTab} ${moment(this.startTime).format(timeFormate)}` || '', 'end': `${this.currentTab} ${moment(this.endTime).format(timeFormate)}` || '' }
-      },
-      {
-        field: 'type',
-        operator: 'EQUALS',
-        value: 2
-      }
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { 'start': `${this.currentTab} ${moment(this.startTime).format(timeFormate)}` || '', 'end': `${this.currentTab} ${moment(this.endTime).format(timeFormate)}` || '' }
+        },
+        {
+          field: 'type',
+          operator: 'EQUALS',
+          value: 2
+        }, {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        }
       ]
       const params = {
         cascade: true,
