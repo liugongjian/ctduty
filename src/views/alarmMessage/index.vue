@@ -1089,6 +1089,7 @@ export default {
      .pull-right.alarmmsgright {
       position: absolute;
       right: 50px;
+      top:65px;
       .clearsearch {
         height: 36px;
         margin-left: 10px;
