@@ -232,7 +232,6 @@
             <el-radio :label="1">紧急</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item v-if="modifiable==='true'" label="内容">
           <quill-editor
             ref="myQuillEditor"
