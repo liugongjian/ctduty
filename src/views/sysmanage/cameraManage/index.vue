@@ -386,12 +386,12 @@ export default {
               field: 'address',
               operator: 'LIKE',
               value: `%${keyword === '所有摄像头' ? '' : keyword}%`
-            },
-            {
-              field: 'inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             }
+            // {
+            //   field: 'inChargeId',
+            //   operator: 'EQUALS',
+            //   value: this.userId
+            // }
           ]
         }
         searchCameraList(params).then(res => {
@@ -631,12 +631,12 @@ export default {
             field: 'name',
             operator: 'LIKE',
             value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
-          },
-          {
-            field: 'inChargeId',
-            operator: 'EQUALS',
-            value: this.userId
           }
+          // {
+          //   field: 'inChargeId',
+          //   operator: 'EQUALS',
+          //   value: this.userId
+          // }
         ]
       }
       searchCameraList(params).then(res => {
