@@ -256,7 +256,7 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        'http://36.41.71.26:8920/Schedule/Template',
+        'http://61.185.80.26:8620/Schedule/Template',
         '值班管理导入模板'
       )
       fetchDutyTemplate().then(res => {
