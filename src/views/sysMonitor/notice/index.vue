@@ -179,15 +179,22 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
-            <!-- <el-option value="1" label="1"></el-option> -->
+          <el-select v-model="addNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
             <el-option
-              v-for="(item,key) in departmentInfo"
-              :key="key"
-              :label="item.department"
-              :value="item.departmentId"
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
+          <!--  <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
+          <el-option
+            v-for="(item,key) in departmentInfo"
+            :key="key"
+            :label="item.department"
+            :value="item.departmentId"
+          ></el-option>
+          </el-select> -->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -237,7 +244,15 @@
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
-          <el-select
+          <el-select v-model="editNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
+          </el-select>
+          <!--  <el-select
             v-model="editNoticeForm.signatureId"
             :value="editNoticeForm.signatureId"
             placeholder="请选择"
@@ -248,7 +263,7 @@
               :label="item.department"
               :key="item.departmentId"
             ></el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -278,6 +293,9 @@ import {
 } from '@/api/notice'
 import { fetchUserList } from '@/api/users'
 import { notReadNotices } from '@/api/notice'
+import {
+  getDepartments
+} from '@/api/users'
 export default {
   components: { Pagination },
   data() {
@@ -298,6 +316,7 @@ export default {
         ]
       },
       total: 0,
+      departmentInfo: [],
       editor_content: '',
       editorOption: {
         modules: {
@@ -389,6 +408,7 @@ export default {
     }
   },
   created() {
+    this.getDepartmentList()
     this.getNoticeList()
   },
   methods: {
@@ -563,6 +583,28 @@ export default {
           // this.$message.success("更新成功");
         })
       })
+    },
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          console.log(res, 'ress')
+          const {
+            body: { data },
+            code,
+            message
+          } = res
+          if (code !== 0) {
+            this.$message.error(message || '获取部门列表失败')
+            return
+          } else {
+            this.departmentInfo = data
+            this.departmentInfoLoading = false
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false
+          this.$message.error(err.message || '获取部门列表失败')
+        })
     },
     editDialogClosed() {
       this.editNoticeForm = {}
