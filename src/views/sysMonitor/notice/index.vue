@@ -179,16 +179,33 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
+          <el-select v-model="addNoticeForm.departmentId" class="select" placeholder="请选择">
             <!-- <el-option value="1" label="1"></el-option> -->
-            <el-option
+            <!-- <el-option
               v-for="(item,key) in departmentInfo"
               :key="key"
               :label="item.department"
               :value="item.departmentId"
+            ></el-option>-->
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
+
+        <!-- <el-form-item label="部门" prop="departmentId">
+          <el-select v-model="addUserForm.departmentId" style="width:338px;" placeholder="请选择部门">
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -238,8 +255,8 @@
         </el-form-item>
         <el-form-item label="签名档">
           <el-select
-            v-model="editNoticeForm.signatureId"
-            :value="editNoticeForm.signatureId"
+            v-model="editNoticeForm.departmentId"
+            :value="editNoticeForm.departmentId"
             placeholder="请选择"
           >
             <el-option
@@ -276,7 +293,7 @@ import {
   updateANotice,
   deleteNotices
 } from "@/api/notice";
-import { fetchUserList } from "@/api/users";
+import { fetchUserList, getDepartments } from "@/api/users";
 import { notReadNotices } from "@/api/notice";
 export default {
   components: { Pagination },
@@ -338,9 +355,12 @@ export default {
         state: null,
         title: "",
         type: null,
-        signatureId: null,
+        departmentId: null,
         creatorId: ""
       },
+      departmentInfoLoading: true,
+      permissionInfoLoading: true,
+      postInfoLoading: true,
       editNoticeForm: {},
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
@@ -350,18 +370,18 @@ export default {
       tableLoading: null,
 
       departmentInfo: [
-        {
-          departmentId: 3275699862611970,
-          department: "华阴公安局"
-        },
-        {
-          departmentId: 3275699862611971,
-          department: "孟塬镇派出所"
-        },
-        {
-          departmentId: 3275699862611972,
-          department: "华山镇派出所"
-        }
+        // {
+        //   departmentId: 3275699862611970,
+        //   department: "华阴公安局"
+        // },
+        // {
+        //   departmentId: 3275699862611971,
+        //   department: "孟塬镇派出所"
+        // },
+        // {
+        //   departmentId: 3275699862611972,
+        //   department: "华山镇派出所"
+        // }
       ]
     };
   },
@@ -390,8 +410,30 @@ export default {
   },
   created() {
     this.getNoticeList();
+    this.getDepartmentList();
   },
   methods: {
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res;
+          if (code !== 0) {
+            this.$message.error(message || "获取部门列表失败");
+            return;
+          } else {
+            this.departmentInfo = data;
+            this.departmentInfoLoading = false;
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false;
+          this.$message.error(err.message || "获取部门列表失败");
+        });
+    },
     pageChange() {
       if (this.oldSize !== this.limit) {
         this.page = 1;

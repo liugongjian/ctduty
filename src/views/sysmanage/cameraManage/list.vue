@@ -630,7 +630,7 @@ export default {
           size: this.limit
         },
         params: {
-          inChargeId: this.userId
+          // inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {

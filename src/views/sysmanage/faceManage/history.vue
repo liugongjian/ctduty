@@ -491,11 +491,12 @@ export default {
             {
               field: 'username',
               operator: 'NOT_NULL'
-            }, {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             }
+            // {
+            //   field: 'camera.inChargeId',
+            //   operator: 'EQUALS',
+            //   value: this.userId
+            // }
           ]
           : [
             {
@@ -506,11 +507,12 @@ export default {
             {
               field: 'username',
               operator: 'NOT_NULL'
-            }, {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             },
+            // {
+            //   field: 'camera.inChargeId',
+            //   operator: 'EQUALS',
+            //   value: this.userId
+            // },
             ss
           ]
       const params = {

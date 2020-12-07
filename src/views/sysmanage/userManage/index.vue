@@ -329,7 +329,7 @@ export default {
       deleteUserId: 0,
       departmentInfo: [],
       departmentInfoLoading: true,
-      postInfoLoading: true,
+      // postInfoLoading: true,
       postInfo: [],
       permissionInfoLoading: true,
       permissionInfo: []

@@ -372,11 +372,12 @@ export default {
           field: 'type',
           operator: 'EQUALS',
           value: 2
-        }, {
-          field: 'camera.inChargeId',
-          operator: 'EQUALS',
-          value: this.userId
         }
+        // {
+        //   field: 'camera.inChargeId',
+        //   operator: 'EQUALS',
+        //   value: this.userId
+        // }
       ]
       const params = {
         cascade: true,

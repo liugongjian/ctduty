@@ -261,7 +261,7 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        "http://36.41.71.26:8920/Schedule/Template",
+        "http://61.185.80.26:8620/Schedule/Template",
         "值班管理导入模板"
       );
       fetchDutyTemplate().then(res => {
@@ -301,7 +301,8 @@ export default {
       });
     },
     importConfirm() {
-      this.upSuccessData.forEach(item => {
+      const lastSuccessIndex = this.upSuccessData.length - 1;
+      this.upSuccessData.forEach((item, index) => {
         const { police, leader, startTime, endTime, scheduleDate } = item;
         const params = [
           {
@@ -313,10 +314,12 @@ export default {
           }
         ];
         addDuty(params).then(res => {
-          this.$message({
-            type: "success",
-            message: "值班表导入成功!"
-          });
+          if (lastSuccessIndex === index) {
+            this.$message({
+              type: "success",
+              message: "值班表导入成功!"
+            });
+          }
           this.getList();
           this.bulkimportVisble = false;
         });
