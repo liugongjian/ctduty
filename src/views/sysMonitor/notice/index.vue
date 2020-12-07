@@ -365,22 +365,7 @@ export default {
       deleteNoticeTitle: '',
       deleteNoticerId: 0,
       modifiable: false,
-      tableLoading: null,
-
-      departmentInfo: [
-        {
-          departmentId: 3275699862611970,
-          department: '华阴公安局'
-        },
-        {
-          departmentId: 3275699862611971,
-          department: '孟塬镇派出所'
-        },
-        {
-          departmentId: 3275699862611972,
-          department: '华山镇派出所'
-        }
-      ]
+      tableLoading: null
     }
   },
   watch: {
@@ -586,7 +571,6 @@ export default {
     getDepartmentList() {
       getDepartments()
         .then(res => {
-          console.log(res, 'ress')
           const {
             body: { data },
             code,

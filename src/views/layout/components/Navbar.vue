@@ -104,6 +104,16 @@
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
+          <el-form-item label="签名档">
+            <el-select v-model="noticeForm.signatureId" style="width:310px;">
+              <el-option
+                v-for="item in departmentInfo"
+                :value="item.id"
+                :label="item.name"
+                :key="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <!-- <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
           </el-form-item>-->
@@ -131,6 +141,7 @@ import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { fetchUser } from '@/api/user'
 import { logout } from '@/api/login'
+import { getDepartments } from '@/api/users'
 import '@/styles/index.scss' // global css
 import { notReadNotices, upReadNotices } from '@/api/notice'
 
@@ -165,20 +176,7 @@ export default {
       notReadNotice: [],
       notReadNoticeTotal: '',
       isShowMark: false,
-      departmentInfo: [
-        {
-          departmentId: 3275699862611970,
-          department: '华阴公安局'
-        },
-        {
-          departmentId: 3275699862611971,
-          department: '孟塬派出所'
-        },
-        {
-          departmentId: 3275699862611972,
-          department: '华山镇派出所'
-        }
-      ],
+      departmentInfo: [],
       level: Cookies.get('level')
     }
   },
@@ -199,6 +197,7 @@ export default {
     noticeArr(v) {
       this.notReadNotice = v
     },
+
     isFullscreen(v) {
       if (v) {
         document
@@ -253,6 +252,7 @@ export default {
     }
   },
   created() {
+    this.getDepartmentList()
     setTimeout(() => {
       this.getNewNotice()
     }, 2000)
@@ -295,6 +295,27 @@ export default {
           this.notReadNotice = []
         }
       })
+    },
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res
+          if (code !== 0) {
+            this.$message.error(message || '获取部门列表失败')
+            return
+          } else {
+            this.departmentInfo = data
+            this.departmentInfoLoading = false
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false
+          this.$message.error(err.message || '获取部门列表失败')
+        })
     },
     closeDialog() {
       this.dialogVisable = false
