@@ -435,7 +435,7 @@ export default {
                 }
               },
               {
-                // field: 'camera.inChargeId',
+                field: 'camera.inChargeId',
                 operator: 'EQUALS',
                 value: this.userId
               }
@@ -469,7 +469,7 @@ export default {
                     }
                   },
                   {
-                    // field: 'camera.inChargeId',
+                    field: 'camera.inChargeId',
                     operator: 'EQUALS',
                     value: this.userId
                   }
@@ -592,7 +592,7 @@ export default {
           size: 100000
         },
         params: {
-          // inChargeId: this.userId
+          inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -695,7 +695,7 @@ export default {
             }
           },
           {
-            // field: 'camera.inChargeId',
+            field: 'camera.inChargeId',
             operator: 'EQUALS',
             value: this.userId
           }
@@ -815,12 +815,12 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
-              // {
-              //   field: 'camera.inChargeId',
-              //   operator: 'EQUALS',
-              //   value: this.userId
-              // }
             ],
             sorts: [
               {
@@ -927,12 +927,12 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
+              },
+              {
+                field: 'camera.inChargeId',
+                operator: 'EQUALS',
+                value: this.userId
               }
-              // {
-              //   field: 'camera.inChargeId',
-              //   operator: 'EQUALS',
-              //   value: this.userId
-              // }
             ],
             sorts: [
               {
@@ -1198,6 +1198,14 @@ body {
   // height: calc(100vh - 50px);
   height: 100%;
   width: 100%;
+  .disable {
+    pointer-events: none !important;
+    color: gray !important;
+  }
+
+  .not-allowed {
+    cursor: not-allowed !important;
+  }
   .map {
     height: 100%;
     width: 100%;
