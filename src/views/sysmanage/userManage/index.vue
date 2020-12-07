@@ -416,7 +416,11 @@ export default {
         const query = [{ ...this.addUserForm }]
         postAddUser(query).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('添加用户失败，请联系系统管理员')
+            /*  this.$message({
+              type: 'warning',
+              message: '添加用户失败!请联系系统管理员'
+            }) */
+            return
           }
           this.$notify({
             title: '成功',
@@ -426,6 +430,12 @@ export default {
           })
           this.addUserDialogVisible = false
           this.getUserList()
+        }).catch(err => {
+          this.$message({
+            type: 'warning',
+            message: '添加用户失败!请联系系统管理员'
+          })
+          return err
         })
       })
     },
