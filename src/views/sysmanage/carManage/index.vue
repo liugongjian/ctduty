@@ -84,7 +84,7 @@
               </a>
             </p>
           </div>
-          <div slot="footer" class="dialog-footer">
+          <div v-if="isBatchSuccess" slot="footer" class="dialog-footer">
             <el-button type="primary" @click="importConfirm">提 交</el-button>
           </div>
         </el-dialog>
@@ -427,7 +427,8 @@ export default {
       })
     },
     importConfirm() {
-      this.imSuccessData.forEach(item => {
+      const lastSuccessIndex = this.imSuccessData.length - 1
+      this.imSuccessData.forEach((item, index) => {
         const { color, licenseNo, type } = item
         const params = [
           {
@@ -437,6 +438,12 @@ export default {
           }
         ]
         addCarData(params).then(res => {
+          if (lastSuccessIndex === index) {
+            this.$message({
+              type: 'success',
+              message: '上传成功!'
+            })
+          }
           this.getList()
           this.bulkimportVisble = false
         })

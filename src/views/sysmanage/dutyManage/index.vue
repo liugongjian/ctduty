@@ -296,7 +296,8 @@ export default {
       })
     },
     importConfirm() {
-      this.upSuccessData.forEach(item => {
+      const lastSuccessIndex = this.upSuccessData.length - 1
+      this.upSuccessData.forEach((item, index) => {
         const { police, leader, startTime, endTime, scheduleDate } = item
         const params = [
           {
@@ -308,10 +309,12 @@ export default {
           }
         ]
         addDuty(params).then(res => {
-          this.$message({
-            type: 'success',
-            message: '值班表导入成功!'
-          })
+          if (lastSuccessIndex === index) {
+            this.$message({
+              type: 'success',
+              message: '值班表导入成功!'
+            })
+          }
           this.getList()
           this.bulkimportVisble = false
         })
