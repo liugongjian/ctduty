@@ -26,7 +26,7 @@
               >
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
+                  :key="item.id"
                   :label="item.address"
                   :value="item.value"
                 ></el-option>
@@ -398,9 +398,10 @@ export default {
           const data = res.body.data || []
           this.options = data.map(item => {
             return {
-              value: item.address,
-              label: item.address,
-              name: item.address
+              value: item.name,
+              label: item.name,
+              name: item.name,
+              id: item.id
             }
           })
           if (this.options.length > 0) {
@@ -627,7 +628,7 @@ export default {
         },
         params: [
           {
-            field: 'address',
+            field: 'name',
             operator: 'LIKE',
             value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
           },
