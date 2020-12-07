@@ -746,7 +746,7 @@ export default {
       const params = [
         {
           id: this.editForm.id,
-          inChargeId: this.editForm.inCharge,
+          // inChargeId: this.editForm.inCharge,
           latitude: this.editForm.latitude,
           longitude: this.editForm.longitude,
           url: this.editForm.url
@@ -867,11 +867,11 @@ export default {
           operator: 'BETWEEN',
           value: { start: s || '', end: e || '' }
         },
-        {
-          field: 'camera.inChargeId',
-          operator: 'EQUALS',
-          value: this.userId
-        },
+        // {
+        //   field: 'camera.inChargeId',
+        //   operator: 'EQUALS',
+        //   value: this.userId
+        // },
         {
           field: 'type',
           operator: 'IN',
@@ -893,11 +893,11 @@ export default {
           operator: 'BETWEEN',
           value: { start: s || '', end: e || '' }
         },
-        {
-          field: 'camera.inChargeId',
-          operator: 'EQUALS',
-          value: this.userId
-        },
+        // {
+        //   field: 'camera.inChargeId',
+        //   operator: 'EQUALS',
+        //   value: this.userId
+        // },
         {
           field: 'type',
           operator: 'IN',

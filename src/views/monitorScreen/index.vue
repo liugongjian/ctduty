@@ -215,7 +215,7 @@ export default {
           size: 999999
         },
         params: {
-          inChargeId: this.userId
+          // inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -243,12 +243,12 @@ export default {
               field: 'online',
               operator: 'EQUALS',
               value: 0
-            },
-            {
-              field: 'inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             }
+            // {
+            //   field: 'inChargeId',
+            //   operator: 'EQUALS',
+            //   value: this.userId
+            // }
           ]
         }
         searchCameraList(params).then(res => {
