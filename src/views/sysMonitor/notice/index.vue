@@ -194,8 +194,19 @@
             :label="item.department"
             :value="item.departmentId"
           ></el-option>
-          </el-select> -->
+          </el-select>-->
         </el-form-item>
+
+        <!-- <el-form-item label="部门" prop="departmentId">
+          <el-select v-model="addUserForm.departmentId" style="width:338px;" placeholder="请选择部门">
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -262,7 +273,7 @@
               :label="item.department"
               :key="item.departmentId"
             ></el-option>
-          </el-select> -->
+          </el-select>-->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -282,19 +293,17 @@
 </template>
 
 <script>
-import Pagination from '@/components/Pagination'
+import Pagination from "@/components/Pagination";
 import {
   fetchNoticeList,
   postAddNotices,
   getNoticeInfo,
   updateANotice,
   deleteNotices
-} from '@/api/notice'
-import { fetchUserList } from '@/api/users'
-import { notReadNotices } from '@/api/notice'
-import {
-  getDepartments
-} from '@/api/users'
+} from "@/api/notice";
+import { fetchUserList } from "@/api/users";
+import { notReadNotices } from "@/api/notice";
+import { getDepartments } from "@/api/users";
 export default {
   components: { Pagination },
   data() {
@@ -302,109 +311,133 @@ export default {
       page: 1,
       limit: 10,
       oldSize: 10,
-      searchName: '',
+      searchName: "",
       searchUserIds: [],
       addFormRules: {
-        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
         creatorId: [
-          { required: true, message: '创建者不能为空', trigger: 'blur' }
+          { required: true, message: "创建者不能为空", trigger: "blur" }
         ],
-        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
         state: [
-          { required: true, message: '紧急程度不能为空', trigger: 'blur' }
+          { required: true, message: "紧急程度不能为空", trigger: "blur" }
         ]
       },
       total: 0,
       departmentInfo: [],
-      editor_content: '',
+      editor_content: "",
       editorOption: {
         modules: {
           toolbar: [
             [
-              { size: ['small', 'normal', 'large', 'huge'] },
-              'bold',
-              'italic',
-              'underline',
-              'strike',
-              'blockquote',
-              { list: 'ordered' },
-              { list: 'bullet' },
-              { indent: '-1' },
-              { indent: '+1' },
-              'link'
+              { size: ["small", "normal", "large", "huge"] },
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "blockquote",
+              { list: "ordered" },
+              { list: "bullet" },
+              { indent: "-1" },
+              { indent: "+1" },
+              "link"
             ]
           ]
         },
-        placeholder: '请输入内容'
+        placeholder: "请输入内容"
       },
 
       addUserDialogVisible: false,
       noticeList: [],
-      username: '',
+      username: "",
       userid: null,
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         params: {
-          title: '',
+          title: "",
           type: null
         }
       },
       addNoticeDialogVisible: false,
       addNoticeForm: {
-        content: '',
+        content: "",
         state: null,
-        title: '',
+        title: "",
         type: null,
         signatureId: null,
-        creatorId: ''
+        creatorId: ""
       },
+      departmentInfoLoading: true,
+      permissionInfoLoading: true,
+      postInfoLoading: true,
       editNoticeForm: {},
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
-      deleteNoticeTitle: '',
+      deleteNoticeTitle: "",
       deleteNoticerId: 0,
       modifiable: false,
       tableLoading: null
-    }
+    };
   },
   watch: {
-    'addNoticeForm.content'(v) {
+    "addNoticeForm.content"(v) {
       if (v.length > 500) {
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
     },
-    'editNoticeForm.content'(v) {
+    "editNoticeForm.content"(v) {
       if (v.length > 500) {
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
     },
     limit(v) {
-      this.page = 1
-      this.limit = v
-      this.pageChange()
+      this.page = 1;
+      this.limit = v;
+      this.pageChange();
     }
   },
   created() {
-    this.getDepartmentList()
-    this.getNoticeList()
+    this.getDepartmentList();
+    this.getNoticeList();
   },
   methods: {
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res;
+          if (code !== 0) {
+            this.$message.error(message || "获取部门列表失败");
+            return;
+          } else {
+            this.departmentInfo = data;
+            this.departmentInfoLoading = false;
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false;
+          this.$message.error(err.message || "获取部门列表失败");
+        });
+    },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1
+        this.page = 1;
       }
-      this.oldSize = this.limit
-      this.getNoticeList()
+      this.oldSize = this.limit;
+      this.getNoticeList();
     },
     async getNoticeList() {
-      this.tableLoading = true
+      this.tableLoading = true;
       const query = {
         cascade: true,
         page: {
@@ -414,159 +447,159 @@ export default {
         params: {},
         sorts: [
           {
-            field: 'create_time',
-            type: 'desc'
+            field: "create_time",
+            type: "desc"
           }
         ]
-      }
-      if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title.trim()
+      };
+      if (this.queryInfo.params.title.trim() !== "") {
+        query.params["title"] = this.queryInfo.params.title.trim();
       }
       if (this.queryInfo.params.type !== null) {
-        query.params['type'] = this.queryInfo.params.type
+        query.params["type"] = this.queryInfo.params.type;
       }
 
-      if (this.username.trim() !== '') {
-        query.params['name'] = this.username.trim()
+      if (this.username.trim() !== "") {
+        query.params["name"] = this.username.trim();
       }
       fetchNoticeList(query).then(response => {
-        if (response.code !== 0) return this.$message.error('获取通知信息失败')
-        this.noticeList = response.body.data
+        if (response.code !== 0) return this.$message.error("获取通知信息失败");
+        this.noticeList = response.body.data;
         this.noticeList.map(item => {
-          item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
-        })
-        this.total = response.body.page.total
+          item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
+        });
+        this.total = response.body.page.total;
         setTimeout(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
+          var cellArr = document.getElementsByClassName("cell");
+          var arr = Array.from(cellArr);
           arr.forEach(item => {
             item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+              (document.getElementsByTagName("html")[0].clientHeight - 260) /
                 11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        }, 100)
-        this.tableLoading = false
-      })
+              "px";
+            item.style.paddingTop = "2px";
+            item.style.paddingBottom = "2px";
+          });
+        }, 100);
+        this.tableLoading = false;
+      });
     },
     tableRowClassHeader({ row, rowIndex }) {
-      return 'tableRowClassHeader'
+      return "tableRowClassHeader";
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
+        this.originCode = columnObj[key][0];
       }
-      this.page = 1
-      let columnObjKey = ''
+      this.page = 1;
+      let columnObjKey = "";
       for (var i in columnObj) {
-        columnObjKey = i
+        columnObjKey = i;
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getList()
+        this.filteredValue = [];
+        this.getList();
       } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getList()
+        this.filteredValue = columnObj[columnObjKey];
+        this.getList();
       }
     },
 
     async searchUserId() {
-      await fetchUserList({ params: { username: this.username }}).then(
+      await fetchUserList({ params: { username: this.username } }).then(
         response => {
           if (response.body.data.length == 0) {
-            return this.$message.error('该用户不存在，请重新输入')
+            return this.$message.error("该用户不存在，请重新输入");
           }
-          this.userid = response.body.data[0].id
+          this.userid = response.body.data[0].id;
         }
-      )
+      );
     },
 
     handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize
-      this.getNoticeList()
+      this.queryInfo.pagesize = newsize;
+      this.getNoticeList();
     },
     handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage
-      this.getNoticeList()
+      this.queryInfo.pagenum = newpage;
+      this.getNoticeList();
     },
 
     postAddANotice() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return
-        const query = [{ ...this.addNoticeForm }]
-        query[0].creatorId = this.getCookie('userId')
+        if (!valid) return;
+        const query = [{ ...this.addNoticeForm }];
+        query[0].creatorId = this.getCookie("userId");
         // console.log(query[0].creatorId)
         // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('添加失败，请联系系统管理员')
+            return this.$message.error("添加失败，请联系系统管理员");
           }
           this.$notify({
-            title: '成功',
-            type: 'success',
-            message: '添加成功!'
-          })
-          this.total++
-          this.pagenum = Math.ceil(this.total / this.pagesize)
-          this.addNoticeDialogVisible = false
-          this.getNoticeList()
+            title: "成功",
+            type: "success",
+            message: "添加成功!"
+          });
+          this.total++;
+          this.pagenum = Math.ceil(this.total / this.pagesize);
+          this.addNoticeDialogVisible = false;
+          this.getNoticeList();
           const params = {
             index: 1,
             size: 10000,
             total: 0
-          }
+          };
           notReadNotices(params).then(res => {
             if (res.body.data.length > 0) {
-              this.$store.commit('SET_NOTICETOTAL', res.body.page.total)
-              this.$store.commit('SET_NOTICEARR', res.body.data)
+              this.$store.commit("SET_NOTICETOTAL", res.body.page.total);
+              this.$store.commit("SET_NOTICEARR", res.body.data);
             }
-          })
-        })
-      })
+          });
+        });
+      });
     },
     addDialogClosed() {
-      this.$refs.addFormRef.resetFields()
-      this.addNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.$refs.addFormRef.resetFields();
+      this.addNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
     resetQuery() {
-      this.queryInfo.params.title = ''
-      this.queryInfo.params.type = null
-      this.username = ''
-      this.userid = null
-      this.getNoticeList()
+      this.queryInfo.params.title = "";
+      this.queryInfo.params.type = null;
+      this.username = "";
+      this.userid = null;
+      this.getNoticeList();
     },
 
     showEditDialog(id, modifiable) {
       getNoticeInfo(id).then(response => {
         // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取信息失败')
-        this.editNoticeForm = response.body.data
-        this.editNoticeDialogVisible = true
-        this.modifiable = modifiable
-      })
+        if (response.code !== 0) return this.$message.error("获取信息失败");
+        this.editNoticeForm = response.body.data;
+        this.editNoticeDialogVisible = true;
+        this.modifiable = modifiable;
+      });
     },
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
+        if (!valid) return;
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('更新信息失败,请稍后再试')
+            return this.$message.error("更新信息失败,请稍后再试");
           }
-          this.editNoticeDialogVisible = false
+          this.editNoticeDialogVisible = false;
           this.$notify({
-            title: '成功',
-            type: 'success',
-            message: '更新成功!'
-          })
-          this.getNoticeList()
+            title: "成功",
+            type: "success",
+            message: "更新成功!"
+          });
+          this.getNoticeList();
           // this.$message.success("更新成功");
-        })
-      })
+        });
+      });
     },
     getDepartmentList() {
       getDepartments()
@@ -575,66 +608,66 @@ export default {
             body: { data },
             code,
             message
-          } = res
+          } = res;
           if (code !== 0) {
-            this.$message.error(message || '获取部门列表失败')
-            return
+            this.$message.error(message || "获取部门列表失败");
+            return;
           } else {
-            this.departmentInfo = data
-            this.departmentInfoLoading = false
+            this.departmentInfo = data;
+            this.departmentInfoLoading = false;
           }
         })
         .catch(err => {
-          this.departmentInfoLoading = false
-          this.$message.error(err.message || '获取部门列表失败')
-        })
+          this.departmentInfoLoading = false;
+          this.$message.error(err.message || "获取部门列表失败");
+        });
     },
     editDialogClosed() {
-      this.editNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.editNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
     showDeleteDialog(title, id) {
-      this.deleteNoticeTitle = title
-      this.deleteNoticerId = id
-      this.deleteANotice()
+      this.deleteNoticeTitle = title;
+      this.deleteNoticerId = id;
+      this.deleteANotice();
     },
     deleteANotice() {
-      const ids = []
-      ids.push(this.deleteNoticerId)
-      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      const ids = [];
+      ids.push(this.deleteNoticerId);
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       }).then(() => {
         deleteNotices(ids).then(response => {
           if (response.code !== 0) {
-            return
+            return;
           }
           this.$notify({
-            title: '成功',
-            type: 'success',
-            message: '删除成功!'
-          })
-          this.getNoticeList()
-          this.deleteNoticeDialogVisible = false
-          this.deleteNoticerId = 0
-          this.deleteNoticeTitle = ''
-        })
-      })
+            title: "成功",
+            type: "success",
+            message: "删除成功!"
+          });
+          this.getNoticeList();
+          this.deleteNoticeDialogVisible = false;
+          this.deleteNoticerId = 0;
+          this.deleteNoticeTitle = "";
+        });
+      });
     },
     getCookie(objName) {
       // 获取指定名称的cookie的值
-      var arrStr = document.cookie.split('; ')
+      var arrStr = document.cookie.split("; ");
       for (var i = 0; i < arrStr.length; i++) {
-        var temp = arrStr[i].split('=')
+        var temp = arrStr[i].split("=");
         if (temp[0] == objName) {
-          return decodeURI(temp[1])
+          return decodeURI(temp[1]);
         }
       }
     }
   }
-}
+};
 </script>
 
 <style lang='scss'>
