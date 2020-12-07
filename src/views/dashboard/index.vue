@@ -52,18 +52,20 @@
     </div>
     <div class="alarm-detail">
       <div class="chart-title">检测详情</div>
-      <div class="alarm-detail-table"><el-table
-        :data="tableData"
-        :header-cell-style="{ background: '#ecedee', color: '#717171' }"
-      >
-        <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="left" fixed>
-          <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
-        </el-table-column>
-        <!-- 根据返回算法渲染列 -->
-        <el-table-column v-for="item in tableColumn" :key="item.id" :label="item.name" align="center" min-width="125">
-          <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template>
-        </el-table-column>
-      </el-table>
+      <div class="alarm-detail-table">
+        <el-table
+          v-loading="tableLoading"
+          :data="tableData"
+          :header-cell-style="{ background: '#ecedee', color: '#717171' }"
+        >
+          <el-table-column :show-overflow-tooltip="true" label="摄像头名称" prop="cameraName" width="150" align="left" fixed>
+            <template slot-scope="scope"> {{ scope.row.cameraName }}</template>
+          </el-table-column>
+          <!-- 根据返回算法渲染列 -->
+          <el-table-column v-for="item in tableColumn" :key="item.id" :label="item.name" align="center" min-width="125">
+            <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template>
+          </el-table-column>
+        </el-table>
         <pagination
           v-show="total > 0"
           :total="total"
@@ -117,6 +119,7 @@ export default {
         todayAlerts: 0
       },
       tableData: [],
+      tableLoading: true,
       tableColumn: [],
       taskAppliedByCameraList: [],
       // 告警趋势
@@ -283,6 +286,7 @@ export default {
       this.getAlertDetailList()
     },
     getAlertDetailList() {
+      this.tableLoading = true
       const query = {
         page: {
           index: this.page,
@@ -294,6 +298,7 @@ export default {
       getAlertStatics(query).then(res => {
         if (res.code !== 0) return
         this.tableData = res.body.data
+        this.tableLoading = false
         this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
         this.total = res.body.page.total
       })
