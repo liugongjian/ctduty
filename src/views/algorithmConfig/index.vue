@@ -37,12 +37,13 @@
             :style="styleObj"
             :data="caremaTreeData"
             :default-expanded-keys="[expendId]"
+            :render-after-expand="false"
             node-key="expendId"
             icon-class="el-icon-arrow-down"
             class="cameraTree"
             @node-click="cameraTreeClick">
             <div slot-scope="{ node, data }">
-              <div v-if="data.ifChild" :data-id="data.info.id" @mouseenter="checkTreeName">
+              <div v-if="data.ifChild" :data-id="data.info.id" :data-parentname="data.parentName" @mouseenter="checkTreeName">
                 <span class="displayIB">
                   <svg-icon icon-class="monitorIcon" class="svgBtn"/>
                 </span>
@@ -146,8 +147,8 @@ export default {
     }
   },
   mounted() {
-
-    // document.querySelector('.el-tree-node__children .el-tree-node.is-focusable').classList.add('is-current')
+    const { cameraId } = this.$route.query
+    this.deviceId = cameraId
   },
   async created() {
     await this.getList()
@@ -274,6 +275,7 @@ export default {
       getCameraTree(query).then(res => {
         if (res.code === 0) {
           const tempData = res.body.data.filter(item => item.data.length > 0)
+          const { cameraId } = this.$route.query
           this.caremaTreeData = tempData.map(item => {
             return {
               label: item.name,
@@ -282,22 +284,22 @@ export default {
                 return {
                   label: val.name,
                   info: val,
-                  ifChild: true // 用来判断是否是子级
-                  // ifTooltip: val.name.length > 13
+                  ifChild: true, // 用来判断是否是子级
+                  parentName: item.name // 存储父级，用于默认展开
                 }
               })
             }
           })
           this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
-          this.expendId = tempData.length > 0 ? tempData[0].name : ''
           this.$nextTick(function() {
-            const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
-            ele.classList.add('is-current')
-            const { cameraId } = this.$route.query
             if (cameraId) {
-              console.log('test------>', document.querySelector(`[data-id="${cameraId}"]`).parentNode.parentNode.parentNode)
+              const dataCamera = document.querySelector(`[data-id="${cameraId}"]`)
+              this.expendId = dataCamera.getAttribute('data-parentname')
+              dataCamera.parentNode.parentNode.parentNode.classList.add('is-current')
             } else {
-              console.log(123)
+              this.expendId = tempData.length > 0 ? tempData[0].name : ''
+              const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
+              ele.classList.add('is-current')
             }
           })
 
@@ -523,9 +525,8 @@ export default {
     getStatus(status) {
       return status === 1 ? '在线' : '离线'
     },
-    toMonitorDetail(id, node) {
-      console.log('node--->', node)
-      // this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
+    toMonitorDetail(id) {
+      this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
     },
     checkNameLen(k) {
       const eleWidth = document.querySelectorAll('.seviceName')[k].offsetWidth
