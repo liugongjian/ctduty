@@ -30,3 +30,11 @@ export function configInstance(val) {
     data: val
   })
 }
+
+// 获取视频监控页面该摄像头可筛选算法
+export function getAlgoSelList(id) {
+  return request({
+    url: `/nvsapi/Statis/${id}/taskList`,
+    method: 'get'
+  })
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="carlist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -7,11 +7,18 @@
             v-model="formInline.searchkey"
             placeholder="请输入车牌号"
             class="filter-item"
-            style="width: 260px;"
+            style="width: 260px;border-radius:2px;height:38px;"
             @keyup.enter.native="onSearch"
           ></el-input>
-          <el-button v-waves class="filter-item" type="warning" @click="onSearch">{{ '搜索' }}</el-button>
-          <el-button class="searchbtn filter-item" @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item sureItem"
+            size="mini"
+            type="warning"
+            style="margin-bottom: 2px;margin-left:5px;"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button class="searchbtn filter-item sureItem" style="margin-bottom:2px;" size="mini" @click="resetQuery">重置</el-button>
         </div>
 
         <div class="pull-right">
@@ -104,7 +111,12 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-input v-model="addCarForm.carWord" class="carinp" style="width:126px;" placeholder="请输入车牌号"></el-input>
+              <el-input
+                v-model="addCarForm.carWord"
+                class="carinp"
+                style="width:126px;"
+                placeholder="请输入车牌号"
+              ></el-input>
             </el-form-item>
             <el-form-item label="所属名单：" prop="carlist">
               <el-select
@@ -144,6 +156,7 @@
         </el-dialog>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -154,14 +167,19 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌'" prop="licenseNo"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type">
+        <el-table-column
+          :show-overflow-tooltip="true"
+          :label="'车牌'"
+          prop="licenseNo"
+          align="center"
+        ></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="type" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.type }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color"></el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+        <el-table-column :show-overflow-tooltip="true" :label="'车牌颜色'" prop="color" align="center"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'操作'" align="center">
           <template slot-scope="scope">
             <el-button
               type="text"
@@ -173,12 +191,23 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="车牌号：">
+        <el-form
+          ref="editCarForm"
+          :model="editForm"
+          :rules="carRules"
+          label-position="right"
+          label-width="130px"
+        >
+          <el-form-item label="车牌号：" prop="carNumber">
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
-            <el-select v-model="editForm.carList" :value="editForm.carList" placeholder="请选择所属名单">
+            <el-select
+              v-model="editForm.carList"
+              :value="editForm.carList"
+              style="width:203.8px;"
+              placeholder="请选择所属名单"
+            >
               <el-option
                 v-for="item in subordinateList"
                 :value="item.value"
@@ -188,7 +217,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="车牌颜色：">
-            <el-select v-model="editForm.carColor" :value="editForm.carColor" placeholder="请选择颜色">
+            <el-select
+              v-model="editForm.carColor"
+              :value="editForm.carColor"
+              placeholder="请选择颜色"
+              style="width:203.8px;"
+            >
               <el-option
                 v-for="item in colorList"
                 :value="item.value"
@@ -236,6 +270,7 @@ export default {
   components: { Pagination },
   data() {
     return {
+      tableLoading: null,
       path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
@@ -308,14 +343,13 @@ export default {
           {
             required: true,
             validator: (rules, value, cb) => {
-              let { carWord } = this.addCarForm;
+              const { carWord } = this.addCarForm
               if (!value || !carWord) {
-                return cb(new Error("车牌号不能为空"));
+                return cb(new Error('车牌号不能为空'))
               }
-
-              return cb();
+              return cb()
             },
-            trigger: "change"
+            trigger: 'change'
           }
         ],
         carlist: [
@@ -323,6 +357,11 @@ export default {
         ],
         color: [
           { required: true, trigger: 'blur', message: '车牌颜色不能为空' }
+        ]
+      },
+      carRules: {
+        carNumber: [
+          { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ]
       },
       formInline: {
@@ -381,6 +420,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         page: {
           index: this.page,
@@ -397,7 +437,20 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     importConfirm() {
@@ -439,7 +492,7 @@ export default {
       this.bulkimportVisble = true
     },
     toHistory() {
-      this.$router.push(`/carHistory`)
+      this.$router.push(`/alarmMessage/carHistory`)
     },
     closebulkimportDialog() {
       this.bulkimportVisble = false
@@ -497,7 +550,7 @@ export default {
             message: '删除成功',
             type: 'success',
             duration: 2000
-          }) 
+          })
         })
       })
     },
@@ -512,26 +565,29 @@ export default {
       this.editVisable = true
     },
     editDialogConfirm() {
-      const params = [
-        {
-          id: this.editForm.id,
-          licenseNo: this.editForm.carNumber,
-          type: this.editForm.carList,
-          color: this.editForm.carColor
-          // carNumber: this.editForm.carNumber,
-          // carList: this.editForm.carList,
-          // carColor: this.editForm.carColor
-        }
-      ]
-      carEditConfirm(params).then(response => {
-        this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success',
-          duration: 2000
+      this.$refs.editCarForm.validate(valid => {
+        if (!valid) return
+        const params = [
+          {
+            id: this.editForm.id,
+            licenseNo: this.editForm.carNumber,
+            type: this.editForm.carList,
+            color: this.editForm.carColor
+            // carNumber: this.editForm.carNumber,
+            // carList: this.editForm.carList,
+            // carColor: this.editForm.carColor
+          }
+        ]
+        carEditConfirm(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.editVisable = false
         })
-        this.getList()
-        this.editVisable = false
       })
     },
     submit() {},
@@ -555,6 +611,7 @@ export default {
       this.$refs[formName].clearValidate()
     },
     onSearch() {
+      this.page = 1
       const query = {
         page: {
           index: this.page,
@@ -566,6 +623,12 @@ export default {
             operator: 'LIKE',
             value: `%${this.formInline.searchkey}%`
           }
+        ],
+        sorts: [
+          {
+            field: 'create_time',
+            type: 'desc'
+          }
         ]
       }
       searchList(query).then(response => {
@@ -574,7 +637,6 @@ export default {
         this.importData = response.body.data
         this.total = response.body.page.total
         this.page = 1
-        this.formInline.searchkey = ''
       })
     },
     // 表头样式
@@ -633,9 +695,11 @@ export default {
           .then(res => {
             this.getList()
             this.dialogVisable = false
-            this.$message({
+            this.$notify({
+              title: '成功',
               message: '添加成功',
-              type: 'success'
+              type: 'success',
+              duration: 2000
             })
             this.addCarForm = {
               carWord: '',
@@ -659,58 +723,67 @@ export default {
 </script>
 
 <style lang='scss'>
-.dlTem:hover {
-  a {
-    color: #409eff;
-  }
-}
-
-.list {
-  overflow: auto !important;
-}
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-.carDialog {
-  margin: 0 auto;
-}
-.carInput {
-  height: 36.8px !important;
-  label {
-    padding-right: 20px;
+.carlist {
+  .el-button--text {
+    color: #fa8334 !important;
   }
-}
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
-.filter-container .filter-item {
-  margin-bottom: 0px;
-}
-.carinp {
- top: -3.3px;
+  overflow: auto !important;
+  .dlTem:hover {
+    a {
+      color: #409eff;
+    }
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .carDialog {
+    margin: 0 auto;
+  }
+  .carInput {
+    height: 36.8px !important;
+    label {
+      padding-right: 20px;
+    }
+  }
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
+  }
+  .filter-container .filter-item {
+    margin-bottom: 0px;
+  }
+  .sureItem {
+    height: 36px;
+  }
+  .el-input__inner {
+    height:36px;
+    border-radius: 2px;
+  }
+  th,td {
+    padding: 0px;
+  }
 }
 </style>

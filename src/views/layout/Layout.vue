@@ -17,7 +17,7 @@ import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 // import PwdChangeCheck from './mixin/PwdChangeCheck'
 import Footer from '../footer/index'
-
+import '@/styles/index.scss' // global css
 export default {
   name: 'Layout',
   components: {
@@ -55,15 +55,16 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "~@/styles/mixin.scss";
-  .app-wrapper {
+   .app-wrapper {
     @include clearfix;
     position: relative;
     height: 100%;
     width: 100%;
     &.mobile.openSidebar{
-      position: fixed;
+      // position: fixed;
       top: 0;
     }
+
   }
   .drawer-bg {
     background: #000;

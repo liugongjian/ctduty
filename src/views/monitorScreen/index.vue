@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
+  <div class="monitorScreen-wrap">
     <div class="monitorScreen">
       <template v-for="(item,index) in deviceList">
         <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
@@ -20,7 +20,7 @@
                 v-else-if="item.flvSrc"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
-                :flv="item.flvSrc"/> -->
+              :flv="item.flvSrc"/>-->
               <div
                 v-else
                 style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
@@ -53,47 +53,32 @@
         </div>
       </template>
       <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
-        <div :style="{height: `${parseInt(heightByAuto,10)+36}px`}" class="screen-add" @click="addMonitorDialog">
+        <div
+          :style="{height: `${parseInt(heightByAuto,10)+36}px`}"
+          class="screen-add"
+          @click="addMonitorDialog"
+        >
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
     </div>
-    <el-dialog
-      :title="id ? '修改监控摄像头' : '添加监控摄像头' "
-      :visible.sync="dialogFormVisible"
-      width="540px"
-      @closed="onClose"
-    >
-      <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="设备名称" prop="cameraId" label-width="100px">
-          <el-select
-            v-model="form.cameraId"
-            :remote-method="getCameraList"
-            :loading="loading"
-            filterable
-            remote
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            >
-          </el-option></el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="onClose">取 消</el-button>
-        <el-button :loading="submiting" type="warning" @click="saveMonitor">确 定</el-button>
-      </div>
-    </el-dialog>
+    <SelCamera
+      :visible="dialogFormVisible"
+      :on-submit="saveMonitor"
+      :on-close="onClose"
+      :filter="deviceList.map(item => item.cameraId)"
+      :id="id"
+      :cur-camera="curCamera"
+      :submit-loading="submiting"
+    />
   </div>
 </template>
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoFlv from '@/components/VideoFlv'
+import SelCamera from './selCamera'
+import Cookies from 'js-cookie'
 import {
   fetchAllMonitor,
   updateMonitor,
@@ -101,24 +86,18 @@ import {
   delMonitor,
   loadingImg
 } from '@/api/monitor'
-import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+import { fetchAllCameraList } from '@/api/camera'
 import fakeimg from '@/assets/images/fakeimg.png'
 import nosrc from '@/assets/images/nosrc.png'
-
 export default {
-  components: { VideoPlayer, VideoFlv },
+  components: { VideoPlayer, VideoFlv, SelCamera },
   data() {
     return {
       pageLoading: true,
       dialogFormVisible: false,
-      form: {},
-      rules: {
-        cameraId: [
-          { required: true, message: '请选择设备名称', trigger: 'change' }
-        ]
-      },
+      changeName: '',
+      curCamera: null,
       nosrc,
-      options: [],
       deviceList: [],
       loading: false,
       submiting: false,
@@ -137,7 +116,8 @@ export default {
         // }
       },
       allCameraList: [],
-      heightByAuto: ''
+      heightByAuto: '',
+      userId: ''
     }
   },
   watch: {
@@ -166,29 +146,26 @@ export default {
     }
   },
   async mounted() {
+    this.userId = Cookies.get('userId')
     await this.loadFakeImg()
     await this.getAllCamera()
   },
   methods: {
     loadFakeImg() {
       this.pageLoading = true
-      loadingImg().then(res => {
-        if (res.body.data.length > 0) {
-          // const staticImg = []
+      loadingImg(this.userId).then(res => {
+        if (res.code === 0) {
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
-              image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
+              image: item.image
+                ? 'data:image/png;base64,' + item.image
+                : fakeimg,
               id: item.id,
-              name: item.name
+              name: item.name,
+              cameraId: item.cameraId
             })
           })
-          // const a = staticImg.filter((item, index) => {
-          //   this.deviceList.find(val => item.id !== val.id)
-          // })
-          // if (a.length > 1) {
-          //   this.deviceList.push(a)
-          // }
           this.getLiveList()
           this.pageLoading = false
         }
@@ -202,6 +179,7 @@ export default {
           size: 999999
         },
         params: {
+          inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -210,49 +188,8 @@ export default {
         }
       })
     },
-    getCameraList(keyword) {
-      if (keyword !== '') {
-        this.loading = true
-        const params = {
-          cascade: true,
-          page: {
-            index: 1,
-            size: 20
-          },
-          params: [
-            {
-              field: 'name',
-              operator: 'LIKE',
-              value: `%${keyword}%`
-            },
-            {
-              field: 'online',
-              operator: 'EQUALS',
-              value: 0
-            }
-          ]
-        }
-        searchCameraList(params).then(res => {
-          let data = res.body.data || []
-          // 已添加到九宫格的摄像头要过滤掉
-          data = data.filter(
-            i => !this.deviceList.find(r => r.cameraId === i.id)
-          )
-          this.options = data.map(item => {
-            return {
-              value: item.id,
-              label: item.address,
-              name: item.name
-            }
-          })
-          this.loading = false
-        })
-      } else {
-        this.options = []
-      }
-    },
     getLiveList() {
-      fetchAllMonitor().then(res => {
+      fetchAllMonitor(this.userId).then(res => {
         const data = res.body.data || []
         this.deviceList = data.map(item => {
           return {
@@ -271,102 +208,100 @@ export default {
                   src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
                   type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
-                // {
-                //   src: item.rtmpuri,
-                //   type: 'application/x-mpegURL'
-                // }
               ]
             }
           }
         })
-        // 添加或修改后reload，要过滤掉已添加到九宫格的摄像头select options
-        this.options = this.options.filter(
-          i => !this.deviceList.find(r => r.cameraId === i.value)
-        )
         this.pageLoading = false
       })
     },
     updateMonitorDialog(item) {
-      this.form.cameraId = item.name
-      this.dialogFormVisible = true
       this.id = item.id
+      this.curCamera = {
+        id: item.cameraId,
+        name: item.name
+      }
+      this.dialogFormVisible = true
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
-          this.$message({
+          this.$notify({
+            title: '成功',
+            message: '移除成功',
             type: 'success',
-            message: '删除成功'
+            duration: 2000
           })
           this.getLiveList()
         })
       })
     },
     onClose() {
-      this.$refs['ruleForm'].resetFields()
+      // this.$refs['ruleForm'].resetFields()
       this.submiting = false
-      this.form = {}
       this.dialogFormVisible = false
       this.id = null
     },
     addMonitorDialog() {
-      this.form = {}
+      // this.form = {}
+      // this.options = []
+      this.curCamera = null
       this.dialogFormVisible = true
     },
-    saveMonitor() {
-      this.$refs['ruleForm'].validate(valid => {
-        if (valid) {
-          this.submiting = true
-          if (this.id) {
-            updateMonitor({
-              id: this.id,
-              cameraId: this.form.cameraId
-            }).then(res => {
-              // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
-              this.options = this.options.filter(
-                i => i.value !== this.form.cameraId
-              )
-              this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-              this.onClose()
-              this.getLiveList()
-              this.submiting = false
-            })
-          } else {
-            this.options.forEach(item => {
-              if (item.value === this.form.cameraId) {
-                this.deviceList.push({
-                  address: item.label,
-                  image: fakeimg
-                })
-              }
-            })
-            addMonitor({
-              cameraId: this.form.cameraId
-            }).then(res => {
-              // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
-              this.options = this.options.filter(
-                i => i.value !== this.form.cameraId
-              )
-              this.$message({
-                type: 'success',
-                message: '添加成功'
-              })
-              this.onClose()
-              this.getLiveList()
-              this.submiting = false
-            })
-          }
-        } else {
-          return false
-        }
-      })
+    saveMonitor(cameraId, cameraName, close) {
+      this.submiting = true
+      if (this.id) {
+        updateMonitor({
+          id: this.id,
+          cameraId: cameraId
+        }).then(res => {
+          // 因为添加修改接口很快，但是list接口很慢，所以可能会重复添加；这里直接开始过滤
+          // this.options = this.options.filter(
+          //   i => i.value !== this.curCameraId
+          // )
+          this.deviceList.forEach(item => {
+            if (item.id === this.id) {
+              item.image = fakeimg
+              item.name = cameraName
+              item.cameraId = cameraId
+            }
+          })
+          this.$notify({
+            title: '成功',
+            message: '修改成功',
+            type: 'success',
+            duration: 2000
+          })
+          close()
+          this.getLiveList()
+          this.submiting = false
+        })
+      } else {
+        this.deviceList.push({
+          name: cameraName,
+          image: fakeimg,
+          id: cameraId,
+          cameraId: cameraId
+        })
+        addMonitor({
+          cameraId: cameraId
+        }).then(res => {
+          this.$notify({
+            title: '成功',
+            message: '添加成功',
+            type: 'success',
+            duration: 2000
+          })
+          close()
+          this.getLiveList()
+          this.submiting = false
+        })
+      }
     },
     video_type(_url) {
       var url = _url.toLowerCase()
@@ -390,7 +325,8 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
-  height: 100%;
+  min-height:100%;
+  // height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
     width: 360px;
@@ -398,14 +334,13 @@ export default {
   /deep/.el-form-item__content {
     margin-left: 90px;
   }
-}
-.monitorScreen {
+  .monitorScreen {
   overflow: auto;
   padding: 10px 10px;
   background: #fff;
   display: flex;
   flex-wrap: wrap;
-  flex-direction:row;
+  flex-direction: row;
   // justify-content: center;
 
   .screen {
@@ -420,7 +355,7 @@ export default {
     }
     .screen-add {
       // height: calc(35vh + 36.4px);
-      // height: 210px;
+      height: 460px;
       margin: 10px;
       // width: 100%;
       // height: 100%;
@@ -480,4 +415,6 @@ export default {
 .screen-body {
   overflow: hidden;
 }
+}
+
 </style>

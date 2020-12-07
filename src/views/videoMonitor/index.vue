@@ -1,13 +1,40 @@
 <template>
-  <div v-loading="pageLoading" class="videomonitorWrap" element-loading-text="拼命加载中">
+  <div class="videomonitorWrap">
+    <el-dialog
+      key="photo"
+      :visible.sync="bigPhotoVisible"
+      title="抓拍照片"
+      width="800px"
+      style="text-align:center;"
+    >
+      <el-image :src="curPhoto" class="photoList-image" style="max-width:100%;" />
+    </el-dialog>
     <div class="videoMonitor">
-      <el-row>
-        <el-col :span="12">
-          <div class="monitorBox">
+      <div class="leftPanel">
+        <div class="leftContent">
+          <div v-loading="videoLoading" class="monitorBox" >
             <div class="video-panel">
-              <div class="left-part">
-                <VideoPlayer v-if="!!flv && activeTab == 'video'" :video-ref="videoRef" :options="videoOptions"/>
+              <div :style="{height: heightByAuto}" class="left-part">
+                <VideoPlayer
+                  v-if="videoOptions.sources && videoOptions.sources[0].src"
+                  :video-ref="cameraId"
+                  :key="cameraId"
+                  :options="videoOptions"
+                />
+                <div
+                  v-else-if="!videoLoading"
+                  style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
+                >
+                  <el-image
+                    :src="nosrc"
+                    style="position:absolute;width:138px;height:30px;object-fit:contain;top:50%;left:50%;
+                  transform:translate(-50%,-50%);"
+                  ></el-image>
+                </div>
               </div>
+
+              <!-- v-if="!!flv && activeTab == 'video'" -->
+              <!-- :video-ref="videoRef" -->
               <div class="right-part">
                 <div class="video-control">
                   <div class="control-box">
@@ -53,6 +80,16 @@
                 </div>
               </div>
             </div>
+            <div class="screenBottom">
+              {{ cameraName }}
+              <span class="screenBottom-op">
+                <a title="算法配置" @click="gotoAiConfig">
+                  <svg-icon icon-class="aiConfig" />
+                </a>
+                <!-- <a @click="deviceChosenVisible=true"><svg-icon icon-class="edit"/></a> -->
+              </span>
+            </div>
+
             <!-- <div v-else>
               <p>请选择添加一个摄像头</p>
               <div class="monitorAddress">
@@ -60,446 +97,1289 @@
                 <el-select class="displayIB"></el-select>
                 <el-button class="displayIB" type="primary" @click="sureThis">确定</el-button>
               </div>
-            </div> -->
-
+            </div>-->
           </div>
           <div class="censusData">
-            <el-row>
-              <el-col :span="13">
-                <el-table
-                  :data="tableData"
-                  fit
-                  style="width: 100%">
-                  <el-table-column
-                    prop="date"
-                    label="事件"
-                    align="center"
-                    width="180">
-                  </el-table-column>
-                  <el-table-column
-                    prop="name"
-                    label="告警次数"
-                    align="center"
-                    width="180">
-                  </el-table-column>
-                  <el-table-column
-                    prop="address"
-                    align="center"
-                    label="占比">
-                  </el-table-column>
-                </el-table>
-              </el-col>
-              <el-col :span="10" class="actualData">
-                <div class="actualTitle">实时分析</div>
-                <div class="streamData">
-                  <div class="dataHeader">人流分析</div>
-                  <div class="dataTitle">
-                    今日累计
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                  <div class="dataTitle">
-                    实时流量（近一小时）
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="streamData">
-                  <div class="dataHeader">车流分析</div>
-                  <div class="dataTitle">
-                    今日累计
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                  <div class="dataTitle">
-                    实时流量（近一小时）
-                  </div>
-                  <div class="dataText">
-                    <div class="dataShow displayIB">
-                      <p>流入</p>
-                      <div>18人</div>
-                    </div>
-                    <div class="dataShow displayIB">
-                      <p>流出</p>
-                      <div>12人</div>
-                    </div>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-
+            <div v-loading="tableLoading" class="alertTable">
+              <div class="panelTitle">统计分析</div>
+              <!-- :header-cell-style="{ background: '#ecedee', color: '#717171' }" -->
+              <el-table :data="algorithmTblData">
+                <el-table-column
+                  :show-overflow-tooltip="true"
+                  label="智能算法"
+                  prop="realHead"
+                  width="100"
+                  align="center"
+                  fixed
+                >
+                  <!-- <template slot-scope="scope">告警次数</template> -->
+                </el-table-column>
+                <!-- 根据返回算法渲染列 -->
+                <el-table-column
+                  v-for="item in tableColumn"
+                  :key="item.id"
+                  :prop="item.name"
+                  :label="item.name"
+                  align="center"
+                  min-width="125"
+                  width="125"
+                >
+                  <!-- <template slot-scope="scope"> {{ getCountByName(scope.row.taskCount, item.name) }}</template> -->
+                </el-table-column>
+              </el-table>
+            </div>
           </div>
-        </el-col>
-        <el-col :span="12" class="photoBox">
+        </div>
+      </div>
+      <div class="rightPanel">
+        <div v-loading="realTimeDataLoading" :class="showTrafficPanel? 'realTimeData realTimeData-unfolded':'realTimeData realTimeData-folded'">
+          <div class="panelTitle">
+            实时分析
+            <span class="fold-icon-wrapper" @click="handleFolded">
+              <i :class="showTrafficPanel ? 'fold-icon el-icon-arrow-down fold-icon-folded': 'fold-icon el-icon-arrow-down'"></i>
+            </span>
+          </div>
+          <div class="streamData-wrapper">
+            <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  今日累计
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
+              <div class="dataHeader"></div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <p>流入</p>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <p>流出</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
+              <div class="dataHeader">人流分析</div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.in +'人' : '-' }}</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.today.out +'人': '-' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="dataPanel">
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.in +'人': '-' }}</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <div>{{ peopleIsPick && realTimeData.people ? realTimeData.people.realTime.out+'人' : '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="streamData">
+              <div class="dataHeader">车流分析</div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  今日累计
+                </div>-->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.in +'辆' : '-' }}</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.today.out +'辆': '-' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="dataPanel">
+                <!-- <div class="dataTitle">
+                  实时流量（近一小时）
+                </div>-->
+                <div class="dataText">
+                  <div class="dataShow displayIB">
+                    <!-- <p>流入</p> -->
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.in +'辆': '-' }}</div>
+                  </div>
+                  <div class="dataShow displayIB">
+                    <!-- <p>流出</p> -->
+                    <div>{{ carIsPick && realTimeData.vehicle ? realTimeData.vehicle.realTime.out +'辆': '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-loading="photosLoading" class="photoBox">
           <div class="showPhoto">
-            <span>实时抓拍</span>
-            <el-select></el-select>
+            <span>今日实时抓拍</span>
+            <el-select
+              v-model="taskId"
+              collapse-tags
+              clearable
+              class="photo-fitler-sel"
+              size="mini"
+              multiple
+            >
+              <el-option
+                v-for="item in taskData"
+                :key="item.id"
+                :label="item.cnName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
           </div>
-          <div class="photoContainer">
-            <div v-for="(o, index) in 12" :key="o" class="photoList">
-              <el-card :body-style="{ padding: '0px' }">
-                <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" style="width: 100%; height:120px">
+          <div
+
+            v-if="photoCardList && photoCardList.length > 0 || photosLoading"
+            class="photoContainer"
+          >
+            <div v-for="(item) in photoCardList" :key="item.id" class="photoList">
+              <div v-if="item.myPlaceholder" style="opacity:0"></div>
+              <el-card v-else :body-style="{ padding: '0px' }">
+                <el-image
+                  :src="item.imageCut"
+                  style="width: 100%; height:120px;"
+                  class="photoList-image"
+                  @click="bigPhotoVisible = true; curPhoto = item.imageCompress"
+                />
                 <div style="padding: 14px;">
-                  <span>人员</span>
-                  <div>2020-08-31  23:00:00 </div>
+                  <span>{{ getTaskById(item.taskId) }}</span>
+                  <div>{{ getDateTimeStr(item.createTime) }}</div>
                 </div>
               </el-card>
             </div>
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              @pagination="pageChange()"
-            />
           </div>
-
-        </el-col>
-      </el-row>
+          <div v-else class="photoContainer photoContainer-noData">
+            <div class="photoContainer-noData-text">
+              <div class="photoContainer-noData-text-icon"><svg-icon icon-class="noData" /></div>
+              <div class="photoContainer-noData-text-content">暂无数据</div>
+            </div>
+          </div>
+          <pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            :page-sizes="[12,24,36,48]"
+            layout="sizes, prev, pager, next"
+            small
+            @pagination="pageChange()"
+          />
+          <!-- <el-pagination
+            v-show="total>0"
+            :total="total"
+            :page.sync="page"
+            :limit.sync="limit"
+            small
+            layout="prev, pager, next">
+          </el-pagination>-->
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import VideoPlayer from '@/components/VideoPlayer'
+import moment from 'moment'
+import { getAlertStatics } from '@/api/dashboard'
 import Pagination from '@/components/Pagination'
 import VideoPlayer from '@/components/VideoPlayer'
+import { getAlertInfos, getAlertRealtimeStatics } from '@/api/alarm'
+import { fetchAllCameraList, searchCameraList } from '@/api/camera'
+// import { videoListByAlgorithmId } from '@/api/algorithm'
+import { getInstanceList, getAlgoSelList } from '@/api/vedioAlgoNew'
+import { taskList } from '@/api/algorithm'
+import { play } from '@/api/monitor'
+import nosrc from '@/assets/images/nosrc.png'
+
+const dateTimeFormat = 'YYYY-MM-DD HH:mm:ss'
+const timeFormat = 'MM-DD HH:mm:ss'
 export default {
   components: { Pagination, VideoPlayer },
   data() {
     return {
-      pageLoading: false,
+      cameraId: '', // '64010106001324014975', //61010010001320014342
+      cameraName: '-',
+      taskId: '',
+      // form: {},
+      // loading: false,
+      // rules: {
+      //   cameraId: [
+      //     { required: true, message: '请选择摄像头名称', trigger: 'change' }
+      //   ]
+      // },
+      deviceChosenVisible: false,
+      bigPhotoVisible: false,
+      curPhoto: '',
+      nosrc,
+      taskData: [],
+      // algorithmTblData: [],
+      photosLoading: true,
+      photoCardList: [],
+      videoLoading: false,
       total: 10,
       page: 0,
+      limit: 24,
       showVideoSetting: false,
-      tableData: [{
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }, {
-        date: '2222',
-        name: '111',
-        address: '33%'
-      }]
+      videoOptions: {
+        autoplay: true,
+        controls: true,
+        autoDisable: true
+        // width: 960, // 播放器宽度
+        // height: 480 // 播放器高度
+      },
+      tableLoading: true,
+      tableColumn: [],
+      tableData: [],
+      heightByAuto: '',
+      slide: 0,
+      carIsPick: false,
+      peopleIsPick: false,
+      showTrafficPanel: false,
+      realTimeDataLoading: true,
+      realTimeData: {
+        people: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        },
+        vehicle: {
+          today: {
+            in: '-',
+            out: '-'
+          },
+          realTime: {
+            in: '-',
+            out: '-'
+          }
+        }
+      }
+    }
+  },
+  computed: {
+    algorithmTblData() {
+      if (this.tableColumn) {
+        const alertTotal = this.tableData[0] && this.tableData[0].alertCount
+        // const realTableData = []
+        const row1 = { realHead: '触发次数' }
+        const row2 = { realHead: '占比' }
+        const row3 = { realHead: '是否配置' }
+        this.tableColumn.forEach(({ id, name, applied, count }) => {
+          row1[name] = count
+          row2[name] = count
+            ? ((count * 100) / alertTotal).toFixed(2) + '%'
+            : '0%'
+          row3[name] = applied ? '是' : '否'
+        })
+        return [row1, row2, row3]
+      } else return []
+    }
+  },
+  watch: {
+    taskId(taskId) {
+      this.getPhotoList(taskId)
+    },
+    videoOptions(v) {
+      this.$nextTick(() => {
+        this.setVideoHeight()
+      })
+    }
+  },
+  async created() {
+    const { cameraId } = this.$route.query
+    this.cameraId = cameraId
+    this.$nextTick(() => {
+      this.getTaskList()
+      this.getPhotoList()
+      this.getAlertDetailList()
+      this.getLiveStream()
+      this.getCameraById()
+      this.getPanelShow()
+      console.log('crreated', this.$route)
+    })
+  },
+  mounted() {
+    this.setVideoHeight()
+    // this.cameraId = this.$route.params.cameraId
+    console.log('mounted', this.$route)
+    window.onresize = () => {
+      this.setVideoHeight()
     }
   },
   methods: {
+    handleFolded() {
+      this.showTrafficPanel = !this.showTrafficPanel
+    },
+    async getPanelShow() {
+      this.realTimeDataLoading = true
+      this.showTrafficPanel = false
+      const { cameraId } = this.$route.query
+      const algorithmRes = await getInstanceList(cameraId)
+      const { body: { data }, code, message } = algorithmRes
+      if (code !== 0) {
+        this.$message.error(message || '获取当前摄像头已配置算法失败。')
+      } else {
+        const peopleExist = data.find(({ taskId }) => taskId === 8)
+        const carExist = data.find(({ taskId }) => taskId === 9)
+        this.carIsPick = carExist && carExist.isPick
+        this.peopleIsPick = peopleExist && peopleExist.isPick
+        if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
+          this.showTrafficPanel = true
+          this.getRealTimeData()
+        } else {
+          this.showTrafficPanel = false
+          this.realTimeDataLoading = false
+        }
+      }
+    },
+    getRealTimeData() {
+      const { cameraId } = this.$route.query
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: {
+            start: moment()
+              .subtract(1, 'h')
+              .format(dateTimeFormat),
+            end: moment()
+              .format(dateTimeFormat)
+          }
+        },
+        {
+          field: 'cameraId',
+          operator: 'EQUALS',
+          value: cameraId
+        }
+      ]
+      const params = {
+        // cascade: true,
+        // page: {
+        //   index: this.page,
+        //   size: this.limit
+        // },
+        params: param
+      }
+      getAlertRealtimeStatics(params)
+        .then(res => {
+          console.log('realTimeData, ', res)
+          const { code, body: { data } = {}, message } = res
+          if (code !== 0) {
+            this.$message(message)
+            this.realTimeDataLoading = false
+            return
+          }
+          this.realTimeData = data
+          this.realTimeDataLoading = false
+        })
+        .catch(err => {
+          this.realTimeDataLoading = false
+          this.$message.error(err.message || '获取实时分析数据失败')
+        })
+    },
+    setVideoHeight() {
+      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      console.log('test---->', boxHeight)
+      this.heightByAuto = boxHeight + 'px'
+    },
+    saveMonitor() {
+      this.$refs['ruleForm'].validate(valid => {
+        if (valid) {
+          this.submiting = true
+          console.log('form', this.form)
+        } else {
+          return false
+        }
+      })
+    },
+    getCameraById() {
+      const { cameraId } = this.$route.query
+      if (cameraId) {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 10
+          },
+          params: [
+            {
+              field: 'id',
+              operator: 'EQUALS',
+              value: cameraId
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          console.log('获取摄像头信息', data[0])
+          const { name } = data[0]
+          this.cameraName = name
+        })
+      } else {
+        this.cameraName = '-'
+      }
+    },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
+          cascade: true,
+          page: {
+            index: 1,
+            size: 20
+          },
+          params: [
+            {
+              field: 'name',
+              operator: 'LIKE',
+              value: `%${keyword}%`
+            },
+            {
+              field: 'online',
+              operator: 'EQUALS',
+              value: 0
+            }
+          ]
+        }
+        searchCameraList(params).then(res => {
+          let data = res.body.data || []
+          // 已添加到九宫格的摄像头要过滤掉
+          data = data.filter(
+            i => !this.deviceList.find(r => r.cameraId === i.id)
+          )
+          this.options = data.map(item => {
+            return {
+              value: item.id,
+              label: item.address,
+              name: item.name
+            }
+          })
+          this.loading = false
+        })
+      } else {
+        this.options = []
+      }
+    },
+    onClose() {
+      this.$refs['ruleForm'].resetFields()
+      this.submiting = false
+      this.form = {}
+      this.dialogFormVisible = false
+      this.id = null
+    },
+    gotoAiConfig() {
+      const { cameraId } = this.$route.query
+      this.$router.push(`/algorithmconfig?cameraId=${cameraId}`)
+    },
     sureThis() {
       this.showVideoSetting = true
+    },
+    getTaskById(id) {
+      const target = this.taskData.find(item => item.id === id)
+      return target.cnName
+    },
+    getTaskList() {
+      // const query = {
+      //   cascade: true,
+      //   page: {
+      //     index: 1,
+      //     size: 100
+      //   },
+      //   params: {}
+      // }
+      const { cameraId } = this.$route.query
+      getAlgoSelList(cameraId).then(res => {
+        if (res.code === 0) {
+          const resData = res.body && res.body.data || []
+          // 筛选掉人流识别和车流识别
+          this.taskData = resData.filter(({ id }) => id !== 8 && id !== 9)
+          //   this.algorithmId = res.body.data[0].id
+          // this. = false
+        } else {
+          this.taskData = []
+        }
+      })
+        .catch(err => {
+          console.log(err)
+          this.$message.error(err.message || '获取今日实时抓拍可筛选算法失败。')
+        })
+      // taskList(query)
+      //   .then(res => {
+      //     if (res.code === 0) {
+      //       this.taskData = res.body.data
+      //       //   this.algorithmId = res.body.data[0].id
+      //       // this. = false
+      //     } else {
+      //       this.taskData = []
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
+    },
+    pageChange(e) {
+      console.log('change')
+      //   this.currentTab = e.label
+      //   const s = e.label + ' ' + this.startTime + ':00'
+      //   const end = e.label + ' ' + this.endTime + ':00'
+      //   const h = this.formInline.typeValue
+      //   this.page = 1
+      this.getPhotoList()
+    },
+    getDateTimeStr(time) {
+      return moment(time).format(timeFormat)
+    },
+    getPhotoList() {
+      this.photosLoading = true
+      const { cameraId } = this.$route.query
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: {
+            start: moment()
+              .startOf('day')
+              .format(dateTimeFormat),
+            end: moment()
+              .endOf('day')
+              .format(dateTimeFormat)
+          }
+        },
+        {
+          field: 'cameraId',
+          operator: 'EQUALS',
+          value: cameraId
+        }
+      ]
+      if (this.taskId && this.taskId.length) {
+        param.push({
+          field: 'taskId',
+          operator: 'IN',
+          value: [...this.taskId]
+        })
+      }
+      const params = {
+        cascade: true,
+        page: {
+          index: this.page,
+          size: this.limit
+        },
+        params: param,
+        sorts: [
+          {
+            field: 'create_Time',
+            type: 'desc'
+          }
+        ]
+      }
+      getAlertInfos(params)
+        .then(res => {
+          const {
+            body: {
+              data,
+              page: { total }
+            }
+          } = res
+          this.photoCardList = data
+          this.total = total
+          this.photosLoading = false
+        })
+        .catch(err => {
+          console.log(err)
+          this.photosLoading = false
+        })
+    },
+    getCountByName(taskCount, name) {
+      for (const item of taskCount) {
+        if (item.name === name) {
+          return item.count
+        }
+      }
+      return '-'
+    },
+    getAlertDetailList() {
+      this.tableLoading = true
+      const { cameraId } = this.$route.query
+      const query = {
+        page: {
+          index: 1,
+          size: 10
+        },
+        params: {
+          id: cameraId
+        }
+        // sorts: [{ field: 'create_time', type: 'desc' }]
+      }
+      getAlertStatics(query).then(res => {
+        if (res.code !== 0) {
+          this.tableLoading = false
+          return
+        }
+        this.tableData = res.body.data
+        this.tableColumn = res.body.data[0]
+          ? res.body.data[0].taskCount.sort((a, b) => (b.applied - a.applied) || (b.count - a.count))
+          : []
+        this.tableLoading = false
+        // this.total = res.body.page.total
+      // eslint-disable-next-line handle-callback-err
+      }).catch(err => {
+        this.tableLoading = false
+      })
+    },
+    getLiveStream() {
+      this.videoLoading = true
+      const { cameraId } = this.$route.query
+      play(cameraId, {
+        'type': 2
+      }).then(res => {
+        if (!res || res.code !== 0) return
+        const data = res.body.data || []
+        // const xx = {
+        //     ...data,
+        //     image: null,
+        //     flvSrc: data.rtmpuri,
+        console.log('视频信息-------->', data)
+        console.log('视频流--------', data.rtmpuri)
+        this.videoOptions = {
+          autoplay: true,
+          controls: true,
+          width: 400, // 播放器宽度
+          height: 300, // 播放器高度
+          // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
+          fluid: true, // 流体布局，自动充满，并保持播放其比例
+          sources: [
+            {
+              src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
+              type: this.video_type(data.rtmpuri ? data.rtmpuri + '&a.flv' : '')
+            }
+          ]
+        }
+        // }
+        this.videoLoading = false
+      }).catch(err => {
+        this.$message.error(err.message || '获取摄像头播放流失败.')
+        this.videoLoading = false
+      })
+    },
+    video_type(_url) {
+      var url = _url.toLowerCase()
+      if (url.startsWith('rtmp')) {
+        return 'rtmp/flv'
+      } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
+        return 'application/x-mpegURL'
+      } else if (url.endsWith('webm')) {
+        return 'video/webm'
+      } else if (url.endsWith('mp4')) {
+        return 'video/mp4'
+      } else if (url.endsWith('ogv')) {
+        return 'video/ogg'
+      } else if (url.endsWith('hls')) {
+        return 'application/x-mpegURL'
+      }
     }
   }
 }
 </script>
 <style lang='scss'>
+#app {
+  min-height: 100% !important;
+  height: 100% !important;
+  .openSidebar {
+    height: 100%;
+  }
+  .hideSidebar {
+    height: 100%;
+  }
+}
 .videomonitorWrap {
-  padding: 20px;
-  background: #F0F2F5;
-  .el-col-12{
-    width: 48%;
-    margin-right: 2%;
-  }
-  .displayIB{
-    display: inline-block;
-  }
-  .videoMonitor{
-    // padding: 10px 10px;
-  }
-  .monitorBox{
-      height: 330px;
-      border: 1px dashed #D9D9D9;
-      background: #fff;
-      border-radius: 2px;
-      position: relative;
-      p{
-          margin: 24px;
+   min-height:590px;
+  .el-dialog{
+    .el-dialog__header{
+      text-align: left;
+    }
+    .photoList-image {
+      img {
+        object-fit: contain;
       }
-  }
-  .monitorAddress{
-      width: 440px;
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-     .el-select{
-        width: 278px;
-        height: 36px;
-     }
-     .addressText{
-        font-size: 14px;
-        color: #4A4A4A;
-     }
-  }
-  .censusData{
-      margin-top: 20px;
-      .el-table__header-wrapper table, .el-table__body-wrapper table{
-          width: 100% !important;
-      }
-      th,td {
-        padding: 5px !important;
-      }
-      .el-table__body, .el-table__footer, .el-table__header{
-        table-layout: auto;
-      }
-  }
-  .actualData{
-      float: right;
-      background: #ffffff;
-      padding:0 24px 20px;
-      .actualTitle{
-          font-size: 16px;
-          padding-top:20px;
-      }
-      .streamData{
-          height: 266px;
-          border: 1px solid #F0EFEF;
-          margin-top: 20px;
-      }
-      .dataHeader{
-          height: 47px;
-          line-height: 47px;
-          font-size: 16px;
-          background: #F0EFEF;
-          padding-left: 18px;
-          color:rgba(0,0,0,0.85);
-      }
-      .dataTitle{
-          font-size: 14px;
-          margin-top: 24px;
-          margin-left: 20px;
-      }
-      .dataText{
-          margin-left: 20px;
-          margin-top: 5px;
-      }
-      .dataShow{
-          p{
-              font-size: 12px;
-              color:rgba(0,0,0,0.85);
-              margin: 16px 0 7px;
-          }
-          div{
-              font-size: 14px;
-          }
-      }
-  }
-  .photoContainer{
-      position: relative;
-    //   height: 100%;
-  }
-  .photoBox{
-      background: #fff;
-      height: 980px;
-      .photoList{
-          display: inline-block;
-          width: 20%;
-          margin: 2.5%;
-          text-align: center;
-      }
-  }
-  .pagination-container{
-    margin-top: 250px;
-    .showTotal{
-      padding-left: 10px;
     }
   }
-//   .video-panel {
-//     position: relative;
-//     height: 100%;
-//   }
+
+  padding: 20px;
+  height: 100%;
+  background: #f0f2f5;
+  .displayIB {
+    display: inline-block;
+  }
+  .panelTitle {
+    font-size: 16px;
+    padding-bottom: 20px;
+  }
+  .videoMonitor {
+    display: flex;
+    height: 100%;
+    .leftPanel {
+      width: 600px;
+      flex-grow: 2;
+      flex-shrink: 1;
+      .leftContent {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+      }
+      .monitorBox {
+        // height: 330px;
+        height: 50%;
+        min-height: 235px;
+        width: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        // border: 1px dashed #D9D9D9;
+        background: #fff;
+        border-radius: 2px;
+        position: relative;
+        .left-part {
+          width: calc(100% - 200px);
+        }
+        p {
+          margin: 24px;
+        }
+      }
+    }
+    .rightPanel {
+      width: 600px;
+      height: 100%;
+      flex-grow: 1;
+      flex-shrink: 1.5;
+      display: flex;
+      flex-direction: column;
+      .realTimeData-unfolded{
+        height:195px;
+         .streamData-wrapper{
+          visibility:visible;
+        }
+      }
+      .realTimeData-folded{
+        overflow:hidden;
+        height: 60px;
+        .streamData-wrapper{
+          visibility:hidden;
+        }
+      }
+      .realTimeData {
+        transition: height .5s;
+        // flex-grow: 1;
+        // width:50%;
+        margin-bottom: 20px;
+        margin-left: 20px;
+        background: #ffffff;
+        padding: 20px;
+         .streamData-wrapper{
+          transition:all 0.2s ease;
+        }
+        .panelTitle {
+          margin-bottom: 10px;
+          line-height: 20px;
+          height: 20px;
+          position:relative;
+
+          .fold-icon-wrapper{
+            cursor:pointer;
+            &:hover{
+               background-color: #d9d9d9;
+            }
+            // padding: 5px;
+            width: 28px;
+            height: 28px;
+            margin-top: -4px;
+            border-radius: 2px;
+            border-radius: 2px;
+            display: inline-block;
+            // float: right;
+            position:absolute;
+            right:0;
+            text-align: center;
+            background-color: #f0f2f5;
+          }
+          .fold-icon{
+            transition: transform .5s;
+            font-weight: 300;
+            font-size:12px;
+            line-height: 28px;
+            &-folded{
+              transform: rotate(180deg);
+            }
+          }
+        }
+        .streamData {
+          width: 100%;
+          display: table;
+          // border: 1px solid #F0EFEF;
+        }
+        .dataHeader {
+          display: table-cell;
+          width:16%;
+          min-width: 90px;
+          font-weight: bold;
+            // height: 30px;
+            line-height: 30px;
+            // font-size: 14px;
+            // background: #F0EFEF;
+            // padding-left: 18px;
+            color:rgba(0,0,0,0.85);
+            // 注意回退
+             padding-top:10px;
+             font-size:16px;
+        }
+        .dataPanel {
+          display: table-cell;
+          width:42%;
+          .dataTitle{
+              font-size: 14px;
+              margin-left: 20px;
+          }
+          .dataText {
+            margin-left: 20px;
+          }
+          .dataShow{
+            width:40%;
+              p{
+                  font-size: 12px;
+                  color: #666;
+                  margin: 15px 0 0;
+              }
+              div{
+                  font-size: 14px;
+              }
+          }
+        }
+      }
+    }
+    .photoBox {
+      flex-grow: 1;
+      flex-shrink: 1;
+      position: relative;
+      background: #fff;
+      width: calc(100% - 20px);
+      height: calc(100% - 340px);
+      // min-height: 200px;
+      margin: 0 20px 0 20px;
+      // height:100%;
+      padding: 20px;
+      .showPhoto {
+        height: 40px;
+        line-height: 28px;
+        font-size: 16px;
+        position: relative;
+        .photo-fitler-sel {
+          width: 180px;
+          position: absolute;
+          right: 0;
+        }
+      }
+      .photoContainer {
+        display: flex;
+        max-height: calc(100% - 80px);
+        overflow-y: auto;
+        flex-wrap: wrap;
+        // justify-content: space-between;
+        align-items: flex-start;
+        .photoList-image {
+          img {
+            object-fit: contain;
+            background-color: #f5f7fa;
+          }
+        }
+        .photoList-image:hover {
+          cursor: zoom-in;
+        }
+        @media screen and (max-width: 1430px) {
+          .photoList {
+            // display: inline-block;
+            width: 31%;
+            height: 180px;
+            margin-bottom: 20px;
+            margin-right: 2%;
+          }
+        }
+        @media screen and (min-width: 1431px)  {
+          .photoList {
+            // display: inline-block;
+            width: 23%;
+            height: 180px;
+            margin-bottom: 20px;
+            margin-right: 2%;
+          }
+        }
+        // @media screen and (min-width: 1601px) {
+        //   .photoList {
+        //     // display: inline-block;
+        //     width: 18%;
+        //     height: 180px;
+        //     margin-bottom: 20px;
+        //     margin-right: 2%;
+        //   }
+        // }
+          .photoContainer-noData{
+            // min-height:120px;
+            &-text{
+              // height:120px;
+              overflow:hidden;
+              // &-icon{
+              //    font-size: 80px;
+              // }
+              &-content{
+                // font-size: 18px;
+                padding-top: 10px;
+              }
+              width:100%;
+              position:absolute;
+              top:calc(50% - 60px);
+              color: #b2b2b2;
+              text-align: center;
+              vertical-align: middle;
+            }
+            @media screen and (min-width: 1501px) {
+                min-height:180px;
+                &-text{
+                   top:calc(50% - 90px);
+                   height:180px;
+                  &-icon{
+                    font-size: 100px;
+                  }
+                  &-content{
+                    font-size: 22px;
+                    padding-top: 10px;
+                  }
+                }
+            }
+             @media screen and (max-width: 1500px) {
+                min-height:110px;
+                &-text{
+                   top:calc(50% - 55px);
+                    height:110px;
+                  &-icon{
+                    font-size: 60px;
+                  }
+                  &-content{
+                    font-size: 16px;
+                    padding-top: 10px;
+                  }
+                }
+            }
+          }
+        }
+        /deep/.pagination-container {
+          position: absolute;
+          bottom: 20px;
+          width: calc(100% - 20px);
+          margin-top: 20px;
+          .showTotal {
+            line-height:28px;
+          }
+          .el-input--mini{
+            width: 85px;
+            line-height: 24px;
+          }
+          .el-input--mini .el-input__inner{
+              height: 24px;
+          }
+          .el-pagination--small {
+            height: 28px;
+          }
+          @media screen and (max-width: 1600px) {
+            .el-pagination__jump {
+              display: none !important;
+            }
+          }
+          @media screen and (max-width: 1400px) {
+            bottom: 40px;
+            .showTotal {
+              display: none !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  // .monitorAddress{
+  //     width: 440px;
+  //     position:absolute;
+  //     top:50%;
+  //     left:50%;
+  //     transform:translate(-50%,-50%);
+  //    .el-select{
+  //       width: 278px;
+  //       height: 36px;
+  //    }
+  //    .addressText{
+  //       font-size: 14px;
+  //       color: #4A4A4A;
+  //    }
+  // }
+  .censusData {
+    // display: flex;
+    margin-top: 20px;
+    //TODO1
+    @media screen and (max-width: 1400px) {
+      height: 350px;
+      overflow-y: hidden;
+    }
+    @media screen and (min-width: 1400px) {
+      height: 280px;
+    }
+    width: 100%;
+    // .el-table__header-wrapper table, .el-table__body-wrapper table{
+    //     width: 100% !important;
+    // }
+    // th,td {
+    //   padding: 5px !important;
+    // }
+    // .el-table__body, .el-table__footer, .el-table__header{
+    //   table-layout: auto;
+    // }
+    .el-table__header {
+      tr {
+        th:first-of-type {
+          background-color: rgb(236, 237, 238);
+          color: rgb(113, 113, 113);
+          font-weight: bold;
+        }
+      }
+    }
+    .el-table__row {
+      td:first-of-type {
+        background-color: rgb(236, 237, 238);
+        color: rgb(113, 113, 113);
+        font-weight: bold;
+      }
+    }
+    .alertTable {
+      // flex-grow: 1;
+      background: #ffffff;
+      height: 100%;
+      padding: 20px;
+      width: 100%;
+      // .el-table{
+      //   margin-top:5px;
+      // }
+    }
+  }
+
+  .video-panel {
+    position: relative;
+    height: calc(100% - 35px);
+  }
+  .screenBottom {
+    height: 35px;
+    position: relative;
+    line-height: 35px;
+    background: #fafafa;
+    padding: 0 20px;
+    font-size: 14px;
+    &-op {
+      position: absolute;
+      right: 20px;
+      font-size: 22px;
+      color: #999;
+      .svg-icon:hover {
+        cursor: pointer;
+        color: #1989fa;
+      }
+    }
+  }
   .right-part {
     width: 200px;
     position: absolute;
     right: 0;
-    top: 40px;
+    top: calc(50% - 100px);
     background: #fff;
     .video-control {
       transform: scale(0.64);
       transform-origin: top center;
       position: absolute;
       left: 50%;
-      top: 0;
+
       margin-left: -152px;
     }
     .alarm-panel {
       margin-top: 190px;
     }
   }
-  .video-control{
-  width: 304px;
-  // height: 100%;
-  .control-box {
-    background: url(../../assets/images/control/control_bg.png) no-repeat 50%;
-    width: 207px;
-    height: 207px;
-    margin: 0 auto;
-    position: relative;
-  }
-  .icon {
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-  }
-  .center {
-    background: url(../../assets/images/control/icon_refresh.png);
-    width: 111px;
-    height: 111px;
-    position: absolute;
-    top: 57px;
-    left: 49px;
-  }
-  .up {
-    background: url(../../assets/images/control/icon_up.png);
-    width: 18px;
-    height: 11px;
-    position: absolute;
-    top: 30px;
-    left: 95px;
-  }
-  .down {
-    background: url(../../assets/images/control/icon_down.png);
-    width: 18px;
-    height: 11px;
-    position: absolute;
-    top: 168px;
-    left: 95px;
-  }
-  .left {
-    background: url(../../assets/images/control/icon_left.png);
-    width: 10px;
-    height: 17px;
-    position: absolute;
-    top: 92px;
-    left: 32px;
-  }
-  .right {
-    background: url(../../assets/images/control/icon_right.png);
-    width: 10px;
-    height: 17px;
-    position: absolute;
-    top: 92px;
-    left: 166px;
-  }
-  .leftup {
-    background: url(../../assets/images/control/icon_leftup.png);
-    width: 13px;
-    height: 13px;
-    position: absolute;
-    top: 50px;
-    left: 55px;
-  }
-  .rightup {
-    background: url(../../assets/images/control/icon_rightup.png);
-    width: 13px;
-    height: 13px;
-    position: absolute;
-    top: 50px;
-    left: 144px;
-  }
-  .leftdown {
-    background: url(../../assets/images/control/icon_leftdown.png);
-    width: 13px;
-    height: 13px;
-    position: absolute;
-    top: 143px;
-    left: 51px;
-  }
-  .rightdown {
-    background: url(../../assets/images/control/icon_rightdown.png);
-    width: 13px;
-    height: 13px;
-    position: absolute;
-    top: 144px;
-    left: 144px;
-  }
-  .opt-btn {
-    margin-top: 20px;
-    padding: 0 10px;
-  }
-  .opt-box {
-    width: 76px;
-    height: 27px;
-    border: 1px solid #666;
-    border-radius: 14px;
-    margin: 0 auto;
-    text-align: center;
-    box-sizing: content-box;
-    line-height: 24px;
-  }
-  .enlarge {
-    background: url(../../assets/images/control/enlarge.png);
-    width: 25px;
-    height: 25px;
-  }
-  .zoomin {
-    background: url(../../assets/images/control/zoomin.png);
-    width: 25px;
-    height: 25px;
-  }
-  .jiaol {
-    background: url(../../assets/images/control/jiaol.png);
-    width: 18px;
-    height: 19px;
-  }
-  .jiaos {
-    background: url(../../assets/images/control/jiaos.png);
-    width: 19px;
-    height: 19px;
-  }
-  .guangl {
-    background: url(../../assets/images/control/guangl.png);
-    width: 21px;
-    height: 21px;
-  }
-  .guangs {
-    background: url(../../assets/images/control/guangs.png);
-    width: 21px;
-    height: 21px;
-  }
-  .control-slider {
-    display: flex;
-    padding: 0 20px;
-    span {
-      width: 72px;
-      line-height: 38px;
-      font-size: 14px;
+  .video-control {
+    width: 304px;
+    // height: 100%;
+    .control-box {
+      background: url(../../assets/images/control/control_bg.png) no-repeat 50%;
+      width: 207px;
+      height: 207px;
+      margin: 0 auto;
+      position: relative;
     }
-    .el-slider {
-      flex: 1;
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+      cursor: pointer;
     }
-  }
+    .center {
+      background: url(../../assets/images/control/icon_refresh.png);
+      width: 111px;
+      height: 111px;
+      position: absolute;
+      top: 57px;
+      left: 49px;
+    }
+    .up {
+      background: url(../../assets/images/control/icon_up.png);
+      width: 18px;
+      height: 11px;
+      position: absolute;
+      top: 30px;
+      left: 95px;
+    }
+    .down {
+      background: url(../../assets/images/control/icon_down.png);
+      width: 18px;
+      height: 11px;
+      position: absolute;
+      top: 168px;
+      left: 95px;
+    }
+    .left {
+      background: url(../../assets/images/control/icon_left.png);
+      width: 10px;
+      height: 17px;
+      position: absolute;
+      top: 92px;
+      left: 32px;
+    }
+    .right {
+      background: url(../../assets/images/control/icon_right.png);
+      width: 10px;
+      height: 17px;
+      position: absolute;
+      top: 92px;
+      left: 166px;
+    }
+    .leftup {
+      background: url(../../assets/images/control/icon_leftup.png);
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      top: 50px;
+      left: 55px;
+    }
+    .rightup {
+      background: url(../../assets/images/control/icon_rightup.png);
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      top: 50px;
+      left: 144px;
+    }
+    .leftdown {
+      background: url(../../assets/images/control/icon_leftdown.png);
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      top: 143px;
+      left: 51px;
+    }
+    .rightdown {
+      background: url(../../assets/images/control/icon_rightdown.png);
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      top: 144px;
+      left: 144px;
+    }
+    .opt-btn {
+      margin-top: 20px;
+      padding: 0 10px;
+    }
+    .opt-box {
+      width: 76px;
+      height: 27px;
+      border: 1px solid #666;
+      border-radius: 14px;
+      margin: 0 auto;
+      text-align: center;
+      box-sizing: content-box;
+      line-height: 24px;
+    }
+    .enlarge {
+      background: url(../../assets/images/control/enlarge.png);
+      width: 25px;
+      height: 25px;
+    }
+    .zoomin {
+      background: url(../../assets/images/control/zoomin.png);
+      width: 25px;
+      height: 25px;
+    }
+    .jiaol {
+      background: url(../../assets/images/control/jiaol.png);
+      width: 18px;
+      height: 19px;
+    }
+    .jiaos {
+      background: url(../../assets/images/control/jiaos.png);
+      width: 19px;
+      height: 19px;
+    }
+    .guangl {
+      background: url(../../assets/images/control/guangl.png);
+      width: 21px;
+      height: 21px;
+    }
+    .guangs {
+      background: url(../../assets/images/control/guangs.png);
+      width: 21px;
+      height: 21px;
+    }
+    .control-slider {
+      display: flex;
+      padding: 0 20px;
+      span {
+        width: 72px;
+        line-height: 38px;
+        font-size: 14px;
+      }
+      .el-slider {
+        flex: 1;
+      }
+    }
 }
-}
-
 </style>

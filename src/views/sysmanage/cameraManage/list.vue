@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="cameralist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
@@ -17,7 +17,7 @@
               </el-form-item>
               <el-form-item label="制造厂商："><el-input v-model="dialogForm.manufacturer" placeholder="请输入制造厂商" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
-              <el-form-item label="设备型号："><el-input v-model="dialogForm.model" placeholder="请输入设备型号" class="filter-item" style="width: 240px;"></el-input>
+              <el-form-item label="摄像头型号："><el-input v-model="dialogForm.model" placeholder="请输入摄像头型号" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
               <el-form-item label="视频流："><el-input v-model="dialogForm.url" placeholder="请输入视频流" class="filter-item" style="width: 240px;"></el-input>
               </el-form-item>
@@ -46,6 +46,7 @@
         </div>-->
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="tableData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -57,7 +58,11 @@
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" :label="'设备名称'" align="center" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头名称'" class-name="deviceName">
+          <template slot-scope="scope">
+            <a @click="toDetail(scope.row)">{{ scope.row.name }}</a>
+          </template>
+        </el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
           :label="'摄像头状态'"
@@ -118,14 +123,29 @@
         <el-table-column :show-overflow-tooltip="true" :label="'告警信息'" prop="dealSum"></el-table-column>-->
         <el-table-column :show-overflow-tooltip="true" :label="'操作'" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="editDialog(scope.row)">{{ '编辑' }}</el-button>
-            <el-button type="text" size="small" @click="delAlert(scope.row.id)">{{ '删除' }}</el-button>
+            <el-button
+              style="color:#fa8334;"
+              type="text"
+              size="small"
+              @click="editDialog(scope.row)"
+            >{{ '编辑' }}</el-button>
+            <el-button
+              style="color:#fa8334;"
+              type="text"
+              size="small"
+              @click="delAlert(scope.row.id)"
+            >{{ '删除' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" label-position="right" label-width="130px">
-          <el-form-item label="摄像头ID：">
+        <el-form
+          :model="editForm"
+          :rules="editFormRules"
+          label-position="right"
+          label-width="130px"
+        >
+          <el-form-item label="摄像头ID：" prop="id">
             <el-input
               v-model="editForm.id"
               placeholder="请输入摄像头ID"
@@ -133,7 +153,7 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="负责人：">
+          <el-form-item label="负责人：" prop="creator">
             <el-select
               v-model="editForm.inChargeName"
               :value="editForm.inChargeName"
@@ -148,23 +168,16 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="摄像头经纬度：">
+          <el-form-item label="摄像头经纬度：" prop="tude">
             <el-input
+              v-model="editForm.tude"
               type="text"
-              v-model="editForm.longitude"
               placeholder="请输入摄像头经度"
-              class="filter-item"
-              style="width: 150px;"
-            ></el-input>
-            <el-input
-              v-model="editForm.latitude"
-              placeholder="请输入摄像头纬度"
-              style="width: 150px;"
+              style="width:300px;"
               class="filter-item"
             ></el-input>
           </el-form-item>
-          <!-- <el-form-item label="摄像头纬度："></el-form-item> -->
-          <el-form-item label="视频流信息：">
+          <el-form-item label="视频流信息：" prop="url">
             <el-input
               v-model="editForm.url"
               placeholder="请输入视频流信息"
@@ -172,9 +185,9 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="地址：">
+          <el-form-item label="地址：" prop="address">
             <el-input
-              v-model="editForm.address"
+              v-model="editForm.name"
               :rows="4"
               type="textarea"
               placeholder="请输入地址"
@@ -200,74 +213,79 @@
 </template>
 
 <script>
-import { Message } from "element-ui";
-import Cookies from "js-cookie";
-import Pagination from "@/components/Pagination";
-import "element-ui/lib/theme-chalk/index.css";
-import moment from "moment";
+import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
+import Pagination from '@/components/Pagination'
+import 'element-ui/lib/theme-chalk/index.css'
+import moment from 'moment'
 import {
   fetchAllCameraList,
   editCamera,
   addCamera,
   delCamera
-} from "@/api/camera";
-import { fetchUserList } from "@/api/users";
-import VideoConfig from "@/components/VideoConfig";
-import client from "@/api/vedioAlgo";
+} from '@/api/camera'
+import { fetchUserList } from '@/api/users'
+import VideoConfig from '@/components/VideoConfig'
+import client from '@/api/vedioAlgo'
 
 export default {
   components: { Pagination, VideoConfig },
   data() {
     return {
+      tableLoading: null,
       dialogForm: {
-        address: "",
-        creatorId: "",
-        id: "",
-        name: "",
-        latitude: "",
-        longitude: "",
-        url: "",
-        inChargeId: "",
-        manufacturer: "",
-        model: "",
-        phone: ""
+        address: '',
+        creatorId: '',
+        id: '',
+        name: '',
+        latitude: '',
+        longitude: '',
+        url: '',
+        inChargeId: '',
+        manufacturer: '',
+        model: '',
+        phone: ''
       },
-      addrules: {
-        creatorId: [
-          { required: true, trigger: "blur", message: "创建人ID不能为空" }
-        ],
-        name: [
-          { required: true, trigger: "blur", message: "摄像头名称不能为空" }
+      editFormRules: {
+        creator: [
+          { required: true, trigger: 'change', message: '请选择负责人' }
         ],
         url: [
-          { required: true, trigger: "blur", message: "视频流信息不能为空" }
+          { required: true, trigger: 'blur', message: '视频流信息不能为空' }
         ],
-        phone: [{ required: true, trigger: "blur", message: "手机号不能为空" }],
+        tude: [
+          { required: true, trigger: 'blur', message: '经纬度信息不能为空' },
+          {
+            pattern: /^[\-\+]?(0?\d{1,2}\.\d{1,6}|1[0-7]?\d{1}\.\d{1,6}|180\.0{1,6})\,[\-\+]?([0-8]?\d{1}\.\d{1,6}|90\.0{1,6})/g,
+            message: '请输入正确经纬度信息',
+            trigger: 'blur'
+          }
+        ],
         manufacturer: [
-          { required: true, trigger: "blur", message: "制造厂商不能为空" }
+          { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: "blur", message: "设备型号不能为空" }
+          { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
         ],
-        id: [{ required: true, trigger: "blur", message: "摄像头ID不能为空" }],
+        id: [{ required: true, trigger: 'blur', message: '摄像头ID不能为空' }],
         inChargeId: [
-          { required: true, trigger: "blur", message: "负责人ID不能为空" }
+          { required: true, trigger: 'blur', message: '负责人ID不能为空' }
         ],
         longitude: [
-          { required: true, trigger: "blur", message: "经度不能为空" }
+          { required: true, trigger: 'blur', message: '经度不能为空' }
         ],
         latitude: [
-          { required: true, trigger: "blur", message: "纬度不能为空" }
+          { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [{ required: true, trigger: "blur", message: "地址不能为空" }]
+        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
-        searchkey: "",
-        typeValue: "list"
+        searchkey: '',
+        typeValue: 'list'
       },
       typeOptions: [
-        { name: "地图模式", _id: "map" },
-        { name: "列表模式", _id: "list" }
+        { name: '地图模式', _id: 'map' },
+        { name: '列表模式', _id: 'list' }
       ],
       listLoading: false,
       filteredValue: [],
@@ -276,37 +294,37 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       page: 1,
       limit: 10,
-      userId: Cookies.get("userId"),
-      originCode: "",
+      userId: Cookies.get('userId'),
+      originCode: '',
       oldSize: 10,
       delIDArr: [],
       editVisable: false,
       editForm: {
-        id: "",
-        inChargeId: "",
-        inChargeName:"",
-        longitude: "",
-        latitude: "",
-        address: "",
-        url: "",
-        name: "",
-        creatorId: ""
+        id: '',
+        inChargeId: '',
+        inChargeName: '',
+        longitude: '',
+        latitude: '',
+        address: '',
+        url: '',
+        name: '',
+        creatorId: '',
+        tude: ''
       },
       userList: [],
-      creatorName: ""
-    };
+      creatorName: ''
+    }
   },
   watch: {
     limit() {
-      this.page = 1;
-      this.pageChange();
+      this.page = 1
+      this.pageChange()
     }
   },
   async created() {
-    await Message.closeAll();
-    await this.getUserList();
-    await this.getList();
-    
+    await Message.closeAll()
+    await this.getUserList()
+    await this.getList()
   },
   methods: {
     getUserList() {
@@ -316,144 +334,156 @@ export default {
           index: 1,
           size: 9999999
         },
-        params: {}
-      };
+        params: []
+      }
       fetchUserList(query).then(response => {
-        if (response.code !== 0) return;
-        this.userList = response.body.data;
+        if (response.code !== 0) return
+        this.userList = response.body.data
         this.userList.forEach(item => {
           if (item.id === +this.userId) {
-            this.creatorName = item.name;
+            this.creatorName = item.name
           }
-        });
-    
-      });
+        })
+      })
     },
     batchesDel() {
       if (!this.delIDArr.length) {
         this.$message({
-          message: "请选择需要删除的摄像头!",
-          type: "warning"
-        });
+          message: '请选择需要删除的摄像头!',
+          type: 'warning'
+        })
       } else {
-        this.$confirm("此操作将永久删除选中数据, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
+        this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         }).then(() => {
-          const params = [...this.delIDArr];
+          const params = [...this.delIDArr]
           delCamera(params)
             .then(response => {
-              this.getList();
-              this.delIDArr = [];
+              this.$notify({
+                title: '成功',
+                message: '批量删除成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+              this.delIDArr = []
             })
             .catch(() => {
-              this.delIDArr = [];
-            });
-        });
+              this.delIDArr = []
+            })
+        })
       }
     },
     delAlert(d) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        const params = [d];
+        const params = [d]
         delCamera(params).then(response => {
-          this.getList();
-          this.delIDArr = [];
-        });
-      });
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.delIDArr = []
+        })
+      })
     },
     formatTime: function(row, column, cellValue) {
-      return moment(cellValue).format("YYYY-MM-DD HH:mm:ss");
+      return moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
     },
     editDialog(v) {
-      this.editForm.id = v.id;
-      this.editForm.creatorId = v.creatorId;
-      this.editForm.inChargeId = v.inChargeId;
-      this.editForm.inChargeName = v.inCharge.name;
-      this.editForm.longitude = v.longitude;
-      this.editForm.latitude = v.latitude;
-      this.editForm.address = v.address;
-      this.editForm.name = v.name;
-      this.editForm.url = v.url;
-      // console.log(v);
-      this.editVisable = true;
+      this.editForm.id = v.id
+      this.editForm.tude = v.longitude + ',' + v.latitude
+      this.editForm.creatorId = v.creatorId
+      this.editForm.inChargeId = v.inChargeId
+      this.editForm.inChargeName = v.inCharge.name
+      this.editForm.longitude = v.longitude
+      this.editForm.latitude = v.latitude
+      this.editForm.address = v.address
+      this.editForm.name = v.name
+      this.editForm.url = v.url
+      this.editVisable = true
     },
     editCloseDialog() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     editDialogConfirm() {
       const params = [
         {
           id: this.editForm.id,
           inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.latitude,
-          longitude: this.editForm.longitude,
+          latitude: this.editForm.tude.split(',')[1].trim(),
+          longitude: this.editForm.tude.split(',')[0].trim(),
           url: this.editForm.url,
           name: this.editForm.name,
           creatorId: this.editForm.creatorId
         }
-      ];
+      ]
       editCamera(params).then(response => {
         this.$notify({
-          title: "成功",
-          message: "编辑成功",
-          type: "success",
+          title: '成功',
+          message: '编辑成功',
+          type: 'success',
           duration: 2000
-        });
-        this.getList();
-        this.editVisable = false;
-      });
+        })
+        this.getList()
+        this.editVisable = false
+      })
     },
     editDialogQuxiao() {
-      this.editVisable = false;
+      this.editVisable = false
     },
     create() {
-      this.dialogVisable = true;
+      this.dialogVisable = true
     },
     closeDialog() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     onSearch() {},
     checkModel() {
-      this.$emit("getdata", this.formInline.typeValue, true);
+      this.$emit('getdata', this.formInline.typeValue, true)
     },
     // 表头样式
     tableRowClassHeader({ row, rowIndex }) {
-      return "tableRowClassHeader";
+      return 'tableRowClassHeader'
     },
     pageChange() {
       if (this.oldSize !== this.limit) {
-        this.page = 1;
+        this.page = 1
       }
-      this.oldSize = this.limit;
-      this.getList();
+      this.oldSize = this.limit
+      this.getList()
     },
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0];
+        this.originCode = columnObj[key][0]
       }
-      this.page = 1;
-      let columnObjKey = "";
+      this.page = 1
+      let columnObjKey = ''
       for (var i in columnObj) {
-        columnObjKey = i;
+        columnObjKey = i
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = [];
-        this.getList();
+        this.filteredValue = []
+        this.getList()
       } else {
-        this.filteredValue = columnObj[columnObjKey];
-        this.getList();
+        this.filteredValue = columnObj[columnObjKey]
+        this.getList()
       }
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         cascade: true,
         page: {
@@ -461,66 +491,100 @@ export default {
           size: this.limit
         },
         params: {}
-      };
+      }
       fetchAllCameraList(params).then(res => {
-        this.tableData = res.body.data;
-        this.total = res.body.page.total;
-        this.listLoading = false;
-      });
+        this.tableData = res.body.data
+        this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
+        this.listLoading = false
+        this.tableLoading = false
+      })
     },
     handleSelectionChange(val) {
       this.delIDArr = val.map(item => {
-        return item.id;
-      });
+        return item.id
+      })
     },
     dialogQuxiao() {
-      this.dialogVisable = false;
+      this.dialogVisable = false
     },
     dialogConfirm() {
       this.$refs.addForm.validate(valid => {
-        if (!valid) return;
-        const params = [{ ...this.dialogForm, creatorId: this.userId }];
+        if (!valid) return
+        const params = [{ ...this.dialogForm, creatorId: this.userId }]
         addCamera(params)
           .then(res => {
             this.dialogForm = {
-              address: "",
-              creatorId: "",
-              id: "",
-              name: "",
-              latitude: "",
-              longitude: "",
-              url: "",
-              inChargeId: "",
-              manufacturer: "",
-              model: "",
-              phone: ""
-            };
+              address: '',
+              creatorId: '',
+              id: '',
+              name: '',
+              latitude: '',
+              longitude: '',
+              url: '',
+              inChargeId: '',
+              manufacturer: '',
+              model: '',
+              phone: ''
+            }
             this.$notify({
-              title: "成功",
-              message: "增加成功",
-              type: "success",
+              title: '成功',
+              message: '增加成功',
+              type: 'success',
               duration: 2000
-            });
-            this.getList();
-            this.dialogVisable = false;
+            })
+            this.getList()
+            this.dialogVisable = false
           })
           .catch(() => {
             this.$notify({
-              title: "失败",
-              message: "增加失败",
-              type: "error",
+              title: '失败',
+              message: '增加失败',
+              type: 'error',
               duration: 2000
-            });
-          });
-      });
+            })
+          })
+      })
+    },
+    toDetail(item) {
+      this.$router.push({
+        path: '/cameraManage/videomonitor',
+        params: { cameraId: item.id },
+        query: { cameraId: item.id }
+      })
     }
   }
-};
+}
 </script>
 
 <style lang='scss'>
 .app-main {
   padding-top: 50px;
+}
+.deviceName {
+  color: #409eff;
+}
+.cameralist {
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  th {
+    padding:0px;
+  }
+  td {
+    padding:0px;
+  }
 }
 </style>
 

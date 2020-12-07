@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="facehistorylist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container facehistory-box clearfix">
         <div class="pull-right">
@@ -7,13 +7,14 @@
             v-waves
             class="filter-item"
             size="mini"
+            style="height: 36px"
             type="warning"
             @click="onSearch"
           >{{ '搜索' }}</el-button>
           <el-button
             class="filter-item"
-            style="font-size:12px"
-            icon="el-icon-refresh"
+            style="font-size:12px; height: 36px"
+            size="mini"
             @click="onClear"
           >重置</el-button>
         </div>
@@ -28,7 +29,7 @@
               :style="{width:300 + 'px'}"
               :picker-options="pickerOptions"
               type="daterange"
-              range-separator="to"
+              range-separator="~"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               format="yyyy-MM-dd"
@@ -71,7 +72,7 @@
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
-          <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
+          <el-tab-pane v-loading="tableLoading" v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
             <div v-if="tableData.length>0" class="history-box">
               <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
@@ -87,13 +88,13 @@
                         size="mini"
                       >{{ val.nameList === "1" ? "白名单" : val.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
                     </div>
-                    <div class="bottom clearfix">
+                    <div class="bottom clearfix" style="height:40px">
                       <div
                         class="location"
-                        style="height:40px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
+                        style="display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                       >
                         <i class="el-icon-map-location" />
-                        <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                        <span>{{ val.camera && val.camera.name || '未知' }}</span>
                       </div>
                       <div class="location">
                         <i class="el-icon-time" />
@@ -147,11 +148,12 @@ export default {
   filters: {
     formatNull: function(val) {
       if (!val) return '无'
-      return val.address
+      return val.name
     }
   },
   data() {
     return {
+      tableLoading: null,
       renderTime,
       else: '其他',
       temp: {
@@ -347,6 +349,7 @@ export default {
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
       const h1 = this.formInline.typeValue
       this.oldSize = this.limit
+      this.page = 1
       this.getList(s1, end1, h1)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
@@ -466,6 +469,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      this.tableLoading = true
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'
@@ -520,6 +524,7 @@ export default {
         this.tableData = response.body.data
         this.total = response.body.page.total
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     handleSelectionChange(val) {
@@ -583,7 +588,8 @@ export default {
 </script>
 
 <style lang='scss'>
-.title {
+.facehistorylist {
+  .title {
   width: 100%;
   height: 50px;
   line-height: 50px;
@@ -596,7 +602,7 @@ export default {
   padding: 0 20px;
 }
 .el-date-editor {
-  height: 28px !important;
+  height: 36px !important;
 }
 .el-range-separator {
   width: 30px !important;
@@ -609,9 +615,6 @@ export default {
 }
 .untreated {
   fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
 }
 .buttonText {
   color: #409eff;
@@ -681,7 +684,7 @@ export default {
     padding: 0;
   }
   .bottom {
-    margin-top: 5px;
+    margin-top: 13px;
     line-height: 20px;
     font-size: 13px;
     color: #999;
@@ -703,5 +706,19 @@ export default {
     object-fit: contain; //cover;
     background-color: rgb(245, 247, 250);
   }
+}
+}
+.el-input--mini .el-input__inner {
+  height: 36px;
+  line-height: 36px;
+}
+.el-range-editor--mini .el-range-separator {
+  line-height: 26px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 26px;
+}
+.el-input--mini .el-input__icon {
+  line-height: 36px;
 }
 </style>

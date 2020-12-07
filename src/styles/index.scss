@@ -326,7 +326,15 @@ code {
 .el-dialog__wrapper {
     z-index: 100000000 !important;
 }
-
+.el-dialog {
+    z-index: 100000000 !important;
+}
+.el-message {
+    z-index: 100000001 !important;
+}
+.el-message-box__wrapper {
+    z-index: 100000000 !important;
+}
 .el-select-dropdown {
     z-index: 9999999999 !important;
 }
@@ -338,7 +346,9 @@ code {
     /*高宽分别对应横竖滚动条的尺寸*/
     height: 4px;
 }
-
+.el-tooltip__popper {
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 !important;
+}
 .el-dialog__body::-webkit-scrollbar-thumb {
     /*滚动条里面小方块*/
     border-radius: 5px;
@@ -378,7 +388,10 @@ code {
         color: #fff;
     }
 }
-
+.el-input__inner {
+    font-size: 12px;
+    text-indent: 0px;
+}
 .el-menu--collapse .logo-con {
     margin-left: 4px !important;
 }
@@ -395,13 +408,11 @@ html {
     fill: #95afc0 !important;
     // cursor: no-drop;
 }
-
+.el-notification {
+    z-index: 9999999999999999999999999999999999 !important;
+}
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
-}
-
-.el-message-box__wrapper {
-    z-index: 1000 !important;
 }
 
 .disable {
@@ -412,7 +423,16 @@ html {
 .not-allowed {
     cursor: not-allowed !important;
 }
-    
+.el-input__inner {
+    height:36px;
+    font-size: 12px;
+    border-radius: 2px;
+}   
+.el-button{
+    height:36px;
+    font-size: 12px;
+    border-radius: 2px;
+}
 .image {
  width:100%;
  height:39px;
@@ -425,4 +445,7 @@ html {
 .clickgif {
   width:50px !important;
   height:50px !important;
+}
+.el-button--text {
+    color: #fa8334 !important;
 }

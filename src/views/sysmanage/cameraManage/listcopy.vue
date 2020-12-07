@@ -154,7 +154,7 @@ export default {
           { required: true, trigger: 'blur', message: '制造厂商不能为空' }
         ],
         model: [
-          { required: true, trigger: 'blur', message: '设备型号不能为空' }
+          { required: true, trigger: 'blur', message: '摄像头型号不能为空' }
         ],
         id: [
           { required: true, trigger: 'blur', message: '摄像头ID不能为空' }

@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="to"
+          range-separator="~"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -97,8 +97,20 @@
         </el-time-picker>
       </span>
       <span style="float:right;">
-        <el-button type="primary" @click="onSearch">搜索</el-button>
-        <el-button type="" @click="onClear">重置</el-button>
+        <el-button
+            v-waves
+            class="filter-item"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="onSearch"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="onClear"
+          >重置</el-button>
       </span>
     </div>
     <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">
@@ -123,12 +135,12 @@
                 </span>
                 <div class="bottom clearfix">
                   <el-tooltip
-                    :content="item.camera.address"
+                    :content="item.camera.name"
                     placement="top-start"
                   >
                     <div class="location">
                       <i class="el-icon-map-location" />
-                      <span class="locationtext">{{ item.camera && item.camera.address || '未知' }}</span>
+                      <span class="locationtext">{{ item.camera && item.camera.name || '未知' }}</span>
                     </div>
                   </el-tooltip>
                   <div class="location">
@@ -483,6 +495,16 @@ export default {
   }
 //   overflow: auto !important;
 //   min-height: calc(100vh - 90px) !important;
+}
+.el-range-editor--medium .el-range-input {
+  font-size: 12px;
+}
+.el-input--medium {
+  font-size: 12px;
+}
+.el-range-editor--medium .el-range-separator {
+  line-height: 28px;
+  font-size: 12px;
 }
 </style>
 

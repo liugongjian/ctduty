@@ -2,37 +2,32 @@
   <div class="userManage">
     <!-- <el-divider></el-divider> -->
     <div class="container">
-      <div class="clearfix">
+      <div class="clearfix" style="margin-top:8px;">
         <div class="pull-left">
-          <el-input
-            v-model="queryName"
-            class="searchinput"
-            placeholder="请输入用户姓名"
-          ></el-input>
+          <el-input v-model="queryName" class="searchinput" placeholder="请输入用户姓名" @keyup.enter.native="getUserList"></el-input>
           <el-button
-            class="searchbtn"
+            v-waves
+            class="filter-item searchbtn"
+            size="mini"
+            style="height: 36px;margin-left:5px;"
             type="warning"
             @click="getUserList"
-          >搜索</el-button
-          >
-          <el-button class="searchbtn" @click="resetQuery">重置</el-button>
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item searchbtn"
+            style="font-size:12px; height: 36px;"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
-          <el-button
-            class="addbtn"
-            type="warning"
-            @click="addUserDialogVisible = true"
-          >+新增用户</el-button
-          >
+          <el-button class="addbtn" type="warning" @click="addUserDialogVisible = true">+新增用户</el-button>
         </div>
       </div>
     </div>
 
-    <el-table
-      :data="userList"
-      :header-cell-style="{ background: '#ecedee', color: '#717171' }"
-    >
-      <el-table-column align="center" label="用户名" prop="username"></el-table-column>
+    <el-table v-loading="tableLoading" :data="userList" :header-cell-style="{ background: '#ecedee', color: '#717171' }">
+      <el-table-column align="left" label="用户名" prop="username"></el-table-column>
       <el-table-column align="center" label="姓名" prop="name"></el-table-column>
       <el-table-column align="center" label="手机号码" prop="phone"></el-table-column>
       <!-- <el-table-column label="岗位" prop="post.name"></el-table-column> -->
@@ -40,18 +35,8 @@
       <el-table-column align="center" label="权限" prop="permissions.name"></el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="row_data">
-          <el-button
-            type="text"
-            size="small"
-            @click="showEditDialog(row_data.row.id)"
-          >{{ "编辑" }}</el-button
-          >
-          <el-button
-            type="text"
-            size="small"
-            @click="showDeleteDialog(row_data.row.username, row_data.row.id)"
-          >{{ "删除" }}</el-button
-          >
+          <el-button type="text" size="small" @click="showEditDialog(row_data.row.id)">{{ "编辑" }}</el-button>
+          <el-button type="text" size="small" @click="showDeleteDialog(row_data.row.id)">{{ "删除" }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,19 +52,14 @@
     <el-dialog
       :visible.sync="addUserDialogVisible"
       title="新增用户"
-      width="40%"
+      width="545px"
       @close="addDialogClosed"
     >
-      <el-form
-        ref="addFormRef"
-        :model="addUserForm"
-        :rules="addUserFormRules"
-        label-width="100px"
-      >
+      <el-form ref="addFormRef" :model="addUserForm" :rules="addUserFormRules" label-width="100px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="addUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="username">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="addUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -88,11 +68,8 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
-          <el-select
-            v-model="addUserForm.departmentId"
-            placeholder="请选择区域/部门"
-          >
+        <!-- <el-form-item label="区域/部门" prop="departmentId">
+          <el-select v-model="addUserForm.departmentId" placeholder="请选择区域/部门">
             <el-option
               v-for="item in departmentInfo"
               :value="item.departmentId"
@@ -110,7 +87,7 @@
               :key="item.postId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="addUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -130,8 +107,8 @@
 
     <el-dialog
       :visible.sync="editUserDialogVisible"
-      title="修改用户"
-      width="40%"
+      title="编辑"
+      width="545px"
       @close="editDialogClosed"
     >
       <el-form
@@ -143,7 +120,7 @@
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="username">
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="editUserForm.name" type="text"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
@@ -152,8 +129,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="区域/部门" prop="departmentId">
-          <!-- <el-select v-model="editUserForm.departmentId" :value="()=>{departmentInfo.find(item => item.departmentId == editUserForm.departmentId)}" placeholder="请选择区域/部门"> -->
+        <!-- <el-form-item label="区域/部门" prop="departmentId">
           <el-select
             v-model="editUserForm.departmentId"
             :value="editUserForm.departmentId"
@@ -168,11 +144,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位" prop="postId">
-          <el-select
-            v-model="editUserForm.postId"
-            :value="editUserForm.postId"
-            placeholder="请选择岗位"
-          >
+          <el-select v-model="editUserForm.postId" :value="editUserForm.postId" placeholder="请选择岗位">
             <el-option
               v-for="item in postInfo"
               :value="item.postId"
@@ -180,7 +152,7 @@
               :key="item.postId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="权限" prop="permissionId">
           <el-radio-group v-model="editUserForm.permissionId">
             <el-radio :label="3274944196083712">系统管理员</el-radio>
@@ -198,17 +170,13 @@
       </span>
     </el-dialog>
 
-    <el-dialog
-      :visible.sync="deleteUserDialogVisible"
-      title="删除用户"
-      width="30%"
-    >
+    <!-- <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="30%">
       <span>确认删除用户{{ deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
         <el-button @click="deleteUserDialogVisible = false">取 消</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -233,17 +201,27 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     return {
+      tableLoading: null,
       page: 1,
       limit: 10,
       oldSize: 10,
       addUserDialogVisible: false,
       addUserFormRules: {
         username: [
-          { required: true, message: '用户名称不能为空', trigger: 'blur' },
+          { required: true, message: '用户名不能为空', trigger: 'blur' },
           {
             min: 5,
-            max: 10,
+            max: 12,
             message: '用户名长度在5-12个字符之间',
+            trigger: 'blur'
+          }
+        ],
+        name: [
+          { required: true, message: '姓名不能为空', trigger: 'blur' },
+          {
+            min: 2,
+            max: 5,
+            message: '姓名长度在2-5个字符之间',
             trigger: 'blur'
           }
         ],
@@ -260,16 +238,20 @@ export default {
             trigger: 'blur'
           }
         ],
-        departmentId: [{
-          required: true,
-          message: '请选择部门',
-          trigger: 'change'
-        }],
-        postId: [{
-          required: true,
-          message: '请选择岗位',
-          trigger: 'change'
-        }],
+        departmentId: [
+          {
+            required: true,
+            message: '请选择部门',
+            trigger: 'change'
+          }
+        ],
+        postId: [
+          {
+            required: true,
+            message: '请选择岗位',
+            trigger: 'change'
+          }
+        ],
         phone: [
           {
             required: true,
@@ -374,22 +356,43 @@ export default {
     this.getUserList()
   },
   methods: {
+    onSearch() {
+      this.page = 1
+      this.getUserList()
+    },
     getUserList() {
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
           index: this.page,
           size: this.limit
         },
-        params: {}
-      }
-      if (this.queryName.trim() !== '') {
-        query.params.name = this.queryName
+        params: [
+          {
+            field: 'name',
+            operator: 'LIKE',
+            value: `%${this.queryName.trim()}%`
+          }
+        ]
       }
       fetchUserList(query).then(response => {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
+        this.tableLoading = false
       })
     },
     pageChange() {
@@ -412,8 +415,15 @@ export default {
         if (!valid) return
         const query = [{ ...this.addUserForm }]
         postAddUser(query).then(response => {
-          if (response.code !== 0) { return this.$message.error('添加用户失败，请联系系统管理员') }
-          this.$message.success('添加用户成功')
+          if (response.code !== 0) {
+            return this.$message.error('添加用户失败，请联系系统管理员')
+          }
+          this.$notify({
+            title: '成功',
+            message: '添加成功',
+            type: 'success',
+            duration: 2000
+          })
           this.addUserDialogVisible = false
           this.getUserList()
         })
@@ -436,82 +446,118 @@ export default {
         if (!valid) return
         updateUser([{ ...this.editUserForm }]).then(response => {
           // console.log(response)
-          if (response.code !== 0) { return this.$message.error('更新用户信息失败,请稍后再试') }
+          if (response.code !== 0) {
+            return this.$message.error('更新用户信息失败,请稍后再试')
+          }
           this.editUserDialogVisible = false
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
           this.getUserList()
-          this.$message.success('更新用户信息成功')
         })
       })
     },
     editDialogClosed() {
       this.editUserForm = {}
     },
-    showDeleteDialog(username, id) {
-      this.deleteUserDialogVisible = true
-      this.deleteUserName = username
-      this.deleteUserId = id
-    },
+    // showDeleteDialog(username, id) {
+    //   this.deleteUserDialogVisible = true
+    //   this.deleteUserName = username
+    //   this.deleteUserId = id
+    // },
+    showDeleteDialog(id) {
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const ids = []
+        ids.push(this.deleteNoticerId)
+        deleteUser([id]).then(response => {
+          if (response.code !== 0) {
+            return this.$message.error('删除失败,请稍后再试')
+          }
 
-    deleteAUser() {
-      const ids = []
-      ids.push(this.deleteUserId)
-      deleteUser(ids).then(response => {
-        if (response.code !== 0) { return this.$message.error('删除用户失败,请稍后再试') }
-        this.deleteUserDialogVisible = false
-        this.deleteUserId = 0
-        this.deleteUserName = ''
-        this.getUserList()
-        this.$message.success('删除用户信息')
+          this.deleteUserId = 0
+          this.deleteUserName = ''
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getUserList()
+        })
       })
     },
+
+    // deleteAUser() {
+    //   const ids = []
+    //   ids.push(this.deleteUserId)
+    //   deleteUser(ids).then(response => {
+    //     if (response.code !== 0) {
+    //       return this.$message.error('删除用户失败,请稍后再试')
+    //     }
+    //     this.deleteUserDialogVisible = false
+    //     this.deleteUserId = 0
+    //     this.deleteUserName = ''
+    //     this.getUserList()
+    //     this.$message.success('删除用户信息')
+    //   })
+    // },
 
     resetQuery() {
       this.queryName = ''
       this.getUserList()
     }
+  }
+}
+</script>
 
+<style lang='scss'>
+.userManage {
+  padding: 10px 20px;
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-divider--horizontal {
+    margin-top: 0px;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 15px;
+  }
+  .searchinput {
+    float: left;
+    width: 250px;
+  }
+  .searchbtn {
+    float: left;
+    margin-left: 5px;
+  }
+  .addbtn {
+    float: right;
+  }
+  .el-select-dropdown {
+    z-index: 9999999999999999999999999999999999 !important;
+  }
+  label {
+    display: inline-block;
+    width: 100px !important;
+    text-align: left !important;
+  }
+  td,th {
+    padding: 0px;
   }
 }
 
-</script>
-
-<style lang='scss' scoped>
-.userManage {
-  padding: 10px 20px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-divider--horizontal {
-  margin-top: 0px;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  float: left;
-  width: 250px;
-}
-.searchbtn {
-  float: left;
-  margin-left: 5px;
-}
-.addbtn {
-  float: right;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
-}
-label {
-  display: inline-block;
-  width: 100px !important;
-  text-align: left !important;
-}
 </style>

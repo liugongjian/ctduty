@@ -71,7 +71,7 @@
               <div class="bottom-right">
                 <ul>
                   <li style="float:right;line-height: 20px;margin-left:5px;font-size:12px;">
-                    <a @click="()=>{this.$router.push('/alarmMessage')}">历史告警</a>
+                    <a @click="()=>{this.$router.push('/alarmMessage/alarmMessage')}">历史告警</a>
                   </li>
                 </ul>
               </div>
@@ -1220,9 +1220,7 @@ body {
   margin: 0;
   list-style: none;
 }
-#alarmInfo {
-  padding: 0 !important;
-}
+
 .alarmMonitoring {
   border-left:1px solid #ccc;
 }
@@ -1236,6 +1234,9 @@ body {
  .trafficSvg {
    fill : #1890ff !important;
  }
+ #alarmInfo {
+  padding: 0 !important;
+}
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;

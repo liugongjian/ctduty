@@ -84,6 +84,7 @@ import client from '@/api/vedioAlgo'
 import store from '@/store'
 import SvgIcon from '@/components/SvgIcon'
 export default {
+  components: { SvgIcon },
   props: ['ifShow', 'currentPickDeviceId', 'currentPickAlgorithm'],
   data() {
     return {
@@ -127,13 +128,13 @@ export default {
         {
           name: 'peopleTraffic',
           cnName: '人流识别',
-          message: '标记不正确,人流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,人流识别只能标注一条直线,请重新标注',
           need: 'line'
         },
         {
           name: 'plateTraffic',
           cnName: '车流识别',
-          message: '标记不正确,车流识别需要至少一条直线,请重新标注',
+          message: '标记不正确,车流识别只能标注一条直线,请重新标注',
           need: 'line'
         }
       ],
@@ -191,9 +192,9 @@ export default {
           this.wallCount = parseInt(nameList[1]) + 1
         } else if (lastHisArea.name.startsWith('forb')) {
           this.forbCount = parseInt(nameList[1]) + 1
-        } else if (lastHisArea.name.startsWith('line')){
+        } else if (lastHisArea.name.startsWith('line')) {
           this.lineCount = parseInt(nameList[1]) + 1
-        } else{
+        } else {
           this.areaCount = parseInt(nameList[1]) + 1
         }
       }
@@ -274,6 +275,7 @@ export default {
         this.currentPickAlgorithm.isCommitStatus = false
         this.currentPickAlgorithm.isConfigAlready = true
         this.$emit('saveAlgorithm')
+        this.$emit('sureSave')
         // if(this.areas.length==0 && this.currentPickAlgorithm.isCommitStatus){//如果曾经提交了，只是打开看了一下保存，直接发送事件
         //   this.$emit('saveAlgorithm');
         // }else{
@@ -293,10 +295,11 @@ export default {
     },
     cancleAlgorithm() {
       this.$emit('saveAlgorithm')
+      this.$emit('cancelAlgorithm')
     },
 
     checkMarkCorrectAndSave(algoName, areas) {
-      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name == algoName)
+      var algo = this.needConfigAlgorithms.filter(eachAlgo => eachAlgo.name === algoName)
       var flag = false
       if (areas.length > 0) {
         var lineCount = 0
@@ -328,7 +331,7 @@ export default {
             }
           }
         } else {
-          if (lineCount >= 1 && areaCount == 0) {
+          if (lineCount == 1 && areaCount == 0) {
             flag = true
           }
         }
@@ -355,6 +358,7 @@ export default {
       this.areaCount = 1
       this.markName = ''
       this.historyPoints = []
+      this.tempChoosePoint = []
       this.clearCanvas()
     },
     revoke() {
@@ -372,13 +376,14 @@ export default {
         this.wallCount--
       } else if (revokeArea.name.startsWith('forb')) {
         this.forbCount--
-      } else if (revokeArea.name.startsWith('line')){
+      } else if (revokeArea.name.startsWith('line')) {
         this.lineCount--
       } else {
         this.areaCount--
       }
-	  
+
       this.drawAll()
+      this.tempChoosePoint = []
     },
     // 从后端获取的点坐标格式化
     formatHistoryPoints(historyPoints) {
@@ -524,6 +529,7 @@ export default {
             var chooseHisArea = this.getChooseArea(this.historyPoints, event.offsetX, event.offsetY)
             if (chooseHisArea != null) {
               this.tempChoosePoint = this.formatPoints(chooseHisArea.points)
+              this.markWallAndForb(chooseHisArea)
             } else {
               this.tempChoosePoint = []
             }
@@ -532,6 +538,16 @@ export default {
           }
         } else {
           this.tempChoosePoint = this.formatPoints(chooseArea.points)
+          this.markWallAndForb(chooseArea)
+        }
+      }
+    },
+    markWallAndForb(chooseArea) {
+      if (this.currentPickAlgorithm.name == 'stepWallCheck') {
+        if (chooseArea.name.startsWith('wall')) {
+          this.value = '1'
+        } else if (chooseArea.name.startsWith('forb')) {
+          this.value = '2'
         }
       }
     },
@@ -616,13 +632,13 @@ export default {
         name = 'line-' + (this.lineCount++)
         return name
       }
-      if (this.currentPickAlgorithm.name=="stepWallCheck"){
+      if (this.currentPickAlgorithm.name == 'stepWallCheck') {
         if (this.value == 1) {
           name = 'wall-' + (this.wallCount++)
         } else {
           name = 'forb-' + (this.forbCount++)
         }
-      }else{
+      } else {
         name = 'area-' + (this.areaCount++)
       }
       return name

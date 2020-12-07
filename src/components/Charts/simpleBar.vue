@@ -102,6 +102,33 @@ export default {
           ...yAxis
         }
       }
+      const ceilNum = (num) => {
+        var temp = 0
+        var teaa = 0
+        if (num < 10) {
+          return 10
+        }
+        while (num >= 10) {
+          num /= 10
+          temp += 1
+          teaa = num
+        }
+        return {
+          maxNum: Math.ceil(num) * Math.pow(10, temp),
+          maxTemp: teaa
+        }
+      }
+      const rtnRotate = () => {
+        if (this.id === 'times-bar') {
+          const boxWidth = document.querySelector('#times-bar').offsetWidth - 84
+          const tempNum = xAxis.data[xAxis.data.length - 1]
+          const { maxNum, maxTemp } = ceilNum(tempNum)
+          return boxWidth / maxTemp > 30 ? 0 : 20
+        } else {
+          return 0
+        }
+      }
+
       this.chart.setOption({
         tooltip: {
           trigger: 'item',
@@ -122,7 +149,9 @@ export default {
             }
           },
           axisLabel: {
-            color: '#4a4a4a'
+            color: '#4a4a4a',
+            interval: 0,
+            rotate: rtnRotate()
           },
           splitLine: {
             lineStyle: {

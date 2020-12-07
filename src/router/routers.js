@@ -1,6 +1,6 @@
 /* Layout */
-import Layout from "@/views/layout/Layout";
-import MainLayout from "@/views/layout/MainLayout";
+import Layout from '@/views/layout/Layout'
+import MainLayout from '@/views/layout/MainLayout'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -22,24 +22,24 @@ import MainLayout from "@/views/layout/MainLayout";
  **/
 export const asyncRouterMap = [
   {
-    path: "/",
+    path: '/',
     component: Layout,
     hidden: false,
-    redirect: "/dashboard",
+    redirect: '/dashboard',
     meta: {
-      roles: "admin"
+      roles: 'admin'
     },
     children: [
       {
-        path: "/dashboard",
-        component: () => import("@/views/dashboard/index"),
-        name: "dashboard",
+        path: '/dashboard',
+        component: () => import('@/views/dashboard/index'),
+        name: 'dashboard',
         meta: {
-          title: "dashboard",
-          icon: "dashboard",
+          title: 'dashboard',
+          icon: 'dashboard',
           noCache: true,
           affix: true,
-          roles: "admin"
+          roles: 'admin'
         }
       }
     ]
@@ -63,19 +63,39 @@ export const asyncRouterMap = [
   //     }
   //   ]
   // },
+  // {
+  //   path: '/videomonitor',
+  //   component: Layout,
+  //   redirect: '/videomonitor',
+  //   name: 'videomonitor',
+  //   hidden: true,
+  //   children: [
+  //     {
+  //       path: '/videomonitor',
+  //       component: () => import('@/views/videoMonitor/index'),
+  //       name: 'videoMonitor',
+  //       meta: {
+  //         title: 'videoMonitor',
+  //         icon: 'videoMonitor',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
-    path: '/videomonitor',
+    path: '/monitorScreen',
     component: Layout,
-    redirect: '/videomonitor',
+    redirect: '/monitorScreen',
     hidden: false,
     children: [
       {
-        path: '/videomonitor',
-        component: () => import('@/views/videoMonitor/index'),
-        name: 'videoMonitor',
+        path: '/monitorScreen',
+        component: () => import('@/views/monitorScreen/index'),
+        name: 'monitorScreen',
         meta: {
-          title: 'videoMonitor',
-          icon: 'videoMonitor',
+          title: 'monitorScreen',
+          icon: 'monitor',
           noCache: true,
           affix: true
         }
@@ -83,18 +103,41 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: "/monitorScreen",
+    path: '/algorithmconfig',
     component: Layout,
-    redirect: "/monitorScreen",
+    redirect: '/algorithmconfig',
     hidden: false,
     children: [
       {
-        path: "/monitorScreen",
-        component: () => import("@/views/monitorScreen/index"),
-        name: "monitorScreen",
+        path: '/algorithmconfig',
+        component: () => import('@/views/algorithmConfig/index'),
+        name: 'algorithmConfig',
         meta: {
-          title: "monitorScreen",
-          icon: "monitor",
+          title: 'algorithmConfig',
+          icon: 'algorithmconfig',
+          noCache: true,
+          affix: true
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/carManage',
+    // component: () => import('@/views/sysmanage/carManage/index'),
+    component: Layout,
+    redirect: '/carManage',
+    hidden: false,
+    // alwaysShow: true, // will always show the root menu
+    // hidden: false,
+    children: [
+      {
+        path: '/carManage',
+        component: () => import('@/views/sysmanage/carManage/index'),
+        name: 'sysCarManage',
+        meta: {
+          title: 'carManage',
+          icon: 'license',
           noCache: true,
           affix: true
         }
@@ -102,18 +145,18 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: "/algorithmconfig",
+    path: '/faceManage',
     component: Layout,
-    redirect: "/algorithmconfig",
+    redirect: '/faceManage',
     hidden: false,
     children: [
       {
-        path: "/algorithmconfig",
-        component: () => import("@/views/algorithmConfig/index"),
-        name: "algorithmConfig",
+        path: '/faceManage',
+        component: () => import('@/views/sysmanage/faceManage/index'),
+        name: 'sysFaceManage',
         meta: {
-          title: "algorithmConfig",
-          icon: "algorithmconfig",
+          title: 'faceManage',
+          icon: 'face',
           noCache: true,
           affix: true
         }
@@ -121,115 +164,179 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: "/alarmMessage",
+    path: '/cameraManage',
     component: Layout,
-    redirect: "/alarmMessage",
+    redirect: '/cameraManage/list',
+    // alwaysShow: true,
     hidden: false,
-    children: [
-      {
-        path: "/alarmMessage",
-        component: () => import("@/views/alarmMessage/index"),
-        name: "alarmMessageIndex",
-        meta: {
-          title: "alarmMessage",
-          icon: "alarmMessage",
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
-  {
-    path: "/carHistory",
-    component: Layout,
-    redirect: "/carHistory",
-    hidden: false,
-    children: [
-      {
-        path: "/carHistory",
-        component: () => import("@/views/sysmanage/carHistory/index"),
-        name: "carHistory",
-        meta: {
-          title: "carHistory",
-          icon: "license",
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
-  {
-    path: "/faceHistory",
-    component: Layout,
-    redirect: "/faceHistory",
-    hidden: false,
-    children: [
-      {
-        path: "/faceHistory",
-        component: () => import("@/views/sysmanage/faceManage/history"),
-        name: "sysFaceHistory",
-        meta: {
-          title: "faceHistory",
-          icon: "face",
-          noCache: true,
-          affix: true
-        }
-      }
-    ]
-  },
-  {
-    path: "/sysMonitor",
-    component: Layout,
-    alwaysShow: true, // willalwaysshowtherootmenu
+    name: 'sysCameraManage',
     meta: {
-      title: "sysMonitor",
-      icon: "sysMonitor",
+      title: 'cameraManage',
+      icon: 'cameraManagement',
+      noCache: false
+    },
+    withnonestmenu: true,
+    children: [
+      {
+        path: '/cameraManage/list',
+        component: MainLayout,
+        name: 'sysCameraManage',
+        hidden: true,
+        withnonestmenu: true,
+        // meta: {
+        //   title: 'cameraManage',
+        //   icon: 'cameraManagement',
+        //   noCache: false
+        //   // affix: true
+        // },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/sysmanage/cameraManage/list'),
+            name: 'sysCameraManage',
+            hidden: true
+            // meta: {
+            //   title: 'cameraManage',
+            //   icon: 'cameraManagement',
+            //   noCache: true
+            //   // affix: true
+            // }
+          },
+          {
+            path: '/cameraManage/videomonitor',
+            component: () => import('@/views/videoMonitor/index'),
+            name: 'cameraManage/videoMonitor',
+            hidden: true,
+            meta: {
+              title: 'videoMonitor',
+              icon: 'videoMonitor',
+              noCache: false
+            }
+
+          }
+        ]
+      }
+      // {
+      //   path: '',
+      //   component: () => import('@/views/sysmanage/cameraManage/list'),
+      //   name: 'cameraManage',
+      //   // hidden: true,
+      //   meta: {
+      //     title: 'cameraManage',
+      //     icon: 'cameraManagement',
+      //     noCache: true,
+      //     affix: true
+      //   }
+      // }, {
+      //   path: 'videomonitor',
+      //   component: () => import('@/views/videoMonitor/index'),
+      //   name: 'cameraManage/videoMonitor',
+      //   hidden: true,
+      //   meta: {
+      //     title: 'videoMonitor',
+      //     icon: 'videoMonitor',
+      //     noCache: false
+      //   }
+
+      // }
+    ]
+  },
+  {
+    path: '/alarmMessage',
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: 'alarmMessage',
+      icon: 'alarmMessage',
       noCache: true,
-      roles: "admin"
+      roles: 'admin'
     },
     children: [
       {
-        path: "notice",
-        component: () => import("@/views/sysMonitor/notice/index"),
-        name: "noticeIndex",
+        path: 'alarmMessage',
+        component: () => import('@/views/alarmMessage/index'),
+        name: 'alarmMessageIndex',
         meta: {
-          title: "notice",
-          icon: "notice",
+          title: 'alarmMessage',
+          icon: 'alarmMessage',
           noCache: false
         }
       },
       {
-        path: "onlineUser",
-        component: () => import("@/views/sysMonitor/onlineUser/index"),
-        name: "onlineUserIndex",
+        path: 'carHistory',
+        component: () => import('@/views/sysmanage/carHistory/index'),
+        name: 'carHistory',
         meta: {
-          title: "onlineUser",
-          icon: "onlineUser",
+          title: 'carHistory',
+          icon: 'license',
           noCache: false
         }
       },
       {
-        path: "pushSet",
-        component: () => import("@/views/sysMonitor/pushSet/index"),
-        name: "pushSetIndex",
+        path: 'faceHistory',
+        component: () => import('@/views/sysmanage/faceManage/history'),
+        name: 'faceHistory',
         meta: {
-          title: "pushSet",
-          icon: "pushSet",
+          title: 'faceHistory',
+          icon: 'face',
           noCache: false
         }
       }
     ]
   },
   {
-    path: "/sysmanage",
+    path: '/sysMonitor',
+    component: Layout,
+    alwaysShow: true, // willalwaysshowtherootmenu
+    meta: {
+      title: 'sysMonitor',
+      icon: 'sysMonitor',
+      noCache: true,
+      roles: 'admin'
+    },
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/sysMonitor/notice/index'),
+        name: 'noticeIndex',
+        meta: {
+          title: 'notice',
+          icon: 'notice',
+          noCache: false
+        }
+      },
+      {
+        path: 'onlineUser',
+        component: () => import('@/views/sysMonitor/onlineUser/index'),
+        name: 'onlineUserIndex',
+        meta: {
+          title: 'onlineUser',
+          icon: 'onlineUser',
+          noCache: false
+        }
+      },
+      {
+        path: 'pushSet',
+        component: () => import('@/views/sysMonitor/pushSet/index'),
+        name: 'pushSetIndex',
+        meta: {
+          title: 'pushSet',
+          icon: 'pushSet',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
+    path: '/sysmanage',
     component: Layout,
     alwaysShow: true, // will always show the root menu
     hidden: false,
     meta: {
-      title: "sysmanage",
-      icon: "sysmanage",
+      title: 'sysmanage',
+      icon: 'sysmanage',
       noCache: true,
-      roles: "admin"
+      roles: 'admin'
     },
     children: [
       /* {
@@ -283,15 +390,15 @@ export const asyncRouterMap = [
         }
       }, */
       {
-        path: "userManage",
-        component: () => import("@/views/sysmanage/userManage/index"),
-        name: "sysUser",
+        path: 'userManage',
+        component: () => import('@/views/sysmanage/userManage/index'),
+        name: 'sysUser',
         meta: {
-          title: "userManage",
-          icon: "userManage",
+          title: 'userManage',
+          icon: 'userManage',
           noCache: false
         }
-      },
+      }
       /* {
         path: 'dutyManage',
         component: () => import('@/views/sysmanage/dutyManage/index'),
@@ -302,69 +409,10 @@ export const asyncRouterMap = [
           noCache: false
         }
       }, */
-      {
-        path: "cameraManage",
-        component: () => import("@/views/sysmanage/cameraManage/list"),
-        name: "sysCameraManage",
-        meta: {
-          title: "cameraManage",
-          icon: "cameraManagement",
-          noCache: false
-        }
-      },
 
-      {
-        path: "carManage",
-        // component: () => import('@/views/sysmanage/carManage/index'),
-        component: MainLayout,
-        withnonestmenu: true,
-        name: "sysCarManage",
-        meta: {
-          title: "carManage",
-          icon: "license",
-          noCache: false
-        },
-        // alwaysShow: true, // will always show the root menu
-        // hidden: false,
-        children: [
-          {
-            path: "",
-            component: () => import("@/views/sysmanage/carManage/index"),
-            hidden: true,
-            meta: {
-              title: "carManage",
-              icon: "license",
-              noCache: false
-            }
-          }
-        ]
-      },
-      {
-        path: "faceManage",
-        component: MainLayout,
-        name: "sysFaceManage",
-        meta: {
-          title: "faceManage",
-          icon: "face",
-          noCache: false
-        },
-        withnonestmenu: true,
-        children: [
-          {
-            path: "",
-            component: () => import("@/views/sysmanage/faceManage/index"),
-            hidden: true,
-            meta: {
-              title: "faceManage",
-              icon: "face",
-              noCache: false
-            }
-          }
-        ]
-      }
     ]
   }
-];
+]
 export const constantRouterMap = [
   // {
   //   path: '/',
@@ -387,27 +435,27 @@ export const constantRouterMap = [
   //   ]
   // },
   {
-    path: "addnewnotice",
-    component: () => import("@/views/notice/addNewNotice"),
+    path: 'addnewnotice',
+    component: () => import('@/views/notice/addNewNotice'),
     meta: {
-      title: "eCloudWatch",
-      icon: "vsearch"
+      title: 'eCloudWatch',
+      icon: 'vsearch'
     }
   },
   {
-    path: "/login",
-    name: "login",
-    component: () => import("@/views/login/index"),
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/index'),
     hidden: true
   },
   {
-    path: "/404",
-    component: () => import("@/views/errorPage/404"),
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
     hidden: true
   },
   {
-    path: "/401",
-    component: () => import("@/views/errorPage/401"),
+    path: '/401',
+    component: () => import('@/views/errorPage/401'),
     hidden: true
   }
-];
+]

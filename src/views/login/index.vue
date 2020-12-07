@@ -198,7 +198,14 @@ export default {
 
 <style lang="scss">
 body {
-  .leftLogo {
+   .loginContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: -webkit-linear-gradient(45deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
+
+    // background-position: center center;
+    .leftLogo {
     position: relative;
      .leftTop {
       position: fixed;
@@ -256,36 +263,7 @@ body {
       }
     }
   }
-  /*.loginContainer {
-    width: 100%;
-    height: 100%;
-    // background-color: -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
-   background:url(./images/backgroundImage.png) no-repeat center center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
-    // background-image: url("./images/backgroundImage.png");
-    background-size: 100% 100%;
-    // background-repeat: no-repeat;
-    // background-position: center;
-    // background-position: bottom center;
-    position: relative;
-    overflow: hidden;
-    // .fffmark{
-    //   background-color: #fff;
-    //   height: 220vh;
-    //   width:50vw;
-    //   position:absolute;
-    //   left: 0;
-    //   top: 0;
-    //   transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
-    // }
-  } */
-  .loginContainer {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background: -webkit-linear-gradient(45deg, #50D0FF 0%, #1988D7 37%, #243495 100%);
 
-    // background-position: center center;
-  }
   .loginBox{
     width: 50%;
     height: 50%;
@@ -422,6 +400,7 @@ body {
         width: 258px
       }
     }
+  }
   }
 }
 </style>
