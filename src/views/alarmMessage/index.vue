@@ -1,114 +1,165 @@
 <template>
-  <div class="list">
+  <div class="alalist">
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
-        <div class="pull-right alarmmsgright">
-          <!-- <el-input
+        <el-collapse v-model="activeNames" @change="collapseChange">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <div class="pull-right alarmmsgright">
+                <el-button
+                  v-waves
+                  class="filter-item sureItem"
+                  size="mini"
+                  type="warning"
+                  style="margin-bottom: 10px; margin-left: 10px"
+                  @click.stop.native="onSearch"
+                >{{ '搜索' }}</el-button>
+                <el-button class="searchbtn filter-item sureItem" size="mini" @click.stop.native="onClear">重置</el-button>
+                <span id="openId" class="open" @click="opendraw">
+                  {{ openname }}
+                </span>
+              </div>
+              <div class="pull-left alarmmsgleft">
+                <div class="block filter-item">
+                  <div style=" margin-right: 8px; font-size: 12px;">摄像头名称:</div>
+                </div>
+                <!-- <el-input
             v-model="formInline.searchkey"
-            placeholder="请输入..."
-            class="filter-item alarmInp"
-            style="width: 60%; height: 32px"
-            @keyup.enter.native="searchAlarm"
-          ></el-input>
-          <el-button
-            class="filter-item searchsure"
-            style="font-size:12px; width: 16%"
-            icon="el-icon-search"
-            @click="searchAlarm"
-          ></el-button> -->
-          <el-input
-            v-model="formInline.searchkey"
-            placeholder="设备名称"
+            placeholder="摄像头名称"
             class="searchinp"
             size="mini"
-            @keyup.enter.native="searchAlarm">
-            <el-button slot="append" icon="el-icon-search" @click="searchAlarm"></el-button>
-          </el-input>
-          <button
-            class="filter-item clearsearch"
-            style="font-size:12px; width: 20%;height:27px;"
-            icon="el-icon-refresh"
-            @click="resetQuery"
-          >重置</button>
-        </div>
-        <div class="pull-left alarmmsgleft">
-          <div class="block filter-item">
-            <div style="margin-right: 8px;font-size: 12px">选择日期:</div>
-          </div>
-          <div class="block filter-item">
-            <el-date-picker
-              v-model="value1"
-              :clearable="false"
-              :style="{width:178 + 'px', height: 32 + 'px'}"
-              :picker-options="pickerOptions"
-              type="daterange"
-              range-separator="to"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              format="yyyy-MM-dd"
-              size="mini"
-              @change="timeChange"
-            ></el-date-picker>
-          </div>
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px',height:'32px'}"
-              v-model="startTime"
-              :picker-options="{
-                selectableRange:'00:00:00-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
+            @keyup.enter.native="onSearch"
+          ></el-input> -->
+                <el-tooltip
+                  :content="formInline.searchkey"
+                  :disabled="!formInline.searchkey || formInline.searchkey === '所有摄像头'"
+                  class="item"
+                  placement="top-start"
+                >  <el-select
+                  v-model="formInline.searchkey"
+                  :remote-method="getCameraList"
+                  :loading="loading"
+                  class="searchinp"
+                  style="width:205px;font-size:12px;"
+                  filterable
+                  remote
+                  placeholder="请输入摄像头名称"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value"
+                  >
+                    <el-tooltip
+                      :content="item.name"
+                      :disabled="item.name === '所有摄像头'"
+                      class="item"
+                      placement="top-start"
+                    >
+                      <span>{{ item.name }}</span>
+                    </el-tooltip>
+                  </el-option>
+                </el-select>
+                </el-tooltip>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">事件名称:</div>
+                </div>
+                <el-select
+                  v-model="algorithmList.typeValue"
+                  multiple
+                  placeholder="请选择事件名称"
+                  min-width="300px"
+                  collapse-tags
+                  style="margin-bottom: 10px;"
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in algorithm"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
+                <div class="block filter-item">
+                  <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">处理结果:</div>
+                </div>
+                <el-select
+                  v-model="formInline.typeValue"
+                  style="width:165px; margin-right: 10px"
+                  size="mini"
+                  class="filter-item"
+                  @change="checkModel"
+                >
+                  <el-option
+                    v-for="item in typeOptions"
+                    :key="item._id"
+                    :label="item.name"
+                    :value="item._id"
+                  ></el-option>
+                </el-select>
 
-          <div class="block filter-item">
-            <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
-          </div>
-          <div class="block filter-item">
-            <el-time-picker
-              :style="{width:95 + 'px', height: 32 + 'px'}"
-              v-model="endTime"
-              :picker-options="{
-                selectableRange:startTime+ ':00' + '-23:59:00'
-              }"
-              size="mini"
-              format="HH:mm"
-              value-format="HH:mm"
-            ></el-time-picker>
-          </div>
+              </div>
+            </template>
+            <div class="pull-left alarmmsgleft" @click.stop.native="()=>{return null}">
+              <div class="block filter-item">
+                <div style="margin-right: 20px;font-size: 12px;">选择日期:</div>
+              </div>
+              <div class="block filter-item">
+                <el-date-picker
+                  v-model="value1"
+                  :clearable="false"
+                  :picker-options="pickerOptions"
+                  style="width:210px, height: 36px"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  format="yyyy-MM-dd"
+                  size="mini"
+                  @change="timeChange"
+                ></el-date-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px;">开始时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  v-model="startTime"
+                  :picker-options="{
+                    selectableRange:'00:00:00-23:59:00'
+                  }"
+                  style="width: 210px, height: 36px;"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+              <div class="block filter-item">
+                <div style="margin-right: 8px; margin-left: 6px; font-size: 12px">结束时间:</div>
+              </div>
+              <div class="block filter-item">
+                <el-time-picker
+                  v-model="endTime"
+                  :picker-options="{
+                    selectableRange:startTime+ ':00' + '-23:59:00'
+                  }"
+                  style="width:95px, height: 36px"
+                  size="mini"
+                  format="HH:mm"
+                  value-format="HH:mm"
+                ></el-time-picker>
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
 
-          <el-select
-            v-model="formInline.typeValue"
-            style="width:95px; margin-left:10px; margin-right: 10px"
-            size="mini"
-            class="filter-item"
-            @change="checkModel"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item._id"
-              :label="item.name"
-              :value="item._id"
-            ></el-option>
-          </el-select>
-          <el-button
-            v-waves
-            class="filter-item sureItem"
-            size="mini"
-            type="warning"
-            @click="onSearch"
-          >{{ '确定' }}</el-button>
-        </div>
       </div>
       <div>
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
+              v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -123,15 +174,22 @@
                 align="center"
                 min-width="7.5%"
                 prop="id"
-              ></el-table-column> -->
-              <el-table-column
-                :show-overflow-tooltip="true"
-                :formatter="formatTime"
-                :label="'时间'"
-                align="center"
-                min-width="10%"
-                prop="createTime"
-              ></el-table-column>
+              ></el-table-column>-->
+              <el-table-column :label="'图片'" align="center" min-width="12%">
+                <template slot-scope="scope">
+                  <el-popover placement="left" trigger="hover">
+                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
+                    <el-image
+                      slot="reference"
+                      :src="scope.row.imageCompress"
+                      class="amimage"
+                      style="cursor:zoom-in;"
+                      @click="openBig(scope.row.image)"
+                    />
+                  </el-popover>
+                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
+                </template>
+              </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
                 :formatter="formatType"
@@ -152,7 +210,7 @@
                 <template slot-scope="scope">
                   <span>{{ scope.row.content ? scope.row.content:'-' }}</span>
                 </template>
-              </el-table-column> -->
+              </el-table-column>-->
               <el-table-column
                 :show-overflow-tooltip="true"
                 :label="'布控标签'"
@@ -168,23 +226,24 @@
               </el-table-column>
               <el-table-column
                 :show-overflow-tooltip="true"
-                :label="'摄像头'"
+                :label="'摄像头名称'"
                 align="center"
                 min-width="18%"
-                prop="camera.address"
+                prop="camera.name"
               ></el-table-column>
-              <el-table-column :label="'图片'" align="center" min-width="12%">
+              <el-table-column
+                :show-overflow-tooltip="true"
+                :label="'时间'"
+                align="center"
+                min-width="10%"
+                prop="createTime"
+              >
                 <template slot-scope="scope">
-                  <el-popover placement="left" trigger="hover">
-                    <el-image :src="scope.row.imageCompress" style="width:340px; height:194px;" />
-                    <el-image
-                      slot="reference"
-                      :src="scope.row.imageCut"
-                      class="amimage"
-                      @click="openBig(scope.row.image)"
-                    />
-                  </el-popover>
-                  <!-- <el-image :src="scope.row.imageCompress" style="width:170px; height:97px;" @click="openBig(scope.row.image)"></el-image> -->
+                  <span>
+                    {{
+                      renderTime(scope.row.createTime).substring(renderTime(scope.row.createTime).length-8)
+                    }}
+                  </span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -192,13 +251,13 @@
                 :label="'处理人'"
                 align="center"
                 min-width="5%"
-                prop="handler.username"
+                prop="handler.name"
                 width="100"
               >
                 <template slot-scope="scope">
                   <span
                     style="text-indent:10px"
-                  >{{ scope.row.handler ? scope.row.handler.username:'-' }}</span>
+                  >{{ scope.row.handler ? scope.row.handler.name:'-' }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -230,7 +289,7 @@
               :tabs-arr="tabsArr"
               :all-total="allTotal"
               :limit.sync="limit"
-              :alarmtext = "alarmtext"
+              :alarmtext="alarmtext"
               @pagination="pageChange()"
             />
           </el-tab-pane>
@@ -246,32 +305,64 @@
       style="height:100%;"
       @close="closeDialog"
     >
-      <div style="width:500px;height:400px; padding: 10px 10px 0px">
+      <div style="width:500px;height:360px; padding: 10px 10px 0px">
         <div :model="temp" label-position="right" label-width="100px">
-          <div prop="image" style="width:480px;height:270px;position:relative;" @click="()=>{openBig(temp.image)}">
-            <img :src="temp.image" width="480" height="270" style="z-index:1;">
-            <CanvasDialog v-if="dialogVisable" :img-url="temp.image" :left-top="[points[0],points[1]]" :name="temp.type === 1?'人员':temp.type === 2?'机动车':'非机动车'" :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'" :right-bottom="[points[2],points[3]]" style="z-index:2;position:absolute;top:0;left:0;"></CanvasDialog>
+          <div
+            prop="image"
+            style="width:480px;height:270px;position:relative;cursor:zoom-in;"
+            @click="()=>{openBig(temp.image)}"
+          >
+            <el-image :src="temp.imageCompress" width="480" height="270" style="z-index:1;" />
+            <!--  <CanvasDialog
+              v-if="dialogVisable"
+              :img-url="temp.image"
+              :left-top="[points[0],points[1]]"
+              :name="temp.type === 1?'行人':temp.type === 2?'机动车':'非机动车'"
+              :name-length="temp.type === 1?'2':temp.type === 2?'3':'4'"
+              :right-bottom="[points[2],points[3]]"
+              style="z-index:2;position:absolute;top:0;left:0;"
+            ></CanvasDialog> -->
           </div>
           <div class="popfooter">
-            <el-tooltip :content="temp.camera.address" class="item" effect="light" placement="top-start">
+            <el-tooltip
+              :content="temp.camera.name"
+              class="item"
+              effect="light"
+              placement="top-start"
+            >
               <div class="popfooteraddress">
                 <svg-icon icon-class="pulladdress" style="color:#898989;"></svg-icon>
-                <span style="width: 260px;">{{ temp.camera?temp.camera.address : '' }}</span>
+                <span style="width: 260px;">{{ temp.camera?temp.camera.name : '' }}</span>
               </div>
             </el-tooltip>
             <div class="popfootertime">
               <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
-              <span style="width: 260px;">
+              <span>
                 {{
-                  renderTime(temp.createTime)
+                  renderTime(temp.createTime).substring(renderTime(temp.createTime).length-8)
                 }}
               </span>
             </div>
           </div>
         </div>
         <div slot="footer" class="dialog-footer" style="text-align: center; margin-top: 10px">
-          <el-button class="warnnormal popwarn" round style="border-radius: 2px" @click="dialogConfirm"><span class="spantext">正 常</span></el-button>
-          <el-button class="warnunnormal popwarn" type="warning" round style="border-radius: 2px" @click="dialogQuxiao"><span class="spantext">异 常</span></el-button>
+          <el-button
+            class="warnnormal popwarn"
+            round
+            style="border-radius: 2px"
+            @click="dialogConfirm"
+          >
+            <span class="spantext">正 常</span>
+          </el-button>
+          <el-button
+            class="warnunnormal popwarn"
+            type="warning"
+            round
+            style="border-radius: 2px"
+            @click="dialogQuxiao"
+          >
+            <span class="spantext">异 常</span>
+          </el-button>
         </div>
       </div>
     </el-dialog>
@@ -292,8 +383,12 @@ import {
   deleteAlertInfo,
   getPushSet,
   notifyState,
-  getAllTotal
+  getAllTotal,
+  fetchType
 } from '@/api/alarm'
+import {
+  searchCameraList, editCamera
+} from '@/api/camera'
 export default {
   components: { Pagination, CanvasDialog },
   filters: {
@@ -304,9 +399,12 @@ export default {
   },
   data() {
     return {
+      flag: false,
+      openname: '展开',
       alarmtext: '当日告警总计',
       renderTime,
       else: '其他',
+      tableLoading: null,
       temp: {
         camera: {},
         createTime: '',
@@ -337,7 +435,19 @@ export default {
         { name: '已处理', _id: 'settled' },
         { name: '未处理', _id: 'unsettled' }
       ],
+      algorithmList: {
+        searchkey: '',
+        typeValue: '人员'
+      },
+      algorithm: [
+      ],
+      algorithmNameList: {
+        searchkey: '',
+        typeValue: '移动侦测'
+      },
+      algorithmName: [
 
+      ],
       listLoading: false,
       filteredValue: [],
       tableData: [],
@@ -345,11 +455,13 @@ export default {
       total: 0, // 假的 最后是拿到后端的pageInfo的totalItems
       allTotal: 0,
       page: 1,
+      activeNames: [],
       limit: 10,
       userId: '',
       originCode: '',
       oldSize: 10,
       editVisable: false,
+      loading: false,
       editForm: {
         id: '',
         inCharge: '',
@@ -358,6 +470,7 @@ export default {
         // address: '',
         url: ''
       },
+      options: [],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
@@ -388,6 +501,7 @@ export default {
     this.defaultTab = this.tabsArr[0]
     this.currentTab = this.defaultTab
     this.getPushSetTime()
+    this.getType()
     // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
     // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
     // const h = this.formInline.typeValue
@@ -397,58 +511,76 @@ export default {
     // this.getList(s, e, h)
   },
   methods: {
-    searchAlarm() {
-      // console.log('ccccccccccccc', this.formInline.searchkey)
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
-      //  + ' ' + this.startTime + ':00'
-      let params
-      this.page = 1
-      this.limit = 10
-      if (isNaN(this.formInline.searchkey)) {
-        params = {
+    // fetchType
+    getType() {
+      fetchType().then(res => {
+        if (res.code === 0) {
+          res.body.data.forEach(item => {
+            this.algorithm.push({
+              name: item.value,
+              _id: item.key
+            })
+          })
+        }
+      })
+    },
+    collapseChange(v) {
+      if (v[0] === '1') {
+        this.openname = '收起'
+      } else {
+        this.openname = '展开'
+      }
+    },
+    getCameraList(keyword) {
+      if (keyword !== '') {
+        this.loading = true
+        const params = {
           cascade: true,
           page: {
-            index: this.page,
-            size: this.limit
+            index: 1,
+            size: 20
           },
           params: [
             {
-              field: 'camera.name',
+              field: 'name',
               operator: 'LIKE',
-              value: `%${this.formInline.searchkey}%`
+              value: `%${keyword === '所有摄像头' ? '' : keyword}%`
             },
             {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            }
-          ],
-          sorts: [
-            {
-              field: 'create_Time',
-              type: 'desc'
-            }
-          ]
-        }
-      } else {
-        params = {
-          cascade: true,
-          params: [
-            {
-              field: 'id',
+              field: 'inChargeId',
               operator: 'EQUALS',
-              value: this.formInline.searchkey
+              value: this.userId
             }
           ]
         }
+        searchCameraList(params).then(res => {
+          const data = res.body.data || []
+          this.options = data.map(item => {
+            return {
+              value: item.name,
+              label: item.name,
+              name: item.name
+            }
+          })
+          if (this.options.length > 0) {
+            this.options.unshift({
+              value: '所有摄像头',
+              name: '所有摄像头'
+            })
+          }
+          this.loading = false
+        })
+      } else {
+        this.options = []
       }
-      getAlertInfos(params).then(response => {
-        this.tableData = response.body.data
-        this.total = response.body.page.total
-        this.listLoading = false
-        // this.formInline.searchkey = ''
-      })
+    },
+    opendraw() {
+      this.flag = !this.flag
+      if (this.openname == '展开') {
+        this.openname = '收起'
+      } else if (this.openname == '收起') {
+        this.openname = '展开'
+      }
     },
     openBig(url) {
       window.open(url)
@@ -469,7 +601,7 @@ export default {
     },
     formatType(row, column, cellValue) {
       if (cellValue === 1) {
-        return '人员'
+        return '行人'
       } else if (cellValue === 2) {
         return '机动车'
       } else if (cellValue === 3) {
@@ -536,59 +668,57 @@ export default {
 
       return result
     },
-    // 重置搜索
-    // 重置
-    resetQuery() {
+    // 重置起止时间的搜索
+    onClear() {
+      (this.value1 = [
+        new Date(new Date().setDate(new Date().getDate() - 29)),
+        new Date(new Date().setDate(new Date().getDate()))
+      ]),
+      (this.startDate = moment(this.value1[0]).format('YYYY-MM-DD'))
+      this.endDate = moment(this.value1[1]).format('YYYY-MM-DD');
+      (this.value1 = ''),
+      // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
+      // this.defaultTab=this.endDate
+      // this.getList(s1, end1, h1)
+      (this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse())
+      this.defaultTab = this.tabsArr[0]
+      this.currentTab = this.defaultTab
+      this.getPushSetTime()
+
       this.formInline.searchkey = ''
+      this.algorithmNameList.typeValue = ''
+      this.algorithmList.typeValue = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + " " + this.startTime + ":00"
-      const e = this.currentTab + " " + this.endTime + ":00"
+      const s = this.currentTab + ' ' + this.startTime + ':00'
+      const e = this.currentTab + ' ' + this.endTime + ':00'
       this.getList(s, e, 'all')
-    },
-    // 重置起止时间的搜索
-    // onClear() {
-    //   (this.value1 = [
-    //     new Date(new Date().setDate(new Date().getDate() - 29)),
-    //     new Date(new Date().setDate(new Date().getDate()))
-    //   ]),
-    //   (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
-    //   this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-    //   (this.value1 = ""),
-    //   (this.page = 1),
-    //     // this.startTime = '02:00'
-    //     // this.endTime = '05:00'
-    //   (this.formInline.typeValue = "all");
-    //   // this.tabsDateArr = this.getDayAll(this.startDate, this.endDate).reverse()
-    //   // this.defaultTab=this.endDate
-    //   // this.getList(s1, end1, h1)
-    //   this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse();
-    //   this.defaultTab = this.tabsArr[0];
-    //   this.currentTab = this.defaultTab;
-    //   this.getPushSetTime();
-    //   // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-    //   // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
-    //   // const h = this.formInline.typeValue
-    //   // this.getList(s, e, h)
+      // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
+      // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+      // const h = this.formInline.typeValue
+      // this.getList(s, e, h)
 
-    //   // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-    //   // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-    //   // this.getTimeAllTotal(s1, e1, h)
-    // },
+      // const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
+      // const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+      // this.getTimeAllTotal(s1, e1, h)
+    },
     onSearch() {
       this.tabsArr = this.getDayAll(this.startDate, this.endDate).reverse()
-      // this.tabsArr = this.tabsDateArr
-      // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
-      // this.value1=[this.startDate,this.endDate]
       if (this.tabsArr.indexOf(this.currentTab) === -1) {
         this.defaultTab = this.tabsArr[0]
         this.currentTab = this.defaultTab
       }
       const s1 = this.currentTab + ' ' + this.startTime + ':00'
       const end1 = this.currentTab + ' ' + this.endTime + ':00'
-      const h1 = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
       this.oldSize = this.limit
-      this.getList(s1, end1, h1)
+      this.page = 1
+      this.getList(s1, end1, h)
       // 调用后续得到allTotal接口在created和onClear都要写
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
@@ -644,7 +774,12 @@ export default {
     pageChange(e) {
       const s = this.currentTab + ' ' + this.startTime + ':00'
       const end = this.currentTab + ' ' + this.endTime + ':00'
-      const h = this.formInline.typeValue
+      const h1 = this.algorithmList.typeValue
+      const h2 = this.algorithmNameList.typeValue
+      const h = {
+        type: h1,
+        taskId: h2
+      }
       this.oldSize = this.limit
       this.getList(s, end, h)
     },
@@ -662,6 +797,11 @@ export default {
         const s = this.currentTab + ' ' + this.startTime + ':00'
         const end = this.currentTab + ' ' + this.endTime + ':00'
         const h = this.formInline.typeValue
+        this.$notify({
+          title: '成功',
+          type: 'success',
+          message: '删除成功!'
+        })
         this.getList(s, end, h)
       })
     },
@@ -713,53 +853,57 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
-      // console.log('se', s , e)
-      let oper
-      if (h === 'settled') {
-        oper = 'NOT_NULL'
-      } else if (h === 'unsettled') {
-        oper = 'NULL'
-      }
-      const ss = {
-        field: 'handlerId',
-        operator: oper,
-        value: 'null'
-      }
-      const param =
-        h == 'all'
-          ? [
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            }
-          ]
-          : [
-            {
-              field: 'createTime',
-              operator: 'BETWEEN',
-              value: { start: s || '', end: e || '' }
-            },
-            {
-              field: 'username',
-              operator: 'NULL'
-            },
-            {
-              field: 'camera.inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
-            },
-            ss
-          ]
+      this.tableLoading = true
+      const { type } = h
+      // if (this.formInline.typeValue === 'all')
+      const param = this.formInline.typeValue !== 'all' ? [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        },
+        {
+          field: 'handlerId',
+          operator: this.formInline.typeValue === 'settled' ? 'NOT_NULL' : 'NULL',
+          value: 'null'
+        }
+      ] : [
+        {
+          field: 'camera.name',
+          operator: 'LIKE',
+          value: `%${this.formInline.searchkey === '所有摄像头' ? '' : this.formInline.searchkey}%`
+        },
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { start: s || '', end: e || '' }
+        },
+        {
+          field: 'camera.inChargeId',
+          operator: 'EQUALS',
+          value: this.userId
+        },
+        {
+          field: 'type',
+          operator: 'IN',
+          value: type
+        }
+      ]
       const params = {
         cascade: true,
         page: {
@@ -777,7 +921,46 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        this.listLoading = false
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 346) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+            const child = item.children
+            const childArr = Array.from(child)
+            childArr.forEach(dom => {
+              if (dom.className === 'el-image') {
+                dom.style.height =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+                dom.style.width =
+                  (((document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11) *
+                    16) /
+                    9 +
+                  'px'
+              } else if (dom.className === 'el-tag') {
+                dom.style.lineHeight =
+                  (document.getElementsByTagName('html')[0].clientHeight -
+                    346) /
+                    11 +
+                  'px'
+              }
+            })
+          })
+        }, 100)
+        this.tableLoading = false
+        if (this.formInline.searchkey === '所有摄像头') {
+          this.formInline.searchkey = ''
+        }
       })
     },
     handleSelectionChange(val) {
@@ -842,139 +1025,193 @@ export default {
 </script>
 
 <style lang='scss'>
-.el-input__inner {
-  text-indent: 0px;
-}
-.alaMesTable {
-  td {
-    padding: 2px 0 !important;
-  }
-}
+.alalist {
+  .el-input__inner {
+    text-indent: 0px;
+    font-size: 12px !important;
+    }
+    .title {
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      font-family: MicrosoftYaHei;
+      font-size: 22px;
+      color: #333333;
+      font-weight: 500;
+      border-bottom: 1px solid #ccc;
+      background: #fff;
+      padding: 0 20px;
+    }
+    .el-range-separator {
+      width: 30px !important;
+    }
+    .el-select-dropdown__item {
+      font-size: 12px !important;
+    }
+    .deal {
+      fill: #44bd32 !important;
+    }
+    .untreated {
+      fill: #ff9832 !important;
+    }
+    .buttonText {
+      color: #409eff;
+      text-decoration: underline;
+    }
+    .alaMesTable.el-table--medium {
+      td {
+        padding: 0px;
+        .el-image {
+          vertical-align: middle;
+        }
+      }
+      th {
+        padding: 0px;
+      }
+    }
 
-.title {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  font-family: MicrosoftYaHei;
-  font-size: 22px;
-  color: #333333;
-  font-weight: 500;
-  border-bottom: 1px solid #ccc;
-  background: #fff;
-  padding: 0 20px;
-}
-.el-date-editor {
-  // height: 32px !important;
-}
-.el-range-separator {
-  width: 30px !important;
-}
-.el-select-dropdown__item {
-  font-size: 12px !important;
-}
-.deal {
-  fill: #44bd32 !important;
-}
-.untreated {
-  fill: #ff9832 !important;
-}
-.v-modal {
-  z-index: 999 !important;
-}
-.buttonText {
-  color: #409eff;
-  text-decoration: underline;
-}
+    .sureItem {
+      height: 36px !important;
+    }
+    .pull-left.alarmmsgleft {
+      width: 80%;
+      .el-select {
+        width: 165px;
+      }
+      .el-date-editor {
+        width: 205px !important;
+        padding-right: 0px !important;
+      }
+      .el-date-editor--time {
+        width: 165px !important;
+      }
+    }
+     .pull-right.alarmmsgright {
+      position: absolute;
+      right: 50px;
+      top:65px;
+      .clearsearch {
+        height: 36px;
+        margin-left: 10px;
+        width: 56px !important;
+        border: 1px solid #ccc;
+        background: none;
+        border-radius: 3px;
+        outline: none;
+      }
+      .clearsearch:active {
+        background-color: rgb(243, 241, 241);
+      }
+    }
+    .searchsure {
+      position: absolute;
+      top: 1px;
+      height: 34px;
+      right: 22%;
+      // border-left: none;
+      border-radius: 4px;
+    }
+    // .el-input--mini .el-input__inner {
+    //   text-indent: 0px;
+    // }
+    .el-range-editor.el-input__inner {
+      padding: 5px 5px;
+    }
+    .mesdialog {
+      .el-dialog__header {
+        padding: 0 !important;
+      }
+      .el-dialog .el-dialog__body {
+        padding: 0 !important;
+        overflow: hidden;
+      }
+      .el-dialog__footer {
+        padding: 0 !important;
+      }
+      .dialog-footer {
+        padding: 10px 0 !important;
+      }
+    }
+    .popfooter {
+      padding-top: 4px;
+      padding-left: 4px;
+      display: flex;
+      justify-content: space-between;
+      .popfooteraddress {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 330px;
+      }
+      .popfootertime {
+        width: 80px;
+      }
+    }
+    .el-button--text {
+      color: #fa8334 !important;
+    }
+    .el-button--small {
+      font-size: 14px;
+    }
+    .el-select.el-select--medium {
+      width: 260px;
+    }
+    .el-input--mini .el-input__inner {
+      height: 36px;
+      line-height: 36px !important;
+    }
+    .el-select.el-select--medium {
+      margin-bottom: 10px;
+    }
+    .filter-container .filter-item {
+      vertical-align: initial;
+    }
 
-td {
-  .el-image {
-    vertical-align: middle;
-  }
+    .open {
+      margin-left: 5px;
+      color: #ff9832;
+      cursor: pointer;
+    }
+    .draw {
+      display: none;
+    }
+    .tdimage {
+      object-fit: contain !important;
+    }
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: all 0.8s ease 0.2s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active, 2.1.8 版本以下 */ {
+      opacity: 0;
+    }
+    .el-range-editor--mini.el-input__inner {
+      height: 36px;
+    }
+      .el-collapse {
+      border: none;
+    }
+    .el-collapse-item__header {
+      border: none;
+    }
+    .el-collapse-item__wrap {
+      border: none;
+    }
+
+    .el-range-editor--mini .el-range-separator {
+      line-height: 24px;
+      font-size: 14px;
+    }
+    .el-collapse-item__header {
+      .el-input--mini .el-input__icon {
+        line-height: 36px;
+      }
+      .el-collapse-item__arrow {
+          margin-bottom: 10px;
+        }
+    }
+    .el-range-editor--mini .el-range__icon {
+      line-height: 24px;
+    }
 }
-.sureItem {
-  height: 28px;
-}
-.pull-left.alarmmsgleft {
-  width: 75%;
-}
-.pull-right.alarmmsgright {
-  position: relative;
-  width: 25%;
-  .clearsearch {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    height: 34px;
-    width: 60px;
-    // margin-left: 16px;
-    border: 1px solid #ccc;
-    background: none;
-    border-radius: 3px;
-    outline: none;
-  }
-  .clearsearch:active {
-    background-color: rgb(243, 241, 241);
-  }
-}
-.searchsure {
-  position: absolute;
-  top: 1px;
-  height: 34px;
-  right: 22%;
-  // border-left: none;
-  border-radius: 4px;
-}
-// .el-input--mini .el-input__inner {
-//   text-indent: 0px;
-// }
-.el-range-editor.el-input__inner {
-  padding: 5px 5px;
-}
-.mesdialog {
-  .el-dialog__header {
-    padding: 0 !important;
-  }
-  .el-dialog .el-dialog__body {
-    padding: 0 !important;
-    overflow: hidden;
-  }
-  .el-dialog__footer {
-    padding: 0 !important;
-  }
-  .dialog-footer {
-    padding: 10px 0 !important;
-  }
-}
-.popfooter {
-  padding-top: 4px;
-  padding-left: 4px;
-  display: flex;
-  .popfooteraddress {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 330px;
-  }
-  .popfootertime {
-    width: 150px;
-  }
-}
-.el-button--text {
-  color: #fa8334 !important;
-}
-.el-button--small {
-  font-size: 14px;
-}
-.searchinp {
-  width: 75%;
-}
-.list {
-  height: 100%;
-}
-// .el-dialog__headerbtn {
-//   // display: none;
-//   position: relative;
-//   top: 4px;
-//   left: 85%;
-// }
 </style>

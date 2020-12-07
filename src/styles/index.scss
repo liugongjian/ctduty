@@ -138,7 +138,7 @@ code {
 }
 
 .pagination-container {
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .text-center {
@@ -318,15 +318,24 @@ code {
 }
 
 .v-modal {
-    z-index: 999 !important;
+    z-index: 99999999 !important;
 }
 
 .el-dialog__wrapper {
-    z-index: 1000 !important;
+    z-index: 100000000 !important;
 }
 
+.el-dialog {
+    z-index: 100000000 !important;
+}
+.el-message {
+    z-index: 100000001 !important;
+}
+.el-message-box__wrapper {
+    z-index: 100000000 !important;
+}
 .el-select-dropdown {
-    z-index: 99999 !important;
+    z-index: 9999999999 !important;
 }
 
 .el-dialog__body::-webkit-scrollbar {
@@ -359,10 +368,6 @@ code {
     }
 }
 
-.el-cascader__dropdown {
-    z-index: 9999999999999999999999999999999999 !important;
-}
-
 .el-row {
     height: 100% !important;
 }
@@ -393,13 +398,15 @@ html {
     fill: #95afc0 !important;
     // cursor: no-drop;
 }
-
+.el-notification {
+    z-index: 9999999999999999999999999999999999 !important;
+}
 .el-popover {
     z-index: 999999999999999999999999999999999 !important;
 }
 
-.el-message-box__wrapper {
-    z-index: 1000 !important;
+.el-tooltip__popper {
+    z-index: 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 !important;
 }
 
 .disable {
@@ -447,4 +454,50 @@ html {
 }
 .el-tabs__nav-wrap::after {
     height: 1px !important;
+}
+.el-input__inner {
+    font-size: 12px;
+    border-radius: 2px;
+}
+.el-button {
+    font-size: 12px;
+    border-radius: 2px;
+}
+.el-input__inner {
+    &::placeholder {
+        font-size: 12px;
+    }
+
+    &::-webkit-input-placeholder {
+        /* WebKit browsers 适配谷歌 */
+        font-size: 12px;
+    }
+
+    &:-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 适配火狐 */
+        font-size: 12px;
+    }
+
+    &::-moz-placeholder {
+        /* Mozilla Firefox 19+ 适配火狐 */
+        font-size: 12px;
+    }
+
+    &:-ms-input-placeholder {
+        /* Internet Explorer 10+  适配ie*/
+        font-size: 12px;
+    }
+}
+.el-pagination__sizes {
+    .el-input {
+        .el-input__inner {
+            height: 28px !important;
+            line-height: 28px !important;
+        }
+    }
+    .el-select__caret {
+        display:block;
+        height: 28px;
+        line-height: 28px;
+    }
 }

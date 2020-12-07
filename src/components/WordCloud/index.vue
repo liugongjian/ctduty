@@ -38,7 +38,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      colors: {}
     }
   },
   mounted() {
@@ -81,24 +82,17 @@ export default {
             // maskImage: maskImage,
             textStyle: {
               normal: {
-                color: 
-                function () {
-                  var colors = ['#4AA8FF', '#55DDCD', '#86DCA0', "#FCE172", "#F3A46B"];
-                  return(
-                    colors[parseInt(Math.random() * 6)]
-                  )
+                color:
+                (v) => {
+                  if (this.colors[v.name]) {
+                    return this.colors[v.name]
+                  } else {
+                    var colorarr = ['#4AA8FF', '#55DDCD', '#86DCA0', '#FCE172', '#F3A46B']
+                    var randomnum = Math.random()
+                    this.$set(this.colors, v.name, colorarr[parseInt(randomnum * 5)])
+                    return colorarr[parseInt(randomnum * 5)]
+                  }
                 }
-                // function() {
-                //   return (
-                //     'rgb(' +
-                //     Math.round(Math.random() * 255) +
-                //     ', ' +
-                //     Math.round(Math.random() * 255) +
-                //     ', ' +
-                //     Math.round(Math.random() * 255) +
-                //     ')'
-                //   )
-                // }
               }
             },
             // 位置相关设置

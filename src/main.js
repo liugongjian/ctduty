@@ -7,8 +7,6 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import '@/styles/index.scss' // global css
-
 import App from './App'
 import router from './router'
 import 'lib-flexible'
@@ -29,6 +27,7 @@ import * as filters from './filters' // global filters
 // 引入高德地图
 import VueAMap from 'vue-amap'
 import 'lib-flexible/flexible.js'
+import '@/styles/index.scss' // global css
 Vue.config.productionTip = false
 Vue.use(VueAMap)
 

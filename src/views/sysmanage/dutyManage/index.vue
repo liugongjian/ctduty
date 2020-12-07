@@ -4,7 +4,7 @@
     <div class="app-container" style="padding: 20px">
       <div class="filter-container clearfix">
         <div class="pull-left">
-          <el-button class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
+          <el-button style="height:36px;" class="filter-item" type="primary" @click="bulkimport">{{ '导入值班表' }}</el-button>
           <el-dialog
             :visible="bulkimportVisble"
             class="carDialog"
@@ -60,7 +60,9 @@
                 class="dlTem"
                 style="text-align:center;width:100%;height:30px;margin-top:20px;line-height:30px;"
               >
-                <a :href="`#`" @click="dlTem"><svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" /> 下载模板文件</a>
+                <a :href="`#`" @click="dlTem">
+                  <svg-icon style="margin-right:5px;width:30px;" icon-class="dltemplate" />下载模板文件
+                </a>
               </p>
             </div>
             <div v-if="isUpSuccess" slot="footer" class="dialog-footer">
@@ -70,6 +72,7 @@
         </div>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="importData"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -107,7 +110,7 @@ import { renderTime, downLoadByUrl } from '@/utils'
 import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
-import axios from 'axios'
+import { debounce } from '@/utils'
 import {
   fetchCarList,
   addCarData,
@@ -236,7 +239,8 @@ export default {
       },
       bulkimportVisble: false,
       value: '',
-      isUpSuccess: false
+      isUpSuccess: false,
+      tableLoading: null
     }
   },
   watch: {
@@ -251,7 +255,10 @@ export default {
   },
   methods: {
     dlTem() {
-      downLoadByUrl('http://36.41.71.26:8920/Schedule/Template', '值班管理导入模板')
+      downLoadByUrl(
+        'http://61.185.80.26:8620/Schedule/Template',
+        '值班管理导入模板'
+      )
       fetchDutyTemplate().then(res => {
         this.$message({
           message: '模板文件下载成功',
@@ -261,6 +268,7 @@ export default {
     },
     // 获取列表数据
     getList() {
+      this.tableLoading = true
       const params = {
         page: {
           index: this.page,
@@ -271,11 +279,25 @@ export default {
       fetchDutyList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
+                11 +
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 100)
         this.listLoading = false
+        this.tableLoading = false
       })
     },
     importConfirm() {
-      this.upSuccessData.forEach(item => {
+      const lastSuccessIndex = this.upSuccessData.length - 1
+      this.upSuccessData.forEach((item, index) => {
         const { police, leader, startTime, endTime, scheduleDate } = item
         const params = [
           {
@@ -287,6 +309,12 @@ export default {
           }
         ]
         addDuty(params).then(res => {
+          if (lastSuccessIndex === index) {
+            this.$message({
+              type: 'success',
+              message: '值班表导入成功!'
+            })
+          }
           this.getList()
           this.bulkimportVisble = false
         })
@@ -295,7 +323,7 @@ export default {
     batchUpSuccess(res) {
       if (+res.code === 50000) {
         this.$message({
-          message: '文件上传失败',
+          message: '文件上传失败!',
           type: 'error'
         })
         this.isUpSuccess = false
@@ -412,60 +440,63 @@ export default {
 }
 </script>
 
-<style  lang='scss' scoped>
-.dutyManage {
-  padding: 0px 20px;
-}
-.el-dialog__body {
-  margin: 0 auto;
-}
-.list {
-  overflow: auto !important;
-  min-height: calc(100vh - 90px) !important;
-}
+<style  lang='scss'>
 .app-main {
   padding-top: 50px;
 }
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-.carDialog {
-  margin: 0 auto;
-}
-.el-dialog__body {
-  width: 100%;
-}
-.carInput {
-  height: 36.8px !important;
-}
-.el-form-item__content {
-  display: flex;
-  .xuanze {
-    width: 20vw !important;
+.dutyManage {
+  .el-button {
+    border-radius: 2px;
+    font-size: 12px;
+  }
+  .el-dialog__body {
+    margin: 0 auto;
+  }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .carDialog {
+    margin: 0 auto;
+  }
+  .el-dialog__body {
+    width: 100%;
+  }
+  .carInput {
+    height: 36.8px !important;
+  }
+  .el-form-item__content {
+    display: flex;
+    .xuanze {
+      width: 20vw !important;
+    }
+  }
+  .upload-demo {
+    width: 360px;
+    margin: 0 auto;
+  }
+  td,th {
+   padding:0px;
   }
 }
-.upload-demo {
-  width: 360px;
-  margin: 0 auto;
-}
+
 </style>
