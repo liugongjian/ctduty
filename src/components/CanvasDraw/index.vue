@@ -295,7 +295,7 @@ export default {
     },
     cancleAlgorithm() {
       this.$emit('saveAlgorithm')
-      this.$emit('cancelAlgorithm')
+      // this.$emit('cancelAlgorithm')
     },
 
     checkMarkCorrectAndSave(algoName, areas) {

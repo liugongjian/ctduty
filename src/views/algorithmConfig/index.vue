@@ -31,7 +31,37 @@
               </div>
             </li>
           </ul> -->
-          <el-tree v-if="caremaTreeData.length>0" :style="styleObj" :data="caremaTreeData" @node-click="cameraTreeClick"></el-tree>
+          <!--default-expanded-keys-->
+          <el-tree
+            v-if="caremaTreeData.length>0"
+            :style="styleObj"
+            :data="caremaTreeData"
+            :default-expanded-keys="[expendId]"
+            :render-after-expand="false"
+            node-key="expendId"
+            icon-class="el-icon-arrow-down"
+            class="cameraTree"
+            @node-click="cameraTreeClick">
+            <div slot-scope="{ node, data }">
+              <div v-if="data.ifChild" :data-id="data.info.id" :data-parentname="data.parentName" @mouseenter="checkTreeName">
+                <span class="displayIB">
+                  <svg-icon icon-class="monitorIcon" class="svgBtn"/>
+                </span>
+                <el-tooltip :disabled="deviceShowTooltip" placement="top">
+                  <div slot="content">{{ node.label }}</div>
+                  <span class="seviceName displayIB" >
+                    {{ node.label }}
+                  </span>
+                </el-tooltip>
+                <span @click.stop="toMonitorDetail(data.info.id,node)">
+                  <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
+                </span>
+              </div>
+              <div v-else>
+                {{ node.label }}
+              </div>
+            </div>
+          </el-tree>
           <div v-else class="noResult">暂无摄像头</div>
           <!-- <pagination
                 v-show="total>0"
@@ -104,7 +134,9 @@ export default {
       },
       btnLoading: false,
       deviceShowTooltip: true,
-      caremaTreeData: []
+      caremaTreeData: [],
+      expendId: '',
+      chooseEle: ''
     }
   },
   watch: {
@@ -115,7 +147,8 @@ export default {
     }
   },
   mounted() {
-
+    const { cameraId } = this.$route.query
+    this.deviceId = cameraId
   },
   async created() {
     await this.getList()
@@ -217,48 +250,93 @@ export default {
           }
         ]
       }
-      getCameraList(query).then(res => {
-        if (res.code === 0) {
-          if (this.queryKeyword) {
-            const dataList = res.body.data
-            for (const val in dataList) {
-              this.nameList.push(dataList[val])
-            }
-          } else {
-            const dataList = res.body.data
-            for (const val in dataList) {
-              this.nameList.push(dataList[val])
-            }
-          }
+      // getCameraList(query).then(res => {
+      //   if (res.code === 0) {
+      //     if (this.queryKeyword) {
+      //       const dataList = res.body.data
+      //       for (const val in dataList) {
+      //         this.nameList.push(dataList[val])
+      //       }
+      //     } else {
+      //       const dataList = res.body.data
+      //       for (const val in dataList) {
+      //         this.nameList.push(dataList[val])
+      //       }
+      //     }
 
-          //   this.nameList.push(res.body.data)
-          this.total = res.body.page.total
-          this.listLoading = false
-          this.deviceId = this.deviceId ? this.deviceId : res.body.data[0].id
-          const getId = this.nameList[this.activeVideoResult] ? this.nameList[this.activeVideoResult].id : ''
-          getId && this.getAlgorithmList(getId)
-        }
-      })
+      //     //   this.nameList.push(res.body.data)
+      //     this.total = res.body.page.total
+      //     this.listLoading = false
+      //     this.deviceId = this.deviceId ? this.deviceId : res.body.data[0].id
+      //     const getId = this.nameList[this.activeVideoResult] ? this.nameList[this.activeVideoResult].id : ''
+      //     getId && this.getAlgorithmList(getId)
+      //   }
+      // })
       getCameraTree(query).then(res => {
         if (res.code === 0) {
-          this.caremaTreeData = res.body.data.map(item => {
+          const tempData = res.body.data.filter(item => item.data.length > 0)
+          const { cameraId } = this.$route.query
+          this.caremaTreeData = tempData.map(item => {
             return {
               label: item.name,
+              expendId: item.name,
               children: item.data.map(val => {
                 return {
                   label: val.name,
                   info: val,
-                  ifChild: true // 用来判断是否是子级
+                  ifChild: true, // 用来判断是否是子级
+                  parentName: item.name // 存储父级，用于默认展开
                 }
               })
             }
           })
+          this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
+          this.$nextTick(function() {
+            if (cameraId) {
+              const dataCamera = document.querySelector(`[data-id="${cameraId}"]`)
+              this.expendId = dataCamera.getAttribute('data-parentname')
+              dataCamera.parentNode.parentNode.parentNode.classList.add('is-current')
+            } else {
+              this.expendId = tempData.length > 0 ? tempData[0].name : ''
+              const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
+              ele.classList.add('is-current')
+            }
+          })
+
+          this.getAlgorithmList(this.deviceId)
         }
       })
     },
-    cameraTreeClick(data) {
+    cameraTreeClick(data, node, ele) {
       if (data.ifChild) {
-        console.log('clickItem', data)
+        this.chooseEle = ele.$el
+        this.deviceId = data.info.id
+        this.controlShow = false
+        this.canvasShowStatus = false
+        this.pageLoading = true
+        const eles = document.querySelectorAll('.el-tree-node__children .el-tree-node.is-focusable')
+        for (let i = 0; i < eles.length; i++) {
+          eles[i].classList.remove('is-current')
+        }
+        this.chooseEle.classList.add('is-current')
+        this.getAlgorithmList(this.deviceId)
+      } else {
+        ele.$el.classList.remove('is-current')
+        if (this.chooseEle) {
+          this.chooseEle.classList.add('is-current')
+        }
+      }
+    },
+    chooseThis(e) {
+      // console.log(e)
+    },
+    checkTreeName(e) {
+      // console.log(e, e.target.offsetWidth)
+      const eleWidth = e.target.offsetWidth
+      if (eleWidth > 200) {
+        this.deviceShowTooltip = false
+      } else {
+        this.deviceShowTooltip = true
       }
     },
     changeDeviceId(id, k) {
@@ -398,18 +476,41 @@ export default {
       }
       return newPoints
     },
-    async configTask(body) {
-      const res = await client.configInstance(body)
-      //   console.log('任务实例配置调用接口返回-----', res)
-      const { deviceId } = body
-      if (res.code === 0) {
-        this.btnLoading = false
+    configTask(body) {
+      client.configInstance(body).then(res => {
+        if (res.code === 0) {
+          const { deviceId } = body
+          this.btnLoading = false
+          this.$message({
+            message: '更新成功',
+            type: 'success'
+          })
+          this.getAlgorithmList(deviceId)
+        }
+      }).catch(err => {
+        // this.pageLoading = false
+        this.getAlgorithmList(this.deviceId)
         this.$message({
-          message: '更新成功',
-          type: 'success'
+          message: err.message,
+          type: 'warning'
         })
-        this.getAlgorithmList(deviceId)
-      }
+      })
+      // console.log('任务实例配置调用接口返回-----', res)
+      // const { deviceId } = body
+      // if (res.code === 0) {
+      //   this.btnLoading = false
+      //   this.$message({
+      //     message: '更新成功',
+      //     type: 'success'
+      //   })
+      //   this.getAlgorithmList(deviceId)
+      // } else {
+      //   this.pageLoading = false
+      //   this.$message({
+      //     message: res.message,
+      //     type: 'warning'
+      //   })
+      // }
     },
     setCanvasShow(payload) {
       this.canvasShowStatus = payload
@@ -443,11 +544,10 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    // height: 100%;
+    height: 100%;
     .algorithmConfig{
         background: #fff;
         // height: 100%;
-        // min-height: 100%;
       /deep/.el-tree{
         overflow-y: auto;
         &::-webkit-scrollbar {
@@ -469,6 +569,7 @@ export default {
             display: none;
         }
     }
+
     .tabCon{
         padding: 0 22px;
         min-width: 900px;
@@ -622,7 +723,8 @@ export default {
         &::-webkit-scrollbar {
             display: none;
         }
-        li{
+
+        li, /deep/.el-tree-node__content{
             margin: 5px 0;
             cursor: pointer;
             font-size: 13px;
@@ -651,11 +753,9 @@ export default {
             }
             .displayIB{
               display: inline-block;
-
               vertical-align: middle;
             }
             .seviceName{
-
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -672,6 +772,55 @@ export default {
                 }
             }
         }
+
+    }
+    .cameraTree{
+      /deep/.el-tree-node__content{
+        margin: 5px 0;
+        cursor: pointer;
+        font-size: 13px;
+        position: relative;
+       &:hover{
+          background: #f0f8ff;
+          .detailSvg{
+            display: inline;
+          }
+        }
+        div{
+            padding: 5px 7px;
+            // display: inline-block;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+        }
+        .detailSvg{
+          display: none;
+          position: absolute;
+          right: 12px;
+          &:hover{
+            font-size: 14px;
+            color: #FF9832;
+          }
+        }
+        .displayIB{
+          display: inline-block;
+          vertical-align: middle;
+        }
+        .seviceName{
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 180px;
+        }
+      }
+      /deep/.el-tree-node__children /deep/.is-current /deep/.el-tree-node__content{
+        background: #FF9832;
+        border-radius: 5px;
+        color: #FFFFFF;
+        .svgBtn{
+          fill: #fff;
+        }
+      }
     }
     .totalNum{
         color: #666666;
@@ -694,8 +843,8 @@ export default {
     .algorithmConfigList{
         // margin-left: 2.083335%;
         // padding-left: 2.083335%;
-        padding: 0 20px;
-        margin: 10px 0 10px;
+        padding: 24px 20px 14px;
+        margin: 24px 0 18px;
         .algorithmBox{
             padding-bottom: 20px;
         }

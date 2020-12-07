@@ -423,19 +423,31 @@ export default {
       this.$refs.addFormRef.validate(valid => {
         if (!valid) return;
         const query = [{ ...this.addUserForm }];
-        postAddUser(query).then(response => {
-          if (response.code !== 0) {
-            return this.$message.error("添加用户失败，请联系系统管理员");
-          }
-          this.$notify({
-            title: "成功",
-            message: "添加成功",
-            type: "success",
-            duration: 2000
+        postAddUser(query)
+          .then(response => {
+            if (response.code !== 0) {
+              /*  this.$message({
+              type: 'warning',
+              message: '添加用户失败!请联系系统管理员'
+            }) */
+              return;
+            }
+            this.$notify({
+              title: "成功",
+              message: "添加成功",
+              type: "success",
+              duration: 2000
+            });
+            this.addUserDialogVisible = false;
+            this.getUserList();
+          })
+          .catch(err => {
+            this.$message({
+              type: "warning",
+              message: "添加用户失败!请联系系统管理员"
+            });
+            return err;
           });
-          this.addUserDialogVisible = false;
-          this.getUserList();
-        });
       });
     },
     addDialogClosed() {

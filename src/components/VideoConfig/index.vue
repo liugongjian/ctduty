@@ -264,7 +264,7 @@ export default {
   }
   .configName{
     width: 100px;
-    margin: 0 20px 0 10px;
+    // margin: 0 20px 0 10px;
     font-weight: bold;
   }
   .configDesc{
@@ -282,6 +282,11 @@ export default {
     .hasChange{
       border: 1px solid #FF9832;
       color: #FF9832;
+    }
+  }
+  /deep/.el-checkbox{
+    &:last-of-type{
+      margin:0 20px 0 10px
     }
   }
 }

@@ -4,7 +4,7 @@
       key="photo"
       :visible.sync="bigPhotoVisible"
       title="抓拍照片"
-      width="300px"
+      width="800px"
       style="text-align:center;"
     >
       <el-image :src="curPhoto" class="photoList-image" style="max-width:100%;" />
@@ -234,7 +234,7 @@
             </div>
           </div>
         </div>
-        <div class="photoBox">
+        <div v-loading="photosLoading" class="photoBox">
           <div class="showPhoto">
             <span>今日实时抓拍</span>
             <el-select
@@ -254,8 +254,8 @@
             </el-select>
           </div>
           <div
-            v-loading="photosLoading"
-            v-if="photoCardList && photoCardList.length > 0"
+
+            v-if="photoCardList && photoCardList.length > 0 || photosLoading"
             class="photoContainer"
           >
             <div v-for="(item) in photoCardList" :key="item.id" class="photoList">
@@ -265,7 +265,7 @@
                   :src="item.imageCut"
                   style="width: 100%; height:120px;"
                   class="photoList-image"
-                  @click="bigPhotoVisible = true; curPhoto = item.imageCut"
+                  @click="bigPhotoVisible = true; curPhoto = item.imageCompress"
                 />
                 <div style="padding: 14px;">
                   <span>{{ getTaskById(item.taskId) }}</span>
@@ -285,6 +285,7 @@
             :total="total"
             :page.sync="page"
             :limit.sync="limit"
+            :page-sizes="[12,24,36,48]"
             layout="sizes, prev, pager, next"
             small
             @pagination="pageChange()"
@@ -343,7 +344,7 @@ export default {
       videoLoading: false,
       total: 10,
       page: 0,
-      limit: 10,
+      limit: 24,
       showVideoSetting: false,
       videoOptions: {
         autoplay: true,
@@ -599,7 +600,8 @@ export default {
       this.id = null
     },
     gotoAiConfig() {
-      this.$router.push('/algorithmconfig')
+      const { cameraId } = this.$route.query
+      this.$router.push(`/algorithmconfig?cameraId=${cameraId}`)
     },
     sureThis() {
       this.showVideoSetting = true
@@ -746,7 +748,9 @@ export default {
           return
         }
         this.tableData = res.body.data
-        this.tableColumn = res.body.data[0] ? res.body.data[0].taskCount : []
+        this.tableColumn = res.body.data[0]
+          ? res.body.data[0].taskCount.sort((a, b) => (b.applied - a.applied) || (b.count - a.count))
+          : []
         this.tableLoading = false
         // this.total = res.body.page.total
       // eslint-disable-next-line handle-callback-err
@@ -820,7 +824,7 @@ export default {
   }
 }
 .videomonitorWrap {
-   min-height:540px;
+   min-height:590px;
   .el-dialog{
     .el-dialog__header{
       text-align: left;
@@ -858,7 +862,7 @@ export default {
       .monitorBox {
         // height: 330px;
         height: 50%;
-        // min-height: 200px;
+        min-height: 235px;
         width: 100%;
         flex-grow: 1;
         flex-shrink: 1;
@@ -1030,7 +1034,7 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1431px) and (max-width: 1600px) {
+        @media screen and (min-width: 1431px)  {
           .photoList {
             // display: inline-block;
             width: 23%;
@@ -1039,33 +1043,61 @@ export default {
             margin-right: 2%;
           }
         }
-        @media screen and (min-width: 1601px) {
-          .photoList {
-            // display: inline-block;
-            width: 18%;
-            height: 180px;
-            margin-bottom: 20px;
-            margin-right: 2%;
-          }
-        }
+        // @media screen and (min-width: 1601px) {
+        //   .photoList {
+        //     // display: inline-block;
+        //     width: 18%;
+        //     height: 180px;
+        //     margin-bottom: 20px;
+        //     margin-right: 2%;
+        //   }
+        // }
           .photoContainer-noData{
-            min-height:90px;
+            // min-height:120px;
             &-text{
-              height:90px;
+              // height:120px;
               overflow:hidden;
-              &-icon{
-                 font-size: 48px;
-              }
+              // &-icon{
+              //    font-size: 80px;
+              // }
               &-content{
-                font-size: 16px;
+                // font-size: 18px;
                 padding-top: 10px;
               }
               width:100%;
               position:absolute;
-              top:calc(50% - 45px);
+              top:calc(50% - 60px);
               color: #b2b2b2;
               text-align: center;
               vertical-align: middle;
+            }
+            @media screen and (min-width: 1501px) {
+                min-height:180px;
+                &-text{
+                   top:calc(50% - 90px);
+                   height:180px;
+                  &-icon{
+                    font-size: 100px;
+                  }
+                  &-content{
+                    font-size: 22px;
+                    padding-top: 10px;
+                  }
+                }
+            }
+             @media screen and (max-width: 1500px) {
+                min-height:110px;
+                &-text{
+                   top:calc(50% - 55px);
+                    height:110px;
+                  &-icon{
+                    font-size: 60px;
+                  }
+                  &-content{
+                    font-size: 16px;
+                    padding-top: 10px;
+                  }
+                }
             }
           }
         }
