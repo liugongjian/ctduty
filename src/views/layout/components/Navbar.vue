@@ -396,7 +396,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .navToggle {
   padding-left: 85px !important;
   transition: all 0.18s linear;
@@ -406,6 +406,14 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .userManage {
+    padding: 0px;
+  }
+  .el-breadcrumb__item {
+    i {
+      padding: 0px !important;
+    }
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px !important;
@@ -498,30 +506,30 @@ export default {
       font-weight: 700;
     }
   }
-}
-label {
-  width: 100px;
-}
-.notice {
-  position: relative;
-  color: #000;
-  .noRcount {
-    display: inline-block;
-    width: 20px;
-    height: 15px;
-    font-size: 12px;
-    line-height: 15px;
-    text-align: center;
-    color: #fff;
-    position: absolute;
-    border-radius: 4px 5px 5px 0;
-    background-color: red;
-    top: 5px;
-    right: -20px;
+  label {
+    width: 100px;
   }
-}
-.noticeDrop {
-  border: none !important;
+  .notice {
+    position: relative;
+    color: #000;
+    .noRcount {
+      display: inline-block;
+      width: 20px;
+      height: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+      color: #fff;
+      position: absolute;
+      border-radius: 4px 5px 5px 0;
+      background-color: red;
+      top: 5px;
+      right: -20px;
+    }
+  }
+  .noticeDrop {
+    border: none !important;
+  }
 }
 .mark {
   position: fixed;
