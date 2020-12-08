@@ -433,12 +433,12 @@ export default {
                   start: moment(Date.now() - 5 * 1000).format('YYYY-MM-DD HH:mm:ss'),
                   end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
-              },
-              {
-                // field: 'camera.inChargeId',
-                operator: 'EQUALS',
-                value: this.userId
               }
+              // {
+              //   field: 'camera.inChargeId',
+              //   operator: 'EQUALS',
+              //   value: this.userId
+              // }
             ],
             sorts: [
               {

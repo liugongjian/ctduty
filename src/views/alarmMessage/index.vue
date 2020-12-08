@@ -545,12 +545,12 @@ export default {
               field: 'name',
               operator: 'LIKE',
               value: `%${keyword === '所有摄像头' ? '' : keyword}%`
-            },
-            {
-              field: 'inChargeId',
-              operator: 'EQUALS',
-              value: this.userId
             }
+            // {
+            //   field: 'inChargeId',
+            //   operator: 'EQUALS',
+            //   value: this.userId
+            // }
           ]
         }
         searchCameraList(params).then(res => {
