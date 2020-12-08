@@ -592,7 +592,7 @@ export default {
           size: 100000
         },
         params: {
-          inChargeId: this.userId
+          // inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
