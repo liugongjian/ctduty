@@ -312,7 +312,7 @@
             style="width:480px;height:270px;position:relative;cursor:zoom-in;"
             @click="()=>{openBig(temp.image)}"
           >
-            <el-image :src="temp.imageCompress" width="480" height="270" style="z-index:1;" />
+            <el-image :src="temp.imageCompress" style="width:480px;height:270px;z-index:1;" />
             <!--  <CanvasDialog
               v-if="dialogVisable"
               :img-url="temp.image"
