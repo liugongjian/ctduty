@@ -467,12 +467,12 @@ export default {
                     ),
                     end: moment().format('YYYY-MM-DD HH:mm:ss')
                     }
-                  },
-                  {
-                    field: 'camera.inChargeId',
-                    operator: 'EQUALS',
-                    value: this.userId
                   }
+                  // {
+                  //   field: 'camera.inChargeId',
+                  //   operator: 'EQUALS',
+                  //   value: this.userId
+                  // }
                 ],
                 sorts: [
                   {
@@ -693,12 +693,12 @@ export default {
             ),
             end: moment().format('YYYY-MM-DD HH:mm:ss')
             }
-          },
-          {
-            field: 'camera.inChargeId',
-            operator: 'EQUALS',
-            value: this.userId
           }
+          // {
+          //   field: 'camera.inChargeId',
+          //   operator: 'EQUALS',
+          //   value: this.userId
+          // }
         ],
         sorts: [
           {
@@ -815,12 +815,12 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
-              },
-              {
-                field: 'camera.inChargeId',
-                operator: 'EQUALS',
-                value: this.userId
               }
+              // {
+              //   field: 'camera.inChargeId',
+              //   operator: 'EQUALS',
+              //   value: this.userId
+              // }
             ],
             sorts: [
               {
@@ -927,12 +927,12 @@ export default {
                 ),
                 end: moment().format('YYYY-MM-DD HH:mm:ss')
                 }
-              },
-              {
-                field: 'camera.inChargeId',
-                operator: 'EQUALS',
-                value: this.userId
               }
+              // {
+              //   field: 'camera.inChargeId',
+              //   operator: 'EQUALS',
+              //   value: this.userId
+              // }
             ],
             sorts: [
               {
