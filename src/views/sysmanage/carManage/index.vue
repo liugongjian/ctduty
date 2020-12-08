@@ -113,7 +113,7 @@
               </el-select>
               <el-input
                 v-model="addCarForm.carWord"
-                style="width:130px;top:-3.5px;"
+                style="width:130px;"
                 placeholder="请输入车牌号"
               ></el-input>
             </el-form-item>
@@ -764,6 +764,9 @@ export default {
 }
 .sureItem {
   height: 36px;
+}
+.el-form-item__content>.el-select{
+  margin-bottom: 0px !important;
 }
 </style>
 

@@ -299,7 +299,7 @@ import {
   postAddNotices,
   getNoticeInfo,
   updateANotice,
-  deleteNotices
+  deleteNotices,
 } from "@/api/notice";
 import { fetchUserList } from "@/api/users";
 import { notReadNotices } from "@/api/notice";
@@ -460,8 +460,17 @@ export default {
       }
 
       if (this.username.trim() !== "") {
-        query.params["name"] = this.username.trim();
+        await fetchUserList({cascade:true,page:{index:1,size:10},params:{name:this.username.trim()}}).then(
+          response=>{
+            if (response.code !== 0) return this.$message.error("获取用户失败");
+            if( response.body.data.length === 0 ) return this.$message.error("该用户不存在");
+            query.params["creatorId"] = response.body.data[0].id;
+            // console.log(query.params["creatorId"])
+          }
+      )
       }
+
+      console.log(query,"query");
       fetchNoticeList(query).then(response => {
         if (response.code !== 0) return this.$message.error("获取通知信息失败");
         this.noticeList = response.body.data;
@@ -469,6 +478,7 @@ export default {
           item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
         });
         this.total = response.body.page.total;
+        // console.log(this.noticeList,"this.noticeList");
         setTimeout(() => {
           var cellArr = document.getElementsByClassName("cell");
           var arr = Array.from(cellArr);
