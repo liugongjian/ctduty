@@ -40,11 +40,19 @@
           </div>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item
-            v-for="item in notReadNotice"
-            :key="item.id"
-            :command="item"
-          >{{ '公告: '+ item.title }}</el-dropdown-item>
+          <el-dropdown-item v-for="item in notReadNotice" :key="item.id" :command="item">
+            <el-tooltip
+              v-if="item.title.length>8"
+              :content="item.title"
+              :disabled="item.title.length<8"
+              class="item"
+              effect="dark"
+              placement="top"
+            >
+              <span>{{ '公告: '+ item.title.slice(0,7)+ '...' }}</span>
+            </el-tooltip>
+            <span v-else>{{ '公告: ' + item.title }}</span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="avatar-container right-menu-item" placement="bottom" trigger="click">
@@ -58,7 +66,15 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dialog :visible="dialogVisable" :title="'公告'" width="520px" @close="closeDialog">
+      <el-dialog
+        v-if="dialogVisable"
+        :visible="dialogVisable"
+        title="公告"
+        width="520px"
+        style="z-index:100000000"
+        class="el-dialog__wrapper"
+        @close="closeDialog"
+      >
         <el-form :model="noticeForm" label-width="85px" label-position="right">
           <el-form-item label="标题" prop="title">
             <div>{{ noticeForm.title }}</div>
@@ -84,19 +100,30 @@
           </el-form-item>
           <el-form-item label="内容">
             <span
-              style="margin-left:10px;margin-top:10px;border-radius: 5px;display:block;border:1px dashed #ccc;width: 300px;height:150px;"
+              style="margin-left:10px;min-height:100px;margin-top:8px;padding:0 10px;border-radius: 4px;display:block;border:1px dashed #ccc;width: 300px;"
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
           <el-form-item label="签名档">
-            <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
+            <el-select v-model="noticeForm.signatureId" style="width:310px;">
+              <el-option
+                v-for="item in departmentInfo"
+                :value="item.id"
+                :label="item.name"
+                :key="item.id"
+              ></el-option>
+            </el-select>
           </el-form-item>
+          <!-- <el-form-item label="签名档">
+            <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
+          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogConfirm()">确 定</el-button>
         </div>
       </el-dialog>
     </div>
+    <div v-if="isShowMark" class="mark"></div>
   </div>
 </template>
 
@@ -114,6 +141,8 @@ import ThemePicker from '@/components/ThemePicker'
 import minLogo from '@/assets/images/logo-min.png'
 import { fetchUser } from '@/api/user'
 import { logout } from '@/api/login'
+import { getDepartments } from '@/api/users'
+import '@/styles/index.scss' // global css
 import { notReadNotices, upReadNotices } from '@/api/notice'
 
 export default {
@@ -146,20 +175,8 @@ export default {
       username: '',
       notReadNotice: [],
       notReadNoticeTotal: '',
-      departmentInfo: [
-        {
-          departmentId: 3275699862611970,
-          department: '华阴公安局'
-        },
-        {
-          departmentId: 3275699862611971,
-          department: '孟塬派出所'
-        },
-        {
-          departmentId: 3275699862611972,
-          department: '华山镇派出所'
-        }
-      ],
+      isShowMark: false,
+      departmentInfo: [],
       level: Cookies.get('level')
     }
   },
@@ -180,6 +197,7 @@ export default {
     noticeArr(v) {
       this.notReadNotice = v
     },
+
     isFullscreen(v) {
       if (v) {
         document
@@ -188,13 +206,11 @@ export default {
         document
           .getElementsByClassName('fullscreen')[0]
           .childNodes[2].classList.add('texthighlight')
-        // console.log(
-        //   'sssssssssssssss',
-        //   document.getElementsByClassName('screen')
-        // )
+        console.log(
+          'sssssssssssssss',
+          document.getElementsByClassName('screen')
+        )
         document.getElementsByClassName('screen')[0].innerText = '退出'
-        document.getElementsByClassName('bottom-left')[0].style.height = '50%'
-        
       } else {
         document
           .getElementsByClassName('fullscreen')[0]
@@ -203,7 +219,6 @@ export default {
           .getElementsByClassName('fullscreen')[0]
           .childNodes[2].classList.remove('texthighlight')
         document.getElementsByClassName('screen')[0].innerText = '全屏'
-        document.getElementsByClassName('bottom-left')[0].style.height = '50%'
       }
     },
     notReadNoticeTotal(v, oldV) {
@@ -219,6 +234,16 @@ export default {
         window.clearInterval(this.timer)
       }
       this.closeDialog()
+    },
+    dialogVisable(v) {
+      if (v) {
+        this.isShowMark = true
+        setTimeout(() => {
+          document.getElementsByClassName('v-modal')[0].style.display = 'none'
+        }, 0)
+      } else {
+        this.isShowMark = false
+      }
     }
   },
   beforeDestroy() {
@@ -227,6 +252,7 @@ export default {
     }
   },
   created() {
+    this.getDepartmentList()
     setTimeout(() => {
       this.getNewNotice()
     }, 2000)
@@ -269,6 +295,27 @@ export default {
           this.notReadNotice = []
         }
       })
+    },
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res
+          if (code !== 0) {
+            this.$message.error(message || '获取部门列表失败')
+            return
+          } else {
+            this.departmentInfo = data
+            this.departmentInfoLoading = false
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false
+          this.$message.error(err.message || '获取部门列表失败')
+        })
     },
     closeDialog() {
       this.dialogVisable = false
@@ -370,7 +417,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .navToggle {
   padding-left: 85px !important;
   transition: all 0.18s linear;
@@ -380,6 +427,14 @@ export default {
   line-height: 50px;
   border-radius: 0px !important;
   border-bottom: 1px solid #eee;
+  .userManage {
+    padding: 0px;
+  }
+  .el-breadcrumb__item {
+    i {
+      padding: 0px !important;
+    }
+  }
   .hamburger-container {
     line-height: 58px;
     height: 50px !important;
@@ -414,8 +469,7 @@ export default {
       vertical-align: 15px;
     }
     .avatar-container {
-      // position: absolute;
-      // right: 0px;
+      cursor: pointer;
       margin-top: 12px;
       .avatar-wrapper {
         margin-right: 20px;
@@ -473,29 +527,39 @@ export default {
       font-weight: 700;
     }
   }
-}
-label {
-  width: 100px;
-}
-.notice {
-  position: relative;
-  color: #000;
-  .noRcount {
-    display: inline-block;
-    width: 20px;
-    height: 15px;
-    font-size: 12px;
-    line-height: 15px;
-    text-align: center;
-    color: #fff;
-    position: absolute;
-    border-radius: 5px 5px 5px 0;
-    background-color: red;
-    top: 5px;
-    right: -20px;
+  label {
+    width: 100px;
+  }
+  .notice {
+    position: relative;
+    color: #000;
+    .noRcount {
+      display: inline-block;
+      width: 20px;
+      height: 15px;
+      font-size: 12px;
+      line-height: 15px;
+      text-align: center;
+      color: #fff;
+      position: absolute;
+      border-radius: 4px 5px 5px 0;
+      background-color: red;
+      top: 5px;
+      right: -20px;
+    }
+  }
+  .noticeDrop {
+    border: none !important;
   }
 }
-.noticeDrop {
-  border: none !important;
+.mark {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  background: #000;
+  z-index: 99999999 !important;
 }
 </style>

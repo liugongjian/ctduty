@@ -137,7 +137,7 @@ export default {
   line-height: 160px;
   margin: 0 auto;
   font-size: 24px;
-  border-radius: 5px;
+  border-radius: 4px;
   text-align: center;
   color: #bbb;
   position: relative;

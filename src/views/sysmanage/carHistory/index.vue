@@ -67,7 +67,7 @@
             }
           }"
           type="daterange"
-          range-separator="～"
+          range-separator="~"
           start-placeholder="开始日期"
           end-placeholder="结束日期">
         </el-date-picker>
@@ -80,7 +80,7 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="开始时间">
         </el-time-picker>
       </span>
@@ -92,13 +92,20 @@
             selectableRange: '00:00:00 - 23:59:59'
           }"
           :clearable="false"
-          style="width:130px;"
+          style="width:110px;"
           placeholder="结束时间">
         </el-time-picker>
       </span>
       <span style="float:right;">
-        <el-button type="primary" @click="onSearch">搜索</el-button>
-        <el-button type="" @click="onClear">重置</el-button>
+        <el-button
+          v-waves
+          class="filter-item sureItem"
+          size="mini"
+          type="warning"
+          style="margin-bottom: 10px; margin-left: 10px"
+          @click="onSearch"
+        >{{ '搜索' }}</el-button>
+        <el-button class="searchbtn filter-item sureItem" size="mini" @click="onClear">重置</el-button>
       </span>
     </div>
     <el-tabs v-model="defaultTab" type="border-card" class="tab-wrapper" @tab-click="tabChangeQuery">
@@ -117,24 +124,28 @@
                   <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
                   <el-tag
                     :type="item.label === '1' ? 'success' : item.label === '2' ? 'danger' : ''"
-                    style="margin-left:-8px;"
                     size="mini"
                   >{{ item.label? listType[item.label] : '' }}</el-tag>
                 </span>
                 <div class="bottom clearfix">
-                  <el-tooltip
-                    :content="item.camera.address"
-                    placement="top-start"
+                  <div
+                    class="location"
+                    style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                   >
-                    <div class="location">
-                      <i class="el-icon-map-location" />
-                      <span class="locationtext">{{ item.camera && item.camera.address || '未知' }}</span>
-                    </div>
-                  </el-tooltip>
+                    <i class="el-icon-map-location" />
+                    <el-tooltip
+                      :content="item.camera.address"
+                      class="item"
+                      effect="dark"
+                      placement="top-start"
+                    >
+                      <span>{{ item.camera && item.camera.address || '未知' }}</span>
+                    </el-tooltip>
+                  </div>
                   <div class="location">
                     <i class="el-icon-time" />
                     <time class="time">{{ getDateTimeStr(item.createTime) }}</time>
-                    <el-button type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
+                    <el-button :disabled="!item.license" type="text" class="button" title="导入车牌库" @click="() => onImportCar(item.license, item.plateType, item.label? listType[item.label] : '')">
                       <svg-icon icon-class="import"></svg-icon>
                       <!-- <i class="el-icon-upload" /> -->
                     </el-button>
@@ -240,7 +251,8 @@ export default {
           value: '其他',
           label: '其他'
         }
-      ]
+      ],
+      userId: Cookies.get('userId')
     }
   },
   watch: {
@@ -350,16 +362,22 @@ export default {
     },
     getList() {
       this.listLoading = true
-      const param = [{
-        field: 'createTime',
-        operator: 'BETWEEN',
-        value: { 'start': `${this.currentTab} ${moment(this.startTime).format(timeFormate)}` || '', 'end': `${this.currentTab} ${moment(this.endTime).format(timeFormate)}` || '' }
-      },
-      {
-        field: 'type',
-        operator: 'EQUALS',
-        value: 2
-      }
+      const param = [
+        {
+          field: 'createTime',
+          operator: 'BETWEEN',
+          value: { 'start': `${this.currentTab} ${moment(this.startTime).format(timeFormate)}` || '', 'end': `${this.currentTab} ${moment(this.endTime).format(timeFormate)}` || '' }
+        },
+        {
+          field: 'type',
+          operator: 'EQUALS',
+          value: 2
+        }
+        // {
+        //   field: 'camera.inChargeId',
+        //   operator: 'EQUALS',
+        //   value: this.userId
+        // }
       ]
       const params = {
         cascade: true,
@@ -388,6 +406,9 @@ export default {
 
 <style lang='scss'>
 .carHistory {
+  .el-button--text {
+    // color: #fa8334 !important;
+  }
   .filter-wrapper{
     margin:20px;
     &>span{
@@ -395,7 +416,7 @@ export default {
         .el-date-editor {
             height: 36px !important;
         }
-        font-size: 14px;
+        font-size: 12px;
         padding-right: 10px;
     }
   }
@@ -441,7 +462,7 @@ export default {
         .card-desp{
             padding:10px;
             &-title{
-                font-size:14px;
+                font-size:12px;
                 &>span{
                     display:inline-block;
                 }
@@ -452,7 +473,7 @@ export default {
                 padding: 0;
             }
             .bottom {
-                margin-top: 13px;
+                margin-top: 10px;
                 line-height: 20px;
                 font-size:13px;
                 color:#999;
@@ -472,8 +493,31 @@ export default {
   .location {
     overflow: hidden;white-space: nowrap;text-overflow: ellipsis;
   }
-//   overflow: auto !important;
-//   min-height: calc(100vh - 90px) !important;
+  .el-input--suffix .el-input__inner {
+    padding-right: 0px;
+  }
+  .el-date-editor--daterange.el-input__inner {
+    width: 300px;
+  }
+  .el-date-editor .el-range-separator {
+    width: 6%;
+  }
+}
+.el-range-editor--mini .el-range-separator {
+  line-height: 28px;
+  font-size: 14px;
+}
+.el-range-editor--mini .el-range__icon {
+  line-height: 28px;
+}
+.el-range-editor--medium .el-range-input {
+  font-size: 12px;
+}
+.el-input--medium {
+  font-size: 12px;
+}
+.sureItem {
+  height: 36px;
 }
 </style>
 

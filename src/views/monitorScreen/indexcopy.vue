@@ -1,5 +1,5 @@
 <template>
-  <div class="monitorScreen-wrap">
+  <div v-loading="pageLoading" class="monitorScreen-wrap" element-loading-text="拼命加载中">
     <div class="monitorScreen">
       <template v-for="(item,index) in deviceList">
         <div v-if="index < 6" :key="`${item.id}_${index}`" class="screen">
@@ -20,7 +20,7 @@
                 v-else-if="item.flvSrc"
                 :video-ref="item.cameraId"
                 :key="item.cameraId"
-              :flv="item.flvSrc"/>-->
+                :flv="item.flvSrc"/> -->
               <div
                 v-else
                 style="width:100%;height:100%;background-color:#D9D9D9;text-align:center;position:relative;"
@@ -35,7 +35,7 @@
             <div class="screen-head">
               <div class="head-label">
                 <!-- <i class="el-icon-location-information"></i> -->
-                <span :title="item.name">{{ item.name }}</span>
+                <span :title="item.address">{{ item.address }}</span>
               </div>
               <div class="head-btn">
                 <div class="btn" @click="updateMonitorDialog(item)">
@@ -53,11 +53,7 @@
         </div>
       </template>
       <div v-if="deviceList.length < 6 && !pageLoading || !deviceList.length" class="screen">
-        <div
-          :style="{height: `${parseInt(heightByAuto,10)+36}px`}"
-          class="screen-add"
-          @click="addMonitorDialog"
-        >
+        <div :style="{height: `${parseInt(heightByAuto,10)+36}px`}" class="screen-add" @click="addMonitorDialog">
           <i class="el-icon-plus"></i> 添加监控摄像头
         </div>
       </div>
@@ -69,23 +65,22 @@
       @closed="onClose"
     >
       <el-form ref="ruleForm" :model="form" :rules="rules">
-        <el-form-item label="摄像头名称" prop="changeName" label-width="100px">
+        <el-form-item label="摄像头地址" prop="cameraId" label-width="100px">
           <el-select
-            v-model="form.changeName"
+            v-model="form.cameraId"
             :remote-method="getCameraList"
             :loading="loading"
             filterable
             remote
             placeholder="请选择"
-            @change="selChange"
           >
             <el-option
               v-for="item in options"
               :key="item.value"
-              :label="item.name"
-              :value="item.name"
-            ></el-option>
-          </el-select>
+              :label="item.label"
+              :value="item.value"
+            >
+          </el-option></el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -99,7 +94,6 @@
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
 import VideoFlv from '@/components/VideoFlv'
-import Cookies from 'js-cookie'
 import {
   fetchAllMonitor,
   updateMonitor,
@@ -118,10 +112,9 @@ export default {
       pageLoading: true,
       dialogFormVisible: false,
       form: {},
-      changeName: '',
       rules: {
-        changeName: [
-          { required: true, message: '请选择摄像头名称', trigger: 'change' }
+        cameraId: [
+          { required: true, message: '请选择摄像头地址', trigger: 'change' }
         ]
       },
       nosrc,
@@ -144,8 +137,7 @@ export default {
         // }
       },
       allCameraList: [],
-      heightByAuto: '',
-      userId: ''
+      heightByAuto: ''
     }
   },
   watch: {
@@ -153,7 +145,7 @@ export default {
       v.map(item => {
         this.allCameraList.forEach(one => {
           if (one.id === item.cameraId) {
-            item.name = one.name
+            item.address = one.address
           }
         })
       })
@@ -174,34 +166,29 @@ export default {
     }
   },
   async mounted() {
-    this.userId = Cookies.get('userId')
     await this.loadFakeImg()
     await this.getAllCamera()
   },
   methods: {
-    selChange(v) {
-      this.form = {}
-      this.form.changeName = v
-      this.options.filter(item => {
-        if (item.name === this.form.changeName) {
-          this.form.cameraId = item.value
-        }
-      })
-    },
     loadFakeImg() {
       this.pageLoading = true
-      loadingImg(this.userId).then(res => {
-        if (res.code === 0) {
+      loadingImg().then(res => {
+        if (res.body.data.length > 0) {
+          // const staticImg = []
           res.body.data.forEach(item => {
             this.deviceList.push({
               address: item.address,
-              image: item.image
-                ? 'data:image/png;base64,' + item.image
-                : fakeimg,
+              image: item.image ? 'data:image/png;base64,' + item.image : fakeimg,
               id: item.id,
-              name: item.name
+              name: item.address
             })
           })
+          // const a = staticImg.filter((item, index) => {
+          //   this.deviceList.find(val => item.id !== val.id)
+          // })
+          // if (a.length > 1) {
+          //   this.deviceList.push(a)
+          // }
           this.getLiveList()
           this.pageLoading = false
         }
@@ -215,7 +202,6 @@ export default {
           size: 999999
         },
         params: {
-          // inChargeId: this.userId
         }
       }
       fetchAllCameraList(params).then(res => {
@@ -244,11 +230,6 @@ export default {
               operator: 'EQUALS',
               value: 0
             }
-            // {
-            //   field: 'inChargeId',
-            //   operator: 'EQUALS',
-            //   value: this.userId
-            // }
           ]
         }
         searchCameraList(params).then(res => {
@@ -261,7 +242,7 @@ export default {
             return {
               value: item.id,
               label: item.address,
-              name: item.name
+              name: item.address
             }
           })
           this.loading = false
@@ -271,7 +252,7 @@ export default {
       }
     },
     getLiveList() {
-      fetchAllMonitor(this.userId).then(res => {
+      fetchAllMonitor().then(res => {
         const data = res.body.data || []
         this.deviceList = data.map(item => {
           return {
@@ -290,6 +271,10 @@ export default {
                   src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
                   type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
                 }
+                // {
+                //   src: item.rtmpuri,
+                //   type: 'application/x-mpegURL'
+                // }
               ]
             }
           }
@@ -302,25 +287,20 @@ export default {
       })
     },
     updateMonitorDialog(item) {
-      this.form = {}
-      this.options = []
-      this.form.changeName = item.name
-      this.id = item.id
+      this.form.cameraId = item.address
       this.dialogFormVisible = true
+      this.id = item.id
     },
     deleteMonitor(item) {
       this.$confirm('确认移除该摄像头?', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+        cancelButtonText: '取消'
       }).then(() => {
         delMonitor(item.id).then(res => {
           this.deviceList = this.deviceList.filter(i => i.id !== item.id) // list接口响应慢，这里先过滤掉
-          this.$notify({
-            title: '成功',
-            message: '移除成功',
+          this.$message({
             type: 'success',
-            duration: 2000
+            message: '删除成功'
           })
           this.getLiveList()
         })
@@ -331,13 +311,10 @@ export default {
       this.submiting = false
       this.form = {}
       this.dialogFormVisible = false
-      setTimeout(() => {
-        this.id = null
-      }, 200)
+      this.id = null
     },
     addMonitorDialog() {
       this.form = {}
-      this.options = []
       this.dialogFormVisible = true
     },
     saveMonitor() {
@@ -353,17 +330,9 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.deviceList.forEach(item => {
-                if (item.id === this.id) {
-                  item.image = fakeimg
-                  item.name = this.form.changeName
-                }
-              })
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
+              this.$message({
                 type: 'success',
-                duration: 2000
+                message: '修改成功'
               })
               this.onClose()
               this.getLiveList()
@@ -373,9 +342,8 @@ export default {
             this.options.forEach(item => {
               if (item.value === this.form.cameraId) {
                 this.deviceList.push({
-                  name: item.name,
-                  image: fakeimg,
-                  id: item.value
+                  address: item.label,
+                  image: fakeimg
                 })
               }
             })
@@ -386,11 +354,9 @@ export default {
               this.options = this.options.filter(
                 i => i.value !== this.form.cameraId
               )
-              this.$notify({
-                title: '成功',
-                message: '添加成功',
+              this.$message({
                 type: 'success',
-                duration: 2000
+                message: '添加成功'
               })
               this.onClose()
               this.getLiveList()
@@ -424,8 +390,7 @@ export default {
 <style lang='scss'>
 .monitorScreen-wrap {
   padding: 20px;
-  min-height:100%;
-  // height: 100%;
+  height: 100%;
   background: #f0f2f5;
   /deep/.el-input__inner {
     width: 360px;
@@ -433,87 +398,86 @@ export default {
   /deep/.el-form-item__content {
     margin-left: 90px;
   }
-  .monitorScreen {
-    overflow: auto;
-    padding: 10px 10px;
-    background: #fff;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    // justify-content: center;
+}
+.monitorScreen {
+  overflow: auto;
+  padding: 10px 10px;
+  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction:row;
+  // justify-content: center;
 
-    .screen {
-      float: left;
-      width: 50%;
-      // height: 48%;
-      height: auto;
-      min-width: 420px;
-      .screen-inner {
-        margin: 10px 10px;
-        border-radius: 3px 3px 0 0;
-      }
-      .screen-add {
-        // height: calc(35vh + 36.4px);
-        height: 460px;
-        margin: 10px;
-        // width: 100%;
-        // height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px !important;
-        color: #ccc;
-        border: 1px dashed #9b9b9b;
-        border-radius: 5px 5px 0 0;
-        cursor: pointer;
-        i {
-          font-size: 56px;
-          margin-right: 5px;
-        }
-      }
-      .screen-head {
-        position: relative;
-        display: flex;
-        width: calc(100% + 0.5px);
-        // width: 400px;
-        padding: 0 10px;
-        align-items: center;
-        border: 1px solid #ebeef5;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-        border-radius: 0 0 3px 3px;
-        .head-label {
-          flex: 1;
-          font-size: 14px;
-          line-height: 30px;
-          color: #333;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .head-btn {
-          display: flex;
-          justify-content: space-around;
-          .btn {
-            flex: 1;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 8px;
-          }
-        }
-      }
-      .screen-body {
-        // height: 35vh;
-        width: auto;
-        background: #333;
-      }
-      .el-icon-plus {
-        font-size: 14px !important;
+  .screen {
+    float: left;
+    width: 50%;
+    // height: 48%;
+    height: auto;
+    min-width: 420px;
+    .screen-inner {
+      margin: 10px 10px;
+      border-radius: 3px 3px 0 0;
+    }
+    .screen-add {
+      // height: calc(35vh + 36.4px);
+      // height: 210px;
+      margin: 10px;
+      // width: 100%;
+      // height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px !important;
+      color: #ccc;
+      border: 1px dashed #9b9b9b;
+  border-radius: 4px 5px 0 0;
+      cursor: pointer;
+      i {
+        font-size: 56px;
+        margin-right: 5px;
       }
     }
-  }
-  .screen-body {
-    overflow: hidden;
+    .screen-head {
+      position: relative;
+      display: flex;
+      width: calc(100% + 0.5px);
+      // width: 400px;
+      padding: 0 10px;
+      align-items: center;
+      border: 1px solid #ebeef5;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 3px 3px;
+      .head-label {
+        flex: 1;
+        font-size: 14px;
+        line-height: 30px;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .head-btn {
+        display: flex;
+        justify-content: space-around;
+        .btn {
+          flex: 1;
+          cursor: pointer;
+          font-size: 16px;
+          padding: 8px;
+        }
+      }
+    }
+    .screen-body {
+      // height: 35vh;
+      width: auto;
+      background: #333;
+    }
+    .el-icon-plus {
+      font-size: 14px !important;
+    }
   }
 }
-
+.screen-body {
+  overflow: hidden;
+}
 </style>

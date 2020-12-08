@@ -89,6 +89,7 @@ import echarts from 'echarts'
 import 'echarts-liquidfill'
 import WordCloud from '@/components/WordCloud'
 import huayin from '@/json/weinan.json'
+import { debounce } from '@/utils'
 // 引入基本模板
 // const echarts = require('echarts/lib/echarts')
 // 引入柱状图组件
@@ -99,7 +100,6 @@ require('echarts/lib/component/title')
 import {
   fetchAllData, fetchNowInfo
 } from '@/api/dashboard'
-import { debouncefn } from '@/utils'
 function registerMap() {
   echarts.registerMap('渭南', huayin)
 }
@@ -135,7 +135,6 @@ export default {
       alarmTime: '',
       processed: '',
       offCamera: '',
-      debouncefn,
       total: '',
       datay: [10, 11, 12],
       pieData: [{ value: 10, name: '嘻嘻' }],
@@ -157,7 +156,9 @@ export default {
       mainWidth: null,
       rowHeight: null,
       isScreenChange: true,
-      timer: null
+      timer: null,
+      fun: null,
+      allCharts: []
     }
   },
   watch: {
@@ -189,18 +190,20 @@ export default {
       document.getElementById('pie').style.paddingLeft = (document.getElementById('trend').clientWidth - document.getElementById('alarmLine').clientWidth) / 2 + 'px'
     },
     mainWidth(v, oldv) {
-      const canvas = document.getElementsByTagName('canvas')
-      const chartsBox = []
-      const allCharts = [];
-      [].forEach.call(canvas, function(item) {
-        if (item.parentNode.parentNode.id !== 'echarts05') chartsBox.push(item.parentNode.parentNode)
-      })
-      chartsBox.forEach(item => {
-        allCharts.push(this.$echarts.init(item))
-      })
-      allCharts.forEach(item => {
-        item.resize()
-      })
+      if (v) {
+        const canvas = document.getElementsByTagName('canvas')
+        const chartsBox = []
+        this.allCharts = [];
+        [].forEach.call(canvas, function(item) {
+        /* if (item.parentNode.parentNode.id !== 'echarts05')  */chartsBox.push(item.parentNode.parentNode)
+        })
+        chartsBox.forEach(item => {
+          this.allCharts.push(this.$echarts.init(item))
+        })
+        this.allCharts.forEach(item => {
+          item.resize()
+        })
+      }
     }
   },
   async created() {
@@ -212,9 +215,6 @@ export default {
     this.mainHeight = mainHeight
     this.mainWidth = mainWidth
     this.rowHeight = Math.floor(mainHeight / 12)
-  },
-  mounted() {
-    // map, trend, dispose, classify, hotarea, net
   },
   methods: {
     resize() { // 当宽高变化时就会执行
@@ -238,6 +238,7 @@ export default {
         }
       })
     },
+
     goAlarmList() {
       this.$router.push('/alarmMessage')
     },
@@ -260,9 +261,11 @@ export default {
         }
       }
       fetchAllData(params).then(res => {
-        // 后端没时间改 暂时前端先写死 后面有时间用真实数据
-        // this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
-        this.trendText = '告警数量有所增加'
+        if (res.body.data.alertAvgVariance === 0) {
+          this.trendText = ''
+        } else {
+          this.trendText = res.body.data.alertAvgVariance > 0.8 ? '告警数量有所降低' : res.body.data.alertAvgVariance > 0.4 ? '告警数量保持稳定' : '告警数量有所增加'
+        }
         res.body.data.alertStatisByMonthList.forEach((item, index) => {
           this.zhuData.push(
             [
@@ -318,13 +321,6 @@ export default {
     },
     clickTagItem(tag) {
       // TODO
-    },
-    debounce(fn, wait) {
-      var timeout = null
-      return function() {
-        if (timeout !== null) clearTimeout(timeout)
-        timeout = setTimeout(fn, wait)
-      }
     },
     getMap(inData) {
       this.charts = echarts.init(document.getElementById('mapChart'))
@@ -803,7 +799,7 @@ export default {
             value: 100,
             itemStyle: {
               normal: {
-                color: '#E1E8EE'
+                color: '#F0F2F5'
               }
             }
           }, {
@@ -856,8 +852,8 @@ export default {
         borderWidth: 1
       }
       const labelStyle = {
-        show: true,
-        position: 'top',
+        show: false,
+        position: 'insideBottomRight',
         lineHeight: 10,
         borderRadius: 5,
         backgroundColor: 'rgba(255,255,255,.9)',
@@ -868,7 +864,7 @@ export default {
         fontSize: 12,
         fontWeight: 'normal'
       }
-      let total = yData
+      let total = yData.length ? yData : [0, 0]
       const seriesData = []
       total = total.sort(function(a, b) {
         return a - b
@@ -886,8 +882,8 @@ export default {
             borderWidth: 1
           }
           ob.label = {
-            show: true,
-            position: 'top',
+            show: false,
+            position: 'insideBottomRight',
             lineHeight: 10,
             backgroundColor: '#1890FF',
             borderRadius: 5,
@@ -905,17 +901,35 @@ export default {
         title: {
           left: 'left'
         },
+        tooltip: {
+          trigger: 'item',
+          confine: true,
+          position: function(pos, params, el, elRect, size) {
+            var obj = { top: pos[1] / 2.5 }
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 50
+            return obj
+          }
+
+        },
+
         grid: {
-          top: '15%',
-          left: '20%',
-          right: '10%',
-          bottom: '18%'
+          // top: '15%',
+          // left: '20%',
+          // right: '10%',
+          // bottom: '18%'
+          left: 20,
+          top: 20,
+          bottom: 20,
+          right: 20,
+          containLabel: true
+
         },
         xAxis: [{
           type: 'category',
           axisTick: {
             show: false
           },
+          boundaryGap: false,
           splitLine: {
             show: false,
             lineStyle: {
@@ -926,9 +940,10 @@ export default {
         }],
         yAxis: [{
           type: 'value',
-          min: 0,
-          max: 20000,
+          // min: 0,
+          // max: 20000,
           splitNumber: 3,
+          minInterval: 1,
           axisLine: {
             show: false
           },
@@ -944,7 +959,8 @@ export default {
         }],
         series: [{
           type: 'line',
-          showAllSymbol: true,
+          // showAllSymbol: true,
+          smooth: true,
           symbol: 'circle',
           symbolSize: 6,
           lineStyle: {
@@ -954,7 +970,7 @@ export default {
             }
           },
           tooltip: {
-            show: false
+            show: true
           },
           areaStyle: {
             normal: {
@@ -969,7 +985,7 @@ export default {
                 },
                 {
                   offset: 1,
-                  color: '#1890FF'
+                  color: '#ffffff'
                 }
                 ],
                 false
@@ -1128,13 +1144,46 @@ export default {
 .app-main {
   height: 100% !important;
 }
+
 .main-container {
   background-color: #F0F2F5;
   }
-  #dashID{
-    height: 100%;
+
+.dashboard-container {
+  // height: 759px;
+  height: 100%;
+  padding: 0px 20px;
+  background: #F0F2F5;
+  .dash-title {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    padding-left: 20px;
+    font-size: 14px;
+    border-bottom: 1px solid #F0F2F5;
+    height: 40px;
+    line-height: 40px;
+    color: #333;
+    position: relative;
+    span {
+      font-family: PingFangSC-Regular;
+      font-size: 14px;
+      color: #1890FF;
+      line-height: 22px;
+      position: absolute;
+      top: 50%;
+      right: 3%;
+      transform: translateY(-50%);
+    }
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      font-size: 16px;
+      transform: translate(-50%, -50%);
+    }
   }
-#panel {
+   #panel {
   overflow: hidden;
   position:relative !important;
   div {
@@ -1197,7 +1246,7 @@ export default {
     transform: translate(-50%,-50%);
   }
 }
-#alarmLine {
+  #alarmLine {
   overflow: hidden;
   position:relative !important;
   div {
@@ -1219,10 +1268,6 @@ export default {
     transform: translate(-50%,-50%);
   }
 }
-.dashboard-container {
-  // height: 759px;
-  padding: 0px 20px;
-  background: #F0F2F5;
   #map {
     // height: 440px;
     background-color: #fff;
@@ -1292,35 +1337,6 @@ export default {
     margin-top: 20px;
   }
 
-  .dash-title {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    padding-left: 20px;
-    font-size: 14px;
-    border-bottom: 1px solid #F0F2F5;
-    height: 40px;
-    line-height: 40px;
-    color: #333;
-    position: relative;
-    span {
-      font-family: PingFangSC-Regular;
-      font-size: 14px;
-      color: #1890FF;
-      line-height: 22px;
-      position: absolute;
-      top: 50%;
-      right: 3%;
-      transform: translateY(-50%);
-    }
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 10px;
-      font-size: 16px;
-      transform: translate(-50%, -50%);
-    }
-  }
 }
 .mapbox {
   padding: 0;

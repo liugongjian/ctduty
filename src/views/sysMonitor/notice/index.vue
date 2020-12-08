@@ -1,5 +1,5 @@
 <template>
-  <div class="notice">
+  <div class="noticelist">
     <div>
       <div class="clearfix">
         <div class="pull-left">
@@ -8,26 +8,41 @@
             v-model="queryInfo.params.title"
             class="searchinput"
             placeholder="公告标题"
+            @keyup.enter.native="getNoticeList"
           ></el-input>
           <el-input
             ref="queryOperatorRef"
             v-model="username"
             class="searchinput"
-            placeholder="创建者姓名"
+            placeholder="创建者"
+            @keyup.enter.native="getNoticeList"
           ></el-input>
           <el-select ref="queryTypeRef" v-model="queryInfo.params.type" placeholder="公告类型">
             <el-option :value="null" label="所有">所有</el-option>
-            <el-option :value="0" label="公告">通知</el-option>
-            <el-option :value="1" label="通知">公告</el-option>
+            <el-option :value="0" label="通知">通知</el-option>
+            <el-option :value="1" label="公告">公告</el-option>
           </el-select>
-          <el-button type="warning" icon="el-icon-search" @click="getNoticeList">搜索</el-button>
-          <el-button @click="resetQuery">重置</el-button>
+          <el-button
+            v-waves
+            class="filter-item"
+            size="mini"
+            style="height: 36px"
+            type="warning"
+            @click="getNoticeList"
+          >{{ '搜索' }}</el-button>
+          <el-button
+            class="filter-item"
+            style="font-size:12px; height: 36px"
+            size="mini"
+            @click="resetQuery"
+          >重置</el-button>
         </div>
         <div class="pull-right">
           <el-button class="addNotice" type="warning" @click="addNoticeDialogVisible=true">+新建通知</el-button>
         </div>
       </div>
       <el-table
+        v-loading="tableLoading"
         :data="noticeList"
         :header-cell-class-name="tableRowClassHeader"
         class="amountdetailTable"
@@ -36,8 +51,8 @@
         style="width: 120vw"
         @filter-change="filerStatus"
       >
-        <el-table-column type="index" label="序号"></el-table-column>
-        <el-table-column label="公告标题">
+        <!-- <el-table-column type="index" label="序号"></el-table-column> -->
+        <el-table-column label="公告标题" min-width="70%">
           <template slot-scope="row_data">
             <el-link
               type="primary"
@@ -51,7 +66,7 @@
         <el-table-column label="状态" prop="state">
           <template slot-scope="row_data">{{ row_data.row.state === 0 ? '正常' : '紧急' }}</template>
         </el-table-column>
-        <el-table-column label="创建者" prop="creator.username"></el-table-column>
+        <el-table-column label="创建者" prop="creator.name"></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
         <el-table-column :show-overflow-tooltip="true" :label="'操作'">
           <template slot-scope="row_data">
@@ -113,7 +128,7 @@
       </el-table-column>
     </el-table>-->
 
-    <el-pagination
+    <!-- <el-pagination
       :current-page="queryInfo.pagenum"
       :page-sizes="[10, 20, 50]"
       :page-size="queryInfo.pagesize"
@@ -121,7 +136,14 @@
       layout="total, prev, pager, next, sizes, jumper"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    ></el-pagination>
+    ></el-pagination>-->
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryInfo.pagenum"
+      :limit.sync="limit"
+      @pagination="pageChange()"
+    />
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
@@ -157,16 +179,34 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
-            <!-- <el-option value="1" label="1"></el-option> -->
+          <el-select v-model="addNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
             <el-option
-              v-for="(item,key) in departmentInfo"
-              :key="key"
-              :label="item.department"
-              :value="item.departmentId"
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
             ></el-option>
           </el-select>
+          <!--  <el-select v-model="addNoticeForm.signatureId" class="select" placeholder="请选择">
+          <el-option
+            v-for="(item,key) in departmentInfo"
+            :key="key"
+            :label="item.department"
+            :value="item.departmentId"
+          ></el-option>
+          </el-select>-->
         </el-form-item>
+
+        <!-- <el-form-item label="部门" prop="departmentId">
+          <el-select v-model="addUserForm.departmentId" style="width:338px;" placeholder="请选择部门">
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="postAddANotice">确 定</el-button>
@@ -203,7 +243,6 @@
             <el-radio :label="1">紧急</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item v-if="modifiable==='true'" label="内容">
           <quill-editor
             ref="myQuillEditor"
@@ -215,7 +254,15 @@
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
-          <el-select
+          <el-select v-model="editNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
+            <el-option
+              v-for="item in departmentInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
+          </el-select>
+          <!--  <el-select
             v-model="editNoticeForm.signatureId"
             :value="editNoticeForm.signatureId"
             placeholder="请选择"
@@ -226,7 +273,7 @@
               :label="item.department"
               :key="item.departmentId"
             ></el-option>
-          </el-select>
+          </el-select>-->
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -246,344 +293,422 @@
 </template>
 
 <script>
+import Pagination from "@/components/Pagination";
 import {
   fetchNoticeList,
   postAddNotices,
   getNoticeInfo,
   updateANotice,
   deleteNotices
-} from '@/api/notice'
-import { fetchUserList } from '@/api/users'
-import { notReadNotices } from '@/api/notice'
+} from "@/api/notice";
+import { fetchUserList } from "@/api/users";
+import { notReadNotices } from "@/api/notice";
+import { getDepartments } from "@/api/users";
 export default {
+  components: { Pagination },
   data() {
     return {
-      searchName: '',
+      page: 1,
+      limit: 10,
+      oldSize: 10,
+      searchName: "",
       searchUserIds: [],
       addFormRules: {
-        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
         creatorId: [
-          { required: true, message: '创建者不能为空', trigger: 'blur' }
+          { required: true, message: "创建者不能为空", trigger: "blur" }
         ],
-        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
         state: [
-          { required: true, message: '紧急程度不能为空', trigger: 'blur' }
+          { required: true, message: "紧急程度不能为空", trigger: "blur" }
         ]
       },
-
-      editor_content: '',
+      total: 0,
+      departmentInfo: [],
+      editor_content: "",
       editorOption: {
         modules: {
           toolbar: [
             [
-              { size: ['small', 'normal', 'large', 'huge'] },
-              'bold',
-              'italic',
-              'underline',
-              'strike',
-              'blockquote',
-              { list: 'ordered' },
-              { list: 'bullet' },
-              { indent: '-1' },
-              { indent: '+1' },
-              'link'
+              { size: ["small", "normal", "large", "huge"] },
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "blockquote",
+              { list: "ordered" },
+              { list: "bullet" },
+              { indent: "-1" },
+              { indent: "+1" },
+              "link"
             ]
           ]
         },
-        placeholder: '请输入内容'
+        placeholder: "请输入内容"
       },
 
       addUserDialogVisible: false,
       noticeList: [],
-      username: '',
+      username: "",
       userid: null,
       queryInfo: {
         pagenum: 1,
         pagesize: 10,
         params: {
-          title: '',
+          title: "",
           type: null
         }
       },
-      totalnum: 0,
       addNoticeDialogVisible: false,
       addNoticeForm: {
-        content: '',
+        content: "",
         state: null,
-        title: '',
+        title: "",
         type: null,
         signatureId: null,
-        creatorId: ''
+        creatorId: ""
       },
+      departmentInfoLoading: true,
+      permissionInfoLoading: true,
+      postInfoLoading: true,
       editNoticeForm: {},
       editNoticeDialogVisible: false,
       deleteNoticeDialogVisible: false,
-      deleteNoticeTitle: '',
+      deleteNoticeTitle: "",
       deleteNoticerId: 0,
       modifiable: false,
-
-      departmentInfo: [
-        {
-          departmentId: 3275699862611970,
-          department: '华阴公安局'
-        },
-        {
-          departmentId: 3275699862611971,
-          department: '孟塬镇派出所'
-        },
-        {
-          departmentId: 3275699862611972,
-          department: '华山镇派出所'
-        }
-      ]
-    }
+      tableLoading: null
+    };
   },
   watch: {
-    'addNoticeForm.content'(v) {
+    "addNoticeForm.content"(v) {
       if (v.length > 500) {
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
     },
-    'editNoticeForm.content'(v) {
+    "editNoticeForm.content"(v) {
       if (v.length > 500) {
         this.$message({
-          type: 'warning',
-          message: '内容长度不能大于500!'
-        })
+          type: "warning",
+          message: "内容长度不能大于500!"
+        });
       }
+    },
+    limit(v) {
+      this.page = 1;
+      this.limit = v;
+      this.pageChange();
     }
   },
   created() {
-    this.getNoticeList()
+    this.getDepartmentList();
+    this.getNoticeList();
   },
   methods: {
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res;
+          if (code !== 0) {
+            this.$message.error(message || "获取部门列表失败");
+            return;
+          } else {
+            this.departmentInfo = data;
+            this.departmentInfoLoading = false;
+          }
+        })
+        .catch(err => {
+          this.departmentInfoLoading = false;
+          this.$message.error(err.message || "获取部门列表失败");
+        });
+    },
+    pageChange() {
+      if (this.oldSize !== this.limit) {
+        this.page = 1;
+      }
+      this.oldSize = this.limit;
+      this.getNoticeList();
+    },
     async getNoticeList() {
+      this.tableLoading = true;
       const query = {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
-          size: this.queryInfo.pagesize
+          size: this.limit
         },
         params: {},
         sorts: [
           {
-            field: 'create_time',
-            type: 'desc'
+            field: "create_time",
+            type: "desc"
           }
         ]
-      }
-
-      if (this.queryInfo.params.title.trim() !== '') {
-        query.params['title'] = this.queryInfo.params.title
+      };
+      if (this.queryInfo.params.title.trim() !== "") {
+        query.params["title"] = this.queryInfo.params.title.trim();
       }
       if (this.queryInfo.params.type !== null) {
-        query.params['type'] = this.queryInfo.params.type
+        query.params["type"] = this.queryInfo.params.type;
       }
 
-      if (this.username.trim() !== '') {
-        await this.searchUserId()
-        if (this.userid !== null) {
-          query.params['creatorId'] = this.userid
-        } else {
-          this.userid = {}
-          return
-        }
+      if (this.username.trim() !== "") {
+        query.params["name"] = this.username.trim();
       }
       fetchNoticeList(query).then(response => {
-        if (response.code !== 0) return this.$message.error('获取通知信息失败')
-        this.noticeList = response.body.data
+        if (response.code !== 0) return this.$message.error("获取通知信息失败");
+        this.noticeList = response.body.data;
         this.noticeList.map(item => {
-          item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
-        })
-        this.totalnum = response.body.page.total
-      })
+          item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
+        });
+        this.total = response.body.page.total;
+        setTimeout(() => {
+          var cellArr = document.getElementsByClassName("cell");
+          var arr = Array.from(cellArr);
+          arr.forEach(item => {
+            item.style.lineHeight =
+              (document.getElementsByTagName("html")[0].clientHeight - 260) /
+                11 +
+              "px";
+            item.style.paddingTop = "2px";
+            item.style.paddingBottom = "2px";
+          });
+        }, 100);
+        this.tableLoading = false;
+      });
     },
     tableRowClassHeader({ row, rowIndex }) {
-      return 'tableRowClassHeader'
+      return "tableRowClassHeader";
     },
     filerStatus(columnObj) {
       for (const key in columnObj) {
-        this.originCode = columnObj[key][0]
+        this.originCode = columnObj[key][0];
       }
-      this.page = 1
-      let columnObjKey = ''
+      this.page = 1;
+      let columnObjKey = "";
       for (var i in columnObj) {
-        columnObjKey = i
+        columnObjKey = i;
       }
       if (columnObj[columnObjKey].length === 0) {
-        this.filteredValue = []
-        this.getList()
+        this.filteredValue = [];
+        this.getList();
       } else {
-        this.filteredValue = columnObj[columnObjKey]
-        this.getList()
+        this.filteredValue = columnObj[columnObjKey];
+        this.getList();
       }
     },
 
     async searchUserId() {
-      await fetchUserList({ params: { username: this.username }}).then(
+      await fetchUserList({ params: { username: this.username } }).then(
         response => {
           if (response.body.data.length == 0) {
-            return this.$message.error('该用户不存在，请重新输入')
+            return this.$message.error("该用户不存在，请重新输入");
           }
-          this.userid = response.body.data[0].id
+          this.userid = response.body.data[0].id;
         }
-      )
+      );
     },
 
     handleSizeChange(newsize) {
-      this.queryInfo.pagesize = newsize
-      this.getNoticeList()
+      this.queryInfo.pagesize = newsize;
+      this.getNoticeList();
     },
     handleCurrentChange(newpage) {
-      this.queryInfo.pagenum = newpage
-      this.getNoticeList()
+      this.queryInfo.pagenum = newpage;
+      this.getNoticeList();
     },
 
     postAddANotice() {
       this.$refs.addFormRef.validate(valid => {
-        if (!valid) return
-        const query = [{ ...this.addNoticeForm }]
-        query[0].creatorId = this.getCookie('userId')
+        if (!valid) return;
+        const query = [{ ...this.addNoticeForm }];
+        query[0].creatorId = this.getCookie("userId");
         // console.log(query[0].creatorId)
         // query[0].creatorId = parseInt(window.localStorage.getItem('userId'))
         // console.log(query)
         postAddNotices(query).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('添加失败，请联系系统管理员')
+            return this.$message.error("添加失败，请联系系统管理员");
           }
-          this.$message.success('添加成功')
-
-          this.total++
-          this.pagenum = Math.ceil(this.total / this.pagesize)
-          this.addNoticeDialogVisible = false
-          this.getNoticeList()
+          this.$notify({
+            title: "成功",
+            type: "success",
+            message: "添加成功!"
+          });
+          this.total++;
+          this.pagenum = Math.ceil(this.total / this.pagesize);
+          this.addNoticeDialogVisible = false;
+          this.getNoticeList();
           const params = {
             index: 1,
             size: 10000,
             total: 0
-          }
+          };
           notReadNotices(params).then(res => {
             if (res.body.data.length > 0) {
-              this.$store.commit('SET_NOTICETOTAL', res.body.page.total)
-              this.$store.commit('SET_NOTICEARR', res.body.data)
+              this.$store.commit("SET_NOTICETOTAL", res.body.page.total);
+              this.$store.commit("SET_NOTICEARR", res.body.data);
             }
-          })
-        })
-      })
+          });
+        });
+      });
     },
     addDialogClosed() {
-      this.$refs.addFormRef.resetFields()
-      this.addNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.$refs.addFormRef.resetFields();
+      this.addNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
     resetQuery() {
-      this.queryInfo.params.title = ''
-      this.queryInfo.params.type = null
-      this.username = ''
-      this.userid = null
-      this.getNoticeList()
+      this.queryInfo.params.title = "";
+      this.queryInfo.params.type = null;
+      this.username = "";
+      this.userid = null;
+      this.getNoticeList();
     },
 
     showEditDialog(id, modifiable) {
       getNoticeInfo(id).then(response => {
         // console.log(response)
-        if (response.code !== 0) return this.$message.error('获取信息失败')
-        this.editNoticeForm = response.body.data
-        this.editNoticeDialogVisible = true
-        this.modifiable = modifiable
-      })
+        if (response.code !== 0) return this.$message.error("获取信息失败");
+        this.editNoticeForm = response.body.data;
+        this.editNoticeDialogVisible = true;
+        this.modifiable = modifiable;
+      });
     },
     getEditANotice() {
       this.$refs.editFormRef.validate(valid => {
-        if (!valid) return
+        if (!valid) return;
         updateANotice([{ ...this.editNoticeForm }]).then(response => {
           if (response.code !== 0) {
-            return this.$message.error('更新信息失败,请稍后再试')
+            return this.$message.error("更新信息失败,请稍后再试");
           }
-          this.editNoticeDialogVisible = false
-          this.getNoticeList()
-          this.$message.success('更新成功')
+          this.editNoticeDialogVisible = false;
+          this.$notify({
+            title: "成功",
+            type: "success",
+            message: "更新成功!"
+          });
+          this.getNoticeList();
+          // this.$message.success("更新成功");
+        });
+      });
+    },
+    getDepartmentList() {
+      getDepartments()
+        .then(res => {
+          const {
+            body: { data },
+            code,
+            message
+          } = res;
+          if (code !== 0) {
+            this.$message.error(message || "获取部门列表失败");
+            return;
+          } else {
+            this.departmentInfo = data;
+            this.departmentInfoLoading = false;
+          }
         })
-      })
+        .catch(err => {
+          this.departmentInfoLoading = false;
+          this.$message.error(err.message || "获取部门列表失败");
+        });
     },
     editDialogClosed() {
-      this.editNoticeForm = {}
-      this.username = ''
-      this.userid = null
+      this.editNoticeForm = {};
+      this.username = "";
+      this.userid = null;
     },
-
     showDeleteDialog(title, id) {
-      this.deleteNoticeDialogVisible = true
-      this.deleteNoticeTitle = title
-      this.deleteNoticerId = id
+      this.deleteNoticeTitle = title;
+      this.deleteNoticerId = id;
+      this.deleteANotice();
     },
     deleteANotice() {
-      const ids = []
-      ids.push(this.deleteNoticerId)
-      deleteNotices(ids).then(response => {
-        if (response.code !== 0) {
-          return this.$message.error('删除失败,请稍后再试')
-        }
-        this.deleteNoticeDialogVisible = false
-        this.deleteNoticerId = 0
-        this.deleteNoticeTitle = ''
-        this.getNoticeList()
-        this.$message.success('删除信息成功')
-      })
+      const ids = [];
+      ids.push(this.deleteNoticerId);
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        deleteNotices(ids).then(response => {
+          if (response.code !== 0) {
+            return;
+          }
+          this.$notify({
+            title: "成功",
+            type: "success",
+            message: "删除成功!"
+          });
+          this.getNoticeList();
+          this.deleteNoticeDialogVisible = false;
+          this.deleteNoticerId = 0;
+          this.deleteNoticeTitle = "";
+        });
+      });
     },
     getCookie(objName) {
       // 获取指定名称的cookie的值
-      var arrStr = document.cookie.split('; ')
+      var arrStr = document.cookie.split("; ");
       for (var i = 0; i < arrStr.length; i++) {
-        var temp = arrStr[i].split('=')
+        var temp = arrStr[i].split("=");
         if (temp[0] == objName) {
-          return decodeURI(temp[1])
+          return decodeURI(temp[1]);
         }
       }
     }
   }
-}
+};
 </script>
 
-<style lang='scss' scoped>
-.notice {
-  padding: 10px 20px;
-}
-.input_title {
-  width: 360px;
-}
-.title {
-  width: 150px;
-  height: 100px;
-  border: 1px solid #000;
-  display: -moz-inline-box; /* css注释：for ff2 */
-  display: inline-block;
-}
-.el-pagination {
-  float: right;
-}
-.el-table {
-  margin-top: 20px;
-}
-.searchinput {
-  width: 250px;
-}
-/* .addNotice {
-  float: right;
-} */
-.quill-editor {
-  display: inline-block;
-  width: 360px;
-  height: 150px;
-}
-.el-row {
-  margin-top: 20px;
-}
-.el-select-dropdown {
-  z-index: 9999999999999999999999999999999999 !important;
+<style lang='scss'>
+.noticelist {
+  padding: 20px;
+  .input_title {
+    width: 360px;
+  }
+  .el-button--text {
+    color: #fa8334 !important;
+  }
+  .title {
+    width: 150px;
+    height: 100px;
+    border: 1px solid #000;
+    display: -moz-inline-box; /* css注释：for ff2 */
+    display: inline-block;
+  }
+  .el-pagination {
+    float: right;
+  }
+  .el-table {
+    margin-top: 20px;
+  }
+  .searchinput {
+    width: 250px;
+  }
+  /* .addNotice {
+    float: right;
+  } */
+  .quill-editor {
+    display: inline-block;
+    width: 360px;
+    height: 150px;
+  }
+  .el-row {
+    margin-top: 20px;
+  }
+  td,
+  th {
+    padding: 0px;
+  }
 }
 </style>

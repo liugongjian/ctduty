@@ -2,8 +2,8 @@
   <el-scrollbar wrap-class="scrollbar-wrapper">
     <el-menu
       :show-timeout="200"
-      :unique-opened="true"
       :default-active="$route.path"
+      :default-openeds="openeds"
       :collapse="isCollapse"
       mode="vertical"
       background-color="#304156"
@@ -14,8 +14,8 @@
       <div class="logo-con">
         <!-- <img v-show="!isCollapse" key="max-logo" :src="maxLogo" @click="toHome">
         <img v-show="isCollapse" key="min-logo" :src="minLogo" >-->
-        <img v-show="!isCollapse" key="max-logo" :src="maxLogo" class="max-logo" @click="toHome" />
-        <img v-show="isCollapse" key="min-logo" :src="minLogo" class="min-logo" />
+        <img v-show="!isCollapse" key="max-logo" :src="maxLogo" class="max-logo" @click="toHome" >
+        <img v-show="isCollapse" key="min-logo" :src="minLogo" class="min-logo" >
       </div>
       <sidebar-item
         v-for="route in permission_routers"
@@ -28,26 +28,28 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import SidebarItem from "./SidebarItem";
-import store from "@/store";
-import minLogo from "@/assets/images/logo-minnew.png";
-import maxLogo from "@/assets/images/logo-max.png";
+import { mapGetters } from 'vuex'
+import SidebarItem from './SidebarItem'
+import store from '@/store'
+import minLogo from '@/assets/images/logo-minnew.png'
+import maxLogo from '@/assets/images/logo-max.png'
 
 export default {
   components: { SidebarItem },
   data() {
     return {
       minLogo,
-      maxLogo
-    };
-  },
-  computed: {
-    ...mapGetters(["permission_routers", "sidebar"]),
-    isCollapse() {
-      return !this.sidebar.opened;
+      maxLogo,
+      openeds: ['/sysMonitor', '/sysmanage']
     }
   },
+  computed: {
+    ...mapGetters(['permission_routers', 'sidebar']),
+    isCollapse() {
+      return !this.sidebar.opened
+    }
+  },
+
   methods: {
     // toggleSideBar() {
     //   this.$store.dispatch('toggleSideBar')
@@ -55,12 +57,12 @@ export default {
     toHome() {
       this.$nextTick(() => {
         this.$router.push({
-          path: store.getters.level === 2 ? "/ecloudwatch" : "/"
-        });
-      });
+          path: store.getters.level === 2 ? '/ecloudwatch' : '/'
+        })
+      })
     }
   }
-};
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
