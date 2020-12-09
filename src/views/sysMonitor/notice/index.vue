@@ -318,9 +318,9 @@ export default {
         creatorId: [
           { required: true, message: "创建者不能为空", trigger: "blur" }
         ],
-        type: [{ required: true, message: "类型不能为空", trigger: "blur" }],
+        type: [{ required: true, message: "类型不能为空", trigger: "change" }],
         state: [
-          { required: true, message: "紧急程度不能为空", trigger: "blur" }
+          { required: true, message: "紧急程度不能为空", trigger: "change" }
         ]
       },
       total: 0,
