@@ -111,7 +111,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-form-item  prop="carno" style="display:inline-block">
+              <el-form-item  prop="carWord" style="display:inline-block">
                 <el-input
                   v-model="addCarForm.carWord"
                   style="width:130px;"
@@ -328,7 +328,7 @@ export default {
         province: [
           { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ],
-        carno: [
+        carWord: [
           { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ],
         carlist: [
