@@ -349,7 +349,7 @@ export default {
       photoCardList: [],
       videoLoading: false,
       total: 10,
-      page: 0,
+      page: 1,
       limit: 24,
       showVideoSetting: false,
       videoOptions: {
@@ -433,10 +433,6 @@ export default {
       this.getPanelShow()
       console.log('crreated', this.$route)
     })
-  },
-  destroyed() {
-    clearInterval(this.polling1)
-    if (this.polling2) clearInterval(this.polling2)
   },
   mounted() {
     this.setVideoHeight()
