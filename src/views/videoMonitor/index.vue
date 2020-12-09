@@ -434,6 +434,10 @@ export default {
       console.log('crreated', this.$route)
     })
   },
+  destroyed() {
+    clearInterval(this.polling1)
+    if (this.polling2) clearInterval(this.polling2)
+  },
   mounted() {
     this.setVideoHeight()
     // this.cameraId = this.$route.params.cameraId
