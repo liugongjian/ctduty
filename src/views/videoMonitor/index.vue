@@ -428,6 +428,10 @@ export default {
       console.log('crreated', this.$route)
     })
   },
+  destroyed() {
+    clearInterval(this.polling1)
+    if (this.polling2) clearInterval(this.polling2)
+  },
   mounted() {
     this.setVideoHeight()
     // this.cameraId = this.$route.params.cameraId
@@ -455,6 +459,9 @@ export default {
         this.peopleIsPick = peopleExist && peopleExist.isPick
         if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
           this.showTrafficPanel = true
+          this.polling2 = setInterval(() => {
+            this.getRealTimeData()
+          }, 5000)
           this.getRealTimeData()
         } else {
           this.showTrafficPanel = false
@@ -664,62 +671,70 @@ export default {
     getPhotoList() {
       this.photosLoading = true
       const { cameraId } = this.$route.query
-      const param = [
-        {
-          field: 'createTime',
-          operator: 'BETWEEN',
-          value: {
-            start: moment()
-              .startOf('day')
-              .format(dateTimeFormat),
-            end: moment()
-              .endOf('day')
-              .format(dateTimeFormat)
-          }
-        },
-        {
-          field: 'cameraId',
-          operator: 'EQUALS',
-          value: cameraId
-        }
-      ]
-      if (this.taskId && this.taskId.length) {
-        param.push({
-          field: 'taskId',
-          operator: 'IN',
-          value: [...this.taskId]
-        })
-      }
-      const params = {
-        cascade: true,
-        page: {
-          index: this.page,
-          size: this.limit
-        },
-        params: param,
-        sorts: [
+      const queryPhotoList = () => {
+        const param = [
           {
-            field: 'create_Time',
-            type: 'desc'
+            field: 'createTime',
+            operator: 'BETWEEN',
+            value: {
+              start: moment()
+                .startOf('day')
+                .format(dateTimeFormat),
+              end: moment()
+                .endOf('day')
+                .format(dateTimeFormat)
+            }
+          },
+          {
+            field: 'cameraId',
+            operator: 'EQUALS',
+            value: cameraId
           }
         ]
-      }
-      getAlertInfos(params)
-        .then(res => {
-          const {
-            body: {
-              data,
-              page: { total }
+        if (this.taskId && this.taskId.length) {
+          param.push({
+            field: 'taskId',
+            operator: 'IN',
+            value: [...this.taskId]
+          })
+        }
+        const params = {
+          cascade: true,
+          page: {
+            index: this.page,
+            size: this.limit
+          },
+          params: param,
+          sorts: [
+            {
+              field: 'create_Time',
+              type: 'desc'
             }
-          } = res
-          this.photoCardList = data
-          this.total = total
-          this.photosLoading = false
-        })
-        .catch(err => {
-          console.log(err)
-          this.photosLoading = false
-        })
+          ]
+        }
+        getAlertInfos(params)
+          .then(res => {
+            const {
+              body: {
+                data,
+                page: { total }
+              }
+            } = res
+            this.photoCardList = data
+            this.total = total
+            this.photosLoading = false
+          })
+          .catch(err => {
+            console.log(err)
+            this.photosLoading = false
+          })
+      }
+      queryPhotoList()
+      if (!this.polling1) {
+        this.polling1 = setInterval(() => {
+          queryPhotoList()
+        }, 5000)
+      }
     },
     getCountByName(taskCount, name) {
       for (const item of taskCount) {
