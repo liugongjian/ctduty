@@ -125,6 +125,12 @@ export default {
       filterName: '',
       addPoliceDialogVisible: false,
       addPoliceFormRules: {
+        name: [
+          { required: true, message: '公安局名称不能为空', trigger: 'blur' },
+        ],
+        address: [
+          { required: true, message: '派出所名称不能为空', trigger: 'blur' },
+        ],
         username: [
           { required: true, message: '派出所名称不能为空', trigger: 'blur' },
           {
