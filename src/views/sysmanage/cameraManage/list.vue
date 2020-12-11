@@ -119,7 +119,7 @@
         </el-table-column>
       </el-table>
       <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
-        <el-form :model="editForm" :rules="editFormRules" label-position="right" label-width="130px">
+        <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-position="right" label-width="130px">
           <el-form-item label="摄像头ID：" prop="id">
             <el-input
               v-model="editForm.id"
@@ -145,7 +145,7 @@
               style="width: 300px;"
             ></el-input>
           </el-form-item>
-          <el-form-item label="地址：" prop="address">
+          <el-form-item label="地址：" prop="name">
             <el-input
               v-model="editForm.name"
               :rows="4"
@@ -257,7 +257,7 @@ export default {
         latitude: [
           { required: true, trigger: 'blur', message: '纬度不能为空' }
         ],
-        address: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
+        name: [{ required: true, trigger: 'blur', message: '地址不能为空' }]
       },
       formInline: {
         searchkey: '',
@@ -554,27 +554,31 @@ export default {
       this.editVisable = false
     },
     editDialogConfirm() {
-      const params = [
-        {
-          id: this.editForm.id,
-          inChargeId: this.editForm.inChargeId,
-          latitude: this.editForm.tude.split(',')[1].trim(),
-          longitude: this.editForm.tude.split(',')[0].trim(),
-          url: this.editForm.url,
-          name: this.editForm.name,
-          creatorId: this.editForm.creatorId
-        }
-      ]
-      editCamera(params).then(response => {
-        this.$notify({
-          title: '成功',
-          message: '编辑成功',
-          type: 'success',
-          duration: 2000
+      this.$refs.editFormRef.validate(valid=>{
+        if(!valid) return;
+        const params = [
+          {
+            id: this.editForm.id,
+            inChargeId: this.editForm.inChargeId,
+            latitude: this.editForm.tude.split(',')[1].trim(),
+            longitude: this.editForm.tude.split(',')[0].trim(),
+            url: this.editForm.url,
+            name: this.editForm.name,
+            creatorId: this.editForm.creatorId
+          }
+        ]
+        editCamera(params).then(response => {
+          this.$notify({
+            title: '成功',
+            message: '编辑成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+          this.editVisable = false
         })
-        this.getList()
-        this.editVisable = false
       })
+
     },
     editDialogQuxiao() {
       this.editVisable = false

@@ -507,6 +507,7 @@ export default {
         // console.log(response)
         if (response.code !== 0) return this.$message.error("获取用户信息失败");
         this.editUserForm = response.body.data;
+        console.log(this.editUserForm);
         this.editUserDialogVisible = true;
       });
     },
