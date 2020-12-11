@@ -123,7 +123,7 @@
                   <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
                   <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
                   <svg-icon v-else-if="item.type === 3" class="trafficSvg" icon-class="bicycle" />
-                <span class="trafficTime">{{ formatTimeYear(item.camera.createTime) }}</span></span>
+                <span class="trafficTime">{{ formatTimeYear(item.createTime) }}</span></span>
               </div>
             </div>
           </div>
@@ -405,8 +405,10 @@ export default {
         cameraId: ''
       }
       this.interValStart = false
-      clearTimeout(this.timer)
+      clearInterval(this.timer)
       this.timer = null
+      clearTimeout(this.timerOut)
+      this.timerOut = null
       fetchSinMan(params).then(res => {
         if (res.code === 0) {
           this.alarmListData = []
@@ -449,7 +451,7 @@ export default {
             },
             data: [
               {
-                value: rate,
+                value: rate.toFixed(2),
                 name: ''
               }
             ],
@@ -674,7 +676,7 @@ export default {
   }
 }
 </script>
-<style scoped lang='scss'>
+<style lang='scss'>
 .alarmInfo {
   padding: 0px 20px;
   background: #f0f2f5;
@@ -686,6 +688,18 @@ export default {
     width: 100%;
     position: relative;
     overflow: hidden;
+  }
+  .imageDialog{
+    /deep/.el-dialog__header{
+      display: none;
+    }
+    /deep/.el-dialog__body{
+      padding: 10px;
+    }
+    /deep/.el-dialog__footer{
+      padding: 0  0 10px 0;
+      background: #fff;
+    }
   }
   .alarmBox{
     position: relative;
@@ -716,12 +730,15 @@ export default {
     }
   }
   .imageBtn{
-    width: 400px;
+    width: 480px;
     height: 270px;
-    margin: 0 auto;
+    // margin: 0 auto;
+    /deep/.el-image{
+      height: 100%;
+    }
   }
   .imageInfo{
-    margin-top: 20px;
+    margin-top: 10px;
     padding-left: 10px;
     .imageTime{
       float: right;
