@@ -102,7 +102,7 @@
                 v-model="addCarForm.province"
                 placeholder="省市区"
                 style="width:90px;margin-right:10px;"
-                class="filter-item"
+                class="filter-item" 
               >
                 <el-option
                   v-for="item in typeOptions"
@@ -111,11 +111,13 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-input
-                v-model="addCarForm.carWord"
-                style="width:130px;"
-                placeholder="请输入车牌号"
-              ></el-input>
+              <el-form-item  prop="carWord" style="display:inline-block">
+                <el-input
+                  v-model="addCarForm.carWord"
+                  style="width:130px;"
+                  placeholder="请输入车牌号"
+                ></el-input>
+              </el-form-item>
             </el-form-item>
             <el-form-item label="所属名单：" prop="carlist">
               <el-select
@@ -192,7 +194,7 @@
           label-position="right"
           label-width="130px"
         >
-          <el-form-item label="车牌号：" prop="carNumber">
+          <el-form-item label="车牌号：" prop="carNumber" >
             <el-input v-model="editForm.carNumber" style="width:203.8px;"></el-input>
           </el-form-item>
           <el-form-item label="所属名单：">
@@ -324,6 +326,9 @@ export default {
       },
       addrules: {
         province: [
+          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+        ],
+        carWord: [
           { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ],
         carlist: [

@@ -44,6 +44,25 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // {
+  //   path: '/ecloudwatch',
+  //   component: Layout,
+  //   redirect: '/ecloudwatch',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: '/ecloudwatch',
+  //       component: () => import('@/views/eCloudWatch/index'),
+  //       name: 'eCloudWatch',
+  //       meta: {
+  //         title: 'eCloudWatch',
+  //         icon: 'ecloudwatch',
+  //         noCache: true,
+  //         affix: true
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/ecloudwatch',
     component: Layout,
@@ -52,7 +71,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: '/ecloudwatch',
-        component: () => import('@/views/eCloudWatch/index'),
+        component: () => import('@/views/eCloudWatch/edition'),
         name: 'eCloudWatch',
         meta: {
           title: 'eCloudWatch',
