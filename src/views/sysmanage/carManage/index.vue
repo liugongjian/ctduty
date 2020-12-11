@@ -378,15 +378,17 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        'http://61.185.80.26:8620/CarLicense/Template',
+        '/nvsapi/CarLicense/Template',
         '车牌数据导入模板'
-      )
-      dlTemplate().then(res => {
-        this.$message({
-          message: '模板文件下载成功',
-          type: 'success'
-        })
+      ).catch(err=>{
+        this.$message.error(err.message || "下载失败")
       })
+      // dlTemplate().then(res => {
+      //   this.$message({
+      //     message: '模板文件下载成功',
+      //     type: 'success'
+      //   })
+      // })
     },
     editCloseDialog() {
       this.editVisable = false
