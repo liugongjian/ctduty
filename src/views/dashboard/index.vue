@@ -1141,6 +1141,9 @@ export default {
 </script>
 
  <style lang="scss" scoped>
+ body{
+   overflow-y: none !important;
+ }
 .app-main {
   height: 100% !important;
 }
