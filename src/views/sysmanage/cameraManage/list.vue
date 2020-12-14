@@ -56,7 +56,7 @@
         @filter-change="filerStatus"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column type="selection" width="55" align="left"></el-table-column>
         <!-- <el-table-column :show-overflow-tooltip="true" :label="'摄像头ID'" prop="id"></el-table-column> -->
         <el-table-column :show-overflow-tooltip="true" :label="'摄像头名称'" class-name="deviceName">
           <template slot-scope="scope">
