@@ -504,7 +504,7 @@ export default {
         5: '人员逗留',
         6: '人员聚集',
         7: '区域入侵',
-        8: '未带安全帽',
+        8: '未戴安全帽',
         9: '打架斗殴',
         10: '摔倒',
         11: '占道经营'
@@ -1180,9 +1180,9 @@ export default {
     line-height: 36px;
   }
 
-  // .el-select__tags {
-  //   max-width: 170px !important;
-  // }
+  .el-select__tags {
+    max-width: 170px !important;
+  }
   .filter-container .filter-item {
     vertical-align: initial;
   }
@@ -1219,5 +1219,10 @@ export default {
   .el-collapse-item__arrow {
     margin-bottom: 2px;
   }
+  // /deep/.el-select__tags{
+  //   max-width: 170px !important;
+  // }
+  
 }
+
 </style>
