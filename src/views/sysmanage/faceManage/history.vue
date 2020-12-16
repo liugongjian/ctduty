@@ -440,7 +440,7 @@ export default {
         const h = this.formInline.typeValue
         const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
         const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
-        this.getTimeAllTotal(s1, e1, h)
+        // this.getTimeAllTotal(s1, e1, h)
         this.getList(s, e, h)
       })
     },
