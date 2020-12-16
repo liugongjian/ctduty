@@ -5,7 +5,6 @@
 const path = require("path");
 
 module.exports = {
-<<<<<<< HEAD
     dev: {
         // Paths
         assetsSubDirectory: "static",
@@ -49,23 +48,7 @@ module.exports = {
                 },
                 secure: false
             }
-=======
-  dev: {
-    // Paths
-    assetsSubDirectory: "static",
-    assetsPublicPath: "/",
-    proxyTable: {
-      "/nvsapi": {
-        // target: "http://host31.880508.xyz:10000",
-        target: "http://host31.880508.xyz:8666", //宁夏测试
-        // target: 'http://36.41.71.26:8920',
-        // target: 'http://192.168.1.222:10000',
-        // target:'http://192.168.30.27:9216',
-        // target: " http://59.36.77.57:8666", //宁夏生产
-        changeOrigin: true,
-        pathRewrite: {
-          "^/nvsapi": ""
->>>>>>> 81952a484c7a49f3919431eb6326c9e7e89bfee2
+
         },
         // Various Dev Server settings
 
