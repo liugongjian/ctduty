@@ -437,63 +437,131 @@ export default {
       this.getNoticeList();
     },
     async getNoticeList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       const query = {
         cascade: true,
         page: {
           index: this.queryInfo.pagenum,
           size: this.limit
         },
-        params: {},
+        params: [
+          {
+            field: 'creator.name',
+            operator: 'LIKE',
+            value: `%${this.username.trim()}%`
+          },
+          {
+            field: 'title',
+            operator: 'LIKE',
+            value: `%${this.queryInfo.params.title.trim()}%`
+          }
+        ],
         sorts: [
           {
-            field: "create_time",
-            type: "desc"
+            field: 'create_time',
+            type: 'desc'
           }
         ]
-      };
-      if (this.queryInfo.params.title.trim() !== "") {
-        query.params["title"] = this.queryInfo.params.title.trim();
       }
       if (this.queryInfo.params.type !== null) {
-        query.params["type"] = this.queryInfo.params.type;
-      }
-
-      if (this.username.trim() !== "") {
-        await fetchUserList({cascade:true,page:{index:1,size:10},params:{name:this.username.trim()}}).then(
-          response=>{
-            if (response.code !== 0) return this.$message.error("获取用户失败");
-            if( response.body.data.length === 0 ) return this.$message.error("该用户不存在");
-            query.params["creatorId"] = response.body.data[0].id;
-            // console.log(query.params["creatorId"])
+        query.params = [
+          {
+            field: 'creator.name',
+            operator: 'LIKE',
+            value: `%${this.username.trim()}%`
+          },
+          {
+            field: 'title',
+            operator: 'LIKE',
+            value: `%${this.queryInfo.params.title.trim()}%`
+          },
+          {
+            field: 'type',
+            operator: 'LIKE',
+            value: `%${this.queryInfo.params.type}%`
           }
-      )
+        ]
       }
-
-      console.log(query,"query");
       fetchNoticeList(query).then(response => {
-        if (response.code !== 0) return this.$message.error("获取通知信息失败");
-        this.noticeList = response.body.data;
+        if (response.code !== 0) return this.$message.error('获取通知信息失败')
+        this.noticeList = response.body.data
         this.noticeList.map(item => {
-          item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
-        });
-        this.total = response.body.page.total;
-        // console.log(this.noticeList,"this.noticeList");
+          item.createTime = item.createTime.substring(0, 19).replace(/T/, ' ')
+        })
+        this.total = response.body.page.total
         setTimeout(() => {
-          var cellArr = document.getElementsByClassName("cell");
-          var arr = Array.from(cellArr);
+          var cellArr = document.getElementsByClassName('cell')
+          var arr = Array.from(cellArr)
           arr.forEach(item => {
             item.style.lineHeight =
-              (document.getElementsByTagName("html")[0].clientHeight - 260) /
+              (document.getElementsByTagName('html')[0].clientHeight - 260) /
                 11 +
-              "px";
-            item.style.paddingTop = "2px";
-            item.style.paddingBottom = "2px";
-          });
-        }, 100);
-        this.tableLoading = false;
-      });
+              'px'
+            item.style.paddingTop = '2px'
+            item.style.paddingBottom = '2px'
+          })
+        }, 300)
+        this.tableLoading = false
+      })
     },
+    // async getNoticeList() {
+    //   this.tableLoading = true;
+    //   const query = {
+    //     cascade: true,
+    //     page: {
+    //       index: this.queryInfo.pagenum,
+    //       size: this.limit
+    //     },
+    //     params: {},
+    //     sorts: [
+    //       {
+    //         field: "create_time",
+    //         type: "desc"
+    //       }
+    //     ]
+    //   };
+    //   if (this.queryInfo.params.title.trim() !== "") {
+    //     query.params["title"] = this.queryInfo.params.title.trim();
+    //   }
+    //   if (this.queryInfo.params.type !== null) {
+    //     query.params["type"] = this.queryInfo.params.type;
+    //   }
+
+    //   if (this.username.trim() !== "") {
+    //     await fetchUserList({cascade:true,page:{index:1,size:10},params:{name:this.username.trim()}}).then(
+    //       response=>{
+    //         if (response.code !== 0) return this.$message.error("获取用户失败");
+    //         if( response.body.data.length === 0 ) return this.$message.error("该用户不存在");
+    //         query.params["creatorId"] = response.body.data[0].id;
+    //         // console.log(query.params["creatorId"])
+    //       }
+    //   )
+    //   }
+
+    //   console.log(query,"query");
+    //   fetchNoticeList(query).then(response => {
+    //     if (response.code !== 0) return this.$message.error("获取通知信息失败");
+    //     this.noticeList = response.body.data;
+    //     this.noticeList.map(item => {
+    //       item.createTime = item.createTime.substring(0, 19).replace(/T/, " ");
+    //     });
+    //     this.total = response.body.page.total;
+    //     // console.log(this.noticeList,"this.noticeList");
+    //     setTimeout(() => {
+    //       var cellArr = document.getElementsByClassName("cell");
+    //       var arr = Array.from(cellArr);
+    //       arr.forEach(item => {
+    //         item.style.lineHeight =
+    //           (document.getElementsByTagName("html")[0].clientHeight - 260) /
+    //             11 +
+    //           "px";
+    //         item.style.paddingTop = "2px";
+    //         item.style.paddingBottom = "2px";
+    //       });
+    //     }, 100);
+    //     this.tableLoading = false;
+    //   });
+    // },
     tableRowClassHeader({ row, rowIndex }) {
       return "tableRowClassHeader";
     },
