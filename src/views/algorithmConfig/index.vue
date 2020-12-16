@@ -8,7 +8,7 @@
               <span class="videoTotalText">摄像头列表</span>
               <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
             </div>
-            <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
+            <el-input v-model="queryKeyword" placeholder="请输入摄像头名称或负责人" @change="searchList">
               <el-button slot="append" icon="el-icon-search" @click="searchList"></el-button>
             </el-input>
 
@@ -164,8 +164,6 @@ export default {
     // },
     getSomeHeight() {
       this.winHeight = window.innerHeight
-      // console.log('winHeight------>', this.winHeight)
-      // const topH = document.querySelector('.videoTotalBox').offsetHeight
       this.styleObj.height = (this.winHeight - 260) + 'px'
     },
     changeActive(k, id) {
@@ -297,6 +295,9 @@ export default {
               const dataCamera = document.querySelector(`[data-id="${cameraId}"]`)
               this.expendId = dataCamera.getAttribute('data-parentname')
               dataCamera.parentNode.parentNode.parentNode.classList.add('is-current')
+              window.setTimeout(() => {
+                dataCamera.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }, 300)
             } else {
               this.expendId = tempData.length > 0 ? tempData[0].name : ''
               const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
@@ -545,7 +546,7 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    height: 100%;
+    // height: 100%;
     .algorithmConfig{
         background: #fff;
         // height: 100%;
