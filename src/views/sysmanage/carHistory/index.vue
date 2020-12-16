@@ -273,7 +273,11 @@ export default {
       //   this[key] = initialFilterProps[key]
       // })
       // this.onSearch()
-      this.dateRange=[moment().subtract(29, 'days'), moment()],
+      this.dateRange=[moment().subtract(29, 'days'), moment()]
+      const [startDate, endDate] = this.dateRange
+      this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
+      this.defaultTab = this.tabsArr[0]
+      this.currentTab = this.defaultTab
       this.getPushSetTimeAndSearch()
     },
     getPushSetTimeAndSearch() {
@@ -291,9 +295,7 @@ export default {
       });
     },
     onSearch() {
-      console.log(this.dateRange)
       const [startDate, endDate] = this.dateRange
-      console.log(this.startTime,this.endTime,"********")
       this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
       // this.tabsArr = this.tabsDateArr
       // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
