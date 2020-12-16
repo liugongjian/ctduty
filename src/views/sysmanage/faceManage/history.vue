@@ -324,7 +324,7 @@ export default {
       ]),
         (this.startDate = moment(this.value1[0]).format("YYYY-MM-DD"));
       this.endDate = moment(this.value1[1]).format("YYYY-MM-DD");
-      (this.value1 = ""),
+      // (this.value1 = ""),
         (this.page = 1),
         // this.startTime = '02:00'
         // this.endTime = '05:00'

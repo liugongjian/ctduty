@@ -274,6 +274,7 @@ export default {
         if (res.code === 0) {
           const tempData = res.body.data.filter(item => item.data.length > 0)
           const { cameraId } = this.$route.query
+          this.total=res.body.page.total
           this.caremaTreeData = tempData.map(item => {
             return {
               label: item.name,
