@@ -81,6 +81,7 @@
           }"
           :clearable="false"
           style="width:110px;"
+          format="HH:mm"
           placeholder="开始时间">
         </el-time-picker>
       </span>
@@ -93,6 +94,7 @@
           }"
           :clearable="false"
           style="width:110px;"
+          format="HH:mm"
           placeholder="结束时间">
         </el-time-picker>
       </span>
@@ -178,7 +180,7 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import { downLoadByUrl } from '@/utils'
-import { getAlertInfos } from '@/api/alarm'
+import { getAlertInfos,getPushSet } from '@/api/alarm'
 import {
   addCarData
 } from '@/api/dm'
@@ -189,9 +191,9 @@ const token = Cookies.get('token')
 const timeFormate = 'HH:mm:ss'
 const dateFormat = 'YYYY-MM-DD'
 const initialFilterProps = {
-  dateRange: [moment().subtract(7, 'days'), moment()],
-  startTime: moment('02:00:00', timeFormate),
-  endTime: moment('22:00:00', timeFormate)
+  dateRange: [moment().subtract(29, 'days'), moment()],
+  startTime: "",//moment('02:00:00', timeFormate),
+  endTime: "",//moment('22:00:00', timeFormate)
 }
 export default {
   components: { Pagination },
@@ -262,19 +264,36 @@ export default {
     }
   },
   created() {
-    this.onSearch()
+    // this.onSearch()
+    this.getPushSetTimeAndSearch()
   },
   methods: {
     onClear() {
-      Object.keys(initialFilterProps).forEach(key => {
-        this[key] = initialFilterProps[key]
-      })
-      this.onSearch()
+      // Object.keys(initialFilterProps).forEach(key => {
+      //   this[key] = initialFilterProps[key]
+      // })
+      // this.onSearch()
+      this.dateRange=[moment().subtract(29, 'days'), moment()],
+      this.getPushSetTimeAndSearch()
+    },
+    getPushSetTimeAndSearch() {
+      getPushSet().then(response => {
+        const setting = response.body.data.setting;
+        let parseSetting;
+        try {
+          parseSetting = JSON.parse(setting);
+        } catch (err) {
+          parseSetting = {};
+        }
+        this.startTime = moment(parseSetting.date1, timeFormate);
+        this.endTime = moment(parseSetting.date2, timeFormate);
+        this.onSearch()
+      });
     },
     onSearch() {
       console.log(this.dateRange)
       const [startDate, endDate] = this.dateRange
-      console.log(this.startTime)
+      console.log(this.startTime,this.endTime,"********")
       this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
       // this.tabsArr = this.tabsDateArr
       // this.value1=[ this.tabsArr[this.tabsArr.length - 1],this.tabsArr[0]
