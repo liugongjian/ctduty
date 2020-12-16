@@ -272,8 +272,13 @@ export default {
       // Object.keys(initialFilterProps).forEach(key => {
       //   this[key] = initialFilterProps[key]
       // })
-      this.dateRange=[moment().subtract(29, 'days'), moment()],
+      this.dateRange=[moment().subtract(29, 'days'), moment()]
+      const [startDate, endDate] = this.dateRange
+      this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
+      this.defaultTab = this.tabsArr[0]
+      this.currentTab = this.defaultTab
       this.getPushSetTimeAndSearch()
+
     },
     onSearch() {
       const [startDate, endDate] = this.dateRange
