@@ -148,7 +148,7 @@
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
       title="新增通知"
-      width="520px"
+      width="620px"
       @close="addDialogClosed"
     >
       <el-form
@@ -179,7 +179,7 @@
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
-          <el-select v-model="addNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
+          <el-select v-model="addNoticeForm.signatureId" style="width:420px;" placeholder="请选择部门">
             <el-option
               v-for="item in departmentInfo"
               :value="item.id"
@@ -217,7 +217,7 @@
     <el-dialog
       :visible.sync="editNoticeDialogVisible"
       title="修改通知"
-      width="520px"
+      width="620px"
       @close="editDialogClosed"
     >
       <el-form
@@ -254,7 +254,7 @@
           <div v-html="editNoticeForm.content"></div>
         </el-form-item>
         <el-form-item label="签名档">
-          <el-select v-model="editNoticeForm.signatureId" style="width:338px;" placeholder="请选择部门">
+          <el-select v-model="editNoticeForm.signatureId" style="width:420px;" placeholder="请选择部门">
             <el-option
               v-for="item in departmentInfo"
               :value="item.id"
@@ -752,7 +752,7 @@ export default {
 .noticelist {
   padding: 20px;
   .input_title {
-    width: 360px;
+    width: 420px;
   }
   .el-button--text {
     color: #fa8334 !important;
@@ -778,7 +778,7 @@ export default {
   } */
   .quill-editor {
     display: inline-block;
-    width: 360px;
+    width: 420px;
     height: 150px;
   }
   .el-row {
@@ -788,5 +788,7 @@ export default {
   th {
     padding: 0px;
   }
+
 }
+
 </style>
