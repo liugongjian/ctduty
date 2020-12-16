@@ -793,9 +793,8 @@ export default {
         //     image: null,
         //     flvSrc: data.rtmpuri,
         console.log('视频信息-------->', data)
-        console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
-          autoplay: true,
+          // autoplay: true,
           controls: true,
           width: 400, // 播放器宽度
           height: 300, // 播放器高度
@@ -803,10 +802,12 @@ export default {
           fluid: true, // 流体布局，自动充满，并保持播放其比例
           sources: [
             {
-              src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
-              type: this.video_type(data.rtmpuri ? data.rtmpuri + '&a.flv' : '')
+              src: data.m3u8uri,
+              type: this.video_type(data.m3u8uri)
             }
-          ]
+          ],
+          techOrder: ['html5', 'flash'],
+          autoplay: 'any'
         }
         // }
         this.videoLoading = false
@@ -815,8 +816,7 @@ export default {
         this.videoLoading = false
       })
     },
-    video_type(_url) {
-      var url = _url.toLowerCase()
+    video_type(url) {
       if (url.startsWith('rtmp')) {
         return 'rtmp/flv'
       } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
