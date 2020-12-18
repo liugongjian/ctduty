@@ -25,7 +25,7 @@
           </div>
           <div v-else-if="marker.online === 1" class="alarmBox">
             <span class="alarmTips">{{ marker.undealSum }}</span>
-            <svg-icon icon-class="camera"/>
+            <svg-icon icon-class="camera" class="graySvg"/>
           </div>
           <div v-else :class="showDialogInfo.cameraId === marker.extData.id? 'yes':'no' " class="alarmBox">
             <span class="alarmTips">{{ marker.undealSum }}</span>
@@ -746,6 +746,11 @@ export default {
   }
   .blueSvg{
     fill: #3e94f9;
+    width: 40px;
+    height: 40px;
+  }
+  .graySvg{
+    fill: gray;
     width: 40px;
     height: 40px;
   }
