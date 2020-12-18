@@ -261,6 +261,7 @@ export default {
             message: '更新成功!'
           })
           this.ifShowDialog = false
+          this.interValConfig()
         }
       })
     },
