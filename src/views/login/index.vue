@@ -165,20 +165,29 @@ export default {
                   })
               } else {
                 // this.refreshImg()
-                if (resp.code === 'USER_WRONG') {
-                  this.erroruserMsg = resp.msg
-                } else if (resp.code === 'CODE_EXPIRES') {
-                  this.errorcodeMsg = resp.msg
-                } else if (resp.code === 'CODE_ERROR') {
-                  this.errorcodeMsg = resp.msg
-                } else {
-                  return false
-                }
+                // if (resp.code === 'USER_WRONG') {
+                //   this.erroruserMsg = resp.msg
+                // } else if (resp.code === 'CODE_EXPIRES') {
+                //   this.errorcodeMsg = resp.msg
+                // } else if (resp.code === 'CODE_ERROR') {
+                //   this.errorcodeMsg = resp.msg
+                // } else {
+                //   return false
+                // }
+                this.$notify({
+                  title: '登录失败',
+                  type: 'error',
+                  message: resp.message
+                })
               }
               // eslint-disable-next-line handle-callback-err
             })
             .catch(error => {
-              // this.refreshImg()
+              this.$notify({
+                title: '登录失败',
+                type: 'error',
+                message: error.message
+              })
             })
         } else {
           return false
