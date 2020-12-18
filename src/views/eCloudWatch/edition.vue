@@ -254,6 +254,7 @@ export default {
         if (res.code === 0) {
           this.alarmListData = []
           // this.getalarmList()
+          this.page = 1
           this.getPanelListById()
           this.$notify({
             title: '成功',
