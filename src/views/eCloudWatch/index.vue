@@ -540,8 +540,7 @@ export default {
       this.getalarmList()
       this.isDisableAllAlarmBtn = true
     },
-    video_type(_url) {
-      var url = _url.toLowerCase()
+    video_type(url) {
       if (url.startsWith('rtmp')) {
         return 'rtmp/flv'
       } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
@@ -783,8 +782,8 @@ export default {
                   // m3u8uri
                   sources: [
                     {
-                      src: res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '',
-                      type: this.video_type(res.body.data.rtmpuri ? res.body.data.rtmpuri + '&a.flv' : '')
+                      src: res.body.data.m3u8uri,
+                      type: this.video_type(res.body.data.m3u8uri)
                     }
                   ]
                 }

@@ -287,8 +287,8 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+                  src: item.m3u8uri,
+                  type: this.video_type(item.m3u8uri)
                 }
               ]
             }
@@ -402,8 +402,7 @@ export default {
         }
       })
     },
-    video_type(_url) {
-      var url = _url.toLowerCase()
+    video_type(url) {
       if (url.startsWith('rtmp')) {
         return 'rtmp/flv'
       } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {

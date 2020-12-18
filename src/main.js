@@ -32,7 +32,7 @@ Vue.config.productionTip = false
 Vue.use(VueAMap)
 
 VueAMap.initAMapApiLoader({
-  key: '000cee9e7ed83849c5cee8fdec93478c',
+  key: 'b431bc4a893c601a4a1da49f34cf39db',
   plugin: ['AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType'],
   v: '1.4.4'
 })
