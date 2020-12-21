@@ -54,7 +54,7 @@
             fit
           >
             <el-table-column :label="'姓名'" prop="name"></el-table-column>
-            <el-table-column :label="'所属名单'" prop="select">
+            <el-table-column :label="'所属名单'" prop="select" class-name="peopleKind">
               <template slot-scope="scope">
                 <el-select
                   v-model="scope.row.nameList"
@@ -895,8 +895,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
   }
-  /deep/.el-table .cell{
-    text-overflow: initial;
+  .peopleKind{
+    /deep/.cell{
+      text-overflow: initial;
+    }
   }
 }
 </style>
