@@ -53,8 +53,8 @@
             tooltip-effect="dark"
             fit
           >
-            <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="name"></el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="select">
+            <el-table-column :label="'姓名'" prop="name"></el-table-column>
+            <el-table-column :label="'所属名单'" prop="select">
               <template slot-scope="scope">
                 <el-select
                   v-model="scope.row.nameList"
@@ -71,7 +71,7 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
+            <el-table-column :label="'图片预览'" width="220">
               <template slot-scope="scope">
                 <el-popover placement="left-end" width="424" trigger="hover">
                   <el-image :src="scope.row.image" alt width="400" class="hoverImg" />
@@ -79,12 +79,12 @@
                     slot="reference"
                     :src="scope.row.image"
                     alt
-                    style="width: 120px; height: 100px"
+                    style="width: 160px; height: 200px"
                   />
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+            <el-table-column :label="'操作'" width="100">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -894,6 +894,9 @@ export default {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+  }
+  /deep/.el-table .cell{
+    text-overflow: initial;
   }
 }
 </style>
