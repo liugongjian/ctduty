@@ -116,6 +116,13 @@ export default {
       }
       cb(new Error('请输入合法的手机号'))
     }
+    var checkNotEmpty = (rule, value, cb) => {
+      if(value.trim() === ''){
+        cb(new Error('该项不能为空'));
+      }else{
+        cb();
+      }
+    }
     return {
       tableLoading: null,
       page: 1,
@@ -127,9 +134,11 @@ export default {
       addPoliceFormRules: {
         name: [
           { required: true, message: '公安局名称不能为空', trigger: 'blur' },
+          { validator: checkNotEmpty, trigger: 'blur' }
         ],
         address: [
           { required: true, message: '派出所名称不能为空', trigger: 'blur' },
+          { validator: checkNotEmpty, trigger: 'blur' }
         ],
         username: [
           { required: true, message: '派出所名称不能为空', trigger: 'blur' },

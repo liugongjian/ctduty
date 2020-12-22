@@ -708,8 +708,11 @@ export default {
         this.defaultTab = this.tabsArr[0]
         this.currentTab = this.defaultTab
       }
-      const s1 = this.currentTab + ' ' + this.startTime + ':00'
-      const end1 = this.currentTab + ' ' + this.endTime + ':00'
+
+      const s1 = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
+      const end1 = this.currentTab + ' ' + ( this.endTime  || '23:59' ) + ':00'
+      // console.log(s1);
+      // console.log(end1);
       const h1 = this.algorithmList.typeValue
       const h2 = this.algorithmNameList.typeValue
       const h = {
@@ -723,9 +726,10 @@ export default {
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
         'T' +
-        this.startTime +
+        ( this.startTime || '00:00' ) +
         ':00.000Z'
-      const end = this.tabsArr[0] + 'T' + this.endTime + ':00.000Z'
+      const end = this.tabsArr[0] + 'T' + ( this.endTime  || '23:59' ) + ':00.000Z'
+
       this.getTimeAllTotal(s, end, h1)
     },
 
@@ -785,8 +789,8 @@ export default {
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
-      const s = e.label + ' ' + this.startTime + ':00'
-      const end = e.label + ' ' + this.endTime + ':00'
+      const s = e.label + ' ' + ( this.startTime || '00:00' ) + ':00'
+      const end = e.label + ' ' + ( this.endTime || '23:59' ) + ':00'
       const h = this.formInline.typeValue
       this.page = 1
       this.getList(s, end, h)
