@@ -202,7 +202,7 @@ export default {
 
 body {
   height:100%;
-  overflow-y: hidden;
+  // overflow-y: hidden;
   .loginContainer {
     .el-input__inner {
       text-indent: 15px;
