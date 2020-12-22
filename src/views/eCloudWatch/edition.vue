@@ -219,7 +219,8 @@ export default {
       pushStata: '',
       timer: null,
       timerOut: null,
-      userId: ''
+      userId: '',
+      isHint: ''
     }
   },
   async created() {
@@ -327,19 +328,6 @@ export default {
       }
       fetchSinMan(params).then(res => {
         if (res.code === 0) {
-          // this.window.position = [cameraInfo.camera.longitude, cameraInfo.camera.latitude + 0.0008]
-          // const o = amapManager.getMap()
-          // o.setZoomAndCenter(15, [cameraInfo.camera.longitude + 0.008, cameraInfo.camera.latitude + 0.006])
-          // if (isAlert) {
-          //   if (this.isHint) {
-          //     const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
-          //     audio.play()// 播放
-          //   }
-          //   this.timer2 = setTimeout(() => {
-          //     this.closeDialog()
-          //   }, 5000)
-          // }
-
           const { alertHandleRate, todayAlerts, todayHandleds } = res.body.data
           if (this.interValStart) {
             if (this.todayAlarms !== todayAlerts || this.todayHandleAlarms !== todayHandleds) {
@@ -370,23 +358,39 @@ export default {
                   }
                 ]
               }
-              fetchalarmList(param).then(res => {
-                if (res.code === 0) {
-                  this.showDialogInfo = res.body.data[0]
-                  this.ifShowDialog = true
-                  this.dialogInfo.position = [this.showDialogInfo.camera.longitude, this.showDialogInfo.camera.latitude + 0.0008]
-                  this.timerOut = window.setTimeout(() => {
-                    this.ifShowDialog = false
-                  }, 5000)
-                  const dataList = res.body.data
-                  for (const val in dataList) {
-                    this.alarmListData.push(dataList[val])
+              if (this.pushStata && this.pushStata.deliveryPush) {
+                fetchalarmList(param).then(res => {
+                  if (res.code === 0) {
+                    this.showDialogInfo = res.body.data[0]
+                    this.ifShowDialog = true
+                    if (this.isHint) {
+                      const audio = new Audio(hintMusic)// 这里的路径写上mp3文件在项目中的绝对路径
+                      audio.play()// 播放
+                    }
+                    this.dialogInfo.position = [this.showDialogInfo.camera.longitude, this.showDialogInfo.camera.latitude + 0.0008]
+                    this.timerOut = window.setTimeout(() => {
+                      this.ifShowDialog = false
+                    }, 5000)
+                    const dataList = res.body.data
+                    for (const val in dataList) {
+                      this.alarmListData.push(dataList[val])
+                    }
+                    this.alarmListDataTotal = res.body.page.total
+                    const o = amapManager.getMap()
+                    o.setZoomAndCenter(15, [this.showDialogInfo.camera.longitude + 0.008, this.showDialogInfo.camera.latitude + 0.006])
                   }
-                  this.alarmListDataTotal = res.body.page.total
-                  const o = amapManager.getMap()
-                  o.setZoomAndCenter(15, [this.showDialogInfo.camera.longitude + 0.008, this.showDialogInfo.camera.latitude + 0.006])
-                }
-              })
+                })
+              } else {
+                fetchalarmList(param).then(res => {
+                  if (res.code === 0) {
+                    const dataList = res.body.data
+                    for (const val in dataList) {
+                      this.alarmListData.push(dataList[val])
+                    }
+                    this.alarmListDataTotal = res.body.page.total
+                  }
+                })
+              }
             } else {
               console.log('no')
             }
@@ -832,7 +836,7 @@ export default {
       .alarmList{
         padding: 20px 5px;
         overflow-y: scroll;
-        height: 100%;
+        height: calc(100% - 40px);
         &::-webkit-scrollbar {
             display: none;
         }
