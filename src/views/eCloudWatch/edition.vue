@@ -347,8 +347,10 @@ export default {
                   field: 'create_time',
                   operator: 'BETWEEN',
                   value: {
-                    start: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date1}:00` : `${moment().format('YYYY-MM-DD')} 00:00:00`,
-                    end: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date2}:00` : `${moment().format('YYYY-MM-DD')} 23:59:00`
+                    // start: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date1}:00` : `${moment().format('YYYY-MM-DD')} 00:00:00`,
+                    // end: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date2}:00` : `${moment().format('YYYY-MM-DD')} 23:59:00`
+                    start: `${moment().format('YYYY-MM-DD')} 00:00:00`,
+                    end: `${moment().format('YYYY-MM-DD HH:mm:ss')}`
                   }
                 }],
                 sorts: [
@@ -358,7 +360,15 @@ export default {
                   }
                 ]
               }
-              if (this.pushStata && this.pushStata.deliveryPush) {
+
+              const { date1, date2 } = this.pushStata
+              const nowTime = new Date().getTime()
+              const startTime = new Date(new Date(new Date(new Date(nowTime).setHours(date1.split(':')[0])).setMinutes(date1.split(':')[1])).setSeconds('0')).getTime()
+              const endTime = new Date(new Date(new Date(new Date(nowTime).setHours(date2.split(':')[0])).setMinutes(date2.split(':')[1])).setSeconds('0')).getTime()
+              const ifInTime = () => {
+                return (nowTime >= startTime) && (nowTime <= endTime)
+              }
+              if (this.pushStata && this.pushStata.deliveryPush && ifInTime()) {
                 fetchalarmList(param).then(res => {
                   if (res.code === 0) {
                     this.showDialogInfo = res.body.data[0]
@@ -565,8 +575,10 @@ export default {
           field: 'create_time',
           operator: 'BETWEEN',
           value: {
-            start: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date1}:00` : `${moment().format('YYYY-MM-DD')} 00:00:00`,
-            end: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date2}:00` : `${moment().format('YYYY-MM-DD')} 23:59:00`
+            // start: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date1}:00` : `${moment().format('YYYY-MM-DD')} 00:00:00`,
+            // end: this.pushStata ? `${moment().format('YYYY-MM-DD')} ${this.pushStata.date2}:00` : `${moment().format('YYYY-MM-DD')} 23:59:00`
+            start: `${moment().format('YYYY-MM-DD')} 00:00:00`,
+            end: `${moment().format('YYYY-MM-DD HH:mm:ss')}`
           }
         }
         if (this.activeAlarmKind === 'deal') {

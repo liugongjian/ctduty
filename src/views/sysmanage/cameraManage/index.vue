@@ -21,7 +21,7 @@
                 style="width: 400px;"
                 filterable
                 remote
-                placeholder="请输入摄像头地址"
+                placeholder="请输入摄像头名称"
                 @change="searchChange"
               >
                 <el-option
@@ -383,7 +383,7 @@ export default {
           },
           params: [
             {
-              field: 'address',
+              field: 'name',
               operator: 'LIKE',
               value: `%${keyword === '所有摄像头' ? '' : keyword}%`
             }
