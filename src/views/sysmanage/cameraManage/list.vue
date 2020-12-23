@@ -89,7 +89,7 @@
             <span>{{ scope.row.longitude+ ', ' + scope.row.latitude }}</span>
           </template>
         </el-table-column>
-        <el-table-column :show-overflow-tooltip="true" :label="'地址'" prop="name"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" :label="'摄像头名称'" prop="name"></el-table-column>
         <el-table-column
           :show-overflow-tooltip="true"
           :formatter="formatTime"

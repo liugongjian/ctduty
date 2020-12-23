@@ -17,16 +17,23 @@
             style="height: 36px"
             type="warning"
             @click="getUserList"
-          >{{ '搜索' }}</el-button>
+            >{{ "搜索" }}</el-button
+          >
           <el-button
             class="filter-item searchbtn"
-            style="font-size:12px; height: 36px"
+            style="font-size: 12px; height: 36px"
             size="mini"
             @click="resetQuery"
-          >重置</el-button>
+            >重置</el-button
+          >
         </div>
         <div class="pull-right">
-          <el-button class="addbtn" type="warning" @click="addUserDialogVisible = true">+新增用户</el-button>
+          <el-button
+            class="addbtn"
+            type="warning"
+            @click="addUserDialogVisible = true"
+            >+新增用户</el-button
+          >
         </div>
       </div>
     </div>
@@ -44,12 +51,18 @@
       <el-table-column label="权限" prop="permissions.name"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="row_data">
-          <el-button type="text" size="small" @click="showEditDialog(row_data.row.id)">{{ "编辑" }}</el-button>
+          <el-button
+            type="text"
+            size="small"
+            @click="showEditDialog(row_data.row.id)"
+            >{{ "编辑" }}</el-button
+          >
           <el-button
             type="text"
             size="small"
             @click="showDeleteDialog(row_data.row.username, row_data.row.id)"
-          >{{ "删除" }}</el-button>
+            >{{ "删除" }}</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -69,7 +82,9 @@
       @close="addDialogClosed"
     >
       <el-form
-        v-loading="departmentInfoLoading || permissionInfoLoading || postInfoLoading"
+        v-loading="
+          departmentInfoLoading || permissionInfoLoading || postInfoLoading
+        "
         ref="addFormRef"
         :model="addUserForm"
         :rules="addUserFormRules"
@@ -88,7 +103,11 @@
           <el-input v-model="addUserForm.phone" type="text"></el-input>
         </el-form-item>
         <el-form-item label="部门" prop="departmentId">
-          <el-select v-model="addUserForm.departmentId" style="width:338px;" placeholder="请选择部门">
+          <el-select
+            v-model="addUserForm.departmentId"
+            style="width: 338px"
+            placeholder="请选择部门"
+          >
             <el-option
               v-for="item in departmentInfo"
               :value="item.id"
@@ -98,8 +117,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="岗位" prop="postId">
-          <el-select v-model="addUserForm.postId" style="width:338px;" placeholder="请选择岗位">
-            <el-option v-for="item in postInfo" :value="item.id" :label="item.name" :key="item.id"></el-option>
+          <el-select
+            v-model="addUserForm.postId"
+            style="width: 338px"
+            placeholder="请选择岗位"
+          >
+            <el-option
+              v-for="item in postInfo"
+              :value="item.id"
+              :label="item.name"
+              :key="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="权限" prop="permissionId">
@@ -109,7 +137,8 @@
               :value="item.id"
               :label="item.id"
               :key="item.id"
-            >{{ item.name }}</el-radio>
+              >{{ item.name }}</el-radio
+            >
             <!-- <el-radio :label="3274944196083712">系统管理员</el-radio>
             <el-radio :label="3274944196083713">管理员</el-radio>
             <el-radio :label="3274944196083714">普通用户</el-radio>-->
@@ -132,9 +161,11 @@
       @close="editDialogClosed"
     >
       <el-form
-        v-loading="departmentInfoLoading || permissionInfoLoading || postInfoLoading"
+        v-loading="
+          departmentInfoLoading || permissionInfoLoading || postInfoLoading
+        "
         ref="editFormRef"
-        :rules="addUserFormRules"
+        :rules="editUserFormRules"
         :model="editUserForm"
         label-width="100px"
       >
@@ -147,6 +178,15 @@
         <!-- <el-form-item label="密码" prop="password">
           <el-input v-model="editUserForm.password" type="password"></el-input>
         </el-form-item> -->
+        <el-form-item label="密码" prop="password" class="editpasswdlabel">
+          <el-input
+            autocomplete="off"
+            v-model="editUserForm.password"
+            type="password"
+            @focus="resetPassword"
+            @blur="blurPassword"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
@@ -156,7 +196,7 @@
             v-model="editUserForm.departmentId"
             :value="editUserForm.departmentId"
             placeholder="请选择部门"
-            style="width:338px;"
+            style="width: 338px"
           >
             <el-option
               v-for="item in this.departmentInfo"
@@ -170,7 +210,7 @@
           <el-select
             v-model="editUserForm.postId"
             :value="editUserForm.postId"
-            style="width:338px;"
+            style="width: 338px"
             placeholder="请选择岗位"
           >
             <el-option
@@ -188,7 +228,8 @@
               :value="item.id"
               :label="item.id"
               :key="item.id"
-            >{{ item.name }}</el-radio>
+              >{{ item.name }}</el-radio
+            >
           </el-radio-group>
         </el-form-item>
         <!-- <el-form-item label="备注">
@@ -201,7 +242,11 @@
       </span>
     </el-dialog>
 
-    <el-dialog :visible.sync="deleteUserDialogVisible" title="删除用户" width="520px">
+    <el-dialog
+      :visible.sync="deleteUserDialogVisible"
+      title="删除用户"
+      width="520px"
+    >
       <span>确认删除用户{{ this.deleteUserName }}？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="warning" @click="deleteAUser">确 定</el-button>
@@ -221,7 +266,7 @@ import {
   deleteUser,
   getDepartments,
   getPosts,
-  getPermissions
+  getPermissions,
 } from "@/api/users";
 
 export default {
@@ -247,8 +292,8 @@ export default {
             min: 5,
             max: 12,
             message: "用户名长度在5-12个字符之间",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         name: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
@@ -256,47 +301,50 @@ export default {
             min: 2,
             max: 10,
             message: "姓名长度在2-10个字符之间",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         password: [
           {
             required: true,
             message: "密码不能为空",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             min: 8,
             max: 20,
             message: "密码长度在8-20个字符之间",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         phone: [
           {
             required: true,
             message: "手机号不能为空",
-            trigger: "blur"
+            trigger: "blur",
           },
           {
             min: 11,
             max: 11,
             message: "长度为11个字符",
-            trigger: "blur"
+            trigger: "blur",
           } /* ,
           {
             validator: checkMobile,
             trigger: 'blur'
-          } */
+          } */,
         ],
         permissionId: [
-          { required: true, message: "权限不能为空", trigger: "change" }
+          { required: true, message: "权限不能为空", trigger: "change" },
         ],
         departmentId: [
-          { required: true, message: "部门不能为空", trigger: "change" }
+          { required: true, message: "部门不能为空", trigger: "change" },
         ],
-        postId: [{ required: true, message: "岗位不能为空", trigger: "change" }]
+        postId: [
+          { required: true, message: "岗位不能为空", trigger: "change" },
+        ],
       },
+
       addUserForm: {
         username: "",
         name: "",
@@ -304,22 +352,22 @@ export default {
         permissionId: "",
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: "",
       },
       editUserForm: {
         id: 0,
         username: "",
         name: "",
-        // password: "",
+        password: "",
         permissionId: "",
         departmentId: null,
         postId: null,
-        phone: ""
+        phone: "",
       },
       userList: [],
       queryInfo: {
         pagenum: 1,
-        pagesize: 10
+        pagesize: 10,
       },
       queryName: "",
       total: 0,
@@ -332,14 +380,60 @@ export default {
       // postInfoLoading: true,
       postInfo: [],
       permissionInfoLoading: true,
-      permissionInfo: []
+      permissionInfo: [],
+      editFormPassword: "",
+      editUserFormRules: {
+        username: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+          {
+            min: 5,
+            max: 12,
+            message: "用户名长度在5-12个字符之间",
+            trigger: "blur",
+          },
+        ],
+        name: [
+          { required: true, message: "姓名不能为空", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "姓名长度在2-10个字符之间",
+            trigger: "blur",
+          },
+        ],
+        password: [],
+        phone: [
+          {
+            required: true,
+            message: "手机号不能为空",
+            trigger: "blur",
+          },
+          {
+            min: 11,
+            max: 11,
+            message: "长度为11个字符",
+            trigger: "blur",
+          } /* ,
+          {
+            validator: checkMobile,
+            trigger: 'blur'
+          } */,
+        ],
+        permissionId: [
+          { required: true, message: "权限不能为空", trigger: "blur" },
+        ],
+        departmentId: [
+          { required: true, message: "部门不能为空", trigger: "blur" },
+        ],
+        postId: [{ required: true, message: "岗位不能为空", trigger: "blur" }],
+      },
     };
   },
   watch: {
     limit() {
       this.page = 1;
       this.pageChange();
-    }
+    },
   },
   // watch: {
   //   limit() {
@@ -351,18 +445,26 @@ export default {
     this.getDepartmentList();
     this.getPostsList();
     this.getPermissionList();
+    this.editFormPassword = "....";
   },
   created() {
     this.getUserList();
   },
   methods: {
+    resetPassword() {
+      this.editUserForm.password = "";
+    },
+    blurPassword() {
+      if (this.editUserForm.password === "")
+        this.editUserForm.password = "....";
+    },
     getDepartmentList() {
       getDepartments()
-        .then(res => {
+        .then((res) => {
           const {
             body: { data },
             code,
-            message
+            message,
           } = res;
           if (code !== 0) {
             this.$message.error(message || "获取部门列表失败");
@@ -372,18 +474,18 @@ export default {
             this.departmentInfoLoading = false;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.departmentInfoLoading = false;
           this.$message.error(err.message || "获取部门列表失败");
         });
     },
     getPermissionList() {
       getPermissions()
-        .then(res => {
+        .then((res) => {
           const {
             body: { data },
             code,
-            message
+            message,
           } = res;
           if (code !== 0) {
             this.$message.error(message || "获取权限列表失败");
@@ -393,18 +495,18 @@ export default {
             this.permissionInfoLoading = false;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.permissionInfoLoading = false;
           this.$message.error(err.message || "获取权限列表失败");
         });
     },
     getPostsList() {
       getPosts()
-        .then(res => {
+        .then((res) => {
           const {
             body: { data },
             code,
-            message
+            message,
           } = res;
           if (code !== 0) {
             this.$message.error(message || "获取岗位列表失败");
@@ -414,7 +516,7 @@ export default {
             this.postInfoLoading = false;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.postInfoLoading = false;
           this.$message.error(err.message || "获取岗位列表失败");
         });
@@ -432,27 +534,27 @@ export default {
         cascade: true,
         page: {
           index: this.page,
-          size: this.limit
+          size: this.limit,
         },
         params: {},
         sorts: [
           {
             field: "create_time",
-            type: "desc"
-          }
-        ]
+            type: "desc",
+          },
+        ],
       };
       if (this.queryName.trim() !== "") {
         query.params.name = this.queryName;
       }
-      fetchUserList(query).then(response => {
+      fetchUserList(query).then((response) => {
         if (response.code !== 0) return;
         this.userList = response.body.data;
         this.total = response.body.page.total;
         setTimeout(() => {
           var cellArr = document.getElementsByClassName("cell");
           var arr = Array.from(cellArr);
-          arr.forEach(item => {
+          arr.forEach((item) => {
             item.style.lineHeight =
               (document.getElementsByTagName("html")[0].clientHeight - 260) /
                 11 +
@@ -480,10 +582,10 @@ export default {
       this.getUserList();
     },
     addAUser() {
-      this.$refs.addFormRef.validate(valid => {
+      this.$refs.addFormRef.validate((valid) => {
         if (!valid) return;
         const query = [{ ...this.addUserForm }];
-        postAddUser(query).then(response => {
+        postAddUser(query).then((response) => {
           if (response.code !== 0) {
             return this.$message.error("添加用户失败，请联系系统管理员");
           }
@@ -491,7 +593,7 @@ export default {
           this.$notify({
             title: "成功",
             type: "success",
-            message: "添加成功!"
+            message: "添加成功!",
           });
           this.addUserDialogVisible = false;
           this.getUserList();
@@ -503,18 +605,29 @@ export default {
       this.$refs.addFormRef.resetFields();
     },
     showEditDialog(id) {
-      const { data: res } = getUserInfo(id).then(response => {
-        // console.log(response)
-        if (response.code !== 0) return this.$message.error("获取用户信息失败");
-        this.editUserForm = response.body.data;
-        console.log(this.editUserForm);
-        this.editUserDialogVisible = true;
+      getUserInfo(id).then((response) => {
+       
+        this.$nextTick(()=>{ 
+          console.log("response", response.body.data);
+          if (response.code !== 0) return this.$message.error("获取用户信息失败");
+          // Object.assign(this.editUserForm,response.body.data);
+          // console.log('before editUserForm',this.editUserForm);
+          // console.log("editUserForm1", this.editUserForm);
+          this.editUserForm = { ...response.body.data, ...{ password: "...." } };
+          console.log("response.data", response.body.data);
+          console.log("editUserForm2", this.editUserForm);
+          this.editUserDialogVisible = true;
+        })
       });
     },
     editAUser() {
-      this.$refs.editFormRef.validate(valid => {
+      this.$refs.editFormRef.validate((valid) => {
         if (!valid) return;
-        updateUser([{ ...this.editUserForm }]).then(response => {
+        if(this.editUserForm.password === '....'){
+          this.editUserForm.password = null;
+        }
+        console.log("submitting edit", this.editUserForm);
+        updateUser([{ ...this.editUserForm }]).then((response) => {
           // console.log(response)
           if (response.code !== 0) {
             return;
@@ -522,7 +635,7 @@ export default {
           this.$notify({
             title: "成功",
             type: "success",
-            message: "更新成功!"
+            message: "更新成功!",
           });
           this.editUserDialogVisible = false;
           this.getUserList();
@@ -544,16 +657,16 @@ export default {
       this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       }).then(() => {
-        deleteUser(ids).then(response => {
+        deleteUser(ids).then((response) => {
           if (response.code !== 0) {
             return;
           }
           this.$notify({
             title: "成功",
             type: "success",
-            message: "删除成功!"
+            message: "删除成功!",
           });
           this.deleteUserDialogVisible = false;
           this.deleteUserId = 0;
@@ -567,12 +680,17 @@ export default {
     resetQuery() {
       this.queryName = "";
       this.getUserList();
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang='scss'>
+.editpasswdlabel{
+  .el-form-item__label{
+    padding-left: 10px;
+  }
+}
 .userManage {
   padding: 20px;
   .el-button--text {
