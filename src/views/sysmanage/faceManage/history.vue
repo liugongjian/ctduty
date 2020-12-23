@@ -78,10 +78,10 @@
                       <span>{{ val.username || "未知" }}</span>
                       <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
                       <el-tag
-                        :type="item.nameList === '1' ? 'success' : item.nameList === '2' ? 'danger' : ''"
+                        :type="val.label === 1 ? 'success' : val.label === 2 ? 'danger' : ''"
                         style="margin-top:3px;margin-left:3px;"
                         size="mini"
-                      >{{ val.nameList === "1" ? "白名单" : val.nameList === "2" ? "黑名单" : "其他" }}</el-tag>
+                      >{{ val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他" }}</el-tag>
                     </div>
                     <div class="bottom clearfix">
                       <div
