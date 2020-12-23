@@ -58,7 +58,7 @@ service.interceptors.response.use(
      */
   response => {
     const res = response.data
-    if (res.code == 50000) {
+    if (res.code === 50000) {
       if (res.code === 50000 && res.message === 'Token not found.' || res.code === 50000 && res.message === 'Token unauthorized.') {
         logout().then((res) => {
           Cookies.remove('token')
@@ -76,6 +76,8 @@ service.interceptors.response.use(
       } else {
         return Promise.reject(response.data)
       }
+    } else if (res.code === 100024) {
+      window.location.href = '/login'
     } else {
       return response.data
     }
