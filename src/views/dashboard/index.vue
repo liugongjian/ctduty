@@ -401,13 +401,14 @@ export default {
           map: '渭南',
           roam: true,
           scaleLimit: {
-            min: 0.55,
-            max: 0.55
+            min: 4,
+            max: 12
           },
-          boundingCoords: [
-            [109.934181, 34.6],
-            [110.09207, 34.46]
-          ],
+          // boundingCoords: [
+          //   [109.934181, 34.6],
+          //   [110.09207, 34.46]
+          // ],
+          center: ['110.0005', '34.5359'],
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
@@ -442,7 +443,7 @@ export default {
               }
             }
           ],
-          zoom: 1.2,
+          zoom: 6,
           itemStyle: {
             show: false,
             normal: {
