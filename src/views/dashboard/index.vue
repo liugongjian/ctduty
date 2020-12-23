@@ -292,7 +292,7 @@ export default {
         }
       }
       fetchNowInfo(params).then(res => {
-        let rateRecode = 0.0 ;
+        let rateRecode = 0.0
         this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
         this.offCamera = res.body.data.offlineCameras
         this.alarmTime = res.body.data.todayAlerts
@@ -310,35 +310,32 @@ export default {
         })
         this.getMap(this.mapShowData)
         res.body.data.alertStatisByTypeList.forEach(item => {
-          
-          if(rateRecode + Number.parseFloat((item.typeRate * 100).toFixed(1)) < 100){
-                
-                rateRecode += Number.parseFloat((item.typeRate * 100).toFixed(1));
-                console.log(rateRecode);
-                if (item.type === '1') {
-                  this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1)); 
-                } else if (item.type === '2') {
-                  this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
-                } else {
-                  this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
-                }
-          }else{
-                if (item.type === '1') {
-                  this.drawPie('man', '人员', '#1890FF', (100 - rateRecode).toFixed(1)); 
-                } else if (item.type === '2') {
-                  this.drawPie('car', '机动车', '#5DDECF', (100 - rateRecode).toFixed(1))
-                } else {
-                  this.drawPie('bicycle', '非机动车', '#4DCB73', (100 - rateRecode).toFixed(1))
-                }
-
+          if (rateRecode + Number.parseFloat((item.typeRate * 100).toFixed(1)) < 100) {
+            rateRecode += Number.parseFloat((item.typeRate * 100).toFixed(1))
+            // console.log(rateRecode)
+            if (item.type === '1') {
+              this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1))
+            } else if (item.type === '2') {
+              this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
+            } else {
+              this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
+            }
+          } else {
+            if (item.type === '1') {
+              this.drawPie('man', '人员', '#1890FF', (100 - rateRecode).toFixed(1))
+            } else if (item.type === '2') {
+              this.drawPie('car', '机动车', '#5DDECF', (100 - rateRecode).toFixed(1))
+            } else {
+              this.drawPie('bicycle', '非机动车', '#4DCB73', (100 - rateRecode).toFixed(1))
+            }
           }
-            // if (item.type === '1') {
-            //       this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1)); 
-            //     } else if (item.type === '2') {
-            //       this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
-            //     } else {
-            //       this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
-            // }
+          // if (item.type === '1') {
+          //       this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1));
+          //     } else if (item.type === '2') {
+          //       this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
+          //     } else {
+          //       this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
+          // }
         })
       })
     },
@@ -392,7 +389,7 @@ export default {
           top: 20,
           selectedMode: false, // 取消图例上的点击事件
           icon: 'circle',
-          data: ['小于1000', '小于2000', '大于3000'],
+          data: ['告警数小于1000', '告警数小于2000', '告警数大于3000'],
           textStyle: {
             color: '#000'
           }
@@ -509,7 +506,9 @@ export default {
                 color: '#000'
               },
               formatter: function(item) {
-                return item.name + `(${item.data.value[2]}次)`
+                console.log(item)
+                // return item.name + `(${item.data.value[2]}次)`
+                return `${item.name} ${item.data.value[2]}次`
               }
             },
             emphasis: {
@@ -565,16 +564,16 @@ export default {
           }
         },
         {
-          name: '小于1000',
+          name: '告警数小于1000',
           type: 'bar',
           color: '#1890FF'
         },
         {
-          name: '小于2000',
+          name: '告警数小于2000',
           type: 'bar',
           color: '#FF9832'
         }, {
-          name: '大于3000',
+          name: '告警数大于3000',
           type: 'bar',
           color: '#52C41A'
         }
