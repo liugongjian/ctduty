@@ -144,9 +144,9 @@
         <el-form-item label="姓名" prop="name">
           <el-input v-model="editUserForm.name" type="text"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <!-- <el-form-item label="密码" prop="password">
           <el-input v-model="editUserForm.password" type="password"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editUserForm.phone" type="text"></el-input>
         </el-form-item>
@@ -290,12 +290,12 @@ export default {
           } */
         ],
         permissionId: [
-          { required: true, message: "权限不能为空", trigger: "blur" }
+          { required: true, message: "权限不能为空", trigger: "change" }
         ],
         departmentId: [
-          { required: true, message: "部门不能为空", trigger: "blur" }
+          { required: true, message: "部门不能为空", trigger: "change" }
         ],
-        postId: [{ required: true, message: "岗位不能为空", trigger: "blur" }]
+        postId: [{ required: true, message: "岗位不能为空", trigger: "change" }]
       },
       addUserForm: {
         username: "",
@@ -310,7 +310,7 @@ export default {
         id: 0,
         username: "",
         name: "",
-        password: "",
+        // password: "",
         permissionId: "",
         departmentId: null,
         postId: null,
