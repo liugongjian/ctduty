@@ -147,17 +147,17 @@ require('echarts/lib/component/title')
 import { fetchalarmList, notifyState } from '@/api/alarm'
 import { fetchAllCameraList } from '@/api/camera'
 import SvgIcon from '@/components/SvgIcon'
-import CanvasDialog from '@/components/CanvasDialog'
+// import CanvasDialog from '@/components/CanvasDialog'
 import { play } from '@/api/monitor'
 import { fetchSinMan } from '@/api/dashboard'
 import { getPushSet } from '@/api/alarm.js'
 import Pagination from '@/components/Pagination'
-import { renderTime } from '@/utils'
+// import { renderTime } from '@/utils'
 import VueAMap from 'vue-amap'
 import moment from 'moment'
 import hintMusic from './assets/hint.mp3'
-import newarrow from './assets/newarrow.png'
-import { mapGetters } from 'vuex'
+// import newarrow from './assets/newarrow.png'
+// import { mapGetters } from 'vuex'
 const amapManager = new VueAMap.AMapManager('container', {
   resizeEnable: true
 })
@@ -705,6 +705,13 @@ export default {
     width: 100%;
     position: relative;
     overflow: hidden;
+     /deep/.el-tabs__item{
+       color: #666;
+       font-weight: bolder;
+       &.is-active{
+        color: #333;
+     }
+     }
   }
   .imageDialog{
     /deep/.el-dialog__header{
@@ -895,6 +902,7 @@ export default {
         }
       }
   }
+
 }
 
 </style>
