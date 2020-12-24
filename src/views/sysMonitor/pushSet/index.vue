@@ -32,7 +32,7 @@
       <el-form-item label="弹窗推送服务" prop="deliveryPush">
         <el-switch v-model="form.deliveryPush" style="margin-top:7px;"></el-switch>
       </el-form-item>
-      <el-form-item label="告警提示音">
+      <el-form-item v-if="form.deliveryPush" label="告警提示音">
         <el-switch v-model="isHint" style="margin-top:7px;"></el-switch>
       </el-form-item>
       <el-form-item label="短信服务" prop="deliveryMessage">
