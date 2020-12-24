@@ -82,7 +82,7 @@
               历史告警 >
             </a>
           </div>
-          <div class="alarmStatus">
+          <div v-if="ifReloadBtn" class="alarmStatus">
             <div :class="activeAlarmKind === 'all' ? 'active' : ''" class="allAlarm" @click="changeTab('all')">
               全部({{ todayAlarms }})
             </div>
@@ -93,41 +93,45 @@
               未处理({{ todayAlarms - todayHandleAlarms }})
             </div>
           </div>
-          <div
-            v-if="alarmListData.length>0"
-            class="alarmList"
-            @scroll="listenScroll">
+          <el-row
+            v-loading="loading"
+          >
             <div
-              v-for="(item,index) in alarmListData"
-              :key="item.id"
-              :class="index !== alarmListData.length - 1 ? 'line' : ''"
-              class="listInfo"
-              @click="()=>showDialog(item)">
-              <div class="iconBox">
-                <!-- <svg-icon v-if="!item.handlerId" icon-class="untreated" class="untreatedIcon"/> -->
-                <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
-                <svg-icon
-                  v-else-if="item.state === 1"
-                  class="untreatedIcon"
-                  icon-class="untreated2"
-                />
-                <svg-icon
-                  v-else-if="item.handlerId === null"
-                  class="untreatedIcon"
-                  icon-class="untreated"
-                />
-              </div>
-              <div class="infoBox">
-                <p>{{ item.camera.address }}</p>
-                <span>
-                  <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
-                  <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
-                  <svg-icon v-else-if="item.type === 3" class="trafficSvg" icon-class="bicycle" />
-                <span class="trafficTime">{{ formatTimeYear(item.createTime) }}</span></span>
+              v-if="alarmListData.length>0"
+              class="alarmList"
+              @scroll="listenScroll">
+              <div
+                v-for="(item,index) in alarmListData"
+                :key="item.id"
+                :class="index !== alarmListData.length - 1 ? 'line' : ''"
+                class="listInfo"
+                @click="()=>showDialog(item)">
+                <div class="iconBox">
+                  <!-- <svg-icon v-if="!item.handlerId" icon-class="untreated" class="untreatedIcon"/> -->
+                  <svg-icon v-if="item.state === 0" class="deal" icon-class="deal" />
+                  <svg-icon
+                    v-else-if="item.state === 1"
+                    class="untreatedIcon"
+                    icon-class="untreated2"
+                  />
+                  <svg-icon
+                    v-else-if="item.handlerId === null"
+                    class="untreatedIcon"
+                    icon-class="untreated"
+                  />
+                </div>
+                <div class="infoBox">
+                  <p>{{ item.camera.address }}</p>
+                  <span>
+                    <svg-icon v-if="item.type === 1" class="trafficSvg" icon-class="people" />
+                    <svg-icon v-else-if="item.type === 2" class="trafficSvg" icon-class="car" />
+                    <svg-icon v-else-if="item.type === 3" class="trafficSvg" icon-class="bicycle" />
+                  <span class="trafficTime">{{ formatTimeYear(item.createTime) }}</span></span>
+                </div>
               </div>
             </div>
-          </div>
-          <div v-else class="noData">暂无告警</div>
+            <div v-else-if="alarmListData.length===0 && !loading" class="noData">暂无告警</div>
+          </el-row>
         </div>
       </div>
     </div>
@@ -220,7 +224,9 @@ export default {
       timer: null,
       timerOut: null,
       userId: '',
-      isHint: ''
+      isHint: '',
+      loading: false,
+      ifReloadBtn: true
     }
   },
   async created() {
@@ -336,6 +342,7 @@ export default {
               const ratePercent = alertHandleRate * 100
               this.drawPanel(ratePercent)
               this.alarmListData = []
+              this.loading = true
               // this.getalarmList()
               const param = {
                 cascade: true,
@@ -371,6 +378,7 @@ export default {
               if (this.pushStata && this.pushStata.deliveryPush && ifInTime()) {
                 fetchalarmList(param).then(res => {
                   if (res.code === 0) {
+                    this.loading = false
                     this.showDialogInfo = res.body.data[0]
                     this.ifShowDialog = true
                     if (this.isHint) {
@@ -388,6 +396,12 @@ export default {
                     this.alarmListDataTotal = res.body.page.total
                     const o = amapManager.getMap()
                     o.setZoomAndCenter(15, [this.showDialogInfo.camera.longitude + 0.008, this.showDialogInfo.camera.latitude + 0.006])
+
+                    this.ifReloadBtn = false
+                    this.$nextTick(function() {
+                      this.ifReloadBtn = true
+                      this.activeAlarmKind = 'all'
+                    })
                   }
                 })
               } else {
@@ -398,6 +412,12 @@ export default {
                       this.alarmListData.push(dataList[val])
                     }
                     this.alarmListDataTotal = res.body.page.total
+                    this.loading = false
+                    this.ifReloadBtn = false
+                    this.$nextTick(function() {
+                      this.ifReloadBtn = true
+                      this.activeAlarmKind = 'all'
+                    })
                   }
                 })
               }
@@ -570,6 +590,7 @@ export default {
       }
     },
     getalarmList() {
+      this.loading = true
       const tempParam = () => {
         const val = {
           field: 'create_time',
@@ -635,6 +656,7 @@ export default {
             this.alarmListData.push(dataList[val])
           }
           this.alarmListDataTotal = res.body.page.total
+          this.loading = false
         }
       })
     },
