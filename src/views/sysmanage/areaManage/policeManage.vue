@@ -19,13 +19,18 @@
         prop="name"
       >
         <template slot-scope="scope" class="name">
-          <span>{{ scope.row.name }}</span>
-          <!--  <div v-if="scope.row.status === 1" class="nomalStatus">正常</div>
-          <div v-else-if="scope.row.status === 0" class="stopStatus">已暂停</div>
-          <div v-else-if="scope.row.status === -2" class="closeStatus">已关闭</div>-->
+              <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
+                  <span>{{ ellipsis(scope.row.name) }}</span>
+              </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="派出所名称" prop="address"></el-table-column>
+      <el-table-column label="派出所名称" prop="address">
+        <template slot-scope="scope" class="name">
+          <el-tooltip class="item" effect="dark" :content="scope.row.address" placement="top-start">
+            <span>{{ ellipsis(scope.row.address) }}</span>
+          </el-tooltip>
+      </template>
+      </el-table-column>
     </el-table>
     <pagination
       v-show="total>0"
@@ -227,6 +232,14 @@ export default {
     this.getAllPolice()
   },
   methods: {
+
+    ellipsis(value) {
+      if (!value) return "";
+      if (value.length > 10) {
+        return value.slice(0, 10) + "...";
+      }
+      return value;
+    },
     getAllPolice() {
       getAllPolice().then(res => {
         res.body.data.map(item => {
@@ -441,8 +454,11 @@ export default {
 </script>
 
 <style lang='scss'>
+
+
 .policemanage {
   padding: 0px 20px;
+
   .title {
     width: 150px;
     height: 100px;

@@ -40,7 +40,7 @@
                   :remote-method="getCameraList"
                   :loading="loading"
                   class="searchinp"
-                  style="width:205px;font-size:12px;"
+                  style="width:203px;font-size:12px;"
                   filterable
                   remote
                   placeholder="请输入摄像头名称"
@@ -70,9 +70,9 @@
                   multiple
                   placeholder="请选择事件名称"
                   min-width="300px"
-                  collapse-tags
                   style="margin-bottom: 10px;"
                   @change="checkModel"
+                  class="eventSelect"
                 >
                   <el-option
                     v-for="item in algorithm"
@@ -86,7 +86,7 @@
                 </div>
                 <el-select
                   v-model="formInline.typeValue"
-                  style="width:165px; margin-right: 10px"
+                  style="width:260px; margin-right: 10px"
                   size="mini"
                   class="filter-item"
                   @change="checkModel"
@@ -126,10 +126,11 @@
               <div class="block filter-item">
                 <el-time-picker
                   v-model="startTime"
+                  popper-class="picker-drop"
                   :picker-options="{
                     selectableRange:'00:00:00-23:59:00'
                   }"
-                  style="width: 210px, height: 36px;"
+                  style="width: 260px, height: 36px;"
                   size="mini"
                   format="HH:mm"
                   value-format="HH:mm"
@@ -145,6 +146,7 @@
                     selectableRange:startTime+ ':00' + '-23:59:00'
                   }"
                   style="width:95px, height: 36px"
+                  popper-class="picker-drop"
                   size="mini"
                   format="HH:mm"
                   value-format="HH:mm"
@@ -690,8 +692,8 @@ export default {
       this.algorithmList.typeValue = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const e = this.currentTab + ' ' + this.endTime + ':00'
+      const s = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
+      const e = this.currentTab + ' ' + ( this.endTime  || '23:59' ) + ':00'
       this.getList(s, e, 'all')
       // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
       // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
@@ -776,8 +778,8 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      const s = this.currentTab + ' ' + this.startTime + ':00'
-      const end = this.currentTab + ' ' + this.endTime + ':00'
+      const s = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
+      const end = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
       const h1 = this.algorithmList.typeValue
       const h2 = this.algorithmNameList.typeValue
       const h = {
@@ -798,8 +800,8 @@ export default {
     deleteAlert() {
       const params = [this.rowId]
       deleteAlertInfo(params).then(() => {
-        const s = this.currentTab + ' ' + this.startTime + ':00'
-        const end = this.currentTab + ' ' + this.endTime + ':00'
+        const s = this.currentTab + ' ' + ( this.startTime || '00:00' )  + ':00'
+        const end = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
         const h = this.formInline.typeValue
         this.$notify({
           title: '成功',
@@ -823,11 +825,11 @@ export default {
         }
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
-        const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
-        const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
+        const s = this.tabsArr[0] + ' ' + ( this.startTime || '00:00' ) + ':00'
+        const e = this.tabsArr[0] + ' ' + ( this.endTime || '23:59' ) + ':00'
         const h = this.formInline.typeValue
-        const s1 = this.startDate + 'T' + this.startTime + ':00.000Z'
-        const e1 = this.endDate + 'T' + this.endTime + ':00.000Z'
+        const s1 = this.startDate + 'T' + ( this.startTime || '00:00' ) + ':00.000Z'
+        const e1 = this.endDate + 'T' + ( this.endTime || '23:59' ) + ':00.000Z'
         this.getTimeAllTotal(s1, e1, h)
         this.getList(s, e, h)
       })
@@ -983,8 +985,8 @@ export default {
       ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + ' ' + this.startTime + ':00'
-        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const s1 = this.currentTab + ' ' +  ( this.startTime || '00:00' )  + ':00'
+        const end1 = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
         const h1 = this.formInline.typeValue
         this.oldSize = this.limit
         this.getList(s1, end1, h1)
@@ -1010,8 +1012,8 @@ export default {
       ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + ' ' + this.startTime + ':00'
-        const end1 = this.currentTab + ' ' + this.endTime + ':00'
+        const s1 = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
+        const end1 = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
         const h1 = this.formInline.typeValue
         this.oldSize = this.limit
         this.getList(s1, end1, h1)
@@ -1029,7 +1031,14 @@ export default {
 </script>
 
 <style lang='scss'>
+.picker-drop{
+    width: 260px;
+}
 .alalist {
+  .eventSelect,.el-time-picker{
+    width: 260px !important;
+  }
+
   .el-input__inner {
     text-indent: 0px;
     font-size: 12px !important;
@@ -1087,7 +1096,7 @@ export default {
         padding-right: 0px !important;
       }
       .el-date-editor--time {
-        width: 165px !important;
+        width: 260px !important;
       }
     }
      .pull-right.alarmmsgright {

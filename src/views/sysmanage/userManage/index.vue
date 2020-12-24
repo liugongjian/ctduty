@@ -173,14 +173,14 @@
           <el-input v-model="editUserForm.username" type="text"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="editUserForm.name" type="text"></el-input>
+          <el-input v-model="editUserForm.name" type="text" autocomplete="off"></el-input>
         </el-form-item>
         <!-- <el-form-item label="密码" prop="password">
           <el-input v-model="editUserForm.password" type="password"></el-input>
         </el-form-item> -->
         <el-form-item label="密码" prop="password" class="editpasswdlabel">
           <el-input
-            autocomplete="off"
+            auto-complete="new-password"
             v-model="editUserForm.password"
             type="password"
             @focus="resetPassword"
