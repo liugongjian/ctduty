@@ -32,8 +32,8 @@
         <div id="trend" :class="isFullscreen?'smaEcarts':''">
           <div class="dash-title">告警趋势</div>
           <div class="trendTitleBox">
-            <p class="trendTitle">目标评估</p>
-            <p class="trenddes" style="margin-top: 8px">{{ trendText }}</p>
+            <span class="trendTitle">目标评估</span>
+            <span class="trenddes" >{{ trendText }}</span>
           </div>
           <div v-if="isScreenChange" id="alarmLine" :style="{width: '100%'}" class="lineEcharts"></div>
         </div>
@@ -173,7 +173,7 @@ export default {
       document.getElementById('map').style.height = this.rowHeight * 7.4 + 'px'
       document.getElementById('mapChart').style.height = this.rowHeight * 7.4 - 100 + 'px'
       document.getElementById('trend').style.height = this.rowHeight * 3.5 + 'px'
-      document.getElementById('alarmLine').style.height = this.rowHeight * 3.5 - 90 + 'px'
+      document.getElementById('alarmLine').style.height = this.rowHeight * 3.5 - 70 + 'px'
       document.getElementById('dispose').style.height = this.rowHeight * 3.5 + 'px'
       document.getElementById('dispose').style.marginTop = this.rowHeight * 0.4 + 'px'
       document.getElementById('panel').style.height = this.rowHeight * 3.5 - 40 + 'px'
@@ -942,7 +942,7 @@ export default {
           // bottom: '18%'
           left: 20,
           top: 20,
-          bottom: 20,
+          bottom: 10,
           right: 20,
           containLabel: true
 
@@ -1302,7 +1302,8 @@ export default {
     // height: 30%;
     background-color: #fff;
     .trendTitleBox {
-      height: 40px;
+      height: 20px;
+      margin-top:10px;
       .trendTitle {
       padding: 0;
       font-size: 12px;

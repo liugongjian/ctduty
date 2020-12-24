@@ -129,6 +129,7 @@
                   :picker-options="{
                     selectableRange:'00:00:00-23:59:00'
                   }"
+                  :clearable="false"
                   style="width: 210px, height: 36px;"
                   size="mini"
                   format="HH:mm"
@@ -144,6 +145,7 @@
                   :picker-options="{
                     selectableRange:startTime+ ':00' + '-23:59:00'
                   }"
+                  :clearable="false"
                   style="width:95px, height: 36px"
                   size="mini"
                   format="HH:mm"
@@ -709,8 +711,8 @@ export default {
         this.currentTab = this.defaultTab
       }
 
-      const s1 = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
-      const end1 = this.currentTab + ' ' + ( this.endTime  || '23:59' ) + ':00'
+      const s1 = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+      const end1 = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
       // console.log(s1);
       // console.log(end1);
       const h1 = this.algorithmList.typeValue
@@ -726,9 +728,9 @@ export default {
       const s =
         this.tabsArr[this.tabsArr.length - 1] +
         'T' +
-        ( this.startTime || '00:00' ) +
+        (this.startTime || '00:00') +
         ':00.000Z'
-      const end = this.tabsArr[0] + 'T' + ( this.endTime  || '23:59' ) + ':00.000Z'
+      const end = this.tabsArr[0] + 'T' + (this.endTime || '23:59') + ':00.000Z'
 
       this.getTimeAllTotal(s, end, h1)
     },
@@ -789,8 +791,8 @@ export default {
     },
     tabChangeQuery(e) {
       this.currentTab = e.label
-      const s = e.label + ' ' + ( this.startTime || '00:00' ) + ':00'
-      const end = e.label + ' ' + ( this.endTime || '23:59' ) + ':00'
+      const s = e.label + ' ' + (this.startTime || '00:00') + ':00'
+      const end = e.label + ' ' + (this.endTime || '23:59') + ':00'
       const h = this.formInline.typeValue
       this.page = 1
       this.getList(s, end, h)
