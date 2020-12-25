@@ -122,7 +122,7 @@
               <el-image :src="item.imageCut" class="image" />
               <div class="card-desp">
                 <span class="card-desp-title">
-                  <span>{{ item.license || '' }}</span>
+                  <span>{{ item.license || '未知' }}</span>
                   <span>{{ item.plateType? `${item.plateType}车牌` : '' }}</span>
                   <el-tag
                     :type="item.label === '1' ? 'success' : item.label === '2' ? 'danger' : ''"
@@ -180,7 +180,7 @@ import Pagination from '@/components/Pagination'
 import 'element-ui/lib/theme-chalk/index.css'
 import moment from 'moment'
 import { downLoadByUrl } from '@/utils'
-import { getAlertInfos,getPushSet } from '@/api/alarm'
+import { getAlertInfos, getPushSet } from '@/api/alarm'
 import {
   addCarData
 } from '@/api/dm'
@@ -192,8 +192,8 @@ const timeFormate = 'HH:mm:ss'
 const dateFormat = 'YYYY-MM-DD'
 const initialFilterProps = {
   dateRange: [moment().subtract(29, 'days'), moment()],
-  startTime: "",//moment('02:00:00', timeFormate),
-  endTime: "",//moment('22:00:00', timeFormate)
+  startTime: '', // moment('02:00:00', timeFormate),
+  endTime: '' // moment('22:00:00', timeFormate)
 }
 export default {
   components: { Pagination },
@@ -273,7 +273,7 @@ export default {
       //   this[key] = initialFilterProps[key]
       // })
       // this.onSearch()
-      this.dateRange=[moment().subtract(29, 'days'), moment()]
+      this.dateRange = [moment().subtract(29, 'days'), moment()]
       const [startDate, endDate] = this.dateRange
       this.tabsArr = this.getDayAll(moment(startDate).format(dateFormat), moment(endDate).format(dateFormat)).reverse()
       this.defaultTab = this.tabsArr[0]
@@ -282,17 +282,17 @@ export default {
     },
     getPushSetTimeAndSearch() {
       getPushSet().then(response => {
-        const setting = response.body.data.setting;
-        let parseSetting;
+        const setting = response.body.data.setting
+        let parseSetting
         try {
-          parseSetting = JSON.parse(setting);
+          parseSetting = JSON.parse(setting)
         } catch (err) {
-          parseSetting = {};
+          parseSetting = {}
         }
-        this.startTime = moment(parseSetting.date1, timeFormate);
-        this.endTime = moment(parseSetting.date2, timeFormate);
+        this.startTime = moment(parseSetting.date1, timeFormate)
+        this.endTime = moment(parseSetting.date2, timeFormate)
         this.onSearch()
-      });
+      })
     },
     onSearch() {
       const [startDate, endDate] = this.dateRange

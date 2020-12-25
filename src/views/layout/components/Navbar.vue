@@ -100,19 +100,20 @@
           </el-form-item>
           <el-form-item label="内容">
             <span
-              style="margin-left:10px;min-height:100px;margin-top:8px;padding:0 10px;border-radius: 4px;display:block;border:1px dashed #ccc;width: 300px;"
+              style="min-height:100px;margin-top:8px;padding:0 10px;border-radius: 4px;display:block;border:1px dashed #ccc;width: 310px;"
               v-html="noticeForm.content"
             ></span>
           </el-form-item>
           <el-form-item label="签名档">
-            <el-select v-model="noticeForm.signatureId" style="width:310px;">
+            <!-- <el-select v-model="noticeForm.signatureId" style="width:310px;">
               <el-option
                 v-for="item in departmentInfo"
                 :value="item.id"
                 :label="item.name"
                 :key="item.id"
               ></el-option>
-            </el-select>
+            </el-select> -->
+            <div>{{ noticeForm.department.name }}</div>
           </el-form-item>
           <!-- <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
@@ -329,6 +330,7 @@ export default {
     handleCommand(command) {
       this.dialogVisable = true
       this.noticeForm = command
+      console.log(command)
     },
     screenfull(e) {
       e.path.forEach(item => {
