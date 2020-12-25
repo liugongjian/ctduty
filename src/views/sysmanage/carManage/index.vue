@@ -685,6 +685,12 @@ export default {
         ]
         addCarData(params)
           .then(res => {
+            if(res.code == 100025) {
+              return this.$message.error("车牌号已存在,请勿重复添加")
+            }
+            if (res.code !== 0) {
+              return this.$message.error("添加车牌号失败，请联系系统管理员");
+            }
             this.getList()
             this.dialogVisable = false
             this.$notify({

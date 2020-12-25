@@ -586,6 +586,9 @@ export default {
         if (!valid) return;
         const query = [{ ...this.addUserForm }];
         postAddUser(query).then((response) => {
+          if(response.code == 100025) {
+            return this.$message.error("用户名已存在，请勿重复添加")
+          }
           if (response.code !== 0) {
             return this.$message.error("添加用户失败，请联系系统管理员");
           }
