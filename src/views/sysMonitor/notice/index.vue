@@ -174,8 +174,8 @@
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="内容">
-          <quill-editor ref="myQuillEditor" v-model="addNoticeForm.content" :options="editorOption"></quill-editor>
+        <el-form-item label="内容" prop="content">
+          <quill-editor v-model="addNoticeForm.content" :options="editorOption" @change="onEditorChange($event,addNoticeForm.content)"></quill-editor><br/>
         </el-form-item>
 
         <el-form-item class="select" label="签名档">
@@ -248,7 +248,8 @@
             ref="myQuillEditor"
             v-model="editNoticeForm.content"
             :options="editorOption"
-          ></quill-editor>
+            @change="onEditorChange($event,editNoticeForm.content)"
+          ></quill-editor><br/>
         </el-form-item>
         <el-form-item v-if="modifiable==='false'" label="内容">
           <div v-html="editNoticeForm.content"></div>
@@ -314,14 +315,14 @@ export default {
       searchName: "",
       searchUserIds: [],
       addFormRules: {
-        title: [{ required: true, message: "标题不能为空", trigger: "blur" }],
+        title: [{ required: true, message: "标题不能为空", trigger: "blur" },{min: 1, max: 40,message: "标题不能超过40个字",trigger: "blur"}],
         creatorId: [
           { required: true, message: "创建者不能为空", trigger: "blur" }
         ],
         type: [{ required: true, message: "类型不能为空", trigger: "change" }],
         state: [
           { required: true, message: "紧急程度不能为空", trigger: "change" }
-        ]
+        ],
       },
       total: 0,
       departmentInfo: [],
@@ -377,26 +378,27 @@ export default {
       deleteNoticeTitle: "",
       deleteNoticerId: 0,
       modifiable: false,
-      tableLoading: null
+      tableLoading: null,
+      quillContentLength:0
     };
   },
   watch: {
-    "addNoticeForm.content"(v) {
-      if (v.length > 500) {
-        this.$message({
-          type: "warning",
-          message: "内容长度不能大于500!"
-        });
-      }
-    },
-    "editNoticeForm.content"(v) {
-      if (v.length > 500) {
-        this.$message({
-          type: "warning",
-          message: "内容长度不能大于500!"
-        });
-      }
-    },
+    // "addNoticeForm.content"(v) {
+    //   if (v.length > 500) {
+    //     this.$message({
+    //       type: "warning",
+    //       message: "内容长度不能大于500!"
+    //     });
+    //   }
+    // },
+    // "editNoticeForm.content"(v) {
+    //   if (v.length > 500) {
+    //     this.$message({
+    //       type: "warning",
+    //       message: "内容长度不能大于500!"
+    //     });
+    //   }
+    // },
     limit(v) {
       this.page = 1;
       this.limit = v;
@@ -408,6 +410,20 @@ export default {
     this.getNoticeList();
   },
   methods: {
+    onEditorChange(event,content){
+      if(content = ""){
+        this.quillContentLength = 0;
+      }else{
+        this.quillContentLength = event.quill.getLength() - 1;
+      }
+      if(event.quill.getLength() - 1 > 200 ){
+        this.$message({
+          type: "warning",
+          message: "内容长度不能大于200字!"
+        });
+      }
+      event.quill.deleteText(200,4);
+    },
     getDepartmentList() {
       getDepartments()
         .then(res => {

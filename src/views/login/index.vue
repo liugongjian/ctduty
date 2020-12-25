@@ -197,12 +197,14 @@ export default {
   }
 }
 </script>
-
+<style lang="scss" scoped>
+  body{overflow-y: hidden;}
+</style>
 <style lang="scss">
 
 body {
   height:100%;
-  // overflow-y: hidden;
+  
   .loginContainer {
     .el-input__inner {
       text-indent: 15px;

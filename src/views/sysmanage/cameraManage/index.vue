@@ -68,61 +68,65 @@
                 <div class="infotitle">
                   摄像头信息
                 </div>
-                <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
-                  暂无数据
-                </div>
-                <el-form v-else :model="form" label-position="right">
-                  <el-form-item class="formMargin" label="摄像头ID：">
-                    <el-tooltip :content="form.id+''" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <el-form-item class="formMargin" label="负责人：">
-                    <el-tooltip :content="form.inCharge.name" placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.name }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <el-form-item class="formMargin" label="添加人：">
-                    <el-tooltip :content="form.creator.name " placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.name ? form.creator.name: '-' }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <el-form-item class="formMargin" label="经纬度信息：">
-                    <el-tooltip :content="form.longitude+', '+form.latitude" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude+ ', ' + form.latitude }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <!-- <el-form-item label="纬度信息：">
-                    <el-tooltip :content="form.latitude" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
-                    </el-tooltip>
-                  </el-form-item> -->
-                  <el-form-item class="formMargin" label="地址：">
-                    <el-tooltip :content="form.address" placement="top">
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <el-form-item class="formMargin" label="添加时间：">
-                    <el-tooltip :content="form.createTime" placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <!-- <el-form-item class="formMargin" label="视频流信息：">
-                    <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
-                      <svg-icon v-if="form.isDeal" class="deal" icon-class="deal" />
-                      <svg-icon v-else class="untreated" icon-class="untreated" />
-                      {{ form.isDeal ? '已处理':'未处理' }}</div>
-                  </el-form-item> -->
-                  <el-form-item class="formMargin" label="告警信息：">
-                    <el-tooltip :content="form.dealSum+''" placement="top" disabled>
-                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
-                    </el-tooltip>
-                  </el-form-item>
-                  <div>
-                    <el-button style="margin-left: 60px;" @click="editDialog(form)">编辑</el-button>
-                    <el-button type="text" @click="delAlert">删除</el-button>
+
+                <el-row v-loading="showZwMes">
+                  <div v-if="showZwMes" style="padding:30px;text-align:center;line-height:20px;font-size:14px;color:#999;">
+                    加载中...
                   </div>
-                </el-form>
+                    <el-form v-else :model="form" label-position="right">
+                    <!-- <el-form v-loading="showZwMes"  :model="form" label-position="right"> -->
+                    <el-form-item class="formMargin" label="摄像头ID：">
+                      <el-tooltip :content="form.id+''" placement="top">
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.id }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <el-form-item class="formMargin" label="负责人：">
+                      <el-tooltip :content="form.inCharge.name" placement="top" disabled>
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.inCharge.name }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <el-form-item class="formMargin" label="添加人：">
+                      <el-tooltip :content="form.creator.name " placement="top" disabled>
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.creator.name ? form.creator.name: '-' }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <el-form-item class="formMargin" label="经纬度信息：">
+                      <el-tooltip :content="form.longitude+', '+form.latitude" placement="top">
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.longitude+ ', ' + form.latitude }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <!-- <el-form-item label="纬度信息：">
+                      <el-tooltip :content="form.latitude" placement="top">
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.latitude.toFixed(2) }}</div>
+                      </el-tooltip>
+                    </el-form-item> -->
+                    <el-form-item class="formMargin" label="地址：">
+                      <el-tooltip :content="form.address" placement="top">
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.address }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <el-form-item class="formMargin" label="添加时间：">
+                      <el-tooltip :content="form.createTime" placement="top" disabled>
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <!-- <el-form-item class="formMargin" label="视频流信息：">
+                      <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                        <svg-icon v-if="form.isDeal" class="deal" icon-class="deal" />
+                        <svg-icon v-else class="untreated" icon-class="untreated" />
+                        {{ form.isDeal ? '已处理':'未处理' }}</div>
+                    </el-form-item> -->
+                    <el-form-item class="formMargin" label="告警信息：">
+                      <el-tooltip :content="form.dealSum+''" placement="top" disabled>
+                        <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.dealSum }}</div>
+                      </el-tooltip>
+                    </el-form-item>
+                    <div>
+                      <el-button style="margin-left: 60px;" @click="editDialog(form)">编辑</el-button>
+                      <el-button type="text" @click="delAlert">删除</el-button>
+                    </div>
+                  </el-form>
+                </el-row>
               </div>
               <el-dialog :visible="editVisable" title="编辑" width="520px" @close="editCloseDialog">
                 <el-form :model="editForm" :rules="editFormRules" label-position="right" label-width="130px">
@@ -293,9 +297,11 @@ export default {
     markers(v) {
       setTimeout(() => {
         if (document.getElementsByClassName('markerImg').length) {
-          this.hasMarker = true
+          this.hasMarker = true;
+          
         } else {
-          this.hasMarker = false
+          
+          this.hasMarker = false;
         }
       }, 200)
     },
@@ -412,6 +418,7 @@ export default {
           }
 
           this.loading = false
+          this.showZwMes = false
         })
       } else {
         this.options = []
@@ -638,7 +645,7 @@ export default {
           //   value: this.userId
           // }
         ]
-      }
+      };
       searchCameraList(params).then(res => {
         this.formInfo = res.body.data
         this.markers = []
@@ -671,7 +678,8 @@ export default {
             content: `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg  class='markerImg ${item.id === this.highLightMarkerId ? 'markerClickImg' : ''}'  id=${item.id} t="1599121043094" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2907" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs><style type="text/css"></style></defs><path d="M512.575 66.562c90.534 0 172.507 36.713 231.841 96.047 59.349 59.334 96.046 141.306 96.046 231.841 0 90.551-36.696 172.522-96.046 231.856-59.334 59.349-141.307 96.047-231.841 96.047-90.535 0-172.522-36.698-231.856-96.047C221.383 566.972 184.687 485 184.687 394.45c0-90.536 36.696-172.507 96.032-231.841 59.333-59.334 141.32-96.047 231.856-96.047zM441.27 439.874c16.993-53.202 41.838-91.409 97.927-125.07-60.031-17.437-129.499 48.742-97.927 125.07z m130.284 319.798v53.364l204.863 36.253v109.068H258.999V849.289l194.611-36.253v-53.349a267.622 267.622 0 0 0 58.965 6.563c20.266 0 40-2.282 58.979-6.578z m-58.979-515.121c-41.408 0-78.891 16.785-106.002 43.896-27.127 27.142-43.913 64.624-43.913 106.002 0 41.393 16.786 78.891 43.913 106.017 27.112 27.112 64.594 43.898 106.002 43.898 41.393 0 78.875-16.786 106.002-43.898 27.127-27.127 43.896-64.624 43.896-106.017 0-41.378-16.77-78.86-43.896-106.002-27.127-27.111-64.609-43.896-106.002-43.896z m73.348 76.564c-18.771-18.771-44.711-30.385-73.349-30.385-28.653 0-54.58 11.615-73.35 30.385-18.771 18.757-30.385 44.697-30.385 73.335 0 28.653 11.615 54.58 30.385 73.365 18.771 18.755 44.697 30.385 73.35 30.385 28.638 0 54.578-11.63 73.349-30.385 18.771-18.786 30.372-44.713 30.372-73.365 0-28.638-11.601-54.578-30.372-73.335z m71.424-71.439c-37.038-37.038-88.239-59.956-144.772-59.956-56.55 0-107.751 22.918-144.789 59.956-37.053 37.053-59.956 88.24-59.956 144.774 0 56.55 22.903 107.751 59.956 144.789 37.038 37.051 88.239 59.971 144.789 59.971 56.534 0 107.735-22.92 144.772-59.971C694.4 502.201 717.32 451 717.32 394.45c0-56.534-22.92-107.721-59.973-144.774z" p-id="2908"></path></svg>`
           })
         })
-        this.hasMarker = false
+        this.hasMarker = false;
+        this.showZwMes = false
       })
     }
   }
