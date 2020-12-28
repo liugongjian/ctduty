@@ -146,3 +146,10 @@ export function getPermissions() {
     data: {}
   })
 }
+
+export function checkIfExist(value) {
+  return request({
+    url: `/nvsapi/User/exist/username?username=${value}`,
+    method: 'get'
+  })
+}

@@ -109,3 +109,9 @@ export function addDuty(query) {
     data: query
   })
 }
+export function checkCarLicense(value) {
+  return request({
+    url: `/nvsapi/CarLicense/exist/licenseNo?licenseNo=${value}`,
+    method: 'get'
+  })
+}
