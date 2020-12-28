@@ -15,7 +15,7 @@
         :v-model="filterName"
         :filters="allPoliceArr"
         label="县 (市、区) 公安局"
-        filter-placement="bottom"
+        filter-placement="right-end"
         prop="name"
       >
         <template slot-scope="scope" class="name">
