@@ -71,8 +71,8 @@
                   placeholder="请选择事件名称"
                   min-width="300px"
                   style="margin-bottom: 10px;"
-                  @change="checkModel"
                   class="eventSelect"
+                  @change="checkModel"
                 >
                   <el-option
                     v-for="item in algorithm"
@@ -126,11 +126,11 @@
               <div class="block filter-item">
                 <el-time-picker
                   v-model="startTime"
-                  popper-class="picker-drop"
                   :picker-options="{
                     selectableRange:'00:00:00-23:59:00'
                   }"
                   :clearable="false"
+                  popper-class="picker-drop"
                   style="width: 210px, height: 36px;"
                   size="mini"
                   format="HH:mm"
@@ -694,8 +694,8 @@ export default {
       this.algorithmList.typeValue = ''
       this.page = 1
       this.limit = 10
-      const s = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
-      const e = this.currentTab + ' ' + ( this.endTime  || '23:59' ) + ':00'
+      const s = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+      const e = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
       this.getList(s, e, 'all')
       // const s = this.tabsArr[0] + ' ' + this.startTime + ':00'
       // const e = this.tabsArr[0] + ' ' + this.endTime + ':00'
@@ -780,8 +780,8 @@ export default {
       return 'tableRowClassHeader'
     },
     pageChange(e) {
-      const s = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
-      const end = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
+      const s = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+      const end = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
       const h1 = this.algorithmList.typeValue
       const h2 = this.algorithmNameList.typeValue
       const h = {
@@ -802,8 +802,8 @@ export default {
     deleteAlert() {
       const params = [this.rowId]
       deleteAlertInfo(params).then(() => {
-        const s = this.currentTab + ' ' + ( this.startTime || '00:00' )  + ':00'
-        const end = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
+        const s = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+        const end = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
         const h = this.formInline.typeValue
         this.$notify({
           title: '成功',
@@ -827,11 +827,11 @@ export default {
         }
         this.startTime = parseSetting.date1
         this.endTime = parseSetting.date2
-        const s = this.tabsArr[0] + ' ' + ( this.startTime || '00:00' ) + ':00'
-        const e = this.tabsArr[0] + ' ' + ( this.endTime || '23:59' ) + ':00'
+        const s = this.tabsArr[0] + ' ' + (this.startTime || '00:00') + ':00'
+        const e = this.tabsArr[0] + ' ' + (this.endTime || '23:59') + ':00'
         const h = this.formInline.typeValue
-        const s1 = this.startDate + 'T' + ( this.startTime || '00:00' ) + ':00.000Z'
-        const e1 = this.endDate + 'T' + ( this.endTime || '23:59' ) + ':00.000Z'
+        const s1 = this.startDate + 'T' + (this.startTime || '00:00') + ':00.000Z'
+        const e1 = this.endDate + 'T' + (this.endTime || '23:59') + ':00.000Z'
         this.getTimeAllTotal(s1, e1, h)
         this.getList(s, e, h)
       })
@@ -987,8 +987,8 @@ export default {
       ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + ' ' +  ( this.startTime || '00:00' )  + ':00'
-        const end1 = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
+        const s1 = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+        const end1 = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
         const h1 = this.formInline.typeValue
         this.oldSize = this.limit
         this.getList(s1, end1, h1)
@@ -1014,8 +1014,8 @@ export default {
       ]
       // 更新state状态
       notifyState(params).then(response => {
-        const s1 = this.currentTab + ' ' + ( this.startTime || '00:00' ) + ':00'
-        const end1 = this.currentTab + ' ' + ( this.endTime || '23:59' ) + ':00'
+        const s1 = this.currentTab + ' ' + (this.startTime || '00:00') + ':00'
+        const end1 = this.currentTab + ' ' + (this.endTime || '23:59') + ':00'
         const h1 = this.formInline.typeValue
         this.oldSize = this.limit
         this.getList(s1, end1, h1)
@@ -1090,6 +1090,7 @@ export default {
     }
     .pull-left.alarmmsgleft {
       width: 80%;
+      min-width: 960px;
       .el-select {
         width: 165px;
       }

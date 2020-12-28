@@ -292,13 +292,13 @@ export default {
         }
       }
       fetchNowInfo(params).then(res => {
-        let rateRecode = 0.0 ;
+        let rateRecode = 0.0
         this.total = res.body.data.offlineCameras + res.body.data.onlineCameras
         this.offCamera = res.body.data.offlineCameras
         this.alarmTime = res.body.data.todayAlerts
         this.processed = res.body.data.todayHandleds
-        this.getPanel(parseInt(res.body.data.alertHandleRate * 100))
-        this.camerarate(parseInt(res.body.data.cameraOnlineRate * 100))
+        this.getPanel((res.body.data.alertHandleRate * 100).toFixed(2))
+        this.camerarate((res.body.data.cameraOnlineRate * 100).toFixed(2))
         res.body.data.alertStatisByAddList.reverse().forEach((item, index) => {
           this.hotTag.push({
             value: item.alertCount, name: item.address
@@ -310,35 +310,32 @@ export default {
         })
         this.getMap(this.mapShowData)
         res.body.data.alertStatisByTypeList.forEach(item => {
-          
-          if(rateRecode + Number.parseFloat((item.typeRate * 100).toFixed(1)) < 100){
-                
-                rateRecode += Number.parseFloat((item.typeRate * 100).toFixed(1));
-                console.log(rateRecode);
-                if (item.type === '1') {
-                  this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1)); 
-                } else if (item.type === '2') {
-                  this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
-                } else {
-                  this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
-                }
-          }else{
-                if (item.type === '1') {
-                  this.drawPie('man', '人员', '#1890FF', (100 - rateRecode).toFixed(1)); 
-                } else if (item.type === '2') {
-                  this.drawPie('car', '机动车', '#5DDECF', (100 - rateRecode).toFixed(1))
-                } else {
-                  this.drawPie('bicycle', '非机动车', '#4DCB73', (100 - rateRecode).toFixed(1))
-                }
-
+          if (rateRecode + Number.parseFloat((item.typeRate * 100).toFixed(2)) < 100) {
+            rateRecode += Number.parseFloat((item.typeRate * 100).toFixed(2))
+            console.log(rateRecode)
+            if (item.type === '1') {
+              this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(2))
+            } else if (item.type === '2') {
+              this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(2))
+            } else {
+              this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(2))
+            }
+          } else {
+            if (item.type === '1') {
+              this.drawPie('man', '人员', '#1890FF', (100 - rateRecode).toFixed(2))
+            } else if (item.type === '2') {
+              this.drawPie('car', '机动车', '#5DDECF', (100 - rateRecode).toFixed(2))
+            } else {
+              this.drawPie('bicycle', '非机动车', '#4DCB73', (100 - rateRecode).toFixed(2))
+            }
           }
-            // if (item.type === '1') {
-            //       this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1)); 
-            //     } else if (item.type === '2') {
-            //       this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
-            //     } else {
-            //       this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
-            // }
+          // if (item.type === '1') {
+          //       this.drawPie('man', '人员', '#1890FF', (item.typeRate * 100).toFixed(1));
+          //     } else if (item.type === '2') {
+          //       this.drawPie('car', '机动车', '#5DDECF', (item.typeRate * 100).toFixed(1))
+          //     } else {
+          //       this.drawPie('bicycle', '非机动车', '#4DCB73', (item.typeRate * 100).toFixed(1))
+          // }
         })
       })
     },
