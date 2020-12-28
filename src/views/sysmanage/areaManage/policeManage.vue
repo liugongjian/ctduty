@@ -7,6 +7,7 @@
     <el-table
       v-loading="tableLoading"
       :data="userList"
+      :row-style="{height:'50px'}"
       :header-cell-style="{background:'#ecedee',color:'#717171'}"
       @filter-change="filerStatus"
     >
@@ -19,17 +20,17 @@
         prop="name"
       >
         <template slot-scope="scope" class="name">
-              <el-tooltip class="item" effect="dark" :content="scope.row.name" placement="top-start">
-                  <span>{{ ellipsis(scope.row.name) }}</span>
-              </el-tooltip>
+          <el-tooltip :content="scope.row.name" class="item" effect="dark" placement="top-start">
+            <div>{{ ellipsis(scope.row.name) }}</div>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="派出所名称" prop="address">
         <template slot-scope="scope" class="name">
-          <el-tooltip class="item" effect="dark" :content="scope.row.address" placement="top-start">
-            <span>{{ ellipsis(scope.row.address) }}</span>
+          <el-tooltip :content="scope.row.address" class="item" effect="dark" placement="top-start">
+            <div>{{ ellipsis(scope.row.address) }}</div>
           </el-tooltip>
-      </template>
+        </template>
       </el-table-column>
     </el-table>
     <pagination
@@ -122,10 +123,10 @@ export default {
       cb(new Error('请输入合法的手机号'))
     }
     var checkNotEmpty = (rule, value, cb) => {
-      if(value.trim() === ''){
-        cb(new Error('该项不能为空'));
-      }else{
-        cb();
+      if (value.trim() === '') {
+        cb(new Error('该项不能为空'))
+      } else {
+        cb()
       }
     }
     return {
@@ -234,11 +235,11 @@ export default {
   methods: {
 
     ellipsis(value) {
-      if (!value) return "";
+      if (!value) return ''
       if (value.length > 10) {
-        return value.slice(0, 10) + "...";
+        return value.slice(0, 10) + '...'
       }
-      return value;
+      return value
     },
     getAllPolice() {
       getAllPolice().then(res => {
@@ -278,18 +279,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-        setTimeout(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        }, 100)
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 260) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //   })
+        // }, 100)
         this.queryName = ''
       })
     },
@@ -346,18 +347,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-        setTimeout(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        }, 100)
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 260) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //   })
+        // }, 100)
         this.tableLoading = false
       })
     },
@@ -455,9 +456,8 @@ export default {
 
 <style lang='scss'>
 
-
 .policemanage {
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
 
   .title {
     width: 150px;

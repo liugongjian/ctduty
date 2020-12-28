@@ -164,6 +164,7 @@
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
               v-loading="tableLoading"
+              :row-style="{height:'50px'}"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               class="alaMesTable"
@@ -929,42 +930,42 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        setTimeout(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 346) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-            const child = item.children
-            const childArr = Array.from(child)
-            childArr.forEach(dom => {
-              if (dom.className === 'el-image') {
-                dom.style.height =
-                  (document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11 +
-                  'px'
-                dom.style.width =
-                  (((document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11) *
-                    16) /
-                    9 +
-                  'px'
-              } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight =
-                  (document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11 +
-                  'px'
-              }
-            })
-          })
-        }, 100)
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 346) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //     const child = item.children
+        //     const childArr = Array.from(child)
+        //     childArr.forEach(dom => {
+        //       if (dom.className === 'el-image') {
+        //         dom.style.height =
+        //           (document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11 +
+        //           'px'
+        //         dom.style.width =
+        //           (((document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11) *
+        //             16) /
+        //             9 +
+        //           'px'
+        //       } else if (dom.className === 'el-tag') {
+        //         dom.style.lineHeight =
+        //           (document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11 +
+        //           'px'
+        //       }
+        //     })
+        //   })
+        // }, 100)
         this.tableLoading = false
         if (this.formInline.searchkey === '所有摄像头') {
           this.formInline.searchkey = ''
