@@ -11,7 +11,8 @@
     "build:prod": "cross-env NODE_ENV=production env_config=prod node build/build.js",
     "test": "npm run lint",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
-    "deploy": "sh command/publish.sh"
+    "deploy": "sh command/publish.sh",
+    "deploy-test":"sh command/publish-test.sh"
   },
   "lint-staged": {
     "src/**/*.{js,vue}": [
