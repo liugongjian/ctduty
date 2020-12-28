@@ -102,7 +102,7 @@
                 v-model="addCarForm.province"
                 placeholder="省市区"
                 style="width:90px;margin-right:10px;"
-                class="filter-item" 
+                class="filter-item"
               >
                 <el-option
                   v-for="item in typeOptions"
@@ -111,7 +111,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-form-item  prop="carWord" style="display:inline-block">
+              <el-form-item prop="carWord" style="display:inline-block">
                 <el-input
                   v-model="addCarForm.carWord"
                   style="width:130px;"
@@ -249,14 +249,43 @@ import {
   deleteCarData,
   carEditConfirm,
   searchList,
-  dlTemplate
+  dlTemplate,
+  checkCarLicense
 } from '@/api/dm'
 const token = Cookies.get('token')
 export default {
   components: { Pagination },
   data() {
+    const checkIfCarLicense = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('车牌号不能为空'))
+      } else {
+        const { province } = this.addCarForm
+        checkCarLicense(`${province}${value}`).then(res => {
+          if (res.body.data) {
+            callback(new Error('车牌号已存在'))
+          }
+        })
+      }
+    }
+
+    const checkEditIfCarLicense = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('车牌号不能为空'))
+      } else {
+        console.log(this.tempEditCarInfo)
+        const { licenseNo } = this.tempEditCarInfo
+        if (value !== licenseNo) {
+          checkCarLicense(value).then(res => {
+            if (res.body.data) {
+              callback(new Error('车牌号已存在'))
+            }
+          })
+        }
+      }
+    }
     return {
-      path: 'http://host31.880508.xyz:10000/CarLicense/Template',
+      // path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
       },
@@ -329,7 +358,8 @@ export default {
           { required: true, trigger: 'blur', message: '车牌号不能为空' }
         ],
         carWord: [
-          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          // { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          { validator: checkIfCarLicense, trigger: 'blur', required: true }
         ],
         carlist: [
           { required: true, trigger: 'blur', message: '所属名单不能为空' }
@@ -340,7 +370,8 @@ export default {
       },
       carRules: {
         carNumber: [
-          { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          // { required: true, trigger: 'blur', message: '车牌号不能为空' }
+          { validator: checkEditIfCarLicense, trigger: 'blur', required: true }
         ]
       },
       formInline: {
@@ -367,7 +398,7 @@ export default {
         carColor: ''
       },
       bulkimportVisble: false,
-      value: ''
+      tempEditCarInfo: {}
     }
   },
   watch: {
@@ -385,8 +416,8 @@ export default {
       downLoadByUrl(
         '/nvsapi/CarLicense/Template',
         '车牌数据导入模板'
-      ).catch(err=>{
-        this.$message.error(err.message || "下载失败")
+      ).catch(err => {
+        this.$message.error(err.message || '下载失败')
       })
       // dlTemplate().then(res => {
       //   this.$message({
@@ -540,6 +571,7 @@ export default {
       this.editForm.carNumber = v.licenseNo
       this.editForm.carList = v.type
       this.editForm.carColor = v.color
+      this.tempEditCarInfo = v // 存储当前编辑的车牌信息，用来比对
       this.editVisable = true
     },
     editDialogConfirm() {
@@ -685,11 +717,11 @@ export default {
         ]
         addCarData(params)
           .then(res => {
-            if(res.code == 100025) {
-              return this.$message.error("车牌号已存在,请勿重复添加")
+            if (res.code == 100025) {
+              return this.$message.error('车牌号已存在,请勿重复添加')
             }
             if (res.code !== 0) {
-              return this.$message.error("添加车牌号失败，请联系系统管理员");
+              return this.$message.error('添加车牌号失败，请联系系统管理员')
             }
             this.getList()
             this.dialogVisable = false
