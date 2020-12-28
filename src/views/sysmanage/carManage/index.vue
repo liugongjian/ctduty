@@ -285,7 +285,7 @@ export default {
       }
     }
     return {
-      path: 'http://host31.880508.xyz:10000/CarLicense/Template',
+      // path: 'http://host31.880508.xyz:10000/CarLicense/Template',
       importHeader: {
         Authorization: token
       },
