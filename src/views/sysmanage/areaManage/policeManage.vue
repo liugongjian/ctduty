@@ -7,8 +7,8 @@
     <el-table
       v-loading="tableLoading"
       :data="userList"
-      :row-style="{height:'50px'}"
       :header-cell-style="{background:'#ecedee',color:'#717171'}"
+      row-class-name="police-talbe-row"
       @filter-change="filerStatus"
     >
       <el-table-column
@@ -459,6 +459,10 @@ export default {
 .policemanage {
   padding: 0px 20px 20px 20px;
 
+.police-talbe-row{
+  height: calc((100vh - 240px) / 10);
+  min-height: 30px;
+}
   .title {
     width: 150px;
     height: 100px;

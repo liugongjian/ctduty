@@ -164,9 +164,9 @@
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <el-table
               v-loading="tableLoading"
-              :row-style="{height:'50px'}"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
+              row-class-name="alarm-talbe-row"
               class="alaMesTable"
               style="width: 100%"
               tooltip-effect="dark"
@@ -1038,6 +1038,10 @@ export default {
     width: 260px;
 }
 .alalist {
+  .alarm-talbe-row{
+      height: calc((100vh - 300px) / 10);
+      min-height: 30px;
+  }
   .eventSelect,.el-time-picker{
     width: 260px !important;
   }
