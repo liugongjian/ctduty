@@ -567,7 +567,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-        setTimeout(() => {
+        this.$nextTick(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach((item) => {
@@ -578,7 +578,7 @@ export default {
             item.style.paddingTop = '2px'
             item.style.paddingBottom = '2px'
           })
-        }, 100)
+        })
         this.tableLoading = false
       })
     },
