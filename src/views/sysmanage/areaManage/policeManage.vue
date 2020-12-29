@@ -8,6 +8,7 @@
       v-loading="tableLoading"
       :data="userList"
       :header-cell-style="{background:'#ecedee',color:'#717171'}"
+      row-class-name="police-talbe-row"
       @filter-change="filerStatus"
     >
       <el-table-column
@@ -20,14 +21,22 @@
       >
         <template slot-scope="scope" class="name">
           <el-tooltip :content="scope.row.name" class="item" effect="dark" placement="top-start">
+<<<<<<< HEAD
             <span>{{ ellipsis(scope.row.name) }}</span>
+=======
+            <div>{{ ellipsis(scope.row.name) }}</div>
+>>>>>>> 67909134044e23bc2809182ad3d09715606ad748
           </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="派出所名称" prop="address">
         <template slot-scope="scope" class="name">
           <el-tooltip :content="scope.row.address" class="item" effect="dark" placement="top-start">
+<<<<<<< HEAD
             <span>{{ ellipsis(scope.row.address) }}</span>
+=======
+            <div>{{ ellipsis(scope.row.address) }}</div>
+>>>>>>> 67909134044e23bc2809182ad3d09715606ad748
           </el-tooltip>
         </template>
       </el-table-column>
@@ -278,6 +287,7 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
+<<<<<<< HEAD
         this.$nextTick(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
@@ -290,6 +300,20 @@ export default {
             item.style.paddingBottom = '2px'
           })
         })
+=======
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 260) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //   })
+        // }, 100)
+>>>>>>> 67909134044e23bc2809182ad3d09715606ad748
         this.queryName = ''
       })
     },
@@ -346,18 +370,18 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-        this.$nextTick(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        })
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 260) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //   })
+        // }, 100)
         this.tableLoading = false
       })
     },
@@ -456,8 +480,12 @@ export default {
 <style lang='scss'>
 
 .policemanage {
-  padding: 0px 20px;
+  padding: 0px 20px 20px 20px;
 
+.police-talbe-row{
+  height: calc((100vh - 240px) / 10);
+  min-height: 30px;
+}
   .title {
     width: 150px;
     height: 100px;

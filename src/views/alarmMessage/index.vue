@@ -167,10 +167,15 @@
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
               :style="autoStyle"
-              class="alaMesTable"
-              tooltip-effect="dark"
-              fit
-              @selection-change="handleSelectionChange"
+              <<<<<<<
+              head
+                ="=&quot;=====&quot;"
+              row-class-name="alarm-talbe-row"
+            >>>>>>> 67909134044e23bc2809182ad3d09715606ad748
+            class="alaMesTable"
+            tooltip-effect="dark"
+            fit
+            @selection-change="handleSelectionChange"
             >
               <!-- <el-table-column
                 :show-overflow-tooltip="true"
@@ -930,42 +935,42 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        this.$nextTick(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 346) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-            const child = item.children
-            const childArr = Array.from(child)
-            childArr.forEach(dom => {
-              if (dom.className === 'el-image') {
-                dom.style.height =
-                  (document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11 +
-                  'px'
-                dom.style.width =
-                  (((document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11) *
-                    16) /
-                    9 +
-                  'px'
-              } else if (dom.className === 'el-tag') {
-                dom.style.lineHeight =
-                  (document.getElementsByTagName('html')[0].clientHeight -
-                    346) /
-                    11 +
-                  'px'
-              }
-            })
-          })
-        })
+        // setTimeout(() => {
+        //   var cellArr = document.getElementsByClassName('cell')
+        //   var arr = Array.from(cellArr)
+        //   arr.forEach(item => {
+        //     item.style.lineHeight =
+        //       (document.getElementsByTagName('html')[0].clientHeight - 346) /
+        //         11 +
+        //       'px'
+        //     item.style.paddingTop = '2px'
+        //     item.style.paddingBottom = '2px'
+        //     const child = item.children
+        //     const childArr = Array.from(child)
+        //     childArr.forEach(dom => {
+        //       if (dom.className === 'el-image') {
+        //         dom.style.height =
+        //           (document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11 +
+        //           'px'
+        //         dom.style.width =
+        //           (((document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11) *
+        //             16) /
+        //             9 +
+        //           'px'
+        //       } else if (dom.className === 'el-tag') {
+        //         dom.style.lineHeight =
+        //           (document.getElementsByTagName('html')[0].clientHeight -
+        //             346) /
+        //             11 +
+        //           'px'
+        //       }
+        //     })
+        //   })
+        // }, 100)
         this.tableLoading = false
         if (this.formInline.searchkey === '所有摄像头') {
           this.formInline.searchkey = ''
@@ -1038,6 +1043,10 @@ export default {
     width: 260px;
 }
 .alalist {
+  .alarm-talbe-row{
+      height: calc((100vh - 300px) / 10);
+      min-height: 30px;
+  }
   .eventSelect,.el-time-picker{
     width: 260px !important;
   }
