@@ -448,7 +448,7 @@ export default {
       fetchCarList(params).then(res => {
         this.importData = res.body.data
         this.total = res.body.page.total
-        setTimeout(() => {
+        this.$nextTick(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
@@ -459,7 +459,7 @@ export default {
             item.style.paddingTop = '2px'
             item.style.paddingBottom = '2px'
           })
-        }, 100)
+        })
         this.listLoading = false
         this.tableLoading = false
       })

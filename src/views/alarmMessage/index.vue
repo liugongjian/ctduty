@@ -166,8 +166,8 @@
               v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
+              :style="autoStyle"
               class="alaMesTable"
-              style="width: 100%"
               tooltip-effect="dark"
               fit
               @selection-change="handleSelectionChange"
@@ -479,7 +479,8 @@ export default {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
         }
-      }
+      },
+      autoStyle: 'width:100%'
     }
   },
   // computed: {
@@ -929,7 +930,7 @@ export default {
       getAlertInfos(params).then(response => {
         this.tableData = response.body.data
         this.total = response.body.page.total
-        setTimeout(() => {
+        this.$nextTick(() => {
           var cellArr = document.getElementsByClassName('cell')
           var arr = Array.from(cellArr)
           arr.forEach(item => {
@@ -964,7 +965,7 @@ export default {
               }
             })
           })
-        }, 100)
+        })
         this.tableLoading = false
         if (this.formInline.searchkey === '所有摄像头') {
           this.formInline.searchkey = ''
