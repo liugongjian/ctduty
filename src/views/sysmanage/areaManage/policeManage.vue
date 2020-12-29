@@ -21,22 +21,14 @@
       >
         <template slot-scope="scope" class="name">
           <el-tooltip :content="scope.row.name" class="item" effect="dark" placement="top-start">
-<<<<<<< HEAD
-            <span>{{ ellipsis(scope.row.name) }}</span>
-=======
             <div>{{ ellipsis(scope.row.name) }}</div>
->>>>>>> 67909134044e23bc2809182ad3d09715606ad748
           </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column label="派出所名称" prop="address">
         <template slot-scope="scope" class="name">
           <el-tooltip :content="scope.row.address" class="item" effect="dark" placement="top-start">
-<<<<<<< HEAD
-            <span>{{ ellipsis(scope.row.address) }}</span>
-=======
             <div>{{ ellipsis(scope.row.address) }}</div>
->>>>>>> 67909134044e23bc2809182ad3d09715606ad748
           </el-tooltip>
         </template>
       </el-table-column>
@@ -287,20 +279,6 @@ export default {
         if (response.code !== 0) return
         this.userList = response.body.data
         this.total = response.body.page.total
-<<<<<<< HEAD
-        this.$nextTick(() => {
-          var cellArr = document.getElementsByClassName('cell')
-          var arr = Array.from(cellArr)
-          arr.forEach(item => {
-            item.style.lineHeight =
-              (document.getElementsByTagName('html')[0].clientHeight - 260) /
-                11 +
-              'px'
-            item.style.paddingTop = '2px'
-            item.style.paddingBottom = '2px'
-          })
-        })
-=======
         // setTimeout(() => {
         //   var cellArr = document.getElementsByClassName('cell')
         //   var arr = Array.from(cellArr)
@@ -313,7 +291,6 @@ export default {
         //     item.style.paddingBottom = '2px'
         //   })
         // }, 100)
->>>>>>> 67909134044e23bc2809182ad3d09715606ad748
         this.queryName = ''
       })
     },

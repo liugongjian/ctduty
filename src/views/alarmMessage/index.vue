@@ -167,16 +167,12 @@
               v-loading="tableLoading"
               :data="tableData"
               :header-cell-class-name="tableRowClassHeader"
-              :style="autoStyle"
-              <<<<<<<
-              head
-                ="=&quot;=====&quot;"
               row-class-name="alarm-talbe-row"
-            >>>>>>> 67909134044e23bc2809182ad3d09715606ad748
-            class="alaMesTable"
-            tooltip-effect="dark"
-            fit
-            @selection-change="handleSelectionChange"
+              class="alaMesTable"
+              style="width: 100%"
+              tooltip-effect="dark"
+              fit
+              @selection-change="handleSelectionChange"
             >
               <!-- <el-table-column
                 :show-overflow-tooltip="true"
@@ -485,8 +481,7 @@ export default {
         disabledDate(time) {
           return time.getTime() > Date.now() - 8.64e6
         }
-      },
-      autoStyle: 'width:100%'
+      }
     }
   },
   // computed: {
