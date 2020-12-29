@@ -46,8 +46,8 @@
                   placeholder="请输入摄像头名称"
                 >
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
+                    v-for="(item,index) in options"
+                    :key="index + item.value"
                     :label="item.name"
                     :value="item.value"
                   >
@@ -56,6 +56,7 @@
                       :disabled="item.name === '所有摄像头'"
                       class="item"
                       placement="top-start"
+                      popper-class="popper-on-search"
                     >
                       <span>{{ item.name }}</span>
                     </el-tooltip>
@@ -573,7 +574,8 @@ export default {
               name: '所有摄像头'
             })
           }
-          this.loading = false
+          this.loading = false;
+          console.log(this.options);
         })
       } else {
         this.options = []
@@ -1036,6 +1038,9 @@ export default {
 <style lang='scss'>
 .picker-drop{
     width: 260px;
+}
+.popper-on-search{
+  z-index:99999999999 !important
 }
 .alalist {
   .alarm-talbe-row{
