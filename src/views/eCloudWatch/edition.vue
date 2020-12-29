@@ -288,7 +288,7 @@ export default {
       window.open(url)
     },
     tabHandle(idx) {
-      console.log(idx)
+      // console.log(idx)
     },
     interValConfig() {
       this.interValStart = true
@@ -341,9 +341,30 @@ export default {
               this.todayHandleAlarms = todayHandleds
               const ratePercent = alertHandleRate * 100
               this.drawPanel(ratePercent)
+              const freshCameraList = () => {
+                const params = {
+                  cascade: true,
+                  page: {
+                    index: 1,
+                    size: 100000
+                  },
+                  params: {
+                  }
+                }
+                fetchAllCameraList(params).then(res => {
+                  if (res.code === 0) {
+                    const { data } = res.body
+                    data.forEach((item, index) => {
+                      this.markers[index].extData = item
+                      this.markers[index].undealSum = item.undealSum
+                      this.markers[index].online = item.online
+                    })
+                  }
+                })
+              }
               this.alarmListData = []
               this.loading = true
-              // this.getalarmList()
+              freshCameraList()
               const param = {
                 cascade: true,
                 page: {
@@ -422,7 +443,7 @@ export default {
                 })
               }
             } else {
-              console.log('no')
+              // console.log('no')
             }
           } else {
             this.todayAlarms = todayAlerts
