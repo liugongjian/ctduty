@@ -73,7 +73,7 @@
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
               <template slot-scope="scope">
-                <el-popover placement="left-end" width="424" trigger="hover"  popper-class="img-popper">
+                <el-popover placement="left-end" width="424" trigger="hover" popper-class="img-popper">
                   <el-image :src="scope.row.image" alt width="400" class="hoverImg" />
                   <el-image
                     slot="reference"
@@ -836,7 +836,7 @@ export default {
       }
 
       .face-name {
-        padding: 5px 0;
+        padding: 7px 0;
         font-size: 12px;
         margin-right: 5px;
       }

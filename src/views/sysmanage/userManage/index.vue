@@ -291,6 +291,8 @@ export default {
           checkIfExist(value).then(res => {
             if (res.body.data) {
               callback(new Error('用户名已存在'))
+            } else {
+              callback()
             }
           })
         }

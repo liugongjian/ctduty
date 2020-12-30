@@ -389,7 +389,7 @@ export default {
           top: 20,
           selectedMode: false, // 取消图例上的点击事件
           icon: 'circle',
-          data: ['小于1000', '小于2000', '大于3000'],
+          data: ['告警数小于1000', '告警数小于2000', '告警数大于3000'],
           textStyle: {
             color: '#000'
           }
@@ -421,13 +421,14 @@ export default {
           map: '渭南',
           roam: true,
           scaleLimit: {
-            min: 0.55,
-            max: 0.55
+            min: 4,
+            max: 12
           },
-          boundingCoords: [
-            [109.934181, 34.6],
-            [110.09207, 34.46]
-          ],
+          // boundingCoords: [
+          //   [109.934181, 34.6],
+          //   [110.09207, 34.46]
+          // ],
+          center: ['110.0005', '34.5359'],
           tooltip: {
             triggerOn: 'mousemove',
             position: 'top',
@@ -462,7 +463,7 @@ export default {
               }
             }
           ],
-          zoom: 1.2,
+          zoom: 6,
           itemStyle: {
             show: false,
             normal: {
@@ -561,16 +562,16 @@ export default {
           }
         },
         {
-          name: '小于1000',
+          name: '告警数小于1000',
           type: 'bar',
           color: '#1890FF'
         },
         {
-          name: '小于2000',
+          name: '告警数小于2000',
           type: 'bar',
           color: '#FF9832'
         }, {
-          name: '大于3000',
+          name: '告警数大于3000',
           type: 'bar',
           color: '#52C41A'
         }

@@ -264,6 +264,8 @@ export default {
         checkCarLicense(`${province}${value}`).then(res => {
           if (res.body.data) {
             callback(new Error('车牌号已存在'))
+          } else {
+            callback()
           }
         })
       }
@@ -279,6 +281,8 @@ export default {
           checkCarLicense(value).then(res => {
             if (res.body.data) {
               callback(new Error('车牌号已存在'))
+            } else {
+              callback()
             }
           })
         }

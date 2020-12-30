@@ -1,5 +1,5 @@
 <template>
-  <div class="loginContainer" style="display: flex; height: 100%; over-flow:hidden">
+  <div class="loginContainer" style="display: flex; height: 100%; width:100%">
     <div class="fffmark"></div>
     <div class="huashanBJ">
       <div class="line">
@@ -204,7 +204,7 @@ export default {
 
 body {
   height:100%;
-  
+
   .loginContainer {
     .el-input__inner {
       text-indent: 15px;
@@ -229,25 +229,27 @@ body {
     /*  background:url(./images/loginBackground.png) no-repeat center, -webkit-linear-gradient(135deg, #50D0FF 0%, #1988D7 37%, #243495 100%); */
     background-size: 100% 100%;
     background-position: bottom center;
-    position: fixed;
-    overflow: hidden;
+    // position: fixed;
+    // overflow: hidden;
     .fffmark {
       background-color: #fff;
-      height: 220vh;
-      width: 50vw;
+      // height: 220vh;
+      height: 100%;
+      width: 50%;
       position: absolute;
       left: 0;
       top: 0;
-      transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
+      // transform: rotate(15deg) translateY(-50vh) translateX(-27vw);
+      transform: skewX(-25deg) translateX(-25%);
     }
   }
 
   .loginFormContainer {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+    // justify-content: center;
+    // align-items: center;
+    // display: flex;
+    // flex-direction: column;
+    // flex: 1;
   }
   .huashanBJ {
     width: 792px;

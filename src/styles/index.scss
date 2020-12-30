@@ -24,7 +24,7 @@ html {
 
 #app {
     height: 100%;
-    min-height: 695px !important;
+    // min-height: 695px !important;
 }
 
 *,
@@ -493,4 +493,8 @@ html {
         height: 28px;
         line-height: 28px;
     }
+}
+.el-table-filter{
+  height: calc(100% - 12px);
+  overflow-y: scroll;
 }
