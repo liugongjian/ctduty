@@ -125,6 +125,18 @@ export default {
           message: '标记不正确,翻墙检测需要墙体和禁区至少各一个,请重新标注',
           need: 'area'
         },
+         {
+          name: 'roadsideStall',
+          cnName: '占道经营检测',
+          message: '标记不正确,占道经营检测需要至少一个框,请重新标注',
+          need: 'area'
+        },
+        {
+          name: 'wanderTarry',
+          cnName: '人员逗留检测',
+          message: '标记不正确,人员逗留检测需要至少一个框,请重新标注',
+          need: 'area'
+        },
         {
           name: 'peopleTraffic',
           cnName: '人流识别',
