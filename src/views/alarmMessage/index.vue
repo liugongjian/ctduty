@@ -1043,6 +1043,9 @@ export default {
   z-index:99999999999 !important
 }
 .alalist {
+  /deep/ .el-loading-mask{
+    z-index: 999;
+  }
   .alarm-talbe-row{
       height: calc((100vh - 300px) / 10);
       min-height: 30px;

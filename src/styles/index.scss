@@ -336,6 +336,10 @@ code {
 }
 .el-select-dropdown {
     z-index: 9999999999 !important;
+    /*隐藏下拉位于输入框上方时的白色三角*/
+    .popper__arrow{
+        display: none;
+    }
 }
 
 .el-dialog__body::-webkit-scrollbar {
@@ -495,6 +499,7 @@ html {
     }
 }
 .el-table-filter{
-  height: calc(100% - 12px);
+  max-height: calc(100% - 12px);
   overflow-y: scroll;
+  z-index: 3000 !important;
 }

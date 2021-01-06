@@ -458,11 +458,13 @@ export default {
 
 .policemanage {
   padding: 0px 20px 20px 20px;
-
-.police-talbe-row{
-  height: calc((100vh - 240px) / 10);
-  min-height: 30px;
-}
+  height: 100%;
+  
+  .police-talbe-row{
+    //  height: calc((100vh - 240px) / 10);
+    height: 80px;
+    min-height: 60px;
+  }
   .title {
     width: 150px;
     height: 100px;

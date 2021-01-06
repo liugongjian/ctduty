@@ -790,7 +790,7 @@ export default {
       text-align: center;
     }
     .avatar {
-      width: 160px;
+      width: 150px;
       height: 210px;
       display: block;
     }

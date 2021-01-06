@@ -106,7 +106,7 @@
                       </el-tooltip>
                     </el-form-item>
                     <el-form-item class="formMargin" label="添加时间：">
-                      <el-tooltip :content="form.createTime" placement="top" disabled>
+                      <el-tooltip :content="form.createTime" placement="top-start">
                         <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{ form.createTime }}</div>
                       </el-tooltip>
                     </el-form-item>
@@ -691,11 +691,13 @@ export default {
   height: 100%;
 }
 .cameraIndex {
+  height: 100%;
   .el-button--text {
   color: #fa8334 !important;
 }
 .camera {
-  height: calc(100vh - 90px) !important;
+  // height: calc(100vh - 90px) !important;
+  height: 90%;
 }
 .el-input__inner {
   height: 36px;
