@@ -275,6 +275,7 @@ export default {
       if (!value) {
         callback(new Error('车牌号不能为空'))
       } else {
+        console.log("进入编辑调用车牌号码是否存在页面")
         console.log(this.tempEditCarInfo)
         const { licenseNo } = this.tempEditCarInfo
         if (value !== licenseNo) {
@@ -285,6 +286,8 @@ export default {
               callback()
             }
           })
+        }else{
+          callback()
         }
       }
     }
@@ -579,7 +582,11 @@ export default {
       this.editVisable = true
     },
     editDialogConfirm() {
+      console.log("点击编辑确定")
       this.$refs.editCarForm.validate(valid => {
+
+        console.log("valid",valid)
+
         if (!valid) return
         const params = [
           {
