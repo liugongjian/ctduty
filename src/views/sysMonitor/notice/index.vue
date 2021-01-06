@@ -52,12 +52,13 @@
         @filter-change="filerStatus"
       >
         <!-- <el-table-column type="index" label="序号"></el-table-column> -->
-        <el-table-column label="公告标题" min-width="70%">
+        <el-table-column :show-overflow-tooltip="true" label="公告标题" min-width="70%"  >
           <template slot-scope="row_data">
-            <el-link
+            <a
               type="primary"
+              style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;color: #409eff;"
               @click="showEditDialog(row_data.row.id,'false')"
-            >{{ row_data.row.title }}</el-link>
+            >{{ row_data.row.title }}</a>
           </template>
         </el-table-column>
         <el-table-column label="公告类型" prop="type">
