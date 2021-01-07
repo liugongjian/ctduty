@@ -3,7 +3,7 @@
     <div class="fffmark"></div>
     <div class="huashanBJ">
       <div class="line">
-        <img width="720px" height="540px" src="./images/line.svg" alt >
+        <img src="./images/line.svg" alt >
       </div>
     </div>
     <div class="leftLogo">
@@ -252,24 +252,40 @@ body {
     // flex: 1;
   }
   .huashanBJ {
-    width: 792px;
-    height: 594px;
+    width: 55%;
+    height: 60%;
     background-image: url(./images/huashanBJ.jpg);
-    background-size: cover;
+    background-size: 100% 100%;
     position: fixed;
     top: 50%;
     left: 10%;
     transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .line {
-      position: absolute;
-      top: 27px;
-      left: 36px;
+      // position: absolute;
+      // top: 27px;
+      // left: 36px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3% 5%;
+      img {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
   .login {
     background-color: #fff;
-    width: 350px;
-    height: 370px;
+    // width: 350px;
+    width: 25%;
+    height: 37%;
+    min-height: 320px;
+    // height: 370px;
     padding: 20px 30px;
     border-radius: 10px;
     position: fixed;
@@ -281,11 +297,13 @@ body {
     padding-bottom: 30px;
     box-shadow: 0 1px 20px 0 #87959e;
     .logo {
-      width: 204.6px;
+      // width: 204.6px;
+      width: 72%;
       height: 56px;
       background: url(./images/zglogo.png) no-repeat center;
       background-size: 60% 60%;
-      margin-left: 43px;
+      // margin-left: 43px;
+      margin-left: 13%;
       // background-size: contain;
     }
     .title {
@@ -299,16 +317,18 @@ body {
     .userName,
     .passWord {
       width: 100%;
-      height: 40px;
+      height: 6%;
     }
     .btn {
-      width: 290px;
-      height: 40px;
+      // width: 290px;
+      // height: 40px;
+      width: 100%;
+      height: 6%;
       border-radius: 4px;
       font-family: PingFangSC-Regular;
       font-size: 16px;
       line-height: 20px;
-      margin-top: 30px;
+      margin-top: 5%;
     }
 
     .el-form-item.el-form-item--medium {
@@ -364,4 +384,5 @@ body {
     }
   }
 }
+
 </style>
