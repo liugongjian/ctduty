@@ -151,6 +151,8 @@
       title="新增通知"
       width="620px"
       @close="addDialogClosed"
+      :destroy-on-close=true
+
     >
       <el-form
         ref="addFormRef"
@@ -220,6 +222,7 @@
       title="修改通知"
       width="620px"
       @close="editDialogClosed"
+      :destroy-on-close=true
     >
       <el-form
         ref="editFormRef"
@@ -418,10 +421,14 @@ export default {
         this.quillContentLength = event.quill.getLength() - 1
       }
       if (event.quill.getLength() - 1 > 200) {
-        this.$message({
-          type: 'warning',
-          message: '内容长度不能大于200字!'
-        })
+        // this.$message.closeAll();
+        if(document.getElementsByClassName('el-message').length == 0){
+            this.$message({
+              type: 'warning',
+              message: '内容长度不能大于200字!'
+            })
+        }
+     
       }
       event.quill.deleteText(200, 4)
     },
