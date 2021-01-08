@@ -52,7 +52,7 @@
         @filter-change="filerStatus"
       >
         <!-- <el-table-column type="index" label="序号"></el-table-column> -->
-        <el-table-column :show-overflow-tooltip="true" label="公告标题" min-width="70%"  >
+        <el-table-column :show-overflow-tooltip="true" label="公告标题" min-width="70%" >
           <template slot-scope="row_data">
             <a
               type="primary"
@@ -150,8 +150,8 @@
       :visible.sync="addNoticeDialogVisible"
       title="新增通知"
       width="620px"
+      class="newNotice-dialog"
       @close="addDialogClosed"
-      :destroy-on-close=true
 
     >
       <el-form
@@ -220,9 +220,9 @@
     <el-dialog
       :visible.sync="editNoticeDialogVisible"
       title="修改通知"
+      class="modyfyNotice-dialog"
       width="620px"
       @close="editDialogClosed"
-      :destroy-on-close=true
     >
       <el-form
         ref="editFormRef"
@@ -422,13 +422,12 @@ export default {
       }
       if (event.quill.getLength() - 1 > 200) {
         // this.$message.closeAll();
-        if(document.getElementsByClassName('el-message').length == 0){
-            this.$message({
-              type: 'warning',
-              message: '内容长度不能大于200字!'
-            })
+        if (document.getElementsByClassName('el-message').length == 0) {
+          this.$message({
+            type: 'warning',
+            message: '内容长度不能大于200字!'
+          })
         }
-     
       }
       event.quill.deleteText(200, 4)
     },
@@ -773,6 +772,19 @@ export default {
 </script>
 
 <style lang='scss'>
+.newNotice-dialog, .modyfyNotice-dialog{
+  /deep/.el-dialog__body{
+   padding: 15px 40px;
+  }
+  /deep/.el-dialog .el-dialog__body .el-form-item {
+    margin-bottom: 5px;
+  }
+  .ql-snow .ql-picker-label::before {
+    display: inline-block;
+    line-height: 22px;
+    vertical-align: top;
+ }
+}
 .noticelist {
   padding: 20px;
   .input_title {
