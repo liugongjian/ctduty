@@ -69,60 +69,62 @@
         <el-tabs v-model="defaultTab" type="border-card" @tab-click="tabChangeQuery">
           <el-tab-pane v-for="item in tabsArr" :key="item" :label="item" :name="item">
             <!-- <div class="kb">{{ tabsArr[tabsArr.length-1] }} to {{ tabsArr[0] }} 警告共计: {{ allTotal }} 条 </div> -->
-            <div v-if="tableData.length>0" class="history-box">
-              <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
-                <el-card :body-style="{ padding: '0px' }" class="history-card">
-                  <el-image :src="val.imageCut" class="image" style="width: 100%; height:200px" />
-                  <div class="card-desp">
-                    <div class="history-name">
-                      <span>{{ val.username || "未知" }}</span>
-                      <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
-                      <el-tag
-                        :type="val.label === 1 ? 'success' : val.label === 2 ? 'danger' : ''"
-                        style="margin-top:3px;margin-left:3px;"
-                        size="mini"
-                      >{{ val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他" }}</el-tag>
-                    </div>
-                    <div class="bottom clearfix">
-                      <div
-                        class="location"
-                        style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
-                      >
-                        <i class="el-icon-map-location" />
-                        <el-tooltip
-                          :content="val.camera.address"
-                          class="item"
-                          effect="dark"
-                          placement="top-start"
+            <div v-loading="listLoading">
+              <div v-if="tableData.length>0" class="history-box" >
+                <div v-for="(val,index) in tableData" :key="index" :index="index" class="history-col">
+                  <el-card :body-style="{ padding: '0px' }" class="history-card">
+                    <el-image :src="val.imageCut" class="image" style="width: 100%; height:200px" />
+                    <div class="card-desp">
+                      <div class="history-name">
+                        <span>{{ val.username || "未知" }}</span>
+                        <span>{{ val.gender === 1 ? "男" : val.gender === 2? "女" : "未知" }}</span>
+                        <el-tag
+                          :type="val.label === 1 ? 'success' : val.label === 2 ? 'danger' : ''"
+                          style="margin-top:3px;margin-left:3px;"
+                          size="mini"
+                        >{{ val.label === 1 ? "白名单" : val.label === 2 ? "黑名单" : "其他" }}</el-tag>
+                      </div>
+                      <div class="bottom clearfix">
+                        <div
+                          class="location"
+                          style="height:20px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;"
                         >
-                          <span>{{ val.camera && val.camera.address || '未知' }}</span>
-                        </el-tooltip>
-                      </div>
-                      <div class="location">
-                        <i class="el-icon-time" />
-                        <time class="time">{{ renderTime(val.createTime) }}</time>
+                          <i class="el-icon-map-location" />
+                          <el-tooltip
+                            :content="val.camera.address"
+                            class="item"
+                            effect="dark"
+                            placement="top-start"
+                          >
+                            <span>{{ val.camera && val.camera.address || '未知' }}</span>
+                          </el-tooltip>
+                        </div>
+                        <div class="location">
+                          <i class="el-icon-time" />
+                          <time class="time">{{ renderTime(val.createTime) }}</time>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <!-- <div class="btn-box">
-                        <el-button
-                            type="danger"
-                            icon="el-icon-delete"
-                            circle
-                            size="mini"
-                            @click="delAlert(val.id)"></el-button>
-                  </div>-->
-                </el-card>
+                    <!-- <div class="btn-box">
+                          <el-button
+                              type="danger"
+                              icon="el-icon-delete"
+                              circle
+                              size="mini"
+                              @click="delAlert(val.id)"></el-button>
+                    </div>-->
+                  </el-card>
+                </div>
               </div>
+              <div v-else class="history-nodata">暂无数据</div>
+              <pagination
+                v-show="total>0"
+                :total="total"
+                :page.sync="page"
+                :limit.sync="limit"
+                @pagination="pageChange()"
+              />
             </div>
-            <div v-else class="history-nodata">暂无数据</div>
-            <pagination
-              v-show="total>0"
-              :total="total"
-              :page.sync="page"
-              :limit.sync="limit"
-              @pagination="pageChange()"
-            />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -187,7 +189,7 @@ export default {
         { name: '未处理', _id: 'unsettled' }
       ],
 
-      listLoading: false,
+      listLoading: true,
       filteredValue: [],
       tableData: [],
       dialogVisable: false,
@@ -469,6 +471,7 @@ export default {
 
     // 获取列表数据
     getList(s, e, h) {
+      this.listLoading = true
       let oper
       if (h === 'settled') {
         oper = 'NOT_NULL'

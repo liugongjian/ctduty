@@ -148,7 +148,6 @@
 
     <el-dialog
       :visible.sync="addNoticeDialogVisible"
-      :destroy-on-close="true"
       title="新增通知"
       width="620px"
       class="newNotice-dialog"
@@ -220,7 +219,6 @@
 
     <el-dialog
       :visible.sync="editNoticeDialogVisible"
-      :destroy-on-close="true"
       title="修改通知"
       class="modyfyNotice-dialog"
       width="620px"
@@ -779,7 +777,7 @@ export default {
    padding: 15px 40px;
   }
   /deep/.el-dialog .el-dialog__body .el-form-item {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
   .ql-snow .ql-picker-label::before {
     display: inline-block;
