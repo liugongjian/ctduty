@@ -285,6 +285,7 @@ body {
     width: 25%;
     height: 37%;
     min-height: 320px;
+    max-width: 360px;
     // height: 370px;
     padding: 20px 30px;
     border-radius: 10px;

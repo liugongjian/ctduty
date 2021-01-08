@@ -70,7 +70,6 @@
                   v-model="algorithmList.typeValue"
                   multiple
                   placeholder="请选择事件名称"
-                  min-width="300px"
                   style="margin-bottom: 10px;"
                   class="eventSelect"
                   @change="checkModel"
@@ -132,7 +131,6 @@
                   }"
                   :clearable="false"
                   popper-class="picker-drop"
-                  style="width: 210px, height: 36px;"
                   size="mini"
                   format="HH:mm"
                   value-format="HH:mm"
@@ -1035,7 +1033,21 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+@media only screen and (max-width: 1400px) {
+    .searchinp,.eventSelect,.alarmmsgleft .el-select--mini,.el-date-editor{
+        width: 160px !important;
+    }
+}
+</style>
+
 <style lang='scss'>
+@media only screen and (max-width: 1400px) {
+    .picker-drop{
+        width: 160px !important;
+    }
+}
+
 .picker-drop{
     width: 260px;
 }
@@ -1051,7 +1063,7 @@ export default {
       min-height: 30px;
   }
   .eventSelect,.el-time-picker{
-    width: 260px !important;
+    width: 260px;
   }
 
   .el-input__inner {
@@ -1104,15 +1116,15 @@ export default {
     .pull-left.alarmmsgleft {
       width: 80%;
       min-width: 960px;
-      .el-select {
-        width: 165px;
-      }
+      // .el-select {
+      //   width: 165px;
+      // }
       .el-date-editor {
-        width: 205px !important;
+        width: 205px;
         padding-right: 0px !important;
       }
       .el-date-editor--time {
-        width: 260px !important;
+        width: 260px;
       }
     }
      .pull-right.alarmmsgright {
@@ -1243,4 +1255,6 @@ export default {
       line-height: 24px;
     }
 }
+
+
 </style>
