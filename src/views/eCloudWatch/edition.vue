@@ -178,17 +178,38 @@ export default {
       markers: [],
       amapManager,
       markerChooseData: '',
+      lastClick:0,
+      timer:null,
       events: {
         click: info => {
+          let delay = 2000;
           if (info.target.G.extData) {
-            this.markerChooseData = info.target.G.extData
-            this.alarmListData = []
-            this.playMonitor()
-            this.getPanelListById()
-            // this.getalarmList()
-            // console.log(info.target.G.extData)
-            this.showDialogInfo.cameraId = info.target.G.extData.id
-            this.hasUrl = false
+            let now = +new Date();
+            if((now - this.lastClick) < delay){
+              clearTimeout(this.timer);
+              this.timer = setTimeout(() => {
+                  this.markerChooseData = info.target.G.extData
+                  this.alarmListData = []
+                  this.playMonitor()
+                  this.getPanelListById()
+                  // this.getalarmList()
+                  // console.log(info.target.G.extData)
+                  this.showDialogInfo.cameraId = info.target.G.extData.id
+                  this.hasUrl = false
+                  // console.log('计时器执行时间：',now);
+              }, delay);
+            }else{
+              this.markerChooseData = info.target.G.extData
+              this.alarmListData = []
+              this.playMonitor()
+              this.getPanelListById()
+              // this.getalarmList()
+              // console.log(info.target.G.extData)
+              this.showDialogInfo.cameraId = info.target.G.extData.id
+              this.hasUrl = false
+              this.lastClick = now;
+              // console.log('强制执行时间：',now);
+            }
           } else {
             if (this.markerChooseData) {
               this.markerChooseData = ''
@@ -247,6 +268,7 @@ export default {
 
   },
   methods: {
+
     watchClick(e) {
 
     },
