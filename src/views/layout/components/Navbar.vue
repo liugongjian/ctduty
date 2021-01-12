@@ -113,7 +113,7 @@
                 :key="item.id"
               ></el-option>
             </el-select> -->
-            <div>{{ noticeForm.department.name }}</div>
+            <div>{{ noticeForm.department ? noticeForm.department.name : '' }}</div>
           </el-form-item>
           <!-- <el-form-item label="签名档">
             <div>{{ noticeForm.signatureId === 3275699862611970? '华阴公安局':noticeForm.signatureId === 3275699862611971?'孟塬派出所':'华山镇派出所' }}</div>
@@ -330,6 +330,7 @@ export default {
     handleCommand(command) {
       this.dialogVisable = true
       this.noticeForm = command
+      // debugger;
       console.log(command)
     },
     screenfull(e) {
