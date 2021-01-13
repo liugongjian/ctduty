@@ -233,7 +233,7 @@ export default {
         this.isShowMark = true
         setTimeout(() => {
           document.getElementsByClassName('v-modal')[0].style.display = 'none'
-        }, 300)
+        }, 0)
       } else {
         this.isShowMark = false
       }

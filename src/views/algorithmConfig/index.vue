@@ -8,7 +8,7 @@
               <span class="videoTotalText">摄像头列表</span>
               <span class="videoTotalNum">总计：{{ total }}个摄像头</span>
             </div>
-            <el-input v-model="queryKeyword" placeholder="请输入摄像头地址" @change="searchList">
+            <el-input v-model="queryKeyword" placeholder="请输入摄像头名称或负责人" @change="searchList">
               <el-button slot="append" icon="el-icon-search" @click="searchList"></el-button>
             </el-input>
 
@@ -37,12 +37,13 @@
             :style="styleObj"
             :data="caremaTreeData"
             :default-expanded-keys="[expendId]"
+            :render-after-expand="false"
             node-key="expendId"
             icon-class="el-icon-arrow-down"
             class="cameraTree"
             @node-click="cameraTreeClick">
             <div slot-scope="{ node, data }">
-              <div v-if="data.ifChild" @mouseenter="checkTreeName" @click="chooseThis">
+              <div v-if="data.ifChild" :data-id="data.info.id" :data-parentname="data.parentName" @mouseenter="checkTreeName">
                 <span class="displayIB">
                   <svg-icon icon-class="monitorIcon" class="svgBtn"/>
                 </span>
@@ -52,11 +53,11 @@
                     {{ node.label }}
                   </span>
                 </el-tooltip>
-                <span @click.stop="toMonitorDetail(data.info.id)">
+                <span @click.stop="toMonitorDetail(data.info.id,node)">
                   <svg-icon icon-class="videoDetail" class="svgBtn detailSvg"/>
                 </span>
               </div>
-              <div v-else :disabled="false">
+              <div v-else>
                 {{ node.label }}
               </div>
             </div>
@@ -146,8 +147,8 @@ export default {
     }
   },
   mounted() {
-
-    // document.querySelector('.el-tree-node__children .el-tree-node.is-focusable').classList.add('is-current')
+    const { cameraId } = this.$route.query
+    this.deviceId = cameraId
   },
   async created() {
     await this.getList()
@@ -163,8 +164,6 @@ export default {
     // },
     getSomeHeight() {
       this.winHeight = window.innerHeight
-      // console.log('winHeight------>', this.winHeight)
-      // const topH = document.querySelector('.videoTotalBox').offsetHeight
       this.styleObj.height = (this.winHeight - 260) + 'px'
     },
     changeActive(k, id) {
@@ -274,6 +273,8 @@ export default {
       getCameraTree(query).then(res => {
         if (res.code === 0) {
           const tempData = res.body.data.filter(item => item.data.length > 0)
+          const { cameraId } = this.$route.query
+          this.total=res.body.page.total
           this.caremaTreeData = tempData.map(item => {
             return {
               label: item.name,
@@ -282,18 +283,28 @@ export default {
                 return {
                   label: val.name,
                   info: val,
-                  ifChild: true // 用来判断是否是子级
-                  // ifTooltip: val.name.length > 13
+                  ifChild: true, // 用来判断是否是子级
+                  parentName: item.name // 存储父级，用于默认展开
                 }
               })
             }
           })
           this.deviceId = this.deviceId ? this.deviceId : tempData[0].data[0].id
-          this.expendId = tempData.length > 0 ? tempData[0].name : ''
           this.$nextTick(function() {
-            const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
-            ele.classList.add('is-current')
+            if (cameraId) {
+              const dataCamera = document.querySelector(`[data-id="${cameraId}"]`)
+              this.expendId = dataCamera.getAttribute('data-parentname')
+              dataCamera.parentNode.parentNode.parentNode.classList.add('is-current')
+              window.setTimeout(() => {
+                dataCamera.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }, 300)
+            } else {
+              this.expendId = tempData.length > 0 ? tempData[0].name : ''
+              const ele = document.querySelector('.el-tree-node__children .el-tree-node.is-focusable')
+              ele.classList.add('is-current')
+            }
           })
+
           this.getAlgorithmList(this.deviceId)
         }
       })
@@ -517,7 +528,6 @@ export default {
       return status === 1 ? '在线' : '离线'
     },
     toMonitorDetail(id) {
-      console.log('O ?', id)
       this.$router.push({ path: '/cameraManage/videomonitor', params: { cameraId: id }, query: { cameraId: id }})
     },
     checkNameLen(k) {
@@ -536,7 +546,7 @@ export default {
 .algorithmConfigWrap{
     padding: 20px;
     background: #F0F2F5;
-    height: 100%;
+    // height: 100%;
     .algorithmConfig{
         background: #fff;
         // height: 100%;

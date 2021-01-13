@@ -404,16 +404,18 @@ export default {
   methods: {
     dlTem() {
       downLoadByUrl(
-        'http://59.36.77.57:8666/CarLicense/Template',
+        '/nvsapi/CarLicense/Template',
         '车牌数据导入模板'
-      )
-      dlTemplate().then(res => {
-        if (res.code === 50000) return
-        this.$message({
-          message: '模板文件下载成功',
-          type: 'success'
-        })
+      ).catch(err => {
+        this.$message.error(err.message || '下载失败')
       })
+      // dlTemplate().then(res => {
+      //   if (res.code === 50000) return
+      //   this.$message({
+      //     message: '模板文件下载成功',
+      //     type: 'success'
+      //   })
+      // })
     },
     editCloseDialog() {
       this.editVisable = false
@@ -779,7 +781,7 @@ export default {
     height: 36px;
   }
   .el-input__inner {
-    height:36px;
+    // height:36px;
     border-radius: 2px;
   }
   th,td {

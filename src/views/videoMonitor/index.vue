@@ -3,11 +3,17 @@
     <el-dialog
       key="photo"
       :visible.sync="bigPhotoVisible"
-      title="抓拍照片"
-      width="800px"
+      class="open_photo"
       style="text-align:center;"
     >
-      <el-image :src="curPhoto" class="photoList-image" style="max-width:100%;" />
+      <el-image :src="curPhoto.imageCompress" class="photoList-image" style="max-width:100%;" />
+      <div style="text-align:left;padding-top:10px;font-size:12px;color:#666;">
+        <span>{{ getTaskById(curPhoto.taskId) }}</span>
+        <span style="float:right;">
+          <svg-icon icon-class="pulltime" style="color:#a6a6a6;"></svg-icon>
+          {{ getDateTimeStr(curPhoto.createTime) }}
+        </span>
+      </div>
     </el-dialog>
     <div class="videoMonitor">
       <div class="leftPanel">
@@ -265,7 +271,7 @@
                   :src="item.imageCut"
                   style="width: 100%; height:120px;"
                   class="photoList-image"
-                  @click="bigPhotoVisible = true; curPhoto = item.imageCompress"
+                  @click="bigPhotoVisible = true; curPhoto = item"
                 />
                 <div style="padding: 14px;">
                   <span>{{ getTaskById(item.taskId) }}</span>
@@ -335,7 +341,7 @@ export default {
       // },
       deviceChosenVisible: false,
       bigPhotoVisible: false,
-      curPhoto: '',
+      curPhoto: {},
       nosrc,
       taskData: [],
       // algorithmTblData: [],
@@ -343,7 +349,7 @@ export default {
       photoCardList: [],
       videoLoading: false,
       total: 10,
-      page: 0,
+      page: 1,
       limit: 24,
       showVideoSetting: false,
       videoOptions: {
@@ -428,6 +434,10 @@ export default {
       console.log('crreated', this.$route)
     })
   },
+  destroyed() {
+    clearInterval(this.polling1)
+    if (this.polling2) clearInterval(this.polling2)
+  },
   mounted() {
     this.setVideoHeight()
     // this.cameraId = this.$route.params.cameraId
@@ -455,6 +465,9 @@ export default {
         this.peopleIsPick = peopleExist && peopleExist.isPick
         if (carExist && carExist.isPick || peopleExist && peopleExist.isPick) {
           this.showTrafficPanel = true
+          this.polling2 = setInterval(() => {
+            this.getRealTimeData()
+          }, 5000)
           this.getRealTimeData()
         } else {
           this.showTrafficPanel = false
@@ -508,9 +521,10 @@ export default {
         })
     },
     setVideoHeight() {
-      const boxHeight = document.querySelector('.video-panel').offsetHeight
+      const node = document.querySelector('.video-panel')
+      const boxHeight = node && node.offsetHeight || 0
       console.log('test---->', boxHeight)
-      this.heightByAuto = boxHeight + 'px'
+      if (boxHeight) this.heightByAuto = boxHeight + 'px'
     },
     saveMonitor() {
       this.$refs['ruleForm'].validate(valid => {
@@ -608,7 +622,7 @@ export default {
     },
     getTaskById(id) {
       const target = this.taskData.find(item => item.id === id)
-      return target.cnName
+      return target && target.cnName
     },
     getTaskList() {
       // const query = {
@@ -664,62 +678,70 @@ export default {
     getPhotoList() {
       this.photosLoading = true
       const { cameraId } = this.$route.query
-      const param = [
-        {
-          field: 'createTime',
-          operator: 'BETWEEN',
-          value: {
-            start: moment()
-              .startOf('day')
-              .format(dateTimeFormat),
-            end: moment()
-              .endOf('day')
-              .format(dateTimeFormat)
-          }
-        },
-        {
-          field: 'cameraId',
-          operator: 'EQUALS',
-          value: cameraId
-        }
-      ]
-      if (this.taskId && this.taskId.length) {
-        param.push({
-          field: 'taskId',
-          operator: 'IN',
-          value: [...this.taskId]
-        })
-      }
-      const params = {
-        cascade: true,
-        page: {
-          index: this.page,
-          size: this.limit
-        },
-        params: param,
-        sorts: [
+      const queryPhotoList = () => {
+        const param = [
           {
-            field: 'create_Time',
-            type: 'desc'
+            field: 'createTime',
+            operator: 'BETWEEN',
+            value: {
+              start: moment()
+                .startOf('day')
+                .format(dateTimeFormat),
+              end: moment()
+                .endOf('day')
+                .format(dateTimeFormat)
+            }
+          },
+          {
+            field: 'cameraId',
+            operator: 'EQUALS',
+            value: cameraId
           }
         ]
-      }
-      getAlertInfos(params)
-        .then(res => {
-          const {
-            body: {
-              data,
-              page: { total }
+        if (this.taskId && this.taskId.length) {
+          param.push({
+            field: 'taskId',
+            operator: 'IN',
+            value: [...this.taskId]
+          })
+        }
+        const params = {
+          cascade: true,
+          page: {
+            index: this.page,
+            size: this.limit
+          },
+          params: param,
+          sorts: [
+            {
+              field: 'create_Time',
+              type: 'desc'
             }
-          } = res
-          this.photoCardList = data
-          this.total = total
-          this.photosLoading = false
-        })
-        .catch(err => {
-          console.log(err)
-          this.photosLoading = false
-        })
+          ]
+        }
+        getAlertInfos(params)
+          .then(res => {
+            const {
+              body: {
+                data,
+                page: { total }
+              }
+            } = res
+            this.photoCardList = data
+            this.total = total
+            this.photosLoading = false
+          })
+          .catch(err => {
+            console.log(err)
+            this.photosLoading = false
+          })
+      }
+      queryPhotoList()
+      if (!this.polling1) {
+        this.polling1 = setInterval(() => {
+          queryPhotoList()
+        }, 5000)
+      }
     },
     getCountByName(taskCount, name) {
       for (const item of taskCount) {
@@ -771,9 +793,8 @@ export default {
         //     image: null,
         //     flvSrc: data.rtmpuri,
         console.log('视频信息-------->', data)
-        console.log('视频流--------', data.rtmpuri)
         this.videoOptions = {
-          autoplay: true,
+          // autoplay: true,
           controls: true,
           width: 400, // 播放器宽度
           height: 300, // 播放器高度
@@ -781,10 +802,12 @@ export default {
           fluid: true, // 流体布局，自动充满，并保持播放其比例
           sources: [
             {
-              src: data.rtmpuri ? data.rtmpuri + '&a.flv' : '',
-              type: this.video_type(data.rtmpuri ? data.rtmpuri + '&a.flv' : '')
+              src: data.m3u8uri,
+              type: this.video_type(data.m3u8uri)
             }
-          ]
+          ],
+          techOrder: ['html5', 'flash'],
+          autoplay: 'any'
         }
         // }
         this.videoLoading = false
@@ -793,8 +816,7 @@ export default {
         this.videoLoading = false
       })
     },
-    video_type(_url) {
-      var url = _url.toLowerCase()
+    video_type(url) {
       if (url.startsWith('rtmp')) {
         return 'rtmp/flv'
       } else if (url.endsWith('m3u8') || url.endsWith('m3u')) {
@@ -825,10 +847,14 @@ export default {
 }
 .videomonitorWrap {
    min-height:590px;
-  .el-dialog{
+  /deep/.el-dialog{
+    width:auto;
     .el-dialog__header{
       text-align: left;
     }
+     .el-dialog__body{
+    padding-top:0;
+  }
     .photoList-image {
       img {
         object-fit: contain;

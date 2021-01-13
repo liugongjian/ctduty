@@ -53,8 +53,8 @@
             tooltip-effect="dark"
             fit
           >
-            <el-table-column :show-overflow-tooltip="true" :label="'姓名'" prop="name"></el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'所属名单'" prop="select">
+            <el-table-column :label="'姓名'" prop="name"></el-table-column>
+            <el-table-column :label="'所属名单'" prop="select" class-name="peopleKind">
               <template slot-scope="scope">
                 <el-select
                   v-model="scope.row.nameList"
@@ -71,7 +71,7 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'图片预览'">
+            <el-table-column :label="'图片预览'" width="220">
               <template slot-scope="scope">
                 <el-popover placement="left-end" width="424" trigger="hover">
                   <el-image :src="scope.row.image" alt width="400" class="hoverImg" />
@@ -79,12 +79,12 @@
                     slot="reference"
                     :src="scope.row.image"
                     alt
-                    style="width: 120px; height: 100px"
+                    style="width: 160px; height: 200px"
                   />
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" :label="'操作'">
+            <el-table-column :label="'操作'" width="100">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -190,13 +190,11 @@
               <el-image :src="item.image" class="image" />
               <div class="face-info">
                 <div style="display:flex;">
-                  <el-tooltip
-                    :content="item.name"
-                    placement="bottom-start"
-                  >
-                    <div class="face-name" style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" >
-                      {{ item.name }}
-                    </div>
+                  <el-tooltip :content="item.name" placement="bottom-start">
+                    <div
+                      class="face-name"
+                      style="width:auto;max-width:48px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"
+                    >{{ item.name }}</div>
                   </el-tooltip>
                   <el-tag
                     :type="item.nameList === 1 ? 'success' : item.nameList === 2 ? 'danger' : ''"
@@ -605,13 +603,21 @@ export default {
       this.dialogVisable = true
     },
     closeDialog() {
-      (this.addFaceForm = {
+      // (this.addFaceForm = {
+      //   name: "",
+      //   imageUrl: "",
+      //   typeValue: "",
+      //   searchkey: ""
+      // }),
+      //   (this.dialogVisable = false);
+      // this.clearValidate("addForm");
+      this.addFaceForm = {
         name: '',
         imageUrl: '',
         typeValue: '',
         searchkey: ''
-      }),
-      (this.dialogVisable = false)
+      }
+      this.dialogVisable = false
       this.clearValidate('addForm')
     },
     clearValidate(formName) {
@@ -761,8 +767,8 @@ export default {
   padding-top: 50px;
 }
 .faceindexlist {
-    overflow: auto !important;
-    .avatar-uploader .el-upload {
+  overflow: auto !important;
+  .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
@@ -805,7 +811,7 @@ export default {
     width: 15%;
     margin: 10px 2%;
   }
-  .face-col:nth-of-type(n+1) {
+  .face-col:nth-of-type(n + 1) {
     margin-left: 0px;
   }
   .face-col:nth-of-type(6n) {
@@ -833,7 +839,7 @@ export default {
     }
 
     .face-name {
-      padding: 5px 0;
+      padding: 7px 0;
       font-size: 12px;
       margin-right: 5px;
     }
@@ -872,13 +878,13 @@ export default {
     text-align: center;
   }
   .namespan {
-    width:35px;
-    overflow:hidden !important;
-    white-space:nowrap !important;
-    text-overflow:ellipsis !important;
+    width: 35px;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
   }
   .el-input__inner {
-    height:36px;
+    // height: 36px;
     border-radius: 2px;
   }
   .el-row {
@@ -887,7 +893,12 @@ export default {
   .colwrapper {
     width: 100%;
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
+  }
+  .peopleKind{
+    /deep/.cell{
+      text-overflow: initial;
+    }
   }
 }
 </style>

@@ -96,7 +96,7 @@ export default {
       pageLoading: true,
       dialogFormVisible: false,
       changeName: '',
-      curCamera: null,
+      curCamera: {},
       nosrc,
       deviceList: [],
       loading: false,
@@ -111,9 +111,6 @@ export default {
         // poster: 'http://www.jq22.com/demo/vide7.1.0201807161136/m.jpg',
         // fluid: true // 流体布局，自动充满，并保持播放其比例
         // sources: this.sources
-        // 'data-setup': {
-        //   'techOrder': ['html5', 'flash']
-        // }
       },
       allCameraList: [],
       heightByAuto: '',
@@ -195,9 +192,9 @@ export default {
           return {
             ...item,
             image: null,
-            flvSrc: item.rtmpuri,
+            // flvSrc: item.rtmpuri,
             videoOptions: {
-              autoplay: true,
+              // autoplay: true,
               controls: true,
               width: 400, // 播放器宽度
               height: 300, // 播放器高度
@@ -205,10 +202,12 @@ export default {
               fluid: true, // 流体布局，自动充满，并保持播放其比例
               sources: [
                 {
-                  src: item.rtmpuri ? item.rtmpuri + '&a.flv' : '',
-                  type: this.video_type(item.rtmpuri ? item.rtmpuri + '&a.flv' : '')
+                  src: item.m3u8uri,
+                  type: this.video_type(item.m3u8uri)
                 }
-              ]
+              ],
+              techOrder: ['html5', 'flash'],
+              autoplay: 'any'
             }
           }
         })
@@ -250,7 +249,7 @@ export default {
     addMonitorDialog() {
       // this.form = {}
       // this.options = []
-      this.curCamera = null
+      this.curCamera = {}
       this.dialogFormVisible = true
     },
     saveMonitor(cameraId, cameraName, close) {
