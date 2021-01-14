@@ -12,7 +12,7 @@ module.exports = {
         proxyTable: {
             "/nvsapi": {
                 // target: "http://host31.880508.xyz:10000",
-                target: "http://192.168.30.53:8666", //宁夏测试
+                target: "http://192.168.10.145:8666", //宁夏测试
                 // target: 'http://36.41.71.26:8920',
                 // target: 'http://192.168.1.222:10000',
                 // target:'http://192.168.30.27:9216',

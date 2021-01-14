@@ -1105,8 +1105,8 @@ export default {
     }
   }
   .pull-right.alarmmsgright {
-    position: fixed;
-    right: 50px;
+    // position: fixed;
+    right: 55px;
     .clearsearch {
       height: 36px;
       margin-left: 10px;
@@ -1218,6 +1218,7 @@ export default {
   }
   .el-collapse-item__arrow {
     margin-bottom: 2px;
+    float: right;
   }
   // /deep/.el-select__tags{
   //   max-width: 170px !important;
