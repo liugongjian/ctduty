@@ -28,24 +28,24 @@ const service = axios.create({
 })
 
 // request interceptor
-service.interceptors.request.use(
-  config => {
-    // Do something before request is sent
-    // const token = getToken('token')
-    //
-    const token = Cookies.get('token')
+// service.interceptors.request.use(
+//   config => {
+//     // Do something before request is sent
+//     // const token = getToken('token')
+//     //
+//     const token = Cookies.get('token')
 
-    if (token) {
-      // 让每个请求携带token 把头部的'Bearer '去掉
-      config.headers['Authorization'] = token
-    }
-    return config
-  },
-  error => {
-    // Do something with request error
-    Promise.reject(error)
-  }
-)
+//     if (token) {
+//       // 让每个请求携带token 把头部的'Bearer '去掉
+//       config.headers['Authorization'] = token
+//     }
+//     return config
+//   },
+//   error => {
+//     // Do something with request error
+//     Promise.reject(error)
+//   }
+// )
 
 // response interceptor
 service.interceptors.response.use(

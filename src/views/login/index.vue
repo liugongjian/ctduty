@@ -145,7 +145,7 @@ export default {
             .then(resp => {
               if (resp.code === 0) {
                 // 把token存在cookie中
-                Cookies.set('token', resp.body.data)
+                // Cookies.set('token', resp.body.data)
                 // localStorage.setItem('token', resp.body.data)
                 fetchUser()
                   .then(res => {
